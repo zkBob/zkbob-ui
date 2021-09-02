@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { createGlobalStyle } from 'styled-components';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Pages from 'pages';
+import ThemeProvider from 'providers/ThemeProvider';
+import GilroyRegular from 'fonts/Gilroy-Regular.woff';
+import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 
-export default App;
+const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'Gilroy';
+    src: url(${GilroyRegular}) format('woff');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url(${GilroyMedium}) format('woff');
+    font-weight: 600;
+  }
+  body {
+    background-color: ${props => props.theme.background};
+    padding: 14px 40px;
+    font-family: 'Gilroy';
+  }
+  button {
+    font-family: 'Gilroy';
+  }
+`;
+
+export default () => (
+  <ThemeProvider>
+    <GlobalStyle />
+    <Pages />
+  </ThemeProvider>
+);
