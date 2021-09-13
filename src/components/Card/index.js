@@ -37,4 +37,5 @@ const Note = styled.span`
   color: ${props => props.theme.card.note.color};
   font-weight: ${props => props.theme.text.weight.normal};
   align-self: center;
+  text-align: center;
 `;

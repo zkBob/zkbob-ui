@@ -1,17 +1,41 @@
 import React from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Header from 'containers/Header';
 
 import Deposit from 'pages/Deposit';
+import Transfer from 'pages/Transfer';
+import Withdraw from 'pages/Withdraw';
+import History from 'pages/History';
+
+const Routes = () => (
+  <Switch>
+    <Route exact strict path="/deposit">
+      <Deposit />
+    </Route>
+    <Route exact strict path="/transfer">
+      <Transfer />
+    </Route>
+    <Route exact strict path="/withdraw">
+      <Withdraw />
+    </Route>
+    <Route exact strict path="/history">
+      <History />
+    </Route>
+    <Redirect to="/deposit" />
+  </Switch>
+);
 
 export default () => (
-  <Layout>
-    <Header />
-    <PageContainer>
-      <Deposit />
-    </PageContainer>
-  </Layout>
+  <BrowserRouter>
+    <Layout>
+      <Header />
+      <PageContainer>
+        <Routes />
+      </PageContainer>
+    </Layout>
+  </BrowserRouter>
 );
 
 const Layout = styled.div`

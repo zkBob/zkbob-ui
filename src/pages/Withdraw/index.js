@@ -5,13 +5,13 @@ import TransferInput from 'containers/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
 
-const note = 'Eth from your account will be deposited to your ZeroPool address via relayer.';
+const note = 'Amount withdrawn from zero knowledge pool will be deposited to the selected account.';
 
 export default () => {
   return (
-    <Card title="Deposit" note={note}>
+    <Card title="Withdraw" note={note}>
       <TransferInput />
-      <Button gradient>Deposit</Button>
+      <Button gradient>Withdraw</Button>
     </Card>
   );
 };
