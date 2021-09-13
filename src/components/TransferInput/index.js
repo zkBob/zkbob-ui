@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 
 import Select from 'components/TransferInput/Select';
 import Button from 'components/Button';
 
 export default ({ tokens, selectedToken, onTokenSelect }) => {
+  const [amount, setAmount] = useState(0);
+  const handleAmountChange = useCallback(e => {
+    setAmount(e.target.value);
+  }, []);
   return (
     <Container>
       <Row>
-        <Input value="0" />
+        <Input value={amount} onChange={handleAmountChange} />
         <Select {...{ tokens, selectedToken, onTokenSelect }} />
       </Row>
       <Row>
