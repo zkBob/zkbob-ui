@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 14px 40px;
     font-family: 'Gilroy';
   }
-  button {
+  button, input {
     font-family: 'Gilroy';
   }
 `;

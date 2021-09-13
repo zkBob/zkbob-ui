@@ -4,14 +4,14 @@ import { ThemeProvider } from 'styled-components';
 const white = '#FFFFFF';
 const grey = '#F4F3F8';
 const purple = '#754CFF';
-const normalText = '#6D6489';
-const darkText = '#2A1B5B';
+const textNormal = '#6D6489';
+const textDark = '#2A1B5B';
 
 const light = {
   text: {
     color: {
-      normal: normalText,
-      dark: darkText,
+      normal: textNormal,
+      dark: textDark,
     },
     weight: {
       normal: 400,
@@ -19,23 +19,30 @@ const light = {
     },
   },
   button: {
-    background: {
-      default: purple,
-      disabled: grey,
-      gradient: 'linear-gradient(90deg, #6D5CFF 5.4%, #E86EFF 55.92%, #FFD66E 92.38%)',
+    primary: {
+      background: {
+        default: purple,
+        disabled: grey,
+        gradient: 'linear-gradient(90deg, #6D5CFF 5.4%, #E86EFF 55.92%, #FFD66E 92.38%)',
+      },
+      text: {
+        color: {
+          default: white,
+          disabled: textDark,
+        },
+        size: {
+          small: '16px',
+          default: '20px',
+        },
+        weight: {
+          small: 400,
+          default: 600,
+        },
+      },
     },
-    text: {
-      color: {
-        default: white,
-        disabled: darkText,
-      },
-      size: {
-        small: '16px',
-        default: '20px',
-      },
-      weight: {
-        small: 400,
-        default: 600,
+    link: {
+      text: {
+        color: purple,
       },
     },
   },
@@ -47,6 +54,29 @@ const light = {
   },
   networkLabel: {
     background: white,
+  },
+  card: {
+    background: white,
+    title: {
+      color: textDark,
+    },
+    note: {
+      color: textNormal,
+    },
+  },
+  input: {
+    background: grey,
+    border: '#DCD8EA',
+    text: {
+      color: {
+        default: textDark,
+        small: textNormal,
+      },
+      weight: {
+        default: 600,
+        small: 400,
+      }
+    },
   },
   background: grey,
 };

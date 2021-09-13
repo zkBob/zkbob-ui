@@ -55,7 +55,10 @@ const Tabs = styled(Row)`
   background-color: ${props => props.theme.tab.background.default};
   border-radius: 16px;
   padding: 8px;
-  width: auto;
+  width: 480px;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
 `;
 
 const Tab = styled.div`
