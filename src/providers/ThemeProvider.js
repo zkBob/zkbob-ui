@@ -65,8 +65,20 @@ const light = {
     },
   },
   input: {
-    background: grey,
+    background: {
+      primary: grey,
+      secondary: white,
+      checked: purple,
+    },
     border: '#DCD8EA',
+    text: {
+      color: {
+        default: textDark,
+        placeholder: textNormal,
+      }
+    },
+  },
+  transferInput: {
     text: {
       color: {
         default: textDark,

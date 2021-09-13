@@ -30,7 +30,7 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   height: 100px;
-  background: ${props => props.theme.input.background};
+  background: ${props => props.theme.input.background.primary};
   border: 1px solid ${props => props.theme.input.border};
   border-radius: 16px;
   padding: 0px 24px;
@@ -45,16 +45,17 @@ const Input = styled.input`
   border: 0;
   background: transparent;
   font-size: 36px;
-  color: ${props => props.theme.input.text.color.default};
-  font-weight: ${props => props.theme.input.text.weight.default};
+  color: ${props => props.theme.transferInput.text.color.default};
+  font-weight: ${props => props.theme.transferInput.text.weight.default};
   width: 100px;
   flex: 1;
+  outline: none;
 `;
 
 const SmallText = styled.span`
   font-size: 12px;
-  color: ${props => props.theme.input.text.color.small};
-  font-weight: ${props => props.theme.input.text.weight.small};
+  color: ${props => props.theme.transferInput.text.color.small};
+  font-weight: ${props => props.theme.transferInput.text.weight.small};
   line-height: 20px;
 `;
 
