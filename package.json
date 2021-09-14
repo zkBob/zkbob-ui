@@ -26,9 +26,12 @@
       "react-app/jest"
     ],
     "rules": {
-      "import/no-anonymous-default-export": {
-        "allowArrowFunction": true
-      }
+      "import/no-anonymous-default-export": [
+        1,
+        {
+          "allowArrowFunction": true
+        }
+      ]
     }
   },
   "browserslist": {
