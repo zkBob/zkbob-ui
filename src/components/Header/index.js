@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
+import WalletModal from 'components/WalletModal';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as XDaiLogoDefault } from 'assets/xdai-logo.svg';
 
-export default ({ tabs, activeTab, onTabClick }) => (
+export default ({ tabs, activeTab, onTabClick, isWalletModalOpen, openWalletModal, closeWalletModal }) => (
   <Row>
     <LogoSection>
       <Logo />
@@ -26,8 +27,9 @@ export default ({ tabs, activeTab, onTabClick }) => (
         <XDaiLogo />
         xDai
       </NetworkLabel>
-      <Button small>Connect wallet</Button>
+      <Button small onClick={openWalletModal}>Connect wallet</Button>
     </AccountSection>
+    <WalletModal isOpen={isWalletModalOpen} onClose={closeWalletModal} />
   </Row>
 );
 
@@ -65,14 +67,14 @@ const Tab = styled.div`
   border-radius: 10px;
   padding: 8px 16px;
   background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
-  color: ${props => props.theme.text.color[props.active ? 'dark' : 'normal']};
+  color: ${props => props.theme.text.color[props.active ? 'primary' : 'secondary']};
   font-weight: ${props => props.theme.text.weight[props.active ? 'bold' : 'normal']};
   cursor: pointer;
 `;
 
 const NetworkLabel = styled(Row)`
   background-color: ${props => props.theme.networkLabel.background};
-  color: ${props => props.theme.text.color.dark};
+  color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.normal};
   padding: 8px 12px;
   border-radius: 10px;

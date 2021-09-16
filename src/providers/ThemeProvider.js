@@ -3,14 +3,15 @@ import { ThemeProvider } from 'styled-components';
 
 const white = '#FFFFFF';
 const grey = '#F4F3F8';
+const darkGrey = '#DCD8EA';
 const purple = '#754CFF';
 const textNormal = '#6D6489';
-const textDark = '#2A1B5B';
+const darkPurple = '#2A1B5B';
 
 const light = {
   text: {
     color: {
-      primary: textDark,
+      primary: darkPurple,
       secondary: textNormal,
     },
     weight: {
@@ -28,7 +29,7 @@ const light = {
       text: {
         color: {
           default: white,
-          disabled: textDark,
+          disabled: darkPurple,
         },
         size: {
           small: '16px',
@@ -58,7 +59,7 @@ const light = {
   card: {
     background: white,
     title: {
-      color: textDark,
+      color: darkPurple,
     },
     note: {
       color: textNormal,
@@ -70,10 +71,10 @@ const light = {
       secondary: white,
       checked: purple,
     },
-    border: '#DCD8EA',
+    border: darkGrey,
     text: {
       color: {
-        default: textDark,
+        default: darkPurple,
         placeholder: textNormal,
       }
     },
@@ -81,13 +82,27 @@ const light = {
   transferInput: {
     text: {
       color: {
-        default: textDark,
+        default: darkPurple,
         small: textNormal,
       },
       weight: {
         default: 600,
         small: 400,
       }
+    },
+  },
+  modal: {
+    background: white,
+    overlay: 'rgba(42, 27, 91, 0.9)',
+  },
+  walletConnectorOption: {
+    background: {
+      default: grey,
+      hover: 'rgba(117, 76, 255, 0.1)',
+    },
+    border: {
+      default: darkGrey,
+      hover: purple,
     },
   },
   background: grey,

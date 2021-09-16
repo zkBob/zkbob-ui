@@ -14,6 +14,7 @@ const tabs = [
 export default () => {
   const history = useHistory();
   const [activeTab, setActiveTab] = useState(tabs.findIndex(item => item.path === history.location.pathname));
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const handleTabClick = useCallback(index => {
     history.push(tabs[index].path);
     setActiveTab(index);
@@ -23,6 +24,9 @@ export default () => {
       tabs={tabs.map(tab => tab.name)}
       activeTab={activeTab}
       onTabClick={handleTabClick}
+      isWalletModalOpen={isWalletModalOpen}
+      openWalletModal={() => setIsWalletModalOpen(true)}
+      closeWalletModal={() => setIsWalletModalOpen(false)}
     />
   );
 };
