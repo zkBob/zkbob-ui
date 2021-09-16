@@ -10,8 +10,8 @@ const textDark = '#2A1B5B';
 const light = {
   text: {
     color: {
-      normal: textNormal,
-      dark: textDark,
+      primary: textDark,
+      secondary: textNormal,
     },
     weight: {
       normal: 400,

@@ -38,5 +38,5 @@ const Input = styled.input.attrs({ type: 'checkbox' })`
 const Label = styled.label`
   font-size: 12px;
   font-weight: 400;
-  color: ${props => props.theme.input.text.color.placeholder};
+  color: ${props => props.theme.text.color.secondary};
 `;

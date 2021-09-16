@@ -49,7 +49,7 @@ const Input = styled.input`
   border: 0;
   background: transparent;
   font-size: 36px;
-  color: ${props => props.theme.transferInput.text.color.default};
+  color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.transferInput.text.weight.default};
   width: 100px;
   flex: 1;
@@ -58,7 +58,7 @@ const Input = styled.input`
 
 const SmallText = styled.span`
   font-size: 12px;
-  color: ${props => props.theme.transferInput.text.color.small};
+  color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.transferInput.text.weight.small};
   line-height: 20px;
 `;
