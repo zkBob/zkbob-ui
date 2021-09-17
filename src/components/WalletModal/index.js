@@ -17,14 +17,14 @@ const connectors = [
   }
 ]
 
-export default ({ isOpen, onClose }) => {
+export default ({ isOpen, onClose, connectWallet }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Connect web3 wallet">
       <Text>
         Your wallet will be used to derive a private key to encrypt your data and sign private transactions.
       </Text>
       {connectors.map(connector =>
-        <WalletConnector>
+        <WalletConnector onClick={connectWallet}>
           <WalletConnectorName>{connector.name}</WalletConnectorName>
           <WalletConnectorIcon src={connector.icon} />
         </WalletConnector>

@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
-import WalletModal from 'components/WalletModal';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as XDaiLogoDefault } from 'assets/xdai-logo.svg';
+import { ReactComponent as MetaMaskIconDefault } from 'assets/metamask.svg';
 
-export default ({ tabs, activeTab, onTabClick, isWalletModalOpen, openWalletModal, closeWalletModal }) => (
+import { shortAddress } from 'utils';
+
+export default ({ tabs, activeTab, onTabClick, openWalletModal, account }) => (
   <Row>
     <LogoSection>
       <Logo />
@@ -27,9 +29,18 @@ export default ({ tabs, activeTab, onTabClick, isWalletModalOpen, openWalletModa
         <XDaiLogo />
         xDai
       </NetworkLabel>
-      <Button small onClick={openWalletModal}>Connect wallet</Button>
+      {account ? (
+        <>
+          <AccountLabel>
+            <MetaMaskIcon />
+            {shortAddress(account)}
+          </AccountLabel>
+          <Button small>Set up account</Button>
+        </>
+      ) : (
+        <Button small onClick={openWalletModal}>Connect wallet</Button>
+      )}
     </AccountSection>
-    <WalletModal isOpen={isWalletModalOpen} onClose={closeWalletModal} />
   </Row>
 );
 
@@ -81,6 +92,16 @@ const NetworkLabel = styled(Row)`
   margin-right: 16px;
 `;
 
+const AccountLabel = styled(NetworkLabel)`
+  cursor: pointer;
+`;
+
 const XDaiLogo = styled(XDaiLogoDefault)`
+  margin-right: 8px;
+`;
+
+const MetaMaskIcon = styled(MetaMaskIconDefault)`
+  width: 18px;
+  height: 16px;
   margin-right: 8px;
 `;

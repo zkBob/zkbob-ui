@@ -1,4 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
 import Pages from 'pages';
 import ThemeProvider from 'providers/ThemeProvider';
@@ -26,9 +28,15 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+function getLibrary(provider) {
+  return new Web3Provider(provider);
+}
+
 export default () => (
   <ThemeProvider>
-    <GlobalStyle />
-    <Pages />
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <GlobalStyle />
+      <Pages />
+    </Web3ReactProvider>
   </ThemeProvider>
 );
