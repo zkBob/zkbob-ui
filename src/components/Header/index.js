@@ -9,7 +9,7 @@ import { ReactComponent as MetaMaskIconDefault } from 'assets/metamask.svg';
 
 import { shortAddress } from 'utils';
 
-export default ({ tabs, activeTab, onTabClick, openWalletModal, account }) => (
+export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUpModal, account }) => (
   <Row>
     <LogoSection>
       <Logo />
@@ -35,7 +35,7 @@ export default ({ tabs, activeTab, onTabClick, openWalletModal, account }) => (
             <MetaMaskIcon />
             {shortAddress(account)}
           </AccountLabel>
-          <Button small>Set up account</Button>
+          <Button small onClick={openAccountSetUpModal}>Set up account</Button>
         </>
       ) : (
         <Button small onClick={openWalletModal}>Connect wallet</Button>

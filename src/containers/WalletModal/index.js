@@ -15,13 +15,13 @@ export default ({ isOpen, onClose }) => {
   }, [activate, onClose]);
 
   useEffect(() => {
-    async function connect() {
-      const isAuthorized = await injected.isAuthorized();
-      if (isAuthorized) {
-        await activate(injected, undefined, true);
-      }
-    }
-    connect();
+    // async function connect() {
+    //   const isAuthorized = await injected.isAuthorized();
+    //   if (isAuthorized) {
+    //     await activate(injected, undefined, true);
+    //   }
+    // }
+    // connect();
   }, [activate]);
 
   return (
