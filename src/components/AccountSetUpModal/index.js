@@ -1,37 +1,69 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+
+import CreateMnemonic from 'components/AccountSetUpModal/CreateMnemonic';
 
 const options = [
   {
     title: 'I already have a seed phrase',
     description: 'Import your existing account using 12 word seed phrase',
     actionText: 'Restore account',
+    action: 'restore',
   },
   {
     title: 'Set up a new account',
     description: 'This will create a new account and seed phrase',
     actionText: 'Set up account',
+    action: 'create',
   },
   {
     title: 'Create a new account',
     description: 'Create account using a wallet private key',
     actionText: 'Create account',
+    action: 'generate',
   },
 ];
 
 export default ({ isOpen, onClose }) => {
+  const [action, setAction] = useState();
+  const [mnemonic, setMnemonic] = useState();
+  const setNextAction = useCallback(nextAction => {
+    if (nextAction === 'create') {
+      const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+      setMnemonic(mnemonic);
+    }
+    setAction(nextAction);
+  }, []);
+  let state = null;
+  if (action === 'create') {
+    state = <CreateMnemonic mnemonic={mnemonic} />;
+  } else {
+    state = (
+      <>
+        {options.map(option =>
+          <OptionContainer>
+            <Title>{option.title}</Title>
+            <Description>{option.description}</Description>
+            <Button small onClick={() => setNextAction(option.action)}>
+              {option.actionText}
+            </Button>
+          </OptionContainer>
+        )}
+      </>
+    )
+  }
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Set up account">
-      {options.map(option =>
-        <OptionContainer>
-          <Title>{option.title}</Title>
-          <Description>{option.description}</Description>
-          <Button small>{option.actionText}</Button>
-        </OptionContainer>
-      )}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      onBack={action ? () => setAction(null) : null}
+      title="Set up account"
+    >
+      {state}
     </Modal>
   );
 };

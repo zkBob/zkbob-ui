@@ -7,6 +7,7 @@ const darkGrey = '#DCD8EA';
 const purple = '#754CFF';
 const textNormal = '#6D6489';
 const darkPurple = '#2A1B5B';
+const orange = '#EF8726';
 
 const light = {
   text: {
@@ -103,6 +104,13 @@ const light = {
     border: {
       default: darkGrey,
       hover: purple,
+    },
+  },
+  warning: {
+    background: 'rgba(239, 135, 38, 0.1)',
+    border: orange,
+    text: {
+      color: orange,
     },
   },
   background: grey,

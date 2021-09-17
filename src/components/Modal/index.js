@@ -3,8 +3,9 @@ import styled, { useTheme } from 'styled-components';
 import Modal from 'react-modal';
 
 import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
+import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
-export default ({ children, isOpen, onClose, title }) => {
+export default ({ children, isOpen, onClose, title, onBack }) => {
   const theme = useTheme();
   const customStyles = {
     content: {
@@ -33,6 +34,7 @@ export default ({ children, isOpen, onClose, title }) => {
     >
       <ModalContent>
         <Title>{title}</Title>
+        {onBack && <BackIcon onClick={onBack} />}
         <CrossIcon onClick={onClose} />
         {children}
       </ModalContent>
@@ -61,5 +63,12 @@ const CrossIcon = styled(CrossIconDefault)`
   position: absolute;
   top: 31px;
   right: 21px;
+  cursor: pointer;
+`;
+
+const BackIcon = styled(BackIconDefault)`
+  position: absolute;
+  top: 31px;
+  left: 21px;
   cursor: pointer;
 `;
