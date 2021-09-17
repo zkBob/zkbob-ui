@@ -5,8 +5,8 @@ import checkIcon from 'assets/check.svg';
 
 export default props => (
   <Row>
-    <Input type="checkbox" name="checkbox" {...props} />
-    <Label htmlFor="checkbox">{props.label}</Label>
+    <Input type="checkbox" name="checkbox" id={`checkbox-${props.label}`} {...props} />
+    <Label htmlFor={`checkbox-${props.label}`}>{props.label}</Label>
   </Row>
 
 );
@@ -25,7 +25,6 @@ const Input = styled.input.attrs({ type: 'checkbox' })`
   height: 20px;
   outline: none;
   margin-right: 8px;
-  cursor: pointer;
   &:checked {
     border: none;
     background: ${props => props.theme.input.background.checked};
