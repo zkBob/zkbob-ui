@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useWeb3React } from '@web3-react/core';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -8,6 +9,7 @@ import Button from 'components/Button';
 import Create from 'components/AccountSetUpModal/Create';
 import Confirm from 'components/AccountSetUpModal/Confirm';
 import Restore from 'components/AccountSetUpModal/Restore';
+import Generate from 'components/AccountSetUpModal/Generate';
 
 const options = [
   {
@@ -31,6 +33,7 @@ const options = [
 ];
 
 export default ({ isOpen, onClose }) => {
+  const { library } = useWeb3React();
   const [action, setAction] = useState();
   const [wallet, setWallet] = useState();
   const closeModal = useCallback(() => {
@@ -54,6 +57,12 @@ export default ({ isOpen, onClose }) => {
     window.localStorage.setItem('zkAccountKey', wallet.privateKey);
     closeModal();
   }, [closeModal]);
+  const generate = useCallback(async () => {
+    const signer = library.getSigner();
+    const privateKey = (await signer.signMessage('zkAccount')).substring(0, 66);
+    window.localStorage.setItem('zkAccountKey', privateKey);
+    closeModal();
+  }, [library, closeModal]);
   let title = null;
   let state = null;
   let prevAction = null;
@@ -68,6 +77,10 @@ export default ({ isOpen, onClose }) => {
   } else if (action === 'restore') {
     title = 'Restore account';
     state = <Restore restore={restore} />;
+    prevAction = null;
+  } else if (action === 'generate') {
+    title = 'Restore account';
+    state = <Generate generate={generate} />;
     prevAction = null;
   } else {
     title = 'Set up account';
