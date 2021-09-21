@@ -5,8 +5,8 @@ import { ethers } from 'ethers';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 
-import CreateMnemonic from 'components/AccountSetUpModal/CreateMnemonic';
-import ConfirmMnemonic from 'components/AccountSetUpModal/ConfirmMnemonic';
+import CreateMnemonic from 'components/AccountSetUpModal/Create';
+import ConfirmMnemonic from 'components/AccountSetUpModal/Confirm';
 
 const options = [
   {
@@ -32,6 +32,11 @@ const options = [
 export default ({ isOpen, onClose }) => {
   const [action, setAction] = useState();
   const [wallet, setWallet] = useState();
+  const closeModal = useCallback(() => {
+    setAction(null);
+    setWallet(null);
+    onClose();
+  }, [onClose]);
   const setNextAction = useCallback(nextAction => {
     if (nextAction === 'create') {
       const wallet = ethers.Wallet.createRandom();
@@ -74,7 +79,7 @@ export default ({ isOpen, onClose }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={closeModal}
       onBack={() => setAction(prevAction)}
       title={title}
     >
