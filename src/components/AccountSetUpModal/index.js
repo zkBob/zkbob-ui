@@ -5,8 +5,9 @@ import { ethers } from 'ethers';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 
-import CreateMnemonic from 'components/AccountSetUpModal/Create';
-import ConfirmMnemonic from 'components/AccountSetUpModal/Confirm';
+import Create from 'components/AccountSetUpModal/Create';
+import Confirm from 'components/AccountSetUpModal/Confirm';
+import Restore from 'components/AccountSetUpModal/Restore';
 
 const options = [
   {
@@ -46,20 +47,28 @@ export default ({ isOpen, onClose }) => {
   }, []);
   const confirmMnemonic = useCallback(() => {
     window.localStorage.setItem('zkAccountKey', wallet.privateKey);
-    setAction(null);
-    onClose();
-  }, [wallet, onClose]);
+    closeModal();
+  }, [wallet, closeModal]);
+  const restore = useCallback(mnemonic => {
+    const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+    window.localStorage.setItem('zkAccountKey', wallet.privateKey);
+    closeModal();
+  }, [closeModal]);
   let title = null;
   let state = null;
   let prevAction = null;
   if (action === 'create') {
     title = 'Set up account';
-    state = <CreateMnemonic mnemonic={wallet?.mnemonic?.phrase} next={() => setAction('confirm')} />;
+    state = <Create mnemonic={wallet?.mnemonic?.phrase} next={() => setAction('confirm')} />;
     prevAction = null;
   } else if (action === 'confirm') {
     title = 'Confirm seed phrase';
-    state = <ConfirmMnemonic mnemonic={wallet?.mnemonic?.phrase} confirmMnemonic={confirmMnemonic} />;
+    state = <Confirm mnemonic={wallet?.mnemonic?.phrase} confirmMnemonic={confirmMnemonic} />;
     prevAction = 'create';
+  } else if (action === 'restore') {
+    title = 'Restore account';
+    state = <Restore restore={restore} />;
+    prevAction = null;
   } else {
     title = 'Set up account';
     state = (

@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 14px 40px;
     font-family: 'Gilroy';
   }
-  button, input {
+  button, input, textarea {
     font-family: 'Gilroy';
   }
 `;
