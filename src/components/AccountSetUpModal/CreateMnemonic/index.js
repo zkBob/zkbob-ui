@@ -4,7 +4,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Button from 'components/Button';
 
-export default ({ mnemonic }) => {
+export default ({ mnemonic, next }) => {
   return (
     <Container>
       <Description>
@@ -24,7 +24,7 @@ export default ({ mnemonic }) => {
       <CopyToClipboard text={mnemonic}>
         <LinkButton type="link">Copy seed phrase</LinkButton>
       </CopyToClipboard>
-      <Button>Continue</Button>
+      <Button onClick={next}>Continue</Button>
     </Container>
   );
 };

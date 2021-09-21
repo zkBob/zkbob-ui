@@ -6,10 +6,11 @@ import Button from 'components/Button';
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as XDaiLogoDefault } from 'assets/xdai-logo.svg';
 import { ReactComponent as MetaMaskIconDefault } from 'assets/metamask.svg';
+import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
 
 import { shortAddress } from 'utils';
 
-export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUpModal, account }) => (
+export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUpModal, account, zkAccount }) => (
   <Row>
     <LogoSection>
       <Logo />
@@ -34,8 +35,17 @@ export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUp
           <AccountLabel>
             <MetaMaskIcon />
             {shortAddress(account)}
+            {zkAccount && (
+              <>
+                <Divider />
+                <ZkIcon />
+                {shortAddress(zkAccount)}
+              </>
+            )}
           </AccountLabel>
-          <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+          {!zkAccount && (
+            <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+          )}
         </>
       ) : (
         <Button small onClick={openWalletModal}>Connect wallet</Button>
@@ -104,4 +114,17 @@ const MetaMaskIcon = styled(MetaMaskIconDefault)`
   width: 18px;
   height: 16px;
   margin-right: 8px;
+`;
+
+const ZkIcon = styled(ZkIconDefault)`
+  width: 18px;
+  height: 14px;
+  margin-right: 8px;
+`;
+
+const Divider = styled.div`
+  width: 1px;
+  height: 16px;
+  margin: 0 8px;
+  background: ${({ theme }) => theme.input.border};
 `;

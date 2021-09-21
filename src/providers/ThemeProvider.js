@@ -113,6 +113,22 @@ const light = {
       color: orange,
     },
   },
+  mnemonic: {
+    background: {
+      default: white,
+      active: purple,
+    },
+    border: {
+      default: darkGrey,
+      active: purple,
+    },
+    text: {
+      color: {
+        default: darkPurple,
+        active: white,
+      },
+    },
+  },
   background: grey,
 };
 

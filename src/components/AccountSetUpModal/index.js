@@ -6,6 +6,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 import CreateMnemonic from 'components/AccountSetUpModal/CreateMnemonic';
+import ConfirmMnemonic from 'components/AccountSetUpModal/ConfirmMnemonic';
 
 const options = [
   {
@@ -30,18 +31,32 @@ const options = [
 
 export default ({ isOpen, onClose }) => {
   const [action, setAction] = useState();
-  const [mnemonic, setMnemonic] = useState();
+  const [wallet, setWallet] = useState();
   const setNextAction = useCallback(nextAction => {
     if (nextAction === 'create') {
-      const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
-      setMnemonic(mnemonic);
+      const wallet = ethers.Wallet.createRandom();
+      setWallet(wallet);
     }
     setAction(nextAction);
   }, []);
+  const confirmMnemonic = useCallback(() => {
+    window.localStorage.setItem('zkAccountKey', wallet.privateKey);
+    setAction(null);
+    onClose();
+  }, [wallet, onClose]);
+  let title = null;
   let state = null;
+  let prevAction = null;
   if (action === 'create') {
-    state = <CreateMnemonic mnemonic={mnemonic} />;
+    title = 'Set up account';
+    state = <CreateMnemonic mnemonic={wallet?.mnemonic?.phrase} next={() => setAction('confirm')} />;
+    prevAction = null;
+  } else if (action === 'confirm') {
+    title = 'Confirm seed phrase';
+    state = <ConfirmMnemonic mnemonic={wallet?.mnemonic?.phrase} confirmMnemonic={confirmMnemonic} />;
+    prevAction = 'create';
   } else {
+    title = 'Set up account';
     state = (
       <>
         {options.map(option =>
@@ -54,14 +69,14 @@ export default ({ isOpen, onClose }) => {
           </OptionContainer>
         )}
       </>
-    )
+    );
   }
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      onBack={action ? () => setAction(null) : null}
-      title="Set up account"
+      onBack={() => setAction(prevAction)}
+      title={title}
     >
       {state}
     </Modal>
