@@ -15,7 +15,6 @@ const tabs = [
   { name: 'Transfer', path: '/transfer' },
   { name: 'Withdraw', path: '/withdraw' },
   { name: 'History', path: '/history' },
-  { name: 'Bridge', path: '/' },
 ]
 
 export default () => {

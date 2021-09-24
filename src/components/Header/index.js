@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
+import Link from 'components/Link';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as XDaiLogoDefault } from 'assets/xdai-logo.svg';
 import { ReactComponent as MetaMaskIconDefault } from 'assets/metamask.svg';
 import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
+import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.svg';
 
 import { shortAddress } from 'utils';
 
@@ -26,6 +28,10 @@ export default ({
             onClick={() => onTabClick(index)}
           >{tab}</Tab>
         )}
+        <BridgeLink href="https://omni.xdaichain.com/">
+          Bridge
+          <ExternalLinkIcon />
+        </BridgeLink>
       </Tabs>
     </TabsSection>
     <AccountSection>
@@ -85,6 +91,9 @@ const Tabs = styled(Row)`
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
+  & > * {
+    flex: 1;
+  }
 `;
 
 const Tab = styled.div`
@@ -130,4 +139,18 @@ const Divider = styled.div`
   height: 16px;
   margin: 0 8px;
   background: ${({ theme }) => theme.input.border};
+`;
+
+const BridgeLink = styled(Link)`
+  font-size: 16px;
+  color: ${({ theme }) => theme.text.color.secondary};
+  padding: 0 16px;
+  position: relative;
+  margin-right: 17px;
+`;
+
+const ExternalLinkIcon = styled(ExternalLinkIconDefault)`
+  position: absolute;
+  right: 0;
+  top: 1px;
 `;
