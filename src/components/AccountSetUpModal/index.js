@@ -32,7 +32,7 @@ const options = [
   },
 ];
 
-export default ({ isOpen, onClose }) => {
+export default ({ isOpen, onClose, saveZkAccountKey }) => {
   const { library } = useWeb3React();
   const [action, setAction] = useState();
   const [wallet, setWallet] = useState();
@@ -49,20 +49,20 @@ export default ({ isOpen, onClose }) => {
     setAction(nextAction);
   }, []);
   const confirmMnemonic = useCallback(() => {
-    window.localStorage.setItem('zkAccountKey', wallet.privateKey);
+    saveZkAccountKey(wallet.privateKey);
     closeModal();
-  }, [wallet, closeModal]);
+  }, [wallet, closeModal, saveZkAccountKey]);
   const restore = useCallback(mnemonic => {
     const wallet = ethers.Wallet.fromMnemonic(mnemonic);
-    window.localStorage.setItem('zkAccountKey', wallet.privateKey);
+    saveZkAccountKey(wallet.privateKey);
     closeModal();
-  }, [closeModal]);
+  }, [closeModal, saveZkAccountKey]);
   const generate = useCallback(async () => {
     const signer = library.getSigner();
     const privateKey = (await signer.signMessage('zkAccount')).substring(0, 66);
-    window.localStorage.setItem('zkAccountKey', privateKey);
+    saveZkAccountKey(privateKey);
     closeModal();
-  }, [library, closeModal]);
+  }, [library, closeModal, saveZkAccountKey]);
   let title = null;
   let state = null;
   let prevAction = null;

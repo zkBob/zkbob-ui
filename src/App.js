@@ -2,6 +2,8 @@ import { createGlobalStyle } from 'styled-components';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
+import ContextsProvider from 'contexts';
+
 import Pages from 'pages';
 import ThemeProvider from 'providers/ThemeProvider';
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
@@ -34,9 +36,11 @@ function getLibrary(provider) {
 
 export default () => (
   <ThemeProvider>
+    <GlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
-      <GlobalStyle />
-      <Pages />
+      <ContextsProvider>
+        <Pages />
+      </ContextsProvider>
     </Web3ReactProvider>
   </ThemeProvider>
 );

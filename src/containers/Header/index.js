@@ -1,11 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
+import { ethers } from 'ethers';
 
 import WalletModal from 'containers/WalletModal';
+import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'components/AccountSetUpModal';
 import Header from 'components/Header';
-import { ethers } from 'ethers';
+
+import { ZkAccountContext } from 'contexts';
 
 const tabs = [
   { name: 'Deposit', path: '/deposit' },
@@ -18,26 +21,15 @@ const tabs = [
 export default () => {
   const { account } = useWeb3React();
   const history = useHistory();
-  const [zkAccount, setZkAccount] = useState();
+  const { zkAccount, saveZkAccountKey } = useContext(ZkAccountContext);
   const [activeTab, setActiveTab] = useState(tabs.findIndex(item => item.path === history.location.pathname));
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isSetUpAccountModalOpen, setIsSetUpAccountModalOpen] = useState(false);
   const handleTabClick = useCallback(index => {
     history.push(tabs[index].path);
     setActiveTab(index);
   }, []);
-  const loadFromStorage = useCallback(() => {
-    const privateKey = window.localStorage.getItem('zkAccountKey');
-    let zkAccount = null;
-    if (privateKey) {
-      const wallet = new ethers.Wallet(privateKey);
-      zkAccount = wallet.address;
-    }
-    setZkAccount(zkAccount);
-  }, []);
-  useEffect(() => {
-    loadFromStorage();
-  }, [loadFromStorage, isSetUpAccountModalOpen]);
   return (
     <>
       <Header
@@ -45,6 +37,7 @@ export default () => {
         activeTab={activeTab}
         onTabClick={handleTabClick}
         openWalletModal={() => setIsWalletModalOpen(true)}
+        openAccountModal={() => setIsAccountModalOpen(true)}
         openAccountSetUpModal={() => setIsSetUpAccountModalOpen(true)}
         account={account}
         zkAccount={zkAccount}
@@ -53,7 +46,17 @@ export default () => {
         isOpen={isWalletModalOpen}
         onClose={() => setIsWalletModalOpen(false)}
       />
-      <AccountSetUpModal isOpen={isSetUpAccountModalOpen} onClose={() => setIsSetUpAccountModalOpen(false)} />
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        changeAccount={() => setIsWalletModalOpen(true)}
+        changeZkAccount={() => setIsSetUpAccountModalOpen(true)}
+      />
+      <AccountSetUpModal
+        isOpen={isSetUpAccountModalOpen}
+        onClose={() => setIsSetUpAccountModalOpen(false)}
+        saveZkAccountKey={saveZkAccountKey}
+      />
     </>
   );
 };

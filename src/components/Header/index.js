@@ -10,7 +10,10 @@ import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
 
 import { shortAddress } from 'utils';
 
-export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUpModal, account, zkAccount }) => (
+export default ({
+  tabs, activeTab, onTabClick, openWalletModal,
+  openAccountSetUpModal, account, zkAccount, openAccountModal,
+}) => (
   <Row>
     <LogoSection>
       <Logo />
@@ -32,7 +35,7 @@ export default ({ tabs, activeTab, onTabClick, openWalletModal, openAccountSetUp
       </NetworkLabel>
       {account ? (
         <>
-          <AccountLabel>
+          <AccountLabel onClick={openAccountModal}>
             <MetaMaskIcon />
             {shortAddress(account)}
             {zkAccount && (
