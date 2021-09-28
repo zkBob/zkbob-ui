@@ -33,7 +33,7 @@ const options = [
 ];
 
 export default ({ isOpen, onClose, saveZkAccountKey }) => {
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const [action, setAction] = useState();
   const [wallet, setWallet] = useState();
   const closeModal = useCallback(() => {
@@ -58,11 +58,14 @@ export default ({ isOpen, onClose, saveZkAccountKey }) => {
     closeModal();
   }, [closeModal, saveZkAccountKey]);
   const generate = useCallback(async () => {
-    const signer = library.getSigner();
-    const privateKey = (await signer.signMessage('zkAccount')).substring(0, 66);
+    const message = 'zkAccount';
+    const privateKey = (await library.send(
+      'personal_sign',
+      [ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), account.toLowerCase()],
+    )).substring(0, 66);
     saveZkAccountKey(privateKey);
     closeModal();
-  }, [library, closeModal, saveZkAccountKey]);
+  }, [library, closeModal, saveZkAccountKey, account]);
   let title = null;
   let state = null;
   let prevAction = null;
