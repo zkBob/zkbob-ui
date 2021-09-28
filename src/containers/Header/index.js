@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 
 import WalletModal from 'containers/WalletModal';
 import AccountModal from 'containers/AccountModal';
@@ -9,6 +8,7 @@ import AccountSetUpModal from 'components/AccountSetUpModal';
 import Header from 'components/Header';
 
 import { ZkAccountContext } from 'contexts';
+import { useSelectedConnector } from 'hooks';
 
 const tabs = [
   { name: 'Deposit', path: '/deposit' },
@@ -21,6 +21,7 @@ export default () => {
   const { account } = useWeb3React();
   const history = useHistory();
   const { zkAccount, saveZkAccountKey } = useContext(ZkAccountContext);
+  const connector = useSelectedConnector();
   const [activeTab, setActiveTab] = useState(tabs.findIndex(item => item.path === history.location.pathname));
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
@@ -40,6 +41,7 @@ export default () => {
         openAccountSetUpModal={() => setIsSetUpAccountModalOpen(true)}
         account={account}
         zkAccount={zkAccount}
+        connector={connector}
       />
       <WalletModal
         isOpen={isWalletModalOpen}

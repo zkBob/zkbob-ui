@@ -1,24 +1,27 @@
 import { useCallback, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { InjectedConnector, NoEthereumProviderError } from '@web3-react/injected-connector';
 
 import WalletModal from 'components/WalletModal';
 
-const injected = new InjectedConnector({ supportedChainIds: [1, 100] });
+import connectors from 'connectors';
 
 export default ({ isOpen, onClose }) => {
-  const { activate, active, connector, chainId, account } = useWeb3React();
+  const { activate } = useWeb3React();
 
-  const connectWallet = useCallback(async () => {
-    await activate(injected, undefined, true);
-    onClose();
+  const connectWallet = useCallback(async connector => {
+    try {
+      await activate(connector, undefined, true);
+      onClose();
+    } catch (err) {
+      console.log(err);
+    }
   }, [activate, onClose]);
 
   useEffect(() => {
     async function connect() {
-      const isAuthorized = await injected.isAuthorized();
+      const isAuthorized = await connectors.injected.connector.isAuthorized();
       if (isAuthorized) {
-        await activate(injected, undefined, true);
+        await activate(connectors.injected.connector, undefined, true);
       }
     }
     connect();
@@ -28,6 +31,7 @@ export default ({ isOpen, onClose }) => {
     <WalletModal
       isOpen={isOpen}
       onClose={onClose}
+      connectors={Object.values(connectors)}
       connectWallet={connectWallet}
     />
   );

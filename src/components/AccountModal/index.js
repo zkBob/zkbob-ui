@@ -6,17 +6,19 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
 
-import metaMaskIcon from 'assets/metamask.svg';
 import zkIcon from 'assets/zk.svg';
 
 import { shortAddress } from 'utils';
 
-export default ({ isOpen, onClose, account = '', zkAccount = '', changeAccount, changeZkAccount }) => {
+export default ({
+  isOpen, onClose, account = '', zkAccount = '',
+  changeAccount, changeZkAccount, connector,
+}) => {
   const options = [
     {
-      title: 'Web3 wallet',
+      title: `Connected with ${connector?.name}`,
       value: account,
-      icon: metaMaskIcon,
+      icon: connector?.icon,
       onChange: changeAccount,
     },
     {
@@ -47,7 +49,7 @@ export default ({ isOpen, onClose, account = '', zkAccount = '', changeAccount, 
           <Row>
             {item.value ? (
               <>
-                <Icon src={item.icon} />
+                {item.icon && <Icon src={item.icon} />}
                 <Address>{shortAddress(item.value)}</Address>
               </>
             ) : (

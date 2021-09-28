@@ -3,28 +3,14 @@ import styled from 'styled-components';
 
 import Modal from 'components/Modal';
 
-import metaMaskIcon from 'assets/metamask.svg';
-import walletConnectIcon from 'assets/walletconnect.svg';
-
-const connectors = [
-  {
-    name: 'MetaMask',
-    icon: metaMaskIcon,
-  },
-  {
-    name: 'WalletConnect',
-    icon: walletConnectIcon,
-  }
-]
-
-export default ({ isOpen, onClose, connectWallet }) => {
+export default ({ isOpen, onClose, connectors, connectWallet }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Connect web3 wallet">
       <Text>
         Your wallet will be used to derive a private key to encrypt your data and sign private transactions.
       </Text>
       {connectors.map(connector =>
-        <WalletConnector onClick={connectWallet}>
+        <WalletConnector onClick={() => connectWallet(connector.connector)}>
           <WalletConnectorName>{connector.name}</WalletConnectorName>
           <WalletConnectorIcon src={connector.icon} />
         </WalletConnector>

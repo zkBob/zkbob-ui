@@ -13,7 +13,7 @@ import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.
 import { shortAddress } from 'utils';
 
 export default ({
-  tabs, activeTab, onTabClick, openWalletModal,
+  tabs, activeTab, onTabClick, openWalletModal, connector,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
 }) => (
   <Row>
@@ -42,7 +42,7 @@ export default ({
       {account ? (
         <>
           <AccountLabel onClick={openAccountModal}>
-            <MetaMaskIcon />
+            {connector && <Icon src={connector.icon} />}
             {shortAddress(account)}
             {zkAccount && (
               <>
@@ -122,7 +122,7 @@ const XDaiLogo = styled(XDaiLogoDefault)`
   margin-right: 8px;
 `;
 
-const MetaMaskIcon = styled(MetaMaskIconDefault)`
+const Icon = styled.img`
   width: 18px;
   height: 16px;
   margin-right: 8px;
