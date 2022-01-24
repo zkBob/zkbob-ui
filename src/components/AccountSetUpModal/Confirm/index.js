@@ -78,7 +78,7 @@ const Word = styled.div`
   margin-right: 8px;
   cursor: ${props => props.clickable ? 'pointer' : 'default'};
   font-size: 16px;
-  color: ${props => props.theme.mnemonic.text.color.[props.active ? 'active' : 'default']};
+  color: ${props => props.theme.mnemonic.text.color[props.active ? 'active' : 'default']};
 `;
 
 const MnemonicInput = styled(Words)`
