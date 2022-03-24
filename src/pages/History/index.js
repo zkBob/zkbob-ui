@@ -43,8 +43,8 @@ export default () => {
   return (
     <Card title="History">
       <Input placeholder="Search..." />
-      {data.map(item =>
-        <Row>
+      {data.map((item, index) =>
+        <Row key={index}>
           <Section>
             <ActionLabel>
               <ActionIcon src={actions[item.action].icon} />

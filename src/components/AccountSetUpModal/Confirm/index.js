@@ -28,11 +28,12 @@ export default ({ mnemonic, confirmMnemonic }) => {
         Please input your seed phrase to verify it
       </Description>
       <MnemonicInput>
-        {repeated.map(word => <Word>{word}</Word>)}
+        {repeated.map(word => <Word key={word}>{word}</Word>)}
       </MnemonicInput>
       <Words>
         {shuffled.map(word =>
           <Word
+            key={`${word}-shuffled`}
             active={repeated.includes(word)}
             clickable
             onClick={() => addWord(word)}

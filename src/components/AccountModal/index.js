@@ -11,7 +11,7 @@ import zkIcon from 'assets/zk.svg';
 import { shortAddress } from 'utils';
 
 export default ({
-  isOpen, onClose, account = '', zkAccount = '',
+  isOpen, onClose, account = '', zkAccount,
   changeAccount, changeZkAccount, connector,
 }) => {
   const options = [
@@ -23,7 +23,7 @@ export default ({
     },
     {
       title: 'Zero knowledge account',
-      value: zkAccount,
+      value: zkAccount?.address || '',
       icon: zkIcon,
       onChange: changeZkAccount,
     }
@@ -39,7 +39,7 @@ export default ({
       title="Account"
     >
       {options.map(item =>
-        <AccountContainer>
+        <AccountContainer key={item.title}>
           <RowSpaceBetween>
             <AccountTitle>{item.title}</AccountTitle>
             <Button type="link" onClick={() => change(item.onChange)}>

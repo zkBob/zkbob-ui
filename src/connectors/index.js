@@ -4,7 +4,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import metaMaskIcon from 'assets/metamask.svg';
 // import walletConnectIcon from 'assets/walletconnect.svg';
 
-const injected = new InjectedConnector({ supportedChainIds: [1, 100] });
+const injected = new InjectedConnector({ supportedChainIds: [Number(process.env.REACT_APP_NETWORK)] });
 // const walletconnect = new WalletConnectConnector({
 //   rpc: {
 //     1: 'https://mainnet.blockscout.com/',

@@ -4,11 +4,10 @@ import styled from 'styled-components';
 import Select from 'components/TransferInput/Select';
 import Button from 'components/Button';
 
-export default ({ tokens, selectedToken, onTokenSelect }) => {
-  const [amount, setAmount] = useState(0);
+export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balance }) => {
   const handleAmountChange = useCallback(e => {
     setAmount(e.target.value);
-  }, []);
+  }, [setAmount]);
   return (
     <Container>
       <Row>
@@ -19,7 +18,7 @@ export default ({ tokens, selectedToken, onTokenSelect }) => {
         <SmallText>$1,195</SmallText>
         <Row>
           <SmallText>
-            Pool Balance: 1 shETH
+            Pool Balance: {balance} shETH
           </SmallText>
           <MaxButton type="link">Max</MaxButton>
         </Row>

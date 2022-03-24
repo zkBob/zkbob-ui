@@ -15,7 +15,7 @@ export default ({ mnemonic, next }) => {
       </Warning>
       <Mnemonic>
         {mnemonic.split(' ').map((word, index) =>
-          <WordContainer>
+          <WordContainer key={index}>
             <Number>{index + 1} </Number>
             <Word>{word}</Word>
           </WordContainer>

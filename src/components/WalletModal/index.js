@@ -10,7 +10,10 @@ export default ({ isOpen, onClose, connectors, connectWallet }) => {
         Your wallet will be used to derive a private key to encrypt your data and sign private transactions.
       </Text>
       {connectors.map(connector =>
-        <WalletConnector onClick={() => connectWallet(connector.connector)}>
+        <WalletConnector
+          key={connector.name}
+          onClick={() => connectWallet(connector.connector)}
+        >
           <WalletConnectorName>{connector.name}</WalletConnectorName>
           <WalletConnectorIcon src={connector.icon} />
         </WalletConnector>

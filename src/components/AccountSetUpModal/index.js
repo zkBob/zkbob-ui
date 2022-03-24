@@ -90,7 +90,7 @@ export default ({ isOpen, onClose, saveZkAccountKey }) => {
     state = (
       <>
         {options.map(option =>
-          <OptionContainer>
+          <OptionContainer key={option.title}>
             <Title>{option.title}</Title>
             <Description>{option.description}</Description>
             <Button small onClick={() => setNextAction(option.action)}>

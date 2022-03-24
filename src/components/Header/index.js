@@ -24,6 +24,7 @@ export default ({
       <Tabs>
         {tabs.map((tab, index) =>
           <Tab
+            key={index}
             active={activeTab === index}
             onClick={() => onTabClick(index)}
           >{tab}</Tab>
@@ -48,7 +49,7 @@ export default ({
               <>
                 <Divider />
                 <ZkIcon />
-                {shortAddress(zkAccount)}
+                {shortAddress(zkAccount.address)}
               </>
             )}
           </AccountLabel>

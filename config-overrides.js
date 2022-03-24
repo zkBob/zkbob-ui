@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   webpack: function(config, env) {
     config.experiments = {
@@ -7,9 +9,46 @@ module.exports = {
     config.module.rules = [
       ...config.module.rules,
       {
-        test: /\.wasm$/,
-        type: 'webassembly/async',
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.tsx?$/,
+        use: ['ts-loader'],
+      },
+      {
+        test: /\.wasm$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
+      {
+        test: /\.bin/,
+        type: 'asset/resource'
+      },
+      {
+        resourceQuery: /asset/,
+        type: 'asset/resource',
+      }
+    ];
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      buffer: require.resolve('buffer/'),
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      url: require.resolve('url/'),
+    };
+    config.plugins = [
+      ...config.plugins,
+      new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+      }),
     ]
     return config;
   },
