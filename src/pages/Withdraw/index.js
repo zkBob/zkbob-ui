@@ -12,13 +12,12 @@ import Input from 'components/Input';
 const note = 'Amount withdrawn from zero knowledge pool will be deposited to the selected account.';
 
 export default () => {
-  const { balance } = useContext(ZkAccountContext);
+  const { balance, withdraw } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(0);
   const [receiver, setReceiver] = useState(null);
-  const { withdraw } = useContext(ZkAccountContext);
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
-  }, [setAmount]);
+  }, []);
   // const [isXDaiAddress, setIsXDaiAddress] = useState(false);
   // const handleCheckboxClick = useCallback(() => {
   //   setIsXDaiAddress(!isXDaiAddress);

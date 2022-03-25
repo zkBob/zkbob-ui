@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 
-import { createAccount, withdrawFromPool, depositToPool } from './utils/account';
+import zp from './utils/zp';
 
 const { formatUnits } = ethers.utils;
 
@@ -22,8 +22,9 @@ export const ZkAccountContextProvider = ({ children }) => {
     let zkAccount = null;
     if (privateKey) {
       const wallet = new ethers.Wallet(privateKey);
-      zkAccount = await createAccount(privateKey);
+      zkAccount = await zp.createAccount(privateKey);
       zkAccount.address = wallet.address;
+      console.log('Private address: ', zkAccount.generateAddress(TOKEN_ADDRESS));
     }
     setZkAccount(zkAccount);
   }, [library]);
@@ -39,12 +40,17 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount]);
 
   const deposit = useCallback(async (amount) => {
-    await depositToPool(library.getSigner(0), zkAccount, amount);
+    await zp.deposit(library.getSigner(0), zkAccount, amount);
     updateBalance();
   }, [zkAccount, updateBalance, library]);
 
+  const transfer = useCallback(async (to, amount) => {
+    await zp.transfer(zkAccount, to, amount);
+    updateBalance();
+  }, [zkAccount, updateBalance]);
+
   const withdraw = useCallback(async (to, amount) => {
-    await withdrawFromPool(zkAccount, to, amount);
+    await zp.withdraw(zkAccount, to, amount);
     updateBalance();
   }, [zkAccount, updateBalance]);
 
@@ -62,7 +68,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [loadZkAccount]);
 
   return (
-    <ZkAccountContext.Provider value={{ zkAccount, balance, withdraw, saveZkAccountKey, deposit }}>
+    <ZkAccountContext.Provider value={{ zkAccount, balance, saveZkAccountKey, deposit, withdraw, transfer }}>
       {children}
     </ZkAccountContext.Provider>
   );

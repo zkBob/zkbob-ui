@@ -21,12 +21,12 @@ const snarkParams = {
   treeVkUrl,
 };
 
-export async function createAccount(privateKey) {
+async function createAccount(privateKey) {
   const sk = Uint8Array.from(privateKey.split('').slice(2, 34));
   const ctx = await initZeroPool(wasmPath, workerPath, snarkParams);
   const tokens = {
-    '0xd0c47706dcC088E3133ee0D58Ab6ba95A6ad362f': {
-      poolAddress: '0x3453A3FB52cE634d994fB498447C92D78AbBE49f',
+    [TOKEN_ADDRESS]: {
+      poolAddress: POOL_ADDRESS,
       relayerUrl: 'https://relayer.thgkjlr.website/',
     }
   };
@@ -40,7 +40,7 @@ export async function createAccount(privateKey) {
   });
 }
 
-export async function depositToPool(signer, account, amount) {
+async function deposit(signer, account, amount) {
   console.log('Making a deposit...');
   const tokenABI = ['function approve(address,uint256)'];
   const token = new Contract(TOKEN_ADDRESS, tokenABI, signer);
@@ -52,10 +52,20 @@ export async function depositToPool(signer, account, amount) {
   console.log('Deposited!');
 }
 
-export async function withdrawFromPool(account, to, amount) {
+async function transfer(account, to, amount) {
+  console.log('Making a transfer...');
+  const jobId = await account.transfer(TOKEN_ADDRESS, [{ to, amount: parseEther(amount) }]);
+  console.log('Please wait relayer complete the job %s...', jobId);
+  await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
+  console.log('Transfered!');
+}
+
+async function withdraw(account, to, amount) {
   console.log('Making a withdrawal...');
   const jobId = await account.withdraw(TOKEN_ADDRESS, to, parseEther(amount));
   console.log('Please wait relayer complete the job %s...', jobId);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   console.log('Withdrawn!');
 }
+
+export default { createAccount, deposit, withdraw, transfer };
