@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 
 import TransferInput from 'components/TransferInput';
-import { ZkAccountContext } from 'contexts';
 
 import ethIcon from 'assets/eth.svg';
 import zpEthIcon from 'assets/zp-eth.svg';
@@ -11,8 +10,7 @@ const tokens = [
   { name: 'zpETH', icon: zpEthIcon },
 ];
 
-export default ({ amount, setAmount}) => {
-  const { balance } = useContext(ZkAccountContext);
+export default ({ amount, setAmount, isPoolToken, balance }) => {
   const [selectedToken, setSelectedToken] = useState(0);
   return (
     <TransferInput
@@ -22,6 +20,7 @@ export default ({ amount, setAmount}) => {
       selectedToken={selectedToken}
       onTokenSelect={setSelectedToken}
       balance={balance}
+      isPoolToken={isPoolToken}
     />
   );
 };

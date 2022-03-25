@@ -33,7 +33,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (zkAccount) {
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
       balance = Number(formatUnits(BigNumber.from(balance), 18));
-      console.log('Balance:', balance);
+      console.log('Pool balance:', balance);
     }
     setBalance(balance);
   }, [zkAccount]);

@@ -4,7 +4,10 @@ import styled from 'styled-components';
 import Select from 'components/TransferInput/Select';
 import Button from 'components/Button';
 
-export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balance }) => {
+import daiIcon from 'assets/dai.svg';
+import zpDaiIcon from 'assets/zp-dai.svg';
+
+export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balance, isPoolToken }) => {
   const handleAmountChange = useCallback(e => {
     setAmount(e.target.value);
   }, [setAmount]);
@@ -12,14 +15,25 @@ export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balan
     <Container>
       <Row>
         <Input value={amount} onChange={handleAmountChange} />
-        <Select {...{ tokens, selectedToken, onTokenSelect }} />
+        {/* <Select {...{ tokens, selectedToken, onTokenSelect }} /> */}
+        <TokenContainer>
+          <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
+          {isPoolToken ? 'shDAI' : 'DAI'}
+        </TokenContainer>
       </Row>
       <Row>
-        <SmallText>$1,195</SmallText>
+        {/* <SmallText>$1,195</SmallText> */}
+        <div></div>
         <Row>
-          <SmallText>
-            Pool Balance: {balance} shETH
-          </SmallText>
+          {isPoolToken ? (
+            <SmallText>
+              Pool Balance: {balance} shDAI
+            </SmallText>
+          ) : (
+            <SmallText>
+              Balance: {balance} DAI
+            </SmallText>
+          )}
           <MaxButton type="link">Max</MaxButton>
         </Row>
       </Row>
@@ -62,6 +76,25 @@ const SmallText = styled.span`
   line-height: 20px;
 `;
 
+const BigText = styled.span`
+  font-size: 24px;
+  color: ${props => props.theme.text.color.primary};
+  font-weight: ${props => props.theme.transferInput.text.weight.small};
+  line-height: 45px;
+`;
+
 const MaxButton = styled(Button)`
   margin-left: 4px;
+`;
+
+const TokenIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+`;
+
+const TokenContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
 `;
