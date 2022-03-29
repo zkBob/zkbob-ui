@@ -27,7 +27,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       console.log('Private address: ', zkAccount.generateAddress(TOKEN_ADDRESS));
     }
     setZkAccount(zkAccount);
-  }, [library]);
+  }, []);
 
   const updateBalance = useCallback(async () => {
     let balance = 0;
