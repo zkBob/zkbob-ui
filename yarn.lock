@@ -9685,7 +9685,7 @@ react-app-polyfill@^3.0.0:
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
 
-react-app-rewired@^2.1.11:
+react-app-rewired@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-app-rewired/-/react-app-rewired-2.2.1.tgz#84901ee1e3f26add0377ebec0b41bcdfce9fc211"
   integrity sha512-uFQWTErXeLDrMzOJHKp0h8P1z0LV9HzPGsJ6adOtGlA/B9WfT6Shh4j2tLTTGlXOfiVx6w6iWpp7SOC5pvk+gA==
@@ -12511,9 +12511,9 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-"zeropool-js@https://github.com/zkBob/zeropool-client-js":
-  version "0.2.0"
-  resolved "https://github.com/zkBob/zeropool-client-js#268bcc1c79ef29a57205a7fcc9ee7c20ee9ca581"
+"zeropool-client-js@https://github.com/zkBob/zeropool-client-js":
+  version "0.2.1"
+  resolved "https://github.com/zkBob/zeropool-client-js#17ca72d0c0edaeb1457486fcecbb313c9c7ee087"
   dependencies:
     comlink "^4.3.1"
     hdwallet-babyjub "^0.0.1"

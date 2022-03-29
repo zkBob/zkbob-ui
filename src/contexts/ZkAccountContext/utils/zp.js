@@ -1,8 +1,8 @@
 import { ethers, Contract } from 'ethers';
 import wasmPath from 'libzeropool-rs-wasm-web/libzeropool_rs_wasm_bg.wasm';
-import workerPath from 'zeropool-js/lib/worker.js?asset';
-import { init as initZeroPool, ZeropoolClient } from 'zeropool-js';
-import { EvmNetwork } from 'zeropool-js/lib/networks/evm';
+import workerPath from 'zeropool-client-js/lib/worker.js?asset';
+import { init as initZeroPool, ZeropoolClient } from 'zeropool-client-js';
+import { EvmNetwork } from 'zeropool-client-js/lib/networks/evm';
 
 import transferParamsUrl from 'assets/zp-params/transfer_params.bin';
 import treeParamsUrl from 'assets/zp-params/tree_update_params.bin';

@@ -13,7 +13,6 @@
     "ethers": "^5.4.7",
     "lodash.shuffle": "^4.2.0",
     "react": "^17.0.2",
-    "react-app-rewired": "^2.1.11",
     "react-copy-to-clipboard": "^5.0.4",
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.2",
@@ -25,7 +24,7 @@
     "styled-components": "^5.3.0",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zeropool-js": "https://github.com/zkBob/zeropool-client-js"
+    "zeropool-client-js": "https://github.com/zkBob/zeropool-client-js"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -69,6 +68,7 @@
     "buffer": "^6.0.3",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
+    "react-app-rewired": "^2.2.1",
     "stream-http": "^3.2.0",
     "ts-loader": "^9.2.8",
     "typescript": "^4.6.2",

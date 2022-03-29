@@ -32,8 +32,12 @@ module.exports = {
       {
         resourceQuery: /asset/,
         type: 'asset/resource',
-      }
+      },
     ];
+    const index1 = config.module.rules.findIndex(rule => rule.oneOf && rule);
+    const index2 = config.module.rules[index1].oneOf.findIndex(rule => String(rule.test) === String(/\.(js|mjs)$/));
+    config.module.rules[index1].oneOf[index2].exclude = /(@babel(?:\/|\\{1,2})runtime|.*worker.*)/;
+
     config.resolve.fallback = {
       ...config.resolve.fallback,
       buffer: require.resolve('buffer/'),
@@ -49,7 +53,7 @@ module.exports = {
       new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
       }),
-    ]
+    ];
     return config;
   },
 }
