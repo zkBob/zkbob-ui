@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 
 import TransferInput from 'containers/TransferInput';
+import TransactionModal from 'components/TransactionModal';
 
 import { ZkAccountContext, TokenBalanceContext } from 'contexts';
 
@@ -13,10 +14,13 @@ export default () => {
   const { deposit } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const [amount, setAmount] = useState(0);
+  const handleDeposit = useCallback(async () => {
+    await deposit(amount);
+  }, [amount]);
   return (
     <Card title="Deposit" note={note}>
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={false} />
-      <Button gradient onClick={() => deposit(amount)}>Deposit</Button>
+      <Button gradient onClick={handleDeposit}>Deposit</Button>
     </Card>
   );
 };

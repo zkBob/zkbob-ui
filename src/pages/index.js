@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Header from 'containers/Header';
+import TransactionModal from 'containers/TransactionModal';
 
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
@@ -34,6 +35,7 @@ export default () => (
       <PageContainer>
         <Routes />
       </PageContainer>
+      <TransactionModal />
     </Layout>
   </BrowserRouter>
 );
