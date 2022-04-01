@@ -31,6 +31,7 @@ export default ({ children, isOpen, onClose, title, onBack }) => {
       onRequestClose={onClose}
       style={customStyles}
       contentLabel={title}
+      appElement={document.body}
     >
       <ModalContent>
         <Title>{title}</Title>
