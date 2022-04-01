@@ -13,8 +13,9 @@ import { useSelectedConnector } from 'hooks';
 const tabs = [
   { name: 'Deposit', path: '/deposit' },
   { name: 'Transfer', path: '/transfer' },
+  { name: 'Receive', path: '/receive' },
   { name: 'Withdraw', path: '/withdraw' },
-  { name: 'History', path: '/history' },
+  // { name: 'History', path: '/history' },
 ]
 
 export default () => {

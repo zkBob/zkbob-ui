@@ -25,7 +25,6 @@ export const ZkAccountContextProvider = ({ children }) => {
       const wallet = new ethers.Wallet(privateKey);
       zkAccount = await zp.createAccount(privateKey);
       zkAccount.address = wallet.address;
-      console.log('Private address: ', zkAccount.generateAddress(TOKEN_ADDRESS));
     }
     setZkAccount(zkAccount);
   }, [zp.createAccount]);
@@ -55,6 +54,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateBalance();
   }, [zkAccount, updateBalance, zp.withdraw]);
 
+  const generateAddress = useCallback(() => {
+    if (!zkAccount) return;
+    return zkAccount.generateAddress(TOKEN_ADDRESS);
+  }, [zkAccount]);
+
   useEffect(() => {
     updateBalance();
   }, [zkAccount]);
@@ -69,7 +73,12 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [loadZkAccount]);
 
   return (
-    <ZkAccountContext.Provider value={{ zkAccount, balance, saveZkAccountKey, deposit, withdraw, transfer }}>
+    <ZkAccountContext.Provider
+      value={{
+        zkAccount, balance, saveZkAccountKey, deposit,
+        withdraw, transfer, generateAddress
+      }}
+    >
       {children}
     </ZkAccountContext.Provider>
   );

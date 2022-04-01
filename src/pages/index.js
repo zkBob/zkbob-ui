@@ -7,6 +7,7 @@ import TransactionModal from 'containers/TransactionModal';
 
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
+import Receive from 'pages/Receive';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
 
@@ -17,6 +18,9 @@ const Routes = () => (
     </Route>
     <Route exact strict path="/transfer">
       <Transfer />
+    </Route>
+    <Route exact strict path="/receive">
+      <Receive />
     </Route>
     <Route exact strict path="/withdraw">
       <Withdraw />
