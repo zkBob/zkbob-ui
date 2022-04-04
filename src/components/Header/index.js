@@ -5,8 +5,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
-import { ReactComponent as XDaiLogoDefault } from 'assets/xdai-logo.svg';
-import { ReactComponent as MetaMaskIconDefault } from 'assets/metamask.svg';
+import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
 import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
 import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.svg';
 
@@ -15,54 +14,64 @@ import { shortAddress } from 'utils';
 export default ({
   tabs, activeTab, onTabClick, openWalletModal, connector,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
-}) => (
-  <Row>
-    <LogoSection>
-      <Logo />
-    </LogoSection>
-    <TabsSection>
-      <Tabs>
-        {tabs.map((tab, index) =>
-          <Tab
-            key={index}
-            active={activeTab === index}
-            onClick={() => onTabClick(index)}
-          >{tab}</Tab>
-        )}
-        <BridgeLink href="https://omni.xdaichain.com/">
-          Bridge
-          <ExternalLinkIcon />
-        </BridgeLink>
-      </Tabs>
-    </TabsSection>
-    <AccountSection>
-      <NetworkLabel>
-        <XDaiLogo />
-        xDai
-      </NetworkLabel>
-      {account ? (
-        <>
-          <AccountLabel onClick={openAccountModal}>
-            {connector && <Icon src={connector.icon} />}
-            {shortAddress(account)}
-            {zkAccount && (
-              <>
-                <Divider />
-                <ZkIcon />
-                {shortAddress(zkAccount.address)}
-              </>
-            )}
-          </AccountLabel>
-          {!zkAccount && (
-            <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+}) => {
+  const networks = {
+    42: {
+      name: 'Kovan'
+    },
+    100: {
+      name: 'Gnosis Chain',
+      logo: <GnosisChainLogo />
+    }
+  }
+  return (
+    <Row>
+      <LogoSection>
+        <Logo />
+      </LogoSection>
+      <TabsSection>
+        <Tabs>
+          {tabs.map((tab, index) =>
+            <Tab
+              key={index}
+              active={activeTab === index}
+              onClick={() => onTabClick(index)}
+            >{tab}</Tab>
           )}
-        </>
-      ) : (
-        <Button small onClick={openWalletModal}>Connect wallet</Button>
-      )}
-    </AccountSection>
-  </Row>
-);
+          <BridgeLink href="https://omni.xdaichain.com/">
+            Bridge
+            <ExternalLinkIcon />
+          </BridgeLink>
+        </Tabs>
+      </TabsSection>
+      <AccountSection>
+        <NetworkLabel>
+          {networks[process.env.REACT_APP_NETWORK].logo || networks[process.env.REACT_APP_NETWORK].name}
+        </NetworkLabel>
+        {account ? (
+          <>
+            <AccountLabel onClick={openAccountModal}>
+              {connector && <Icon src={connector.icon} />}
+              {shortAddress(account)}
+              {zkAccount && (
+                <>
+                  <Divider />
+                  <ZkIcon />
+                  {shortAddress(zkAccount.address)}
+                </>
+              )}
+            </AccountLabel>
+            {!zkAccount && (
+              <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+            )}
+          </>
+        ) : (
+          <Button small onClick={openWalletModal}>Connect wallet</Button>
+        )}
+      </AccountSection>
+    </Row>
+  );
+}
 
 const Row = styled.div`
   display: flex;
@@ -119,8 +128,9 @@ const AccountLabel = styled(NetworkLabel)`
   cursor: pointer;
 `;
 
-const XDaiLogo = styled(XDaiLogoDefault)`
-  margin-right: 8px;
+const GnosisChainLogo = styled(GnosisChainLogoDefault)`
+  width: 18px;
+  height: 18px;
 `;
 
 const Icon = styled.img`
