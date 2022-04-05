@@ -17,6 +17,8 @@ const { parseEther } = ethers.utils;
 
 const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
+const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
+const RPC_URL = process.env.REACT_APP_RPC_URL;
 
 const snarkParams = {
   transferParamsUrl,
@@ -33,7 +35,7 @@ export default () => {
     const tokens = {
       [TOKEN_ADDRESS]: {
         poolAddress: POOL_ADDRESS,
-        relayerUrl: 'https://relayer.thgkjlr.website/',
+        relayerUrl: RELAYER_URL,
       }
     };
     return ZeropoolClient.create({
@@ -42,7 +44,7 @@ export default () => {
       snarkParams: ctx.snarkParams,
       worker: ctx.worker,
       networkName: 'xdai',
-      network: new EvmNetwork('https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161')
+      network: new EvmNetwork(RPC_URL),
     });
   }, []);
 
