@@ -63,7 +63,7 @@ export default ({
         <Row>
           {zkAccount ? (
             <>
-              <Icon src={zkIcon} />
+              {/* <Icon src={zkIcon} /> */}
               <ZkAccountIdentifier seed={zkAccount?.address} size={24} />
             </>
           ) : (
