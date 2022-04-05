@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Link from 'components/Link';
+import ZkAccountIdentifier from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
@@ -63,7 +64,7 @@ export default ({
             {zkAccount && (
               <>
                 <ZkIcon />
-                {shortAddress(zkAccount.address)}
+                <ZkAccountIdentifier seed={zkAccount?.address} size={16} />
               </>
             )}
           </AccountLabel>

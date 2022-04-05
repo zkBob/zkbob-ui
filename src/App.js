@@ -9,6 +9,8 @@ import ThemeProvider from 'providers/ThemeProvider';
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 
+import * as style from '@dicebear/avatars-identicon-sprites';
+
 const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Gilroy';

@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@dicebear/avatars": "^4.10.2",
+    "@dicebear/avatars-bottts-sprites": "^4.10.2",
+    "@dicebear/avatars-identicon-sprites": "^4.10.2",
+    "@dicebear/pixel-art": "^4.10.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

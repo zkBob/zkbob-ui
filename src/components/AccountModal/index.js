@@ -5,6 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
+import ZkAccountIdentifier from 'components/ZkAccountIdentifier';
 
 import zkIcon from 'assets/zk.svg';
 
@@ -14,20 +15,6 @@ export default ({
   isOpen, onClose, account = '', zkAccount,
   changeAccount, changeZkAccount, connector,
 }) => {
-  const options = [
-    {
-      title: `Connected with ${connector?.name}`,
-      value: account,
-      icon: connector?.icon,
-      onChange: changeAccount,
-    },
-    {
-      title: 'Zero knowledge account',
-      value: zkAccount?.address || '',
-      icon: zkIcon,
-      onChange: changeZkAccount,
-    }
-  ];
   const change = useCallback(cb => {
     onClose();
     cb();
@@ -38,36 +25,52 @@ export default ({
       onClose={onClose}
       title="Account"
     >
-      {options.map(item =>
-        <AccountContainer key={item.title}>
-          <RowSpaceBetween>
-            <AccountTitle>{item.title}</AccountTitle>
-            <Button type="link" onClick={() => change(item.onChange)}>
-              {item.value ? 'Change' : 'Set up account'}
-            </Button>
-          </RowSpaceBetween>
-          <Row>
-            {item.value ? (
-              <>
-                {item.icon && <Icon src={item.icon} />}
-                <Address>{shortAddress(item.value)}</Address>
-              </>
-            ) : (
-              <Address>-</Address>
-            )}
-          </Row>
-          {item.value && (
-            <Row>
-              <CopyToClipboard text={item.value} style={{ marginRight: 16 }}>
-                <Button type="link">Copy address</Button>
-              </CopyToClipboard>
-              <Link href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', item.value)}>
-                View in Explorer
-              </Link>
-            </Row>
+      <AccountContainer>
+        <RowSpaceBetween>
+          <AccountTitle>Connected with {connector?.name}</AccountTitle>
+          <Button type="link" onClick={() => change(changeAccount)}>
+            {account ? 'Change' : 'Set up account'}
+          </Button>
+        </RowSpaceBetween>
+        <Row>
+          {account ? (
+            <>
+              {connector?.icon && <Icon src={connector.icon} />}
+              <Address>{shortAddress(account)}</Address>
+            </>
+          ) : (
+            <Address>-</Address>
           )}
-        </AccountContainer>
-      )}
+        </Row>
+        {account && (
+          <Row>
+            <CopyToClipboard text={account} style={{ marginRight: 16 }}>
+              <Button type="link">Copy address</Button>
+            </CopyToClipboard>
+            <Link href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', account)}>
+              View in Explorer
+            </Link>
+          </Row>
+        )}
+      </AccountContainer>
+      <AccountContainer>
+        <RowSpaceBetween>
+          <AccountTitle>Zero knowledge account</AccountTitle>
+          <Button type="link" onClick={() => change(changeZkAccount)}>
+            {zkAccount ? 'Change' : 'Set up account'}
+          </Button>
+        </RowSpaceBetween>
+        <Row>
+          {zkAccount ? (
+            <>
+              <Icon src={zkIcon} />
+              <ZkAccountIdentifier seed={zkAccount?.address} size={24} />
+            </>
+          ) : (
+            <Address>-</Address>
+          )}
+        </Row>
+      </AccountContainer>
     </Modal>
   );
 };
