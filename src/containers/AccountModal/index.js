@@ -1,22 +1,25 @@
 import { useContext } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, WalletModalContext } from 'contexts';
 import { useSelectedConnector } from 'hooks';
 import AccountModal from 'components/AccountModal';
 
-export default ({ isOpen, onClose, changeAccount, changeZkAccount }) => {
+export default () => {
+  const {
+    isAccountModalOpen, closeAccountModal, openWalletModal, openAccountSetUpModal,
+  } = useContext(WalletModalContext);
   const { account } = useWeb3React();
   const { zkAccount } = useContext(ZkAccountContext);
   const connector = useSelectedConnector();
   return (
     <AccountModal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={isAccountModalOpen}
+      onClose={closeAccountModal}
       account={account}
       zkAccount={zkAccount}
-      changeAccount={changeAccount}
-      changeZkAccount={changeZkAccount}
+      changeAccount={openWalletModal}
+      changeZkAccount={openAccountSetUpModal}
       connector={connector}
     />
   );

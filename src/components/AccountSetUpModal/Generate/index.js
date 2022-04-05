@@ -3,13 +3,17 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 
-export default ({ generate }) => {
+export default ({ generate, account, connectWallet }) => {
   return (
     <Container>
       <Description>
         Your key identifies your account on Layer 2 and is saved locally on your browser.
       </Description>
-      <Button onClick={generate}>Generate key</Button>
+      {account ? (
+        <Button onClick={generate}>Generate key</Button>
+      ) : (
+        <Button onClick={connectWallet}>Connect wallet</Button>
+      )}
       <Note>
         Signing is free and will not send a transaction. You can recover your key at any time with your wallet.
       </Note>

@@ -4,6 +4,9 @@ import styled from 'styled-components';
 
 import Header from 'containers/Header';
 import TransactionModal from 'containers/TransactionModal';
+import WalletModal from 'containers/WalletModal';
+import AccountModal from 'containers/AccountModal';
+import AccountSetUpModal from 'containers/AccountSetUpModal';
 
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
@@ -40,6 +43,9 @@ export default () => (
         <Routes />
       </PageContainer>
       <TransactionModal />
+      <WalletModal />
+      <AccountModal />
+      <AccountSetUpModal />
     </Layout>
   </BrowserRouter>
 );

@@ -1,9 +1,10 @@
 import React, { useState, useContext, useCallback } from 'react';
+import { useWeb3React } from '@web3-react/core';
 
 import TransferInput from 'containers/TransferInput';
-import TransactionModal from 'components/TransactionModal';
+import AccountSetUpButton from 'containers/AccountSetUpButton';
 
-import { ZkAccountContext, TokenBalanceContext } from 'contexts';
+import { ZkAccountContext, TokenBalanceContext, WalletModalContext } from 'contexts';
 
 import Card from 'components/Card';
 import Button from 'components/Button';
@@ -11,8 +12,10 @@ import Button from 'components/Button';
 const note = 'DAI from your account will be deposited to your ZeroPool address via relayer.';
 
 export default () => {
-  const { deposit } = useContext(ZkAccountContext);
+  const { account } = useWeb3React();
+  const { zkAccount, deposit } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
+  const { openWalletModal } = useContext(WalletModalContext);
   const [amount, setAmount] = useState(0);
   const handleDeposit = useCallback(async () => {
     await deposit(amount);
@@ -20,7 +23,11 @@ export default () => {
   return (
     <Card title="Deposit" note={note}>
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={false} />
-      <Button gradient onClick={handleDeposit}>Deposit</Button>
+      {(() => {
+        if (!zkAccount) return <AccountSetUpButton />
+        else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
+        else return <Button gradient onClick={handleDeposit}>Deposit</Button>;
+      })()}
     </Card>
   );
 };

@@ -1,11 +1,13 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useContext } from 'react';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
+import { WalletModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
 
 import connectors from 'connectors';
 
-export default ({ isOpen, onClose }) => {
+export default () => {
+  const { isWalletModalOpen, closeWalletModal } = useContext(WalletModalContext);
   const { activate } = useWeb3React();
 
   const activateConnector = useCallback(async connector => {
@@ -21,8 +23,8 @@ export default ({ isOpen, onClose }) => {
 
   const connectWallet = useCallback(async connector => {
     await activateConnector(connector);
-    onClose();
-  }, [activateConnector, onClose]);
+    closeWalletModal();
+  }, [activateConnector, closeWalletModal]);
 
   useEffect(() => {
     async function connect() {
@@ -36,8 +38,8 @@ export default ({ isOpen, onClose }) => {
 
   return (
     <WalletModal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={isWalletModalOpen}
+      onClose={closeWalletModal}
       connectors={Object.values(connectors)}
       connectWallet={connectWallet}
     />

@@ -32,7 +32,7 @@ const options = [
   },
 ];
 
-export default ({ isOpen, onClose, saveZkAccountKey }) => {
+export default ({ isOpen, onClose, saveZkAccountKey, openWalletModal }) => {
   const { library, account } = useWeb3React();
   const [action, setAction] = useState();
   const [wallet, setWallet] = useState();
@@ -66,6 +66,10 @@ export default ({ isOpen, onClose, saveZkAccountKey }) => {
     saveZkAccountKey(privateKey);
     closeModal();
   }, [library, closeModal, saveZkAccountKey, account]);
+  const connectWallet = useCallback(() => {
+    closeModal();
+    openWalletModal();
+  }, [openWalletModal, closeModal]);
   let title = null;
   let state = null;
   let prevAction = null;
@@ -82,8 +86,8 @@ export default ({ isOpen, onClose, saveZkAccountKey }) => {
     state = <Restore restore={restore} />;
     prevAction = null;
   } else if (action === 'generate') {
-    title = 'Restore account';
-    state = <Generate generate={generate} />;
+    title = 'Create account';
+    state = <Generate generate={generate} account={account} connectWallet={connectWallet} />;
     prevAction = null;
   } else {
     title = 'Set up account';

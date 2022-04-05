@@ -48,25 +48,28 @@ export default ({
         <NetworkLabel>
           {networks[process.env.REACT_APP_NETWORK].logo || networks[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
-        {account ? (
-          <>
-            <AccountLabel onClick={openAccountModal}>
-              {connector && <Icon src={connector.icon} />}
-              {shortAddress(account)}
-              {zkAccount && (
-                <>
-                  <Divider />
-                  <ZkIcon />
-                  {shortAddress(zkAccount.address)}
-                </>
-              )}
-            </AccountLabel>
-            {!zkAccount && (
-              <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+        {!account && (
+          <ConnectButton small onClick={openWalletModal}>Connect wallet</ConnectButton>
+        )}
+        {(account || zkAccount) && (
+          <AccountLabel onClick={openAccountModal}>
+            {account && (
+              <>
+                {connector && <Icon src={connector.icon} />}
+                {shortAddress(account)}
+              </>
             )}
-          </>
-        ) : (
-          <Button small onClick={openWalletModal}>Connect wallet</Button>
+            {(account && zkAccount) && <Divider />}
+            {zkAccount && (
+              <>
+                <ZkIcon />
+                {shortAddress(zkAccount.address)}
+              </>
+            )}
+          </AccountLabel>
+        )}
+        {!zkAccount && (
+          <Button small onClick={openAccountSetUpModal}>Set up account</Button>
         )}
       </AccountSection>
     </Row>
@@ -164,4 +167,8 @@ const ExternalLinkIcon = styled(ExternalLinkIconDefault)`
   position: absolute;
   right: 0;
   top: 1px;
+`;
+
+const ConnectButton = styled(Button)`
+  margin-right: 16px;
 `;
