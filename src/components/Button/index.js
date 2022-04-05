@@ -19,7 +19,9 @@ const Button = styled.button`
   padding: ${props => props.small ? '8px 16px' : '0'};
   height: ${props => props.small ? 'auto' : '60px'};
   border-radius: ${props => props.small ? '10px' : '16px'};
-  border: 0;
+  border: ${props => props.disabled && props.contrast ? '1px' : 0 };
+  border-color: ${props => props.theme.button.primary.border.color};
+  border-style: solid;
   cursor: pointer;
 `;
 

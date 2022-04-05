@@ -12,7 +12,7 @@ import { ZkAccountContext } from 'contexts';
 const note = 'This transfer will happen within ZeroPool and will be truly private.';
 
 export default () => {
-  const { zkAccount, balance, transfer } = useContext(ZkAccountContext);
+  const { zkAccount, balance, transfer, isLoadingState } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(0);
   const [receiver, setReceiver] = useState(null);
   const handleReceiverChange = useCallback(e => {
@@ -23,7 +23,11 @@ export default () => {
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
       <Input placeholder="Enter ZeroPool address of receiver" secondary onChange={handleReceiverChange} />
       {zkAccount ? (
-        <Button gradient onClick={() => transfer(receiver, amount)}>Transfer</Button>
+        isLoadingState ? (
+          <Button disabled>Loading zero pool state...</Button>
+        ) : (
+          <Button gradient onClick={() => transfer(receiver, amount)}>Transfer</Button>
+        )
       ) : (
         <AccountSetUpButton />
       )}

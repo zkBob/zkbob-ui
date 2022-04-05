@@ -27,6 +27,9 @@ const light = {
         disabled: grey,
         gradient: 'linear-gradient(90deg, #6D5CFF 5.4%, #E86EFF 55.92%, #FFD66E 92.38%)',
       },
+      border: {
+        color: darkGrey,
+      },
       text: {
         color: {
           default: white,

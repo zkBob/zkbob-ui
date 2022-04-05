@@ -11,7 +11,7 @@ import Button from 'components/Button';
 const note = 'This address should be used to receive tokens within the pool';
 
 export default () => {
-  const { zkAccount, generateAddress } = useContext(ZkAccountContext);
+  const { zkAccount, generateAddress, isLoadingState } = useContext(ZkAccountContext);
   const [privateAddress, setPrivateAddress] = useState(null);
   const generate = useCallback(() => {
     setPrivateAddress(generateAddress());
@@ -22,7 +22,11 @@ export default () => {
         privateAddress ? (
           <PrivateAddress>{privateAddress}</PrivateAddress>
         ) : (
-          <Button gradient onClick={generate}>Generate private address</Button>
+          isLoadingState ? (
+            <Button disabled>Loading zero pool state...</Button>
+          ) : (
+            <Button gradient onClick={generate}>Generate private address</Button>
+          )
         )
       ) : (
         <AccountSetUpButton />

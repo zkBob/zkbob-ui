@@ -17,7 +17,7 @@ const tabs = [
 export default () => {
   const { account } = useWeb3React();
   const history = useHistory();
-  const { zkAccount } = useContext(ZkAccountContext);
+  const { zkAccount, isLoadingZkAccount } = useContext(ZkAccountContext);
   const { openWalletModal, openAccountModal, openAccountSetUpModal } = useContext(WalletModalContext);
   const connector = useSelectedConnector();
   const [activeTab, setActiveTab] = useState(tabs.findIndex(item => item.path === history.location.pathname));
@@ -36,6 +36,7 @@ export default () => {
         openAccountSetUpModal={openAccountSetUpModal}
         account={account}
         zkAccount={zkAccount}
+        isLoadingZkAccount={isLoadingZkAccount}
         connector={connector}
       />
     </>

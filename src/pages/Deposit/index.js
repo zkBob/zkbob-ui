@@ -13,7 +13,7 @@ const note = 'DAI from your account will be deposited to your ZeroPool address v
 
 export default () => {
   const { account } = useWeb3React();
-  const { zkAccount, deposit } = useContext(ZkAccountContext);
+  const { zkAccount, deposit, isLoadingState } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(WalletModalContext);
   const [amount, setAmount] = useState(0);
@@ -26,6 +26,7 @@ export default () => {
       {(() => {
         if (!zkAccount) return <AccountSetUpButton />
         else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
+        else if (isLoadingState) return <Button disabled>Loading zero pool state...</Button>
         else return <Button gradient onClick={handleDeposit}>Deposit</Button>;
       })()}
     </Card>

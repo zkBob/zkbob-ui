@@ -13,7 +13,7 @@ import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.
 import { shortAddress } from 'utils';
 
 export default ({
-  tabs, activeTab, onTabClick, openWalletModal, connector,
+  tabs, activeTab, onTabClick, openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
 }) => {
   const networks = {
@@ -70,7 +70,14 @@ export default ({
           </AccountLabel>
         )}
         {!zkAccount && (
-          <Button small onClick={openAccountSetUpModal}>Set up account</Button>
+          <Button
+            small
+            contrast
+            disabled={isLoadingZkAccount}
+            onClick={openAccountSetUpModal}
+          >
+            {isLoadingZkAccount ? 'Loading account...' : 'Set up account'}
+          </Button>
         )}
       </AccountSection>
     </Row>

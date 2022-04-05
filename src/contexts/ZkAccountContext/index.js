@@ -17,26 +17,32 @@ export const ZkAccountContextProvider = ({ children }) => {
   const zp = useZeroPool();
   const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
+  const [isLoadingState, setIsLoadingState] = useState(false);
 
   const loadZkAccount = useCallback(async () => {
     const privateKey = window.localStorage.getItem('zkAccountKey');
     let zkAccount = null;
     if (privateKey) {
+      setIsLoadingZkAccount(true);
       const wallet = new ethers.Wallet(privateKey);
       zkAccount = await zp.createAccount(privateKey);
       zkAccount.address = wallet.address;
     }
     setZkAccount(zkAccount);
+    setIsLoadingZkAccount(false);
   }, [zp.createAccount]);
 
   const updateBalance = useCallback(async () => {
     let balance = 0;
     if (zkAccount) {
+      setIsLoadingState(true);
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
       balance = Number(formatUnits(BigNumber.from(balance), 18));
       console.log('Pool balance:', balance);
     }
     setBalance(balance);
+    setIsLoadingState(false);
   }, [zkAccount]);
 
   const deposit = useCallback(async (amount) => {
@@ -76,7 +82,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     <ZkAccountContext.Provider
       value={{
         zkAccount, balance, saveZkAccountKey, deposit,
-        withdraw, transfer, generateAddress
+        withdraw, transfer, generateAddress,
+        isLoadingZkAccount, isLoadingState,
       }}
     >
       {children}

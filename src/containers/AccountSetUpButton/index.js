@@ -1,10 +1,12 @@
 import { useContext } from 'react';
 
-import { WalletModalContext } from 'contexts';
+import { WalletModalContext, ZkAccountContext } from 'contexts';
 
 import Button from 'components/Button';
 
 export default () => {
   const { openAccountSetUpModal } = useContext(WalletModalContext);
-  return <Button onClick={openAccountSetUpModal}>Set up zero knowledge account</Button>;
+  const { isLoadingZkAccount } = useContext(ZkAccountContext);
+  const text = isLoadingZkAccount ? 'Loading zero knowledge account...' : 'Set up zero knowledge account';
+  return <Button disabled={isLoadingZkAccount} onClick={openAccountSetUpModal}>{text}</Button>;
 }

@@ -12,7 +12,7 @@ import Input from 'components/Input';
 const note = 'Amount withdrawn from zero knowledge pool will be deposited to the selected account.';
 
 export default () => {
-  const { zkAccount, balance, withdraw } = useContext(ZkAccountContext);
+  const { zkAccount, balance, withdraw, isLoadingState } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(0);
   const [receiver, setReceiver] = useState(null);
   const handleReceiverChange = useCallback(e => {
@@ -23,7 +23,11 @@ export default () => {
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
       <Input placeholder="Enter xDai address of receiver" secondary onChange={handleReceiverChange} />
       {zkAccount ? (
-        <Button gradient onClick={() => withdraw(receiver, amount)}>Withdraw</Button>
+        isLoadingState ? (
+          <Button disabled>Loading zero pool state...</Button>
+        ) : (
+          <Button gradient onClick={() => withdraw(receiver, amount)}>Withdraw</Button>
+        )
       ) : (
         <AccountSetUpButton />
       )}
