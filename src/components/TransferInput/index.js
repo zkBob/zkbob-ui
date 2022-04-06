@@ -7,14 +7,14 @@ import Button from 'components/Button';
 import daiIcon from 'assets/dai.svg';
 import zpDaiIcon from 'assets/zp-dai.svg';
 
-export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balance, isPoolToken }) => {
-  const handleAmountChange = useCallback(e => {
-    setAmount(e.target.value);
+export default ({ amount, setAmount, balance, isPoolToken }) => {
+  const handleAmountChange = useCallback(value => {
+    setAmount(value);
   }, [setAmount]);
   return (
     <Container>
       <Row>
-        <Input value={amount} onChange={handleAmountChange} />
+        <Input value={amount} onChange={e => handleAmountChange(e.target.value)} />
         {/* <Select {...{ tokens, selectedToken, onTokenSelect }} /> */}
         <TokenContainer>
           <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
@@ -34,7 +34,7 @@ export default ({ amount, setAmount, tokens, selectedToken, onTokenSelect, balan
               Balance: {balance} DAI
             </SmallText>
           )}
-          <MaxButton type="link">Max</MaxButton>
+          <MaxButton type="link" onClick={() => handleAmountChange(balance)}>Max</MaxButton>
         </Row>
       </Row>
     </Container>
