@@ -17,9 +17,10 @@ export default () => {
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(WalletModalContext);
   const [amount, setAmount] = useState(0);
-  const handleDeposit = useCallback(async () => {
-    await deposit(amount);
-  }, [amount]);
+  const onDeposit = useCallback(() => {
+    setAmount(0);
+    deposit(amount);
+  }, [amount, deposit]);
   return (
     <Card title="Deposit" note={note}>
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={false} />
@@ -29,7 +30,7 @@ export default () => {
         else if (isLoadingState) return <Button disabled>Loading zero pool state...</Button>
         else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
         else if (amount > balance) return <Button disabled>Insufficient DAI balance</Button>
-        else return <Button gradient onClick={handleDeposit}>Deposit</Button>;
+        else return <Button gradient onClick={onDeposit}>Deposit</Button>;
       })()}
     </Card>
   );

@@ -15,10 +15,15 @@ const note = 'Amount withdrawn from zero knowledge pool will be deposited to the
 export default () => {
   const { zkAccount, balance, withdraw, isLoadingState } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(0);
-  const [receiver, setReceiver] = useState(null);
+  const [receiver, setReceiver] = useState('');
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
+  const onWihdrawal = useCallback(() => {
+    setAmount(0);
+    setReceiver('');
+    withdraw(receiver, amount);
+  }, [receiver, amount, withdraw]);
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
@@ -32,7 +37,7 @@ export default () => {
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button gradient onClick={() => withdraw(receiver, amount)}>Withdraw</Button>;
+      button = <Button gradient onClick={onWihdrawal}>Withdraw</Button>;
     }
   } else {
     button = <AccountSetUpButton />;
@@ -40,7 +45,12 @@ export default () => {
   return (
     <Card title="Withdraw" note={note}>
       <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
-      <Input placeholder="Enter xDai address of receiver" secondary onChange={handleReceiverChange} />
+      <Input
+        placeholder="Enter Kovan address of receiver"
+        secondary
+        value={receiver}
+        onChange={handleReceiverChange}
+      />
       {button}
     </Card>
   );
