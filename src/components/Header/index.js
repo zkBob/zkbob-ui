@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Link from 'components/Link';
-import ZkAccountIdentifier from 'components/ZkAccountIdentifier';
+import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
@@ -57,14 +57,14 @@ export default ({
             {account && (
               <>
                 {connector && <Icon src={connector.icon} />}
-                {shortAddress(account)}
+                <Address>{shortAddress(account)}</Address>
               </>
             )}
             {(account && zkAccount) && <Divider />}
             {zkAccount && (
               <>
-                <ZkIcon />
-                <ZkAccountIdentifier seed={zkAccount?.address} size={16} />
+                <ZkAvatar seed={zkAccount?.address} size={16} />
+                <Address><ZkName seed={zkAccount?.address} /></Address>
               </>
             )}
           </AccountLabel>
@@ -147,13 +147,6 @@ const GnosisChainLogo = styled(GnosisChainLogoDefault)`
 const Icon = styled.img`
   width: 18px;
   height: 16px;
-  margin-right: 8px;
-`;
-
-const ZkIcon = styled(ZkIconDefault)`
-  width: 18px;
-  height: 14px;
-  margin-right: 8px;
 `;
 
 const Divider = styled.div`
@@ -179,4 +172,8 @@ const ExternalLinkIcon = styled(ExternalLinkIconDefault)`
 
 const ConnectButton = styled(Button)`
   margin-right: 16px;
+`;
+
+const Address = styled.span`
+  margin-left: 8px;
 `;

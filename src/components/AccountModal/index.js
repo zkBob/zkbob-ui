@@ -5,9 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
-import ZkAccountIdentifier from 'components/ZkAccountIdentifier';
-
-import zkIcon from 'assets/zk.svg';
+import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { shortAddress } from 'utils';
 
@@ -63,8 +61,8 @@ export default ({
         <Row>
           {zkAccount ? (
             <>
-              {/* <Icon src={zkIcon} /> */}
-              <ZkAccountIdentifier seed={zkAccount?.address} size={24} />
+              <ZkAvatar seed={zkAccount?.address} size={20} />
+              <Address><ZkName seed={zkAccount?.address} /></Address>
             </>
           ) : (
             <Address>-</Address>
@@ -113,10 +111,10 @@ const Address = styled.span`
   font-size: 20px;
   color: ${({ theme }) => theme.text.color.primary};
   font-weight: ${({ theme }) => theme.text.weight.bold};
+  margin-left: 8px;
 `;
 
 const Icon = styled.img`
   width: 18px;
   height: 18px;
-  margin-right: 8px;
 `;

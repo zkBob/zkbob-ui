@@ -27,6 +27,7 @@
     "react-toastify": "^8.2.0",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.0",
+    "unique-names-generator": "^4.7.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
     "zeropool-client-js": "https://github.com/zkBob/zeropool-client-js"
