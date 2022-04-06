@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useContext } from 'react';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { toast } from 'react-toastify';
 
 import { WalletModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
@@ -16,7 +17,7 @@ export default () => {
     } catch (error) {
       console.log(error);
       if (error instanceof UnsupportedChainIdError) {
-        alert('Wrong network. Please connect to Kovan.');
+        toast.warn('Wrong network. Please connect to Kovan.');
       }
     }
   }, [activate]);
