@@ -9,8 +9,6 @@ import ThemeProvider from 'providers/ThemeProvider';
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 
-import * as style from '@dicebear/avatars-identicon-sprites';
-
 const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Gilroy';
@@ -27,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 14px 40px;
     font-family: 'Gilroy';
   }
-  button, input, textarea {
+  button, input, textarea, .Toastify__toast {
     font-family: 'Gilroy';
   }
 `;
