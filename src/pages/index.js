@@ -8,6 +8,8 @@ import WalletModal from 'containers/WalletModal';
 import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 
+import ToastContainer from 'components/ToastContainer';
+
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
 import Receive from 'pages/Receive';
@@ -46,6 +48,7 @@ export default () => (
       <WalletModal />
       <AccountModal />
       <AccountSetUpModal />
+      <ToastContainer />
     </Layout>
   </BrowserRouter>
 );

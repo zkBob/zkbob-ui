@@ -4,6 +4,7 @@ import wasmPath from 'libzeropool-rs-wasm-web/libzeropool_rs_wasm_bg.wasm';
 import workerPath from 'zeropool-client-js/lib/worker.js?asset';
 import { init as initZeroPool, ZeropoolClient } from 'zeropool-client-js';
 import { EvmNetwork } from 'zeropool-client-js/lib/networks/evm';
+import { toast } from 'react-toastify';
 
 import { TransactionModalContext } from 'contexts';
 import { TX_STATUSES } from 'constants';
@@ -62,6 +63,7 @@ export default () => {
     setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
     await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
     setTxStatus(TX_STATUSES.DEPOSITED);
+    toast.success(`Deposited ${amount} DAI.`);
   }, [setTxStatus]);
 
   const transfer = useCallback(async (account, to, amount) => {
@@ -71,6 +73,7 @@ export default () => {
     setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
     await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
     setTxStatus(TX_STATUSES.TRANSFERRED);
+    toast.success(`Transferred ${amount} shDAI.`);
   }, [setTxStatus]);
 
   const withdraw = useCallback(async (account, to, amount) => {
@@ -80,6 +83,7 @@ export default () => {
     setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
     await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
     setTxStatus(TX_STATUSES.WITHDRAWN);
+    toast.success(`Withdrawn ${amount} DAI.`);
   }, [setTxStatus]);
 
   return { createAccount, deposit, transfer, withdraw };
