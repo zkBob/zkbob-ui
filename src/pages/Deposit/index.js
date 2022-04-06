@@ -27,6 +27,8 @@ export default () => {
         if (!zkAccount) return <AccountSetUpButton />
         else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
         else if (isLoadingState) return <Button disabled>Loading zero pool state...</Button>
+        else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
+        else if (amount > balance) return <Button disabled>Insufficient DAI balance</Button>
         else return <Button gradient onClick={handleDeposit}>Deposit</Button>;
       })()}
     </Card>
