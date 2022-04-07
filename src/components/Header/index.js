@@ -73,10 +73,11 @@ export default ({
           <Button
             small
             contrast
+            loading={isLoadingZkAccount}
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
           >
-            {isLoadingZkAccount ? 'Loading account...' : 'Set up account'}
+            {isLoadingZkAccount ? 'Loading account' : 'Set up account'}
           </Button>
         )}
       </AccountSection>

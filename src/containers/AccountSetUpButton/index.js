@@ -8,5 +8,5 @@ export default () => {
   const { openAccountSetUpModal } = useContext(WalletModalContext);
   const { isLoadingZkAccount } = useContext(ZkAccountContext);
   const text = isLoadingZkAccount ? 'Loading zero knowledge account...' : 'Set up zero knowledge account';
-  return <Button disabled={isLoadingZkAccount} onClick={openAccountSetUpModal}>{text}</Button>;
+  return <Button loading={isLoadingZkAccount} disabled={isLoadingZkAccount} onClick={openAccountSetUpModal}>{text}</Button>;
 }

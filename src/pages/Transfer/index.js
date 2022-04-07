@@ -26,7 +26,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button disabled>Loading zero pool state...</Button>;
+      button = <Button loading disabled>Loading zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount > balance) {

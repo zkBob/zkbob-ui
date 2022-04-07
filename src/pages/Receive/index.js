@@ -23,7 +23,7 @@ export default () => {
           <PrivateAddress>{privateAddress}</PrivateAddress>
         ) : (
           isLoadingState ? (
-            <Button disabled>Loading zero pool state...</Button>
+            <Button loading disabled>Loading zero pool state...</Button>
           ) : (
             <Button gradient onClick={generate}>Generate private address</Button>
           )
