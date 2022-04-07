@@ -25,9 +25,27 @@ export default ({
     >
       <AccountContainer>
         <RowSpaceBetween>
+          <AccountTitle>Zero knowledge account</AccountTitle>
+          <Button type="link" onClick={() => change(changeZkAccount)}>
+            {zkAccount ? 'Change' : 'Set up account'}
+          </Button>
+        </RowSpaceBetween>
+        <Row>
+          {zkAccount ? (
+            <>
+              <ZkAvatar seed={zkAccount?.address} size={20} />
+              <Address><ZkName seed={zkAccount?.address} /></Address>
+            </>
+          ) : (
+            <Address>-</Address>
+          )}
+        </Row>
+      </AccountContainer>
+      <AccountContainer>
+        <RowSpaceBetween>
           <AccountTitle>Connected with {connector?.name}</AccountTitle>
           <Button type="link" onClick={() => change(changeAccount)}>
-            {account ? 'Change' : 'Set up account'}
+            {account ? 'Change' : 'Connect'}
           </Button>
         </RowSpaceBetween>
         <Row>
@@ -50,24 +68,6 @@ export default ({
             </Link>
           </Row>
         )}
-      </AccountContainer>
-      <AccountContainer>
-        <RowSpaceBetween>
-          <AccountTitle>Zero knowledge account</AccountTitle>
-          <Button type="link" onClick={() => change(changeZkAccount)}>
-            {zkAccount ? 'Change' : 'Set up account'}
-          </Button>
-        </RowSpaceBetween>
-        <Row>
-          {zkAccount ? (
-            <>
-              <ZkAvatar seed={zkAccount?.address} size={20} />
-              <Address><ZkName seed={zkAccount?.address} /></Address>
-            </>
-          ) : (
-            <Address>-</Address>
-          )}
-        </Row>
       </AccountContainer>
     </Modal>
   );
