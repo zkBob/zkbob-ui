@@ -1,15 +1,60 @@
 import { useCallback, useEffect, useContext } from 'react';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 
 import { WalletModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
 
 import connectors from 'connectors';
+import { NETWORKS } from 'constants';
+
+async function switchChainInMetaMask(chainId) {
+  const network = NETWORKS[chainId];
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [
+        {
+          chainId: ethers.utils.hexValue(Number(chainId)),
+        },
+      ],
+    });
+    return true;
+  } catch (switchError) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ethers.utils.hexValue(Number(chainId)),
+              chainName: network.name,
+              nativeCurrency: {
+                name: network.tokenName,
+                symbol: network.tokenSymbol,
+                decimals: 18,
+              },
+              rpcUrls: [network.rpcUrl],
+              blockExplorerUrls: [network.blockExplorerUrl],
+            },
+          ],
+        });
+        return true;
+      } catch (addError) {
+        console.log(addError);
+      }
+    } else {
+      console.log(switchError);
+    }
+    return false;
+  }
+};
 
 export default () => {
   const { isWalletModalOpen, closeWalletModal } = useContext(WalletModalContext);
-  const { activate } = useWeb3React();
+  const { activate, chainId } = useWeb3React();
 
   const activateConnector = useCallback(async connector => {
     try {
@@ -17,7 +62,10 @@ export default () => {
     } catch (error) {
       console.log(error);
       if (error instanceof UnsupportedChainIdError) {
-        toast.warn('Wrong network. Please connect to Kovan.');
+        const chainId = process.env.REACT_APP_NETWORK;
+        toast.warn(`Wrong network. Please connect to ${NETWORKS[chainId].name}.`);
+        await switchChainInMetaMask(chainId);
+        activateConnector(connector);
       }
     }
   }, [activate]);
@@ -35,7 +83,7 @@ export default () => {
       }
     }
     connect();
-  }, [activateConnector]);
+  }, [activateConnector, chainId]);
 
   return (
     <WalletModal

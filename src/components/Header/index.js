@@ -11,19 +11,14 @@ import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
 import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.svg';
 
 import { shortAddress } from 'utils';
+import { NETWORKS } from 'constants';
 
 export default ({
   tabs, activeTab, onTabClick, openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
 }) => {
-  const networks = {
-    42: {
-      name: 'Kovan'
-    },
-    100: {
-      name: 'Gnosis Chain',
-      logo: <GnosisChainLogo />
-    }
+  const logos = {
+    100: <GnosisChainLogo />
   }
   return (
     <Row>
@@ -47,7 +42,7 @@ export default ({
       </TabsSection>
       <AccountSection>
         <NetworkLabel>
-          {networks[process.env.REACT_APP_NETWORK].logo || networks[process.env.REACT_APP_NETWORK].name}
+          {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
         {!account && (
           <ConnectButton small onClick={openWalletModal}>Connect wallet</ConnectButton>
