@@ -64,8 +64,10 @@ export default () => {
       if (error instanceof UnsupportedChainIdError) {
         const chainId = process.env.REACT_APP_NETWORK;
         toast.warn(`Wrong network. Please connect to ${NETWORKS[chainId].name}.`);
-        await switchChainInMetaMask(chainId);
-        activateConnector(connector);
+        const success = await switchChainInMetaMask(chainId);
+        if (success) {
+          activateConnector(connector);
+        }
       }
     }
   }, [activate]);
