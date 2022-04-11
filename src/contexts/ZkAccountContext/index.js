@@ -1,8 +1,13 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
+import { toast } from 'react-toastify';
 
-import useZeroPool from 'hooks/useZeroPool';
+import { TransactionModalContext } from 'contexts';
+
+import { TX_STATUSES } from 'constants';
+
+import zp from './zp.js';
 
 const { formatUnits } = ethers.utils;
 
@@ -14,7 +19,7 @@ export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
   const { library } = useWeb3React();
-  const zp = useZeroPool();
+  const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(0);
   const [history, setHistory] = useState(null);
@@ -33,7 +38,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
     setZkAccount(zkAccount);
     setIsLoadingZkAccount(false);
-  }, [zp.createAccount]);
+  }, []);
 
   const updateBalance = useCallback(async () => {
     let balance = 0;
@@ -60,19 +65,37 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount]);
 
   const deposit = useCallback(async (amount) => {
-    await zp.deposit(library.getSigner(0), zkAccount, amount);
-    updateBalance();
-  }, [zkAccount, updateBalance, library, zp.deposit]);
+    openTxModal();
+    try {
+      await zp.deposit(library.getSigner(0), zkAccount, amount, setTxStatus);
+      toast.success(`Deposited ${amount} DAI.`);
+      updateBalance();
+    } catch (error) {
+      setTxStatus(TX_STATUSES.REJECTED);
+    }
+  }, [zkAccount, updateBalance, library, openTxModal, setTxStatus]);
 
   const transfer = useCallback(async (to, amount) => {
-    await zp.transfer(zkAccount, to, amount);
-    updateBalance();
-  }, [zkAccount, updateBalance, zp.transfer]);
+    openTxModal();
+    try {
+      await zp.transfer(zkAccount, to, amount, setTxStatus);
+      toast.success(`Transferred ${amount} shDAI.`);
+      updateBalance();
+    } catch (error) {
+      setTxStatus(TX_STATUSES.REJECTED);
+    }
+  }, [zkAccount, updateBalance, openTxModal, setTxStatus]);
 
   const withdraw = useCallback(async (to, amount) => {
-    await zp.withdraw(zkAccount, to, amount);
-    updateBalance();
-  }, [zkAccount, updateBalance, zp.withdraw]);
+    openTxModal();
+    try {
+      await zp.withdraw(zkAccount, to, amount, setTxStatus);
+      toast.success(`Withdrawn ${amount} DAI.`);
+      updateBalance();
+    } catch (error) {
+      setTxStatus(TX_STATUSES.REJECTED);
+    }
+  }, [zkAccount, updateBalance, openTxModal, setTxStatus]);
 
   const generateAddress = useCallback(() => {
     if (!zkAccount) return;

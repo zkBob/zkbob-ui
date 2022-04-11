@@ -6,7 +6,8 @@ import Spinner from 'components/Spinner';
 
 import { TX_STATUSES } from 'constants';
 
-import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
+import { ReactComponent as CheckIcon } from 'assets/check-circle.svg';
+import { ReactComponent as CrossIcon } from 'assets/cross-circle.svg';
 
 const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
@@ -16,6 +17,7 @@ const titles = {
   [TX_STATUSES.DEPOSITED]: 'Deposited',
   [TX_STATUSES.TRANSFERRED]: 'Transferred',
   [TX_STATUSES.WITHDRAWN]: 'Withdrawn',
+  [TX_STATUSES.REJECTED]: 'Transaction rejected',
 };
 
 const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];
@@ -27,15 +29,11 @@ export default ({ isOpen, onClose, status }) => {
       onClose={onClose}
       title={titles[status]}
     >
-      {SUCCESS_STATUSES.includes(status) ? (
-        <CheckIcon />
-      ) : (
-        <Spinner />
-      )}
+      {(() => {
+        if (SUCCESS_STATUSES.includes(status)) return <CheckIcon />
+        else if (status === TX_STATUSES.REJECTED) return <CrossIcon />
+        else return <Spinner />;
+      })()}
     </Modal>
   );
 };
-
-const CheckIcon = styled(CheckIconDefault)`
-  margin-top: 10px;
-`;

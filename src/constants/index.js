@@ -6,6 +6,7 @@ export const TX_STATUSES = {
   DEPOSITED: 'deposited',
   TRANSFERRED: 'transferred',
   WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected',
 };
 
 export const NETWORKS = {
