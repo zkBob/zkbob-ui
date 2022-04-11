@@ -1,62 +1,70 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Card from 'components/Card';
-import Input from 'components/Input';
+// import Input from 'components/Input';
+import Link from 'components/Link';
 import ButtonDefaut from 'components/Button';
+import Spinner from 'components/Spinner';
 
+import { ZkAccountContext } from 'contexts';
+
+import { shortAddress } from 'utils';
+
+import { ReactComponent as SpinnerIconDefault } from 'assets/spinner.svg';
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
 import transferIcon from 'assets/transfer.svg';
-import ethIcon from 'assets/eth.svg';
-import zpEthIcon from 'assets/zp-eth.svg';
-
-import data from './data.json';
-
-const tokens = {
-  eth: {
-    icon: ethIcon,
-    symbol: 'ETH',
-  },
-  shEth: {
-    icon: zpEthIcon,
-    symbol: 'shETH',
-  },
-};
+import daiIcon from 'assets/dai.svg';
+import zpDaiIcon from 'assets/zp-dai.svg';
 
 const actions = {
-  deposit: {
+  1: {
     name: 'Deposit',
     icon: depositIcon,
   },
-  withdraw: {
-    name: 'Withdraw',
-    icon: withdrawIcon,
-  },
-  transfer: {
+  2: {
     name: 'Transfer',
     icon: transferIcon,
+  },
+  3: {
+    name: 'Transfer',
+    icon: transferIcon,
+  },
+  4: {
+    name: 'Withdrawal',
+    icon: withdrawIcon,
   },
 };
 
 export default () => {
+  const { history, zkAccount, isLoadingZkAccount, isLoadingHistory } = useContext(ZkAccountContext);
   return (
     <Card title="History">
-      <Input placeholder="Search..." />
-      {data.map((item, index) =>
+      {/* <Input placeholder="Search..." /> */}
+      {(isLoadingZkAccount || isLoadingHistory) && (
+        <Spinner size={60} />
+      )}
+      {((!isLoadingZkAccount && !isLoadingHistory) && ((!history && !zkAccount) || history?.length === 0)) && (
+        <span>No history yet.</span>
+      )}
+      {history?.length > 0 && history.map((item, index) =>
         <Row key={index}>
           <Section>
             <ActionLabel>
-              <ActionIcon src={actions[item.action].icon} />
-              <ActionName>{actions[item.action].name}</ActionName>
+              <ActionIcon src={actions[item.type].icon} />
+              <ActionName>{actions[item.type].name}</ActionName>
             </ActionLabel>
           </Section>
           <Section>
-            <TokenIcon src={tokens[item.token].icon} />
-            <Amount>{item.amount} {tokens[item.token].symbol}</Amount>
+            <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
+            <Amount>{[1, 2].includes(item.type) ? '+' : '-'}{ethers.utils.formatUnits(item.amount, 9)} {item.type === 1 ? 'DAI' : 'shDAI'}</Amount>
           </Section>
           <Section>
-            <Button type="link">{item.txHash}</Button>
+            <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
+              {shortAddress(item.txHash)}
+            </Link>
           </Section>
         </Row>
       )}

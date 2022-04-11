@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ReactComponent as SpinnerIconDefault } from 'assets/spinner.svg';
+import SpinnerDefault from 'components/Spinner';
 
 export default props => {
   switch(props.type) {
@@ -11,7 +11,7 @@ export default props => {
     default:
       return (
         <Button {...props}>
-          {props.loading && <SpinnerIcon small={props.small} />}
+          {props.loading && <Spinner {...props} size={props.small ? 16 : 24} />}
           {props.children}
         </Button>
       );
@@ -45,24 +45,10 @@ const TransparentButton = styled.button`
   color: ${props => props.theme.button.link.text.color};
 `;
 
-const SpinnerIcon = styled(SpinnerIconDefault)`
-  width: ${props => props.small ? '16px' : '24px'};
-  height: ${props => props.small ? '16px' : '24px'};
+const Spinner = styled(SpinnerDefault)`
   margin-right: ${props => props.small ? '5px' : '8px'};
   path {
     stroke: ${props => props.theme.button.primary.text.color.disabled};
     stroke-width: 6;
-  }
-  animation-name: spin;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
   }
 `;

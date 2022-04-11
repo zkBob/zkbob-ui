@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Modal from 'components/Modal';
+import Spinner from 'components/Spinner';
+
 import { TX_STATUSES } from 'constants';
 
-import { ReactComponent as SpinnerIconDefault } from 'assets/spinner.svg';
 import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
 
 const titles = {
@@ -29,27 +30,11 @@ export default ({ isOpen, onClose, status }) => {
       {SUCCESS_STATUSES.includes(status) ? (
         <CheckIcon />
       ) : (
-        <SpinnerIcon />
+        <Spinner />
       )}
     </Modal>
   );
 };
-
-const SpinnerIcon = styled(SpinnerIconDefault)`
-  margin-top: 10px;
-  animation-name: spin;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-  }
-`;
 
 const CheckIcon = styled(CheckIconDefault)`
   margin-top: 10px;

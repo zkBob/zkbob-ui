@@ -9,7 +9,7 @@ const Link = styled.a`
   background: transparent;
   border: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: ${props => props.size ? `${props.size}px` : '12px'};;
   font-weight: 400;
   cursor: pointer;
   color: ${props => props.theme.button.link.text.color};

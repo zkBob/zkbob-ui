@@ -34,10 +34,10 @@ export default ({
               onClick={() => onTabClick(index)}
             >{tab}</Tab>
           )}
-          <BridgeLink href="https://omni.xdaichain.com/">
+          {/* <BridgeLink href="https://omni.xdaichain.com/">
             Bridge
             <ExternalLinkIcon />
-          </BridgeLink>
+          </BridgeLink> */}
         </Tabs>
       </TabsSection>
       <AccountSection>

@@ -17,8 +17,10 @@ export const ZkAccountContextProvider = ({ children }) => {
   const zp = useZeroPool();
   const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [history, setHistory] = useState(null);
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const loadZkAccount = useCallback(async () => {
     const privateKey = window.localStorage.getItem('zkAccountKey');
@@ -45,6 +47,18 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsLoadingState(false);
   }, [zkAccount]);
 
+  const updateHistory = useCallback(async () => {
+    let history = [];
+    if (zkAccount) {
+      setIsLoadingHistory(true);
+      history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
+      history = history.reverse();
+      console.log('History:', history);
+    }
+    setHistory(history);
+    setIsLoadingHistory(false);
+  }, [zkAccount]);
+
   const deposit = useCallback(async (amount) => {
     await zp.deposit(library.getSigner(0), zkAccount, amount);
     updateBalance();
@@ -67,6 +81,7 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   useEffect(() => {
     updateBalance();
+    updateHistory();
   }, [zkAccount]);
 
   useEffect(() => {
@@ -82,8 +97,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     <ZkAccountContext.Provider
       value={{
         zkAccount, balance, saveZkAccountKey, deposit,
-        withdraw, transfer, generateAddress,
-        isLoadingZkAccount, isLoadingState,
+        withdraw, transfer, generateAddress, history,
+        isLoadingZkAccount, isLoadingState, isLoadingHistory,
       }}
     >
       {children}
