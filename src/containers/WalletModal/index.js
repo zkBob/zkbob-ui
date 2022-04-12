@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useContext } from 'react';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { InjectedConnector } from '@web3-react/injected-connector';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 
@@ -54,13 +55,15 @@ async function switchChainInMetaMask(chainId) {
 
 export default () => {
   const { isWalletModalOpen, closeWalletModal } = useContext(WalletModalContext);
-  const { activate, chainId } = useWeb3React();
+  const { activate, chainId, connector } = useWeb3React();
 
   const activateConnector = useCallback(async connector => {
     try {
       await activate(connector, undefined, true);
     } catch (error) {
+      console.log('!!!!!!!!!');
       console.log(error);
+      console.log(connector);
       if (error instanceof UnsupportedChainIdError) {
         const chainId = process.env.REACT_APP_NETWORK;
         toast.warn(`Wrong network. Please connect to ${NETWORKS[chainId].name}.`);
@@ -80,12 +83,12 @@ export default () => {
   useEffect(() => {
     async function connect() {
       const isAuthorized = await connectors.injected.connector.isAuthorized();
-      if (isAuthorized) {
+      if (isAuthorized && (connector instanceof InjectedConnector || !connector)) {
         activateConnector(connectors.injected.connector);
       }
     }
     connect();
-  }, [activateConnector, chainId]);
+  }, [activateConnector, chainId, connector]);
 
   return (
     <WalletModal
