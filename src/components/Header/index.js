@@ -7,7 +7,7 @@ import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
 
-import { shortAddress } from 'utils';
+import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS } from 'constants';
 
 export default ({
@@ -36,7 +36,7 @@ export default ({
               <>
                 {connector && <Icon src={connector.icon} />}
                 <Address>{shortAddress(account)}</Address>
-                <Balance>{balance} DAI</Balance>
+                <Balance>{formatNumber(balance)} DAI</Balance>
               </>
             )}
             {(account && zkAccount) && <Divider />}
@@ -44,7 +44,7 @@ export default ({
               <>
                 <ZkAvatar seed={zkAccount?.address} size={16} />
                 <Address><ZkName seed={zkAccount?.address} /></Address>
-                <Balance>{poolBalance} shDAI</Balance>
+                <Balance>{formatNumber(poolBalance)} shDAI</Balance>
               </>
             )}
           </AccountLabel>
