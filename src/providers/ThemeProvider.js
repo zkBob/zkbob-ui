@@ -8,6 +8,7 @@ const purple = '#754CFF';
 const textNormal = '#6D6489';
 const darkPurple = '#2A1B5B';
 const orange = '#EF8726';
+const orangeLight = '#FAE4DA';
 
 const light = {
   text: {
@@ -54,7 +55,7 @@ const light = {
   tab: {
     background: {
       default: white,
-      active: grey,
+      active: orangeLight,
     },
   },
   networkLabel: {
@@ -132,8 +133,10 @@ const light = {
       },
     },
   },
-  background: grey,
+  background: 'linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%)',
+  background2: 'linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%)'
 };
+
 
 export default ({ children }) => (
   <ThemeProvider theme={light}>

@@ -7,14 +7,13 @@ import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
-import { ReactComponent as ZkIconDefault } from 'assets/zk.svg';
 import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.svg';
 
 import { shortAddress } from 'utils';
 import { NETWORKS } from 'constants';
 
 export default ({
-  tabs, activeTab, onTabClick, openWalletModal, connector, isLoadingZkAccount,
+  openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
 }) => {
   const logos = {
@@ -25,21 +24,6 @@ export default ({
       <LogoSection>
         <Logo />
       </LogoSection>
-      <TabsSection>
-        <Tabs>
-          {tabs.map((tab, index) =>
-            <Tab
-              key={index}
-              active={activeTab === index}
-              onClick={() => onTabClick(index)}
-            >{tab}</Tab>
-          )}
-          {/* <BridgeLink href="https://omni.xdaichain.com/">
-            Bridge
-            <ExternalLinkIcon />
-          </BridgeLink> */}
-        </Tabs>
-      </TabsSection>
       <AccountSection>
         <NetworkLabel>
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
@@ -83,43 +67,15 @@ export default ({
 const Row = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const LogoSection = styled(Row)`
-  flex: 1;
   justify-content: flex-start;
 `;
 
-const TabsSection = styled(Row)`
-  flex: 1;
-  justify-content: center;
-`;
-
 const AccountSection = styled(Row)`
-  flex: 1;
   justify-content: center;
-`;
-
-const Tabs = styled(Row)`
-  background-color: ${props => props.theme.tab.background.default};
-  border-radius: 16px;
-  padding: 8px;
-  width: 480px;
-  display: flex;
-  justify-content: space-between;
-  box-sizing: border-box;
-  & > * {
-    flex: 1;
-  }
-`;
-
-const Tab = styled.div`
-  border-radius: 10px;
-  padding: 8px 16px;
-  background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
-  color: ${props => props.theme.text.color[props.active ? 'primary' : 'secondary']};
-  font-weight: ${props => props.theme.text.weight[props.active ? 'bold' : 'normal']};
-  cursor: pointer;
 `;
 
 const NetworkLabel = styled(Row)`

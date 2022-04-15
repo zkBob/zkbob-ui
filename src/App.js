@@ -21,12 +21,19 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 600;
   }
   body {
-    background-color: ${props => props.theme.background};
-    padding: 14px 40px;
+    margin: 0;
     font-family: 'Gilroy';
   }
   button, input, textarea, .Toastify__toast {
     font-family: 'Gilroy';
+  }
+  #root {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    padding: 14px 40px 40px;
+    box-sizing: border-box;
+    background-image: ${props => props.theme.background};
   }
 `;
 
