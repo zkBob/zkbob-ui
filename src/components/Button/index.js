@@ -41,7 +41,7 @@ const TransparentButton = styled.button`
   background: transparent;
   border: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   cursor: pointer;
   color: ${props => props.theme.button.link.text.color};
