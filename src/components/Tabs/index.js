@@ -35,6 +35,6 @@ const Tab = styled.div`
   padding: 8px 16px;
   background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
   color: ${props => props.theme.text.color[props.active ? 'primary' : 'secondary']};
-  font-weight: ${props => props.theme.text.weight[props.active ? 'bold' : 'normal']};
+  font-weight: ${props => props.theme.text.weight.bold};
   cursor: pointer;
 `;
