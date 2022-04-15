@@ -8,4 +8,4 @@ export const ZkAvatar = ({ seed, size, ...props }) =>
   <img {...props} style={{ height: size }} src={createAvatar(style, { seed: seed, dataUri: true })} />;
 
 export const ZkName = ({ seed, ...props }) =>
-  <span {...props}>{uniqueNamesGenerator({ dictionaries: [names], seed })}</span>;
+  <span {...props}>zk{uniqueNamesGenerator({ dictionaries: [names], seed })}</span>;
