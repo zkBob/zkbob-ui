@@ -21,6 +21,7 @@ const light = {
     weight: {
       normal: 400,
       bold: 600,
+      extraBold: 700,
     },
   },
   button: {

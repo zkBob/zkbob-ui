@@ -8,6 +8,7 @@ import Pages from 'pages';
 import ThemeProvider from 'providers/ThemeProvider';
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
+import GilroyBold from 'fonts/Gilroy-Bold.woff';
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -19,6 +20,11 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Gilroy';
     src: url(${GilroyMedium}) format('woff');
     font-weight: 600;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url(${GilroyBold}) format('woff');
+    font-weight: 700;
   }
   body {
     margin: 0;

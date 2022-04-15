@@ -13,6 +13,7 @@ import { NETWORKS } from 'constants';
 export default ({
   openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
+  balance, poolBalance,
 }) => {
   const logos = {
     100: <GnosisChainLogo />
@@ -35,6 +36,7 @@ export default ({
               <>
                 {connector && <Icon src={connector.icon} />}
                 <Address>{shortAddress(account)}</Address>
+                <Balance>{balance} DAI</Balance>
               </>
             )}
             {(account && zkAccount) && <Divider />}
@@ -42,6 +44,7 @@ export default ({
               <>
                 <ZkAvatar seed={zkAccount?.address} size={16} />
                 <Address><ZkName seed={zkAccount?.address} /></Address>
+                <Balance>{poolBalance} shDAI</Balance>
               </>
             )}
           </AccountLabel>
@@ -113,4 +116,9 @@ const ConnectButton = styled(Button)`
 
 const Address = styled.span`
   margin-left: 8px;
+`;
+
+const Balance = styled.span`
+  margin-left: 8px;
+  font-weight: ${props => props.theme.text.weight.extraBold};
 `;
