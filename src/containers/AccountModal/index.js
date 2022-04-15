@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
 import { ZkAccountContext, WalletModalContext, TokenBalanceContext } from 'contexts';
@@ -11,12 +11,20 @@ export default () => {
   } = useContext(WalletModalContext);
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
-  const { zkAccount, balance: poolBalance } = useContext(ZkAccountContext);
+  const { zkAccount, balance: poolBalance, generateAddress } = useContext(ZkAccountContext);
   const connector = useSelectedConnector();
+  const [privateAddress, setPrivateAddress] = useState(null);
+  const generatePrivateAddress = useCallback(() => {
+    setPrivateAddress(generateAddress());
+  }, [generateAddress]);
+  const onClose = useCallback(() => {
+    closeAccountModal();
+    setPrivateAddress(null);
+  }, [closeAccountModal]);
   return (
     <AccountModal
       isOpen={isAccountModalOpen}
-      onClose={closeAccountModal}
+      onClose={onClose}
       account={account}
       zkAccount={zkAccount}
       changeAccount={openWalletModal}
@@ -24,6 +32,8 @@ export default () => {
       connector={connector}
       balance={balance}
       poolBalance={poolBalance}
+      privateAddress={privateAddress}
+      generatePrivateAddress={generatePrivateAddress}
     />
   );
 }

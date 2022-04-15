@@ -48,7 +48,7 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   width: 420px;
-  padding: 26px 32px 32px;
+  padding: 26px 25px 32px;
   box-sizing: border-box;
   position: relative;
 `;

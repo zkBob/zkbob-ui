@@ -27,6 +27,7 @@ const PrivateAddressContainer = styled.div`
   font-size: 16px;
   font-weight: 400;
   height: 60px;
+  box-sizing: border-box;
   padding: 0 24px;
   outline: none;
   &::placeholder {
