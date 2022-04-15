@@ -25,9 +25,10 @@ const Button = styled.button`
   font-size: ${props => props.theme.button.primary.text.size[props.small ? 'small' : 'default']};
   font-weight: ${props => props.theme.button.primary.text.weight[props.small ? 'small' : 'default']};
   padding: ${props => props.small ? '8px 16px' : '0'};
-  height: ${props => props.small ? 'auto' : '60px'};
-  border-radius: ${props => props.small ? '10px' : '16px'};
-  border: ${props => props.disabled && props.contrast ? '1px' : 0 };
+  height: ${props => props.small ? '30px' : '60px'};
+  box-sizing: border-box;
+  border-radius: 16px;
+  border: 0;
   border-color: ${props => props.theme.button.primary.border.color};
   border-style: solid;
   cursor: pointer;

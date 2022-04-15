@@ -2,12 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
-import Link from 'components/Link';
 import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
-import { ReactComponent as ExternalLinkIconDefault } from 'assets/external-link.svg';
 
 import { shortAddress } from 'utils';
 import { NETWORKS } from 'constants';
@@ -51,7 +49,6 @@ export default ({
         {!zkAccount && (
           <Button
             small
-            contrast
             loading={isLoadingZkAccount}
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
@@ -83,8 +80,10 @@ const NetworkLabel = styled(Row)`
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.normal};
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: 16px;
   margin-right: 16px;
+  height: 30px;
+  box-sizing: border-box;
 `;
 
 const AccountLabel = styled(NetworkLabel)`
@@ -106,20 +105,6 @@ const Divider = styled.div`
   height: 16px;
   margin: 0 8px;
   background: ${({ theme }) => theme.input.border};
-`;
-
-const BridgeLink = styled(Link)`
-  font-size: 16px;
-  color: ${({ theme }) => theme.text.color.secondary};
-  padding: 0 16px;
-  position: relative;
-  margin-right: 17px;
-`;
-
-const ExternalLinkIcon = styled(ExternalLinkIconDefault)`
-  position: absolute;
-  right: 0;
-  top: 1px;
 `;
 
 const ConnectButton = styled(Button)`
