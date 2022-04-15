@@ -37,7 +37,7 @@ export default () => {
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button gradient onClick={onWihdrawal}>Withdraw</Button>;
+      button = <Button onClick={onWihdrawal}>Withdraw</Button>;
     }
   } else {
     button = <AccountSetUpButton />;

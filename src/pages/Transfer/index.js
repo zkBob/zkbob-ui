@@ -36,7 +36,7 @@ export default () => {
     } else if (receiver.length !== 63) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button gradient onClick={onTransfer}>Transfer</Button>;
+      button = <Button onClick={onTransfer}>Transfer</Button>;
     }
   } else {
     button = <AccountSetUpButton />;

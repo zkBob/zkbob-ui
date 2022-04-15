@@ -25,7 +25,7 @@ export default () => {
           isLoadingState ? (
             <Button loading disabled>Loading zero pool state...</Button>
           ) : (
-            <Button gradient onClick={generate}>Generate private address</Button>
+            <Button onClick={generate}>Generate private address</Button>
           )
         )
       ) : (

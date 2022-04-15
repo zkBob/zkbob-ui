@@ -19,8 +19,9 @@ export default props => {
 };
 
 const Button = styled.button`
-  background: ${props => props.theme.button.primary.background[props.disabled ? 'disabled' : (props.gradient ? 'gradient' : 'default')]};
-  color: ${props => props.theme.button.primary.text.color[props.disabled ? 'disabled' : 'default']};
+  background: ${props => props.theme.button.primary.background};
+  color: ${props => props.theme.button.primary.text.color};
+  opacity: ${props => props.disabled ? 0.2 : 1};
   font-size: ${props => props.theme.button.primary.text.size[props.small ? 'small' : 'default']};
   font-weight: ${props => props.theme.button.primary.text.weight[props.small ? 'small' : 'default']};
   padding: ${props => props.small ? '8px 16px' : '0'};

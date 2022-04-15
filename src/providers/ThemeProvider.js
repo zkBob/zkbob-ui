@@ -5,6 +5,7 @@ const white = '#FFFFFF';
 const grey = '#F4F3F8';
 const darkGrey = '#DCD8EA';
 const purple = '#754CFF';
+const blue = '#1B4DEB';
 const textNormal = '#6D6489';
 const darkPurple = '#2A1B5B';
 const orange = '#EF8726';
@@ -23,19 +24,12 @@ const light = {
   },
   button: {
     primary: {
-      background: {
-        default: purple,
-        disabled: grey,
-        gradient: 'linear-gradient(90deg, #6D5CFF 5.4%, #E86EFF 55.92%, #FFD66E 92.38%)',
-      },
+      background: blue,
       border: {
         color: darkGrey,
       },
       text: {
-        color: {
-          default: white,
-          disabled: darkPurple,
-        },
+        color: white,
         size: {
           small: '16px',
           default: '20px',

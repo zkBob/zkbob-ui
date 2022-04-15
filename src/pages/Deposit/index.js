@@ -30,7 +30,7 @@ export default () => {
         else if (isLoadingState) return <Button loading disabled>Loading zero pool state...</Button>
         else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
         else if (amount > balance) return <Button disabled>Insufficient DAI balance</Button>
-        else return <Button gradient onClick={onDeposit}>Deposit</Button>;
+        else return <Button onClick={onDeposit}>Deposit</Button>;
       })()}
     </Card>
   );
