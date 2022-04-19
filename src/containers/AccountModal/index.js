@@ -11,7 +11,7 @@ export default () => {
   } = useContext(WalletModalContext);
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
-  const { zkAccount, balance: poolBalance, generateAddress } = useContext(ZkAccountContext);
+  const { zkAccount, balance: poolBalance, generateAddress, zkAccountId } = useContext(ZkAccountContext);
   const connector = useSelectedConnector();
   const [privateAddress, setPrivateAddress] = useState(null);
   const generatePrivateAddress = useCallback(() => {
@@ -34,6 +34,7 @@ export default () => {
       poolBalance={poolBalance}
       privateAddress={privateAddress}
       generatePrivateAddress={generatePrivateAddress}
+      zkAccountId={zkAccountId}
     />
   );
 }

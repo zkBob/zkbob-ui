@@ -14,7 +14,7 @@ import zpDaiIcon from 'assets/zp-dai.svg';
 import { shortAddress, formatNumber } from 'utils';
 
 export default ({
-  isOpen, onClose, account = '', zkAccount,
+  isOpen, onClose, account = '', zkAccount, zkAccountId,
   changeAccount, changeZkAccount, connector,
   balance, poolBalance, privateAddress, generatePrivateAddress,
 }) => {
@@ -74,8 +74,8 @@ export default ({
             </RowSpaceBetween>
             <RowSpaceBetween>
               <Row>
-                <ZkAvatar seed={zkAccount?.address} size={20} />
-                <Address><ZkName seed={zkAccount?.address} /></Address>
+                <ZkAvatar seed={zkAccountId} size={20} />
+                <Address><ZkName seed={zkAccountId} /></Address>
               </Row>
               <TokenContainer>
                 <TokenIcon src={zpDaiIcon} />

@@ -21,6 +21,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { library } = useWeb3React();
   const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
   const [zkAccount, setZkAccount] = useState(null);
+  const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(0);
   const [history, setHistory] = useState(null);
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
@@ -28,15 +29,16 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const loadZkAccount = useCallback(async () => {
-    const privateKey = window.localStorage.getItem('zkAccountKey');
+    const mnemonic = window.localStorage.getItem('zkAccountMnemonic');
     let zkAccount = null;
-    if (privateKey) {
+    let zkAccountId = null;
+    if (mnemonic) {
       setIsLoadingZkAccount(true);
-      const wallet = new ethers.Wallet(privateKey);
-      zkAccount = await zp.createAccount(privateKey);
-      zkAccount.address = wallet.address;
+      zkAccount = await zp.createAccount(mnemonic);
+      zkAccountId = ethers.utils.id(mnemonic);
     }
     setZkAccount(zkAccount);
+    setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
   }, []);
 
@@ -45,6 +47,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (zkAccount) {
       setIsLoadingState(true);
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
+      console.log('Raw Pool balance:', balance);
       balance = Number(formatUnits(BigNumber.from(balance), 18));
       console.log('Pool balance:', balance);
     }
@@ -71,6 +74,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       toast.success(`Deposited ${amount} DAI.`);
       updateBalance();
     } catch (error) {
+      console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [zkAccount, updateBalance, library, openTxModal, setTxStatus]);
@@ -82,6 +86,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       toast.success(`Transferred ${amount} shDAI.`);
       updateBalance();
     } catch (error) {
+      console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [zkAccount, updateBalance, openTxModal, setTxStatus]);
@@ -93,6 +98,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       toast.success(`Withdrawn ${amount} DAI.`);
       updateBalance();
     } catch (error) {
+      console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [zkAccount, updateBalance, openTxModal, setTxStatus]);
@@ -111,15 +117,15 @@ export const ZkAccountContextProvider = ({ children }) => {
     loadZkAccount();
   }, [loadZkAccount]);
 
-  const saveZkAccountKey = useCallback(privateKey => {
-    window.localStorage.setItem('zkAccountKey', privateKey);
+  const saveZkAccountMnemonic = useCallback(privateKey => {
+    window.localStorage.setItem('zkAccountMnemonic', privateKey);
     loadZkAccount();
   }, [loadZkAccount]);
 
   return (
     <ZkAccountContext.Provider
       value={{
-        zkAccount, balance, saveZkAccountKey, deposit,
+        zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history,
         isLoadingZkAccount, isLoadingState, isLoadingHistory,
       }}

@@ -2,6 +2,7 @@ import { ethers, Contract } from 'ethers';
 import wasmPath from 'libzeropool-rs-wasm-web/libzeropool_rs_wasm_bg.wasm';
 import workerPath from 'zeropool-client-js/lib/worker.js?asset';
 import { init as initZeroPool, ZeropoolClient } from 'zeropool-client-js';
+import { deriveSpendingKey } from 'zeropool-client-js/lib/utils';
 import { EvmNetwork } from 'zeropool-client-js/lib/networks/evm';
 
 import { TX_STATUSES } from 'constants';
@@ -25,8 +26,9 @@ const snarkParams = {
   treeVkUrl,
 };
 
-const createAccount = async privateKey => {
-  const sk = Uint8Array.from(privateKey.split('').slice(2, 34));
+const createAccount = async mnemonic => {
+  const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
+  const sk = deriveSpendingKey(mnemonic, network);
   const ctx = await initZeroPool(wasmPath, workerPath, snarkParams);
   const tokens = {
     [TOKEN_ADDRESS]: {
@@ -39,7 +41,7 @@ const createAccount = async privateKey => {
     tokens,
     snarkParams: ctx.snarkParams,
     worker: ctx.worker,
-    networkName: 'xdai',
+    networkName: network,
     network: new EvmNetwork(RPC_URL),
   });
 };

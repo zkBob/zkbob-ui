@@ -9,7 +9,7 @@ import { useSelectedConnector } from 'hooks';
 export default () => {
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
-  const { zkAccount, isLoadingZkAccount, balance: poolBalance } = useContext(ZkAccountContext);
+  const { zkAccount, isLoadingZkAccount, balance: poolBalance, zkAccountId } = useContext(ZkAccountContext);
   const { openWalletModal, openAccountModal, openAccountSetUpModal } = useContext(WalletModalContext);
   const connector = useSelectedConnector();
   return (
@@ -24,6 +24,7 @@ export default () => {
         connector={connector}
         balance={balance}
         poolBalance={poolBalance}
+        zkAccountId={zkAccountId}
       />
     </>
   );

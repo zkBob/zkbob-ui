@@ -15,6 +15,7 @@
     "@web3-react/walletconnect-connector": "^6.2.13",
     "crypto-browserify": "^3.12.0",
     "ethers": "^5.4.7",
+    "js-md5": "^0.7.3",
     "lodash.shuffle": "^4.2.0",
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.4",

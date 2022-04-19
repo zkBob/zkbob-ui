@@ -13,7 +13,7 @@ import { NETWORKS } from 'constants';
 export default ({
   openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
-  balance, poolBalance,
+  balance, poolBalance, zkAccountId,
 }) => {
   const logos = {
     100: <GnosisChainLogo />
@@ -42,8 +42,8 @@ export default ({
             {(account && zkAccount) && <Divider />}
             {zkAccount && (
               <>
-                <ZkAvatar seed={zkAccount?.address} size={16} />
-                <Address><ZkName seed={zkAccount?.address} /></Address>
+                <ZkAvatar seed={zkAccountId} size={16} />
+                <Address><ZkName seed={zkAccountId} /></Address>
                 <Balance>{formatNumber(poolBalance)} shDAI</Balance>
               </>
             )}
