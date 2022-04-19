@@ -85,7 +85,7 @@ const Word = styled.div`
 const MnemonicInput = styled(Words)`
   min-height: 161px;
   background: ${({ theme }) => theme.input.background.primary};
-  border: 1px solid ${({ theme }) => theme.input.border};
+  border: 1px solid ${({ theme }) => theme.input.border.color.default};
   border-radius: 16px;
   padding: 12px 12px 0;
   margin-bottom: 16px;

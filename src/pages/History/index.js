@@ -90,7 +90,7 @@ const Section = styled.div`
 const ActionLabel = styled.div`
   display: flex;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.input.border};
+  border: 1px solid ${({ theme }) => theme.input.border.color.default};
   border-radius: 10px;
   padding: 8px;
 `;

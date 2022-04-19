@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
-import Select from 'components/TransferInput/Select';
 import Button from 'components/Button';
 
 import daiIcon from 'assets/dai.svg';
@@ -14,15 +13,13 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
   return (
     <Container>
       <Row>
-        <Input value={amount} onChange={e => handleAmountChange(e.target.value)} />
-        {/* <Select {...{ tokens, selectedToken, onTokenSelect }} /> */}
+        <Input placeholder={0} value={amount} onChange={e => handleAmountChange(e.target.value)} />
         <TokenContainer>
           <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
           {isPoolToken ? 'shDAI' : 'DAI'}
         </TokenContainer>
       </Row>
       <Row>
-        {/* <SmallText>$1,195</SmallText> */}
         <div></div>
         <Row>
           {isPoolToken ? (
@@ -47,10 +44,13 @@ const Container = styled.div`
   align-items: stretch;
   justify-content: center;
   height: 100px;
-  background: ${props => props.theme.input.background.primary};
-  border: 1px solid ${props => props.theme.input.border};
+  background: ${props => props.theme.input.background.secondary};
+  border: 1px solid ${props => props.theme.input.border.color.default};
   border-radius: 16px;
   padding: 0px 24px;
+  &:focus-within {
+    border-color: ${props => props.theme.input.border.color.focus};
+  }
 `;
 
 const Row = styled.div`
@@ -62,11 +62,14 @@ const Input = styled.input`
   border: 0;
   background: transparent;
   font-size: 36px;
-  color: ${props => props.theme.text.color.primary};
+  color: ${props => props.theme.transferInput.text.color.placeholder};
   font-weight: ${props => props.theme.transferInput.text.weight.default};
   width: 100px;
   flex: 1;
   outline: none;
+  &::placeholder {
+    color: ${props => props.theme.transferInput.text.color.placeholder};
+  }
 `;
 
 const SmallText = styled.span`
@@ -74,13 +77,6 @@ const SmallText = styled.span`
   color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.transferInput.text.weight.small};
   line-height: 20px;
-`;
-
-const BigText = styled.span`
-  font-size: 24px;
-  color: ${props => props.theme.text.color.primary};
-  font-weight: ${props => props.theme.transferInput.text.weight.small};
-  line-height: 45px;
 `;
 
 const MaxButton = styled(Button)`

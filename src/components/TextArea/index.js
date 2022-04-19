@@ -6,7 +6,7 @@ export default props => (
 );
 
 const TextArea = styled.textarea`
-  border: 1px solid ${props => props.theme.input.border};
+  border: 1px solid ${props => props.theme.input.border.color.default};
   border-radius: 16px;
   background: ${props => props.theme.input.background[props.secondary ? 'secondary' : 'primary']};
   color: ${props => props.theme.text.color.primary};

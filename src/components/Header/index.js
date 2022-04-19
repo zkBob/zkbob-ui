@@ -107,7 +107,7 @@ const Divider = styled.div`
   width: 1px;
   height: 16px;
   margin: 0 8px;
-  background: ${({ theme }) => theme.input.border};
+  background: ${({ theme }) => theme.input.border.color.default};
 `;
 
 const ConnectButton = styled(Button)`

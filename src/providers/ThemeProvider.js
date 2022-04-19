@@ -87,7 +87,12 @@ const light = {
       secondary: white,
       checked: purple,
     },
-    border: darkGrey,
+    border: {
+      color: {
+        default: darkGrey,
+        focus: blue,
+      },
+    },
     text: {
       color: {
         default: darkPurple,
@@ -100,6 +105,7 @@ const light = {
       color: {
         default: darkPurple,
         small: textNormal,
+        placeholder: textNormal,
       },
       weight: {
         default: 600,

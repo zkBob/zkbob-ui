@@ -18,7 +18,7 @@ const Row = styled.div`
 
 const Input = styled.input.attrs({ type: 'checkbox' })`
   appearance: none;
-  border: 1px solid ${props => props.theme.input.border};
+  border: 1px solid ${props => props.theme.input.border.color.default};
   border-radius: 6px;
   background: ${props => props.theme.input.background.primary};
   width: 20px;

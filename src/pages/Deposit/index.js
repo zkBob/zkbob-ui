@@ -16,9 +16,9 @@ export default () => {
   const { zkAccount, deposit, isLoadingState } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(WalletModalContext);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(null);
   const onDeposit = useCallback(() => {
-    setAmount(0);
+    setAmount(null);
     deposit(amount);
   }, [amount, deposit]);
   return (

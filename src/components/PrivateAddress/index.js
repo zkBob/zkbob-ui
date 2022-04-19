@@ -20,7 +20,7 @@ const PrivateAddressContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  border: 1px solid ${props => props.theme.input.border};
+  border: 1px solid ${props => props.theme.input.border.color.default};
   border-radius: 16px;
   background: ${props => props.theme.input.background.secondary};
   color: ${props => props.theme.text.color.primary};
