@@ -3,16 +3,15 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 
 import Card from 'components/Card';
-// import Input from 'components/Input';
 import Link from 'components/Link';
-import ButtonDefaut from 'components/Button';
 import Spinner from 'components/Spinner';
+
+import AccountSetUpButton from 'containers/AccountSetUpButton';
 
 import { ZkAccountContext } from 'contexts';
 
 import { shortAddress } from 'utils';
 
-import { ReactComponent as SpinnerIconDefault } from 'assets/spinner.svg';
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
 import transferIcon from 'assets/transfer.svg';
@@ -40,16 +39,27 @@ const actions = {
 
 export default () => {
   const { history, zkAccount, isLoadingZkAccount, isLoadingHistory } = useContext(ZkAccountContext);
+  const isLoading = isLoadingZkAccount || isLoadingHistory;
+  const isHistoryEmpty = !(history?.length > 0);
+  const title = 'History';
   return (
-    <Card title="History">
-      {/* <Input placeholder="Search..." /> */}
-      {(isLoadingZkAccount || isLoadingHistory) && (
+    <Card title={(!isLoading && !isHistoryEmpty) ? title : null}>
+      {(isLoading || isHistoryEmpty || !zkAccount) && (
+        <Title>{title}</Title>
+      )}
+      {isLoading && (
         <Spinner size={60} />
       )}
-      {((!isLoadingZkAccount && !isLoadingHistory) && ((!history && !zkAccount) || history?.length === 0)) && (
-        <span>No history yet.</span>
+      {(!isLoading && isHistoryEmpty) && (
+        <Description>
+          Make your first Deposit, Transfer or Withdrawal<br/>
+          to create your History.
+        </Description>
       )}
-      {history?.length > 0 && history.map((item, index) =>
+      {(!isLoading && !zkAccount) && (
+        <AccountSetUpButton />
+      )}
+      {!isHistoryEmpty && history.map((item, index) =>
         <Row key={index}>
           <Section>
             <ActionLabel>
@@ -115,6 +125,16 @@ const Amount = styled.span`
   color: ${({ theme }) => theme.text.color.primary};
 `;
 
-const Button = styled(ButtonDefaut)`
+const Title = styled.span`
   font-size: 16px;
+  color: ${({ theme }) => theme.text.color.primary};
+  font-weight: ${({ theme }) => theme.text.weight.bold};
+  text-align: center;
+`;
+
+const Description = styled.span`
+  font-size: 14px;
+  line-height: 22px;
+  color: ${({ theme }) => theme.text.color.secondary};
+  text-align: center;
 `;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export default ({ title, note, children }) => (
   <Card>
-    <Title>{title}</Title>
+    {title && <Title>{title}</Title>}
     {children}
     {note && <Note>{note}</Note>}
   </Card>
