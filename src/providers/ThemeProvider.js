@@ -117,7 +117,7 @@ const light = {
   },
   modal: {
     background: white,
-    overlay: 'rgba(42, 27, 91, 0.9)',
+    overlay: 'rgba(30, 45, 95, 0.9)',
   },
   walletConnectorOption: {
     background: {
