@@ -13,7 +13,12 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
   return (
     <Container>
       <Row>
-        <Input placeholder={0} value={amount} onChange={e => handleAmountChange(e.target.value)} />
+        <Input
+          placeholder={0}
+          value={amount}
+          onChange={e => handleAmountChange(e.target.value)}
+          type="number"
+        />
         <TokenContainer>
           <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
           {isPoolToken ? 'shDAI' : 'DAI'}

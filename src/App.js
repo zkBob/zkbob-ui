@@ -41,6 +41,14 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     background-image: ${props => props.theme.background};
   }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
 `;
 
 function getLibrary(provider) {
