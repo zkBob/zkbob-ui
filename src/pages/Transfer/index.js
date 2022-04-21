@@ -13,20 +13,20 @@ const note = 'This transfer will happen within ZeroPool and will be truly privat
 
 export default () => {
   const { zkAccount, balance, transfer, isLoadingState } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
   const onTransfer = useCallback(() => {
-    setAmount(null);
+    setAmount('');
     setReceiver('');
     transfer(receiver, amount);
   }, [receiver, amount, transfer]);
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button loading disabled>Loading zero pool state...</Button>;
+      button = <Button $loading disabled>Loading zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount > balance) {

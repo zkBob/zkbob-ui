@@ -28,7 +28,7 @@ export default ({
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
         {!account && (
-          <ConnectButton small onClick={openWalletModal}>Connect wallet</ConnectButton>
+          <Button style={{ marginRight: 16 }} $small onClick={openWalletModal}>Connect wallet</Button>
         )}
         {(account || zkAccount) && (
           <AccountLabel onClick={openAccountModal}>
@@ -51,8 +51,8 @@ export default ({
         )}
         {!zkAccount && (
           <Button
-            small
-            loading={isLoadingZkAccount}
+            $small
+            $loading={isLoadingZkAccount}
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
           >
@@ -108,10 +108,6 @@ const Divider = styled.div`
   height: 16px;
   margin: 0 8px;
   background: ${({ theme }) => theme.input.border.color.default};
-`;
-
-const ConnectButton = styled(Button)`
-  margin-right: 16px;
 `;
 
 const Address = styled.span`

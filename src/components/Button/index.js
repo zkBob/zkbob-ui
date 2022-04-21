@@ -11,7 +11,7 @@ export default props => {
     default:
       return (
         <Button {...props}>
-          {props.loading && <Spinner {...props} size={props.small ? 16 : 24} />}
+          {props.$loading && <Spinner {...props} size={props.$small ? 16 : 24} />}
           {props.children}
         </Button>
       );
@@ -22,10 +22,10 @@ const Button = styled.button`
   background: ${props => props.theme.button.primary.background};
   color: ${props => props.theme.button.primary.text.color};
   opacity: ${props => props.disabled ? 0.2 : 1};
-  font-size: ${props => props.theme.button.primary.text.size[props.small ? 'small' : 'default']};
-  font-weight: ${props => props.theme.button.primary.text.weight[props.small ? 'small' : 'default']};
-  padding: ${props => props.small ? '8px 16px' : '0'};
-  height: ${props => props.small ? '30px' : '60px'};
+  font-size: ${props => props.theme.button.primary.text.size[props.$small ? 'small' : 'default']};
+  font-weight: ${props => props.theme.button.primary.text.weight[props.$small ? 'small' : 'default']};
+  padding: ${props => props.$small ? '8px 16px' : '0'};
+  height: ${props => props.$small ? '30px' : '60px'};
   box-sizing: border-box;
   border-radius: 16px;
   border: 0;
@@ -48,7 +48,7 @@ const TransparentButton = styled.button`
 `;
 
 const Spinner = styled(SpinnerDefault)`
-  margin-right: ${props => props.small ? '5px' : '8px'};
+  margin-right: ${props => props.$small ? '5px' : '8px'};
   path {
     stroke: ${props => props.theme.button.primary.text.color.disabled};
     stroke-width: 6;

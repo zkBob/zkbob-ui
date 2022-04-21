@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Header from 'components/Header';
 
-import { ZkAccountContext, WalletModalContext, TokenBalanceContext } from 'contexts';
+import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
 import { useSelectedConnector } from 'hooks';
 
 
@@ -10,7 +10,7 @@ export default () => {
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
   const { zkAccount, isLoadingZkAccount, balance: poolBalance, zkAccountId } = useContext(ZkAccountContext);
-  const { openWalletModal, openAccountModal, openAccountSetUpModal } = useContext(WalletModalContext);
+  const { openWalletModal, openAccountModal, openAccountSetUpModal } = useContext(ModalContext);
   const connector = useSelectedConnector();
   return (
     <>

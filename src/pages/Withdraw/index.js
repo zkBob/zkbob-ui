@@ -14,20 +14,20 @@ const note = 'Amount withdrawn from zero knowledge pool will be deposited to the
 
 export default () => {
   const { zkAccount, balance, withdraw, isLoadingState } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
   const onWihdrawal = useCallback(() => {
-    setAmount(null);
+    setAmount('');
     setReceiver('');
     withdraw(receiver, amount);
   }, [receiver, amount, withdraw]);
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button loading disabled>Loading zero pool state...</Button>;
+      button = <Button $loading disabled>Loading zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount > balance) {

@@ -4,7 +4,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 
-import { WalletModalContext } from 'contexts';
+import { ModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
 
 import connectors from 'connectors';
@@ -54,7 +54,7 @@ async function switchChainInMetaMask(chainId) {
 };
 
 export default () => {
-  const { isWalletModalOpen, closeWalletModal } = useContext(WalletModalContext);
+  const { isWalletModalOpen, closeWalletModal } = useContext(ModalContext);
   const { activate, chainId, connector } = useWeb3React();
 
   const activateConnector = useCallback(async connector => {

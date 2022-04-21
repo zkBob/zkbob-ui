@@ -1,14 +1,14 @@
 import { useContext, useState, useCallback } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
-import { ZkAccountContext, WalletModalContext, TokenBalanceContext } from 'contexts';
+import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
 import { useSelectedConnector } from 'hooks';
 import AccountModal from 'components/AccountModal';
 
 export default () => {
   const {
     isAccountModalOpen, closeAccountModal, openWalletModal, openAccountSetUpModal,
-  } = useContext(WalletModalContext);
+  } = useContext(ModalContext);
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
   const { zkAccount, balance: poolBalance, generateAddress, zkAccountId } = useContext(ZkAccountContext);

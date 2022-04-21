@@ -2,8 +2,10 @@ import React, { createContext, useState, useEffect, useCallback, useContext } fr
 import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { toast } from 'react-toastify';
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
 
-import { TransactionModalContext } from 'contexts';
+import { TransactionModalContext, ModalContext } from 'contexts';
 
 import { TX_STATUSES } from 'constants';
 
@@ -20,6 +22,7 @@ export default ZkAccountContext;
 export const ZkAccountContextProvider = ({ children }) => {
   const { library } = useWeb3React();
   const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
+  const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(0);
@@ -28,8 +31,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingState, setIsLoadingState] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  const loadZkAccount = useCallback(async () => {
-    const mnemonic = window.localStorage.getItem('zkAccountMnemonic');
+  const loadZkAccount = useCallback(async mnemonic => {
     let zkAccount = null;
     let zkAccountId = null;
     if (mnemonic) {
@@ -41,6 +43,18 @@ export const ZkAccountContextProvider = ({ children }) => {
     setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
   }, []);
+
+  const unlockAccount = useCallback(password => {
+    try {
+        const cipherText = window.localStorage.getItem('seed');
+        const mnemonic = AES.decrypt(cipherText, password).toString(Utf8);
+        if (!ethers.utils.isValidMnemonic(mnemonic)) throw new Error('invalid mnemonic');
+        closePasswordModal();
+        loadZkAccount(mnemonic);
+    } catch (error) {
+        throw new Error('Incorrect password');
+    }
+  }, [loadZkAccount, closePasswordModal]);
 
   const updateBalance = useCallback(async () => {
     let balance = 0;
@@ -114,19 +128,23 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount]);
 
   useEffect(() => {
-    loadZkAccount();
-  }, [loadZkAccount]);
+    const seed = window.localStorage.getItem('seed');
+    if (seed && !zkAccount) {
+      openPasswordModal();
+    }
+  }, []);
 
-  const saveZkAccountMnemonic = useCallback(privateKey => {
-    window.localStorage.setItem('zkAccountMnemonic', privateKey);
-    loadZkAccount();
+  const saveZkAccountMnemonic = useCallback(async (mnemonic, password) => {
+    const cipherText = await AES.encrypt(mnemonic, password).toString()
+    window.localStorage.setItem('seed', cipherText);
+    loadZkAccount(mnemonic);
   }, [loadZkAccount]);
 
   return (
     <ZkAccountContext.Provider
       value={{
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
-        withdraw, transfer, generateAddress, history,
+        withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory,
       }}
     >

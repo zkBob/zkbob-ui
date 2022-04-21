@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 
-import { WalletModalContext, ZkAccountContext } from 'contexts';
+import { ModalContext, ZkAccountContext } from 'contexts';
 import AccountSetUpModal from 'components/AccountSetUpModal';
 
 export default () => {
   const {
     isAccountSetUpModalOpen, closeAccountSetUpModal, openWalletModal,
-  } = useContext(WalletModalContext);
+  } = useContext(ModalContext);
   const { zkAccount, saveZkAccountMnemonic } = useContext(ZkAccountContext);
   return (
     <AccountSetUpModal

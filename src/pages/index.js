@@ -8,6 +8,7 @@ import TransactionModal from 'containers/TransactionModal';
 import WalletModal from 'containers/WalletModal';
 import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
+import PasswordModal from 'containers/PasswordModal';
 
 import ToastContainer from 'components/ToastContainer';
 
@@ -47,6 +48,7 @@ export default () => (
       <WalletModal />
       <AccountModal />
       <AccountSetUpModal />
+      <PasswordModal />
       <ToastContainer />
     </Layout>
   </BrowserRouter>

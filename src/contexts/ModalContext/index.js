@@ -1,10 +1,10 @@
 import React, { createContext, useState } from 'react';
 
-const WalletModalContext = createContext({ txStatus: null, setTxStatus: () => {} });
+const ModalContext = createContext({});
 
-export default WalletModalContext;
+export default ModalContext;
 
-export const WalletModalContextProvider = ({ children }) => {
+export const ModalContextProvider = ({ children }) => {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const openWalletModal = () => setIsWalletModalOpen(true);
   const closeWalletModal = () => setIsWalletModalOpen(false);
@@ -17,15 +17,20 @@ export const WalletModalContextProvider = ({ children }) => {
   const openAccountSetUpModal = () => setIsAccountSetUpModalOpen(true);
   const closeAccountSetUpModal = () => setIsAccountSetUpModalOpen(false);
 
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const openPasswordModal = () => setIsPasswordModalOpen(true);
+  const closePasswordModal = () => setIsPasswordModalOpen(false);
+
   return (
-    <WalletModalContext.Provider
+    <ModalContext.Provider
       value={{
         isWalletModalOpen, openWalletModal, closeWalletModal,
         isAccountModalOpen, openAccountModal, closeAccountModal,
         isAccountSetUpModalOpen, openAccountSetUpModal, closeAccountSetUpModal,
+        isPasswordModalOpen, openPasswordModal, closePasswordModal,
       }}
     >
       {children}
-    </WalletModalContext.Provider>
+    </ModalContext.Provider>
   );
 };

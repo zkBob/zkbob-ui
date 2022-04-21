@@ -6,9 +6,9 @@ export default props => (
 );
 
 const Input = styled.input`
-  border: 1px solid ${props => props.theme.input.border.color.default};
+  border: 1px solid ${props => props.theme.input.border.color[props.error ? 'error' : 'default']};
   border-radius: 16px;
-  background: ${props => props.theme.input.background[props.secondary ? 'secondary' : 'primary']};
+  background: ${props => props.theme.input.background.secondary};
   color: ${props => props.theme.text.color.primary};
   font-size: 16px;
   font-weight: 400;
@@ -20,6 +20,6 @@ const Input = styled.input`
     opacity: 0.6;
   }
   &:focus {
-    border-color: ${props => props.theme.input.border.color.focus};
+    border-color: ${props => props.theme.input.border.color[props.error ? 'error' : 'focus']};
   }
 `;

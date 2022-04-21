@@ -14,6 +14,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "crypto-browserify": "^3.12.0",
+    "crypto-js": "^4.1.1",
     "ethers": "^5.4.7",
     "js-md5": "^0.7.3",
     "lodash.shuffle": "^4.2.0",

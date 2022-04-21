@@ -36,7 +36,7 @@ export default ({ children, isOpen, onClose, title, onBack }) => {
       <ModalContent>
         <Title>{title}</Title>
         {onBack && <BackIcon onClick={onBack} />}
-        <CrossIcon onClick={onClose} />
+        {onClose && <CrossIcon onClick={onClose} />}
         {children}
       </ModalContent>
     </Modal>

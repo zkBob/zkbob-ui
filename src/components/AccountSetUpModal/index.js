@@ -11,55 +11,69 @@ import Create from 'components/AccountSetUpModal/Create';
 import Confirm from 'components/AccountSetUpModal/Confirm';
 import Restore from 'components/AccountSetUpModal/Restore';
 import Generate from 'components/AccountSetUpModal/Generate';
+import Password from 'components/AccountSetUpModal/Password';
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => {
   const { library, account } = useWeb3React();
   const [action, setAction] = useState();
-  const [mnemonic, setMnemonic] = useState();
+  const [newMnemonic, setNewMnemonic] = useState();
+  const [confirmedMnemonic, setConfirmedMnemonic] = useState();
+
   const closeModal = useCallback(() => {
     setAction(null);
-    setMnemonic(null);
+    setNewMnemonic(null);
     onClose();
   }, [onClose]);
+
   const setNextAction = useCallback(nextAction => {
     if (nextAction === 'create') {
-      const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
-      setMnemonic(mnemonic);
+      const newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+      setNewMnemonic(newMnemonic);
     }
     setAction(nextAction);
   }, []);
+
   const confirmMnemonic = useCallback(() => {
-    saveZkAccountMnemonic(mnemonic);
-    closeModal();
-  }, [mnemonic, closeModal, saveZkAccountMnemonic]);
+    setConfirmedMnemonic(newMnemonic);
+    setAction('password');
+  }, [newMnemonic]);
+
   const restore = useCallback(mnemonic => {
-    saveZkAccountMnemonic(mnemonic);
-    closeModal();
-  }, [closeModal, saveZkAccountMnemonic]);
+    setConfirmedMnemonic(mnemonic);
+    setAction('password');
+  }, []);
+
   const generate = useCallback(async () => {
     const message = 'zkAccount';
     const signedMessage = (await library.send(
       'personal_sign',
       [ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), account.toLowerCase()],
     ));
-    const mnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
-    saveZkAccountMnemonic(mnemonic);
-    closeModal();
-  }, [library, closeModal, saveZkAccountMnemonic, account]);
+    const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
+    setConfirmedMnemonic(newMnemonic);
+    setAction('password');
+  }, [library, account]);
+
   const connectWallet = useCallback(() => {
     closeModal();
     openWalletModal();
   }, [openWalletModal, closeModal]);
+
+  const confirmPassword = useCallback(password => {
+    saveZkAccountMnemonic(confirmedMnemonic, password);
+    closeModal();
+  }, [confirmedMnemonic, saveZkAccountMnemonic]);
+
   let title = null;
   let state = null;
   let prevAction = null;
   if (action === 'create') {
     title = 'Set up account';
-    state = <Create mnemonic={mnemonic} next={() => setAction('confirm')} />;
+    state = <Create mnemonic={newMnemonic} next={() => setAction('confirm')} />;
     prevAction = null;
   } else if (action === 'confirm') {
     title = 'Confirm seed phrase';
-    state = <Confirm mnemonic={mnemonic} confirmMnemonic={confirmMnemonic} />;
+    state = <Confirm mnemonic={newMnemonic} confirmMnemonic={confirmMnemonic} />;
     prevAction = 'create';
   } else if (action === 'restore') {
     title = 'Restore account';
@@ -68,6 +82,10 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
   } else if (action === 'generate') {
     title = 'Create account';
     state = <Generate generate={generate} account={account} connectWallet={connectWallet} />;
+    prevAction = null;
+  } else if (action === 'password') {
+    title = 'Create password';
+    state = <Password confirmPassword={confirmPassword} />;
     prevAction = null;
   } else {
     title = 'Set up account';

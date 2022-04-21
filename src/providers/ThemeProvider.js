@@ -13,6 +13,7 @@ const darkPurple = '#2A1B5B';
 const orange = '#EF8726';
 const orangeLight = '#FAE4DA';
 const orangeExtraLight = '#FFFAEE';
+const red = '#EF102A';
 
 const light = {
   color: {
@@ -91,6 +92,7 @@ const light = {
       color: {
         default: darkGrey,
         focus: blue,
+        error: red,
       },
     },
     text: {

@@ -59,7 +59,7 @@ export default ({
         ) : (
           <RowSpaceBetween>
             <AccountTitle>Wallet</AccountTitle>
-            <Button small onClick={() => change(changeAccount)}>Connect</Button>
+            <Button $small onClick={() => change(changeAccount)}>Connect</Button>
           </RowSpaceBetween>
         )}
       </AccountContainer>
@@ -96,7 +96,7 @@ export default ({
         ) : (
           <RowSpaceBetween>
             <AccountTitle>Zero knowledge account</AccountTitle>
-            <Button small onClick={() => change(changeZkAccount)}>Create</Button>
+            <Button $small onClick={() => change(changeZkAccount)}>Create</Button>
           </RowSpaceBetween>
         )}
       </AccountContainer>
