@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
-export default ({ children, isOpen, onClose, title, onBack }) => {
+export default ({ children, isOpen, onClose, title, onBack, width }) => {
   const theme = useTheme();
   const customStyles = {
     content: {
@@ -33,7 +33,7 @@ export default ({ children, isOpen, onClose, title, onBack }) => {
       contentLabel={title}
       appElement={document.body}
     >
-      <ModalContent>
+      <ModalContent width={width}>
         <Title>{title}</Title>
         {onBack && <BackIcon onClick={onBack} />}
         {onClose && <CrossIcon onClick={onClose} />}
@@ -47,8 +47,8 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 420px;
-  padding: 26px 25px 32px;
+  width: ${props => props.width ? `${props.width}px` : '420px'};
+  padding: 26px;
   box-sizing: border-box;
   position: relative;
 `;

@@ -6,6 +6,7 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Input from 'components/Input';
+import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
 import { ZkAccountContext } from 'contexts';
 
@@ -15,10 +16,12 @@ export default () => {
   const { zkAccount, balance, transfer, isLoadingState } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
   const onTransfer = useCallback(() => {
+    setIsConfirmModalOpen(false);
     setAmount('');
     setReceiver('');
     transfer(receiver, amount);
@@ -36,7 +39,7 @@ export default () => {
     } else if (receiver.length !== 63) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button onClick={onTransfer}>Transfer</Button>;
+      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
     }
   } else {
     button = <AccountSetUpButton />;
@@ -51,6 +54,15 @@ export default () => {
         onChange={handleReceiverChange}
       />
       {button}
+      <ConfirmTransactionModal
+        title="Transfer confirmation"
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={onTransfer}
+        amount={amount}
+        receiver={receiver}
+        isPoolToken={true}
+      />
     </Card>
   );
 };

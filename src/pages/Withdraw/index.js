@@ -9,6 +9,7 @@ import { ZkAccountContext } from 'contexts';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Input from 'components/Input';
+import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
 const note = 'Amount withdrawn from zero knowledge pool will be deposited to the selected account.';
 
@@ -16,10 +17,12 @@ export default () => {
   const { zkAccount, balance, withdraw, isLoadingState } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
   const onWihdrawal = useCallback(() => {
+    setIsConfirmModalOpen(false);
     setAmount('');
     setReceiver('');
     withdraw(receiver, amount);
@@ -37,7 +40,7 @@ export default () => {
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button onClick={onWihdrawal}>Withdraw</Button>;
+      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Withdraw</Button>;
     }
   } else {
     button = <AccountSetUpButton />;
@@ -52,6 +55,15 @@ export default () => {
         onChange={handleReceiverChange}
       />
       {button}
+      <ConfirmTransactionModal
+        title="Withdrawal confirmation"
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={onWihdrawal}
+        amount={amount}
+        receiver={receiver}
+        isPoolToken={true}
+      />
     </Card>
   );
 };
