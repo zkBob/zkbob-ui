@@ -54,7 +54,10 @@ const deposit = async (signer, account, amount, setTxStatus) => {
   setTxStatus(TX_STATUSES.WAITING_FOR_APPROVAL);
   await tx.wait();
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = (data) => signer.signMessage(ethers.utils.arrayify(data));
+  const signFunction = (data) => {
+    setTxStatus(TX_STATUSES.SIGN_MESSAGE);
+    return signer.signMessage(ethers.utils.arrayify(data));
+  };
   const jobId = await account.deposit(TOKEN_ADDRESS, parseEther(amount), signFunction);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
