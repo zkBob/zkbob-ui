@@ -116,7 +116,7 @@ const TokenIcon = styled.img`
 `;
 
 const ActionName = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${({ theme }) => theme.text.color.primary};
 `;
 

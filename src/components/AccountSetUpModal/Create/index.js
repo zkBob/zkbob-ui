@@ -69,7 +69,7 @@ const Number = styled(Word)`
 `;
 
 const Description = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
   line-height: 20px;
   text-align: center;
@@ -81,7 +81,7 @@ const Warning = styled.div`
   color: ${({ theme }) => theme.warning.text.color};
   border-radius: 16px;
   padding: 16px 24px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   margin-left: -7px;
   margin-right: -7px;

@@ -32,7 +32,7 @@ const Title = styled.span`
 `;
 
 const Note = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   color: ${props => props.theme.card.note.color};
   font-weight: ${props => props.theme.text.weight.normal};

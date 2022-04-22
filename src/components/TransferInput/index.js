@@ -78,7 +78,7 @@ const Input = styled.input`
 `;
 
 const SmallText = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.transferInput.text.weight.small};
   line-height: 20px;

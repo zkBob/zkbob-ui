@@ -35,7 +35,7 @@ const Container = styled.div`
 `;
 
 const Description = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${({ theme }) => theme.text.color.primary};
   line-height: 20px;
   text-align: center;

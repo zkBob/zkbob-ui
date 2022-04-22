@@ -26,7 +26,7 @@ export default ({ isOpen, onClose, connectors, connectWallet }) => {
 };
 
 const Text = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
   text-align: center;
   line-height: 20px;
@@ -37,7 +37,7 @@ const Text = styled.span`
 `;
 
 const Link = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${({ theme }) => theme.button.link.text.color};
   cursor: pointer;
 `;
