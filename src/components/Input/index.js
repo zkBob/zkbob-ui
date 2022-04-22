@@ -15,6 +15,7 @@ const Input = styled.input`
   height: 60px;
   padding: 0 24px;
   outline: none;
+  transition : border-color 100ms ease-out;
   &::placeholder {
     color: ${props => props.theme.text.color.secondary};
     opacity: 0.6;

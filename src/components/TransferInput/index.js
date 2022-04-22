@@ -53,6 +53,7 @@ const Container = styled.div`
   border: 1px solid ${props => props.theme.input.border.color.default};
   border-radius: 16px;
   padding: 0px 24px;
+  transition : border-color 100ms ease-out;
   &:focus-within {
     border-color: ${props => props.theme.input.border.color.focus};
   }
