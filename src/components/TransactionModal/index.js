@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
+import Button from 'components/Button';
 
 import { TX_STATUSES } from 'constants';
 
@@ -21,9 +23,20 @@ const titles = {
   [TX_STATUSES.REJECTED]: 'Transaction rejected',
 };
 
+const descriptions = {
+  [TX_STATUSES.DEPOSITED]: 'Deposit is completed. You can now transfer funds within the zkPool or withdraw.',
+  [TX_STATUSES.TRANSFERRED]: 'Your shDAI transfer has been completed within the zero knowledge pool.',
+  [TX_STATUSES.WITHDRAWN]: 'Your shDAI withdrawal from the zero knowledge pool has been completed.',
+};
+
 const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];
 
 export default ({ isOpen, onClose, status }) => {
+  const history = useHistory();
+  const goTo = useCallback(path => {
+    onClose();
+    history.push(path);
+  }, [history, onClose]);
   return (
     <Modal
       isOpen={isOpen}
@@ -35,6 +48,33 @@ export default ({ isOpen, onClose, status }) => {
         else if (status === TX_STATUSES.REJECTED) return <CrossIcon />
         else return <Spinner />;
       })()}
+      {descriptions[status] && (
+        <Description>{descriptions[status]}</Description>
+      )}
+      {status === TX_STATUSES.DEPOSITED && (
+        <>
+          <TransferButton onClick={() => goTo('/transfer')}>Transfer</TransferButton>
+          <WithdrawButton onClick={() => goTo('/withdraw')}>Withdraw</WithdrawButton>
+        </>
+      )}
     </Modal>
   );
 };
+
+const Description = styled.span`
+  font-size: 14px;
+  color: ${props => props.theme.text.color.secondary};
+  text-align: center;
+  line-height: 20px;
+  margin: 16px 0;
+`;
+
+const TransferButton = styled(Button)`
+  margin-bottom: 16px;
+  width: 100%;
+`;
+
+const WithdrawButton = styled(Button)`
+  background: ${props => props.theme.color.blueLight};
+  width: 100%;
+`;

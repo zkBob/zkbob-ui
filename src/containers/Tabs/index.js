@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import Tabs from 'components/Tabs';
 
 const tabs = [
@@ -11,11 +11,14 @@ const tabs = [
 
 export default () => {
   const history = useHistory();
-  const [activeTab, setActiveTab] = useState(tabs.findIndex(item => item.path === history.location.pathname));
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(null);
   const handleTabClick = useCallback(index => {
     history.push(tabs[index].path);
-    setActiveTab(index);
-  }, []);
+  }, [history]);
+  useEffect(() => {
+    setActiveTab(tabs.findIndex(item => item.path === location.pathname));
+  }, [location]);
   return (
     <>
       <Tabs
