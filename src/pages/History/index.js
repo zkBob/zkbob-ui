@@ -1,16 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import ReactTooltip from 'react-tooltip';
+import moment from 'moment';
 
 import Card from 'components/Card';
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
+import Pagination from 'components/Pagination';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 
 import { ZkAccountContext } from 'contexts';
-
-import { shortAddress } from 'utils';
 
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
@@ -22,26 +23,54 @@ const actions = {
   1: {
     name: 'Deposit',
     icon: depositIcon,
+    sign: '+',
   },
   2: {
     name: 'Transfer',
     icon: transferIcon,
+    sign: '+',
   },
   3: {
     name: 'Transfer',
     icon: transferIcon,
+    sign: '-',
   },
   4: {
     name: 'Withdrawal',
     icon: withdrawIcon,
+    sign: '-',
   },
+  5: {
+    name: 'Transfer',
+    icon: transferIcon,
+    sign: '',
+  }
 };
+
+const ONE_DAY = 86400000;
+
+function getDateFormat(timestamp) {
+  const time = moment(timestamp * 1000);
+  if (moment().diff(time) > ONE_DAY) {
+    return time.format('MMM D, YYYY');
+  } else {
+    return time.fromNow();
+  }
+}
 
 export default () => {
   const { history, zkAccount, isLoadingZkAccount, isLoadingHistory } = useContext(ZkAccountContext);
+
+  const pageSize = 7;
+  const [currentPage, setCurrentPage] = useState(1);
+  const onPageChange = page => {
+    setCurrentPage(page);
+  };
+
   const isLoading = isLoadingZkAccount || isLoadingHistory;
   const isHistoryEmpty = !(history?.length > 0);
   const title = 'History';
+
   return (
     <Card title={(!isLoading && !isHistoryEmpty) ? title : null}>
       {(isLoading || isHistoryEmpty || !zkAccount) && (
@@ -59,24 +88,35 @@ export default () => {
       {(!isLoading && !zkAccount) && (
         <AccountSetUpButton />
       )}
-      {!isHistoryEmpty && history.map((item, index) =>
-        <Row key={index}>
-          <Section>
-            <ActionLabel>
-              <ActionIcon src={actions[item.type].icon} />
-              <ActionName>{actions[item.type].name}</ActionName>
-            </ActionLabel>
-          </Section>
-          <Section>
-            <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
-            <Amount>{[1, 2].includes(item.type) ? '+' : '-'}{ethers.utils.formatUnits(item.amount, 9)} {item.type === 1 ? 'DAI' : 'shDAI'}</Amount>
-          </Section>
-          <Section>
-            <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
-              {shortAddress(item.txHash)}
-            </Link>
-          </Section>
-        </Row>
+      {!isHistoryEmpty && (
+        <>
+          {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
+            <Row key={index}>
+              <ActionLabel data-tip={actions[item.type].name}>
+                <img src={actions[item.type].icon} />
+                <ReactTooltip place="top" backgroundColor="#2A1B5B" effect="solid" />
+              </ActionLabel>
+              <AmountContainer>
+                <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
+                <Amount>
+                  {actions[item.type].sign}{' '}
+                  {ethers.utils.formatUnits(item.amount, 9)} {item.type === 1 ? 'DAI' : 'shDAI'}
+                </Amount>
+              </AmountContainer>
+              <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
+                {item.txHash.substring(0, 6)}...
+              </Link>
+              <Date>
+                {getDateFormat(item.timestamp)}
+              </Date>
+            </Row>
+          )}
+          <Pagination
+            currentPage={currentPage}
+            numberOfPages={Math.ceil(history.length / pageSize)}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
       )}
     </Card>
   );
@@ -85,28 +125,24 @@ export default () => {
 const Row = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const Section = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 1;
-  &:last-child {
-    justify-content: flex-end;
+  padding-right: 14px;
+  &:hover {
+    background: rgba(27, 77, 235, 0.05);
+    border-radius: 12px;
   }
 `;
 
 const ActionLabel = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
   border: 1px solid ${({ theme }) => theme.input.border.color.default};
-  border-radius: 10px;
-  padding: 8px;
-`;
-
-const ActionIcon = styled.img`
-  margin-right: 8px;
+  border-radius: 12px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin-right: 20px;
+  background-color: ${props => props.theme.color.white};
 `;
 
 const TokenIcon = styled.img`
@@ -115,14 +151,18 @@ const TokenIcon = styled.img`
   height: 24px;
 `;
 
-const ActionName = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.text.color.primary};
-`;
-
 const Amount = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.primary};
+`;
+
+const Date = styled.span`
+  font-size: 16px;
+  color: ${({ theme }) => theme.text.color.secondary};
+  opacity: 60%;
+  width: 115px;
+  margin-left: 10px;
+  text-align: end;
 `;
 
 const Title = styled.span`
@@ -137,4 +177,10 @@ const Description = styled.span`
   line-height: 22px;
   color: ${({ theme }) => theme.text.color.secondary};
   text-align: center;
+`;
+
+const AmountContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
 `;
