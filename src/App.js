@@ -37,7 +37,6 @@ const GlobalStyle = createGlobalStyle`
     position: relative;
     overflow: hidden;
     min-height: 100vh;
-    padding: 14px 40px 40px;
     box-sizing: border-box;
     background-image: ${props => props.theme.background};
   }
