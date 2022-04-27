@@ -63,9 +63,6 @@ export default () => {
 
   const pageSize = 7;
   const [currentPage, setCurrentPage] = useState(1);
-  const onPageChange = page => {
-    setCurrentPage(page);
-  };
 
   const isLoading = isLoadingZkAccount || isLoadingHistory;
   const isHistoryEmpty = !(history?.length > 0);
