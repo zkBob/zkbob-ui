@@ -56,15 +56,13 @@ const Content = () => {
   return (
     <>
       <Gradient />
-      {(showWelcome && location.pathname === '/') && (
-        <BackgroundImages>
-          <AliceImage src={aliceImage} />
-          <BobImage src={bobImage} />
-          <Robot1Image src={robot1Image} />
-          <Robot2Image src={robot2Image} />
-          <Robot3Image src={robot3Image} />
-        </BackgroundImages>
-      )}
+      <BackgroundImages $show={showWelcome && location.pathname === '/'}>
+        <AliceImage src={aliceImage} />
+        <BobImage src={bobImage} />
+        <Robot1Image src={robot1Image} />
+        <Robot2Image src={robot2Image} />
+        <Robot3Image src={robot3Image} />
+      </BackgroundImages>
       <Layout>
         <Header />
         <PageContainer>
@@ -117,6 +115,10 @@ const BackgroundImages = styled.div`
   position: absolute;
   width: 100vw;
   height: 800px;
+  mix-blend-mode: darken;
+  visibility: ${props => props.$show ? 'visible' : 'hidden'};
+  opacity: ${props => props.$show ? 1 : 0};
+  transition: visibility 0.05s linear 0.05s, opacity 0.05s linear 0.05s;
 `;
 
 const AliceImage = styled.img`
@@ -141,7 +143,6 @@ const Robot1Image = styled.img`
   position: absolute;
   top: 60px;
   right: 25%;
-  mix-blend-mode: darken;
   opacity: 0.4;
   filter: blur(4px);
 `;
@@ -152,7 +153,6 @@ const Robot2Image = styled.img`
   position: absolute;
   top: 117px;
   left: 15%;
-  mix-blend-mode: darken;
   opacity: 0.6;
   filter: blur(3px);
 `;
@@ -163,7 +163,6 @@ const Robot3Image = styled.img`
   position: absolute;
   bottom: 77px;
   right: 23%;
-  mix-blend-mode: darken;
   opacity: 0.2;
   filter: blur(2px);
 `;
