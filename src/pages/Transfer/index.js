@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
@@ -7,25 +7,38 @@ import Card from 'components/Card';
 import Button from 'components/Button';
 import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
+import LatestAction from 'components/LatestAction';
 
 import { ZkAccountContext } from 'contexts';
 
 const note = 'This transfer will happen within ZeroPool and will be truly private.';
 
 export default () => {
-  const { zkAccount, balance, transfer, isLoadingState } = useContext(ZkAccountContext);
+  const { zkAccount, balance, transfer, isLoadingState, history } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [latestAction, setLatestAction] = useState(null);
+
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
   }, []);
+
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setAmount('');
     setReceiver('');
     transfer(receiver, amount);
   }, [receiver, amount, transfer]);
+
+  useEffect(() => {
+    let latestAction = null;
+    if (history?.length) {
+      latestAction = history.find(item => [2, 3, 5].includes(item.type));
+    }
+    setLatestAction(latestAction);
+  }, [history]);
+
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
@@ -45,24 +58,34 @@ export default () => {
     button = <AccountSetUpButton />;
   }
   return (
-    <Card title="Transfer" note={note}>
-      <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
-      <Input
-        placeholder="Enter ZeroPool address of receiver"
-        secondary
-        value={receiver}
-        onChange={handleReceiverChange}
-      />
-      {button}
-      <ConfirmTransactionModal
-        title="Transfer confirmation"
-        isOpen={isConfirmModalOpen}
-        onClose={() => setIsConfirmModalOpen(false)}
-        onConfirm={onTransfer}
-        amount={amount}
-        receiver={receiver}
-        isPoolToken={true}
-      />
-    </Card>
+    <>
+      <Card title="Transfer" note={note}>
+        <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
+        <Input
+          placeholder="Enter ZeroPool address of receiver"
+          secondary
+          value={receiver}
+          onChange={handleReceiverChange}
+        />
+        {button}
+        <ConfirmTransactionModal
+          title="Transfer confirmation"
+          isOpen={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+          onConfirm={onTransfer}
+          amount={amount}
+          receiver={receiver}
+          isPoolToken={true}
+        />
+      </Card>
+      {latestAction && (
+        <LatestAction
+          type="Transfer"
+          isPoolToken={true}
+          amount={latestAction.amount}
+          txHash={latestAction.txHash}
+        />
+      )}
+    </>
   );
 };
