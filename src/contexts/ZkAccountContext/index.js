@@ -35,6 +35,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     let zkAccount = null;
     let zkAccountId = null;
     if (mnemonic) {
+      setBalance(0);
+      setHistory(null);
       setIsLoadingZkAccount(true);
       zkAccount = await zp.createAccount(mnemonic);
       zkAccountId = ethers.utils.id(mnemonic);
