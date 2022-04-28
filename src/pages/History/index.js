@@ -13,6 +13,8 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 
 import { ZkAccountContext } from 'contexts';
 
+import { formatNumber } from 'utils';
+
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
 import transferIcon from 'assets/transfer.svg';
@@ -97,7 +99,7 @@ export default () => {
                 <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
                 <Amount>
                   {actions[item.type].sign}{' '}
-                  {ethers.utils.formatUnits(item.amount, 9)} {item.type === 1 ? 'DAI' : 'shDAI'}
+                  {formatNumber(ethers.utils.formatUnits(item.amount, 9), 8)} {item.type === 1 ? 'DAI' : 'shDAI'}
                 </Amount>
               </AmountContainer>
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
