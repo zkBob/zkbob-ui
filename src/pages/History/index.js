@@ -110,11 +110,13 @@ export default () => {
               </Date>
             </Row>
           )}
-          <Pagination
-            currentPage={currentPage}
-            numberOfPages={Math.ceil(history.length / pageSize)}
-            setCurrentPage={setCurrentPage}
-          />
+          {history.length > pageSize && (
+            <Pagination
+              currentPage={currentPage}
+              numberOfPages={Math.ceil(history.length / pageSize)}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
         </>
       )}
     </Card>
