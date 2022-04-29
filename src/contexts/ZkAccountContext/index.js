@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 
-import { TransactionModalContext, ModalContext } from 'contexts';
+import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'contexts';
 
 import { TX_STATUSES } from 'constants';
 
@@ -23,6 +23,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { library } = useWeb3React();
   const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
+  const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(0);
@@ -89,11 +90,12 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.deposit(library.getSigner(0), zkAccount, amount, setTxStatus);
       toast.success(`Deposited ${amount} DAI.`);
       updateBalance();
+      setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [zkAccount, updateBalance, library, openTxModal, setTxStatus]);
+  }, [zkAccount, updateBalance, library, openTxModal, setTxStatus, updateTokenBalance]);
 
   const transfer = useCallback(async (to, amount) => {
     openTxModal();
@@ -113,11 +115,12 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.withdraw(zkAccount, to, amount, setTxStatus);
       toast.success(`Withdrawn ${amount} DAI.`);
       updateBalance();
+      setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [zkAccount, updateBalance, openTxModal, setTxStatus]);
+  }, [zkAccount, updateBalance, openTxModal, setTxStatus, updateTokenBalance]);
 
   const generateAddress = useCallback(() => {
     if (!zkAccount) return;

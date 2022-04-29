@@ -8,11 +8,11 @@ import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 const ContextsProvider = ({ children }) => (
   <TransactionModalContextProvider>
     <ModalContextProvider>
-      <ZkAccountContextProvider>
-        <TokenBalanceContextProvider>
-            {children}
-        </TokenBalanceContextProvider>
-      </ZkAccountContextProvider>
+      <TokenBalanceContextProvider>
+        <ZkAccountContextProvider>
+              {children}
+        </ZkAccountContextProvider>
+      </TokenBalanceContextProvider>
     </ModalContextProvider>
   </TransactionModalContextProvider>
 );
