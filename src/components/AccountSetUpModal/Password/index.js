@@ -8,14 +8,17 @@ export default ({ confirmPassword }) => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState(null);
+
   const handlePasswordChange = useCallback(e => {
     setError(null);
     setPassword(e.target.value);
   }, []);
+
   const handlePasswordConfirmationChange = useCallback(e => {
     setError(null);
     setPasswordConfirmation(e.target.value);
   }, []);
+
   const confirm = useCallback(() => {
     if (!password || password.length < 6 || password !== passwordConfirmation) {
       setError('Wrong password');
@@ -23,8 +26,15 @@ export default ({ confirmPassword }) => {
       confirmPassword(password);
     }
   }, [password, passwordConfirmation, confirmPassword]);
+
+  const handleKeyPress = useCallback(event => {
+    if(event.key === 'Enter'){
+      confirm();
+    }
+  }, [confirm]);
+
   return (
-    <Container>
+    <Container onKeyPress={handleKeyPress}>
       <Description>
         To enhance security, password entry is required each<br /> time a page reloads.
       </Description>
