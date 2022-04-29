@@ -78,6 +78,9 @@ const Input = styled.input`
   &::placeholder {
     color: ${props => props.theme.transferInput.text.color.placeholder};
   }
+  &:focus::placeholder {
+    color: transparent;
+  }
 `;
 
 const SmallText = styled.span`
