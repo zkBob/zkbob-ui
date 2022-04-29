@@ -88,7 +88,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     state = <Password confirmPassword={confirmPassword} />;
     prevAction = null;
   } else {
-    title = 'Set up account';
+    title = 'zkAccount';
     state = (
       <>
         <OptionContainer>
