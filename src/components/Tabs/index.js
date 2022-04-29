@@ -37,4 +37,7 @@ const Tab = styled.div`
   color: ${props => props.theme.text.color[props.active ? 'primary' : 'secondary']};
   font-weight: ${props => props.theme.text.weight.bold};
   cursor: pointer;
+  &:hover {
+    color: ${props => props.theme.text.color.primary};
+  }
 `;
