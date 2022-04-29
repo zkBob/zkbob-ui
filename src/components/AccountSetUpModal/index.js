@@ -119,7 +119,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     <Modal
       isOpen={isOpen}
       onClose={closeModal}
-      onBack={() => setAction(prevAction)}
+      onBack={action ? () => setAction(prevAction) : null}
       title={title}
     >
       {state}
