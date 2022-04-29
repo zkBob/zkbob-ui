@@ -139,16 +139,16 @@ const light = {
   mnemonic: {
     background: {
       default: white,
-      active: purple,
+      active: grey,
     },
     border: {
       default: darkGrey,
-      active: purple,
+      active: grey,
     },
     text: {
       color: {
         default: darkPurple,
-        active: white,
+        active: darkGrey,
       },
     },
   },
