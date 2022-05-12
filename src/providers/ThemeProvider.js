@@ -33,6 +33,7 @@ const light = {
     color: {
       primary: darkPurple,
       secondary: textNormal,
+      error: red,
     },
     weight: {
       normal: 400,
