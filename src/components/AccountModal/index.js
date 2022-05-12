@@ -15,7 +15,7 @@ import { shortAddress, formatNumber } from 'utils';
 
 export default ({
   isOpen, onClose, account = '', zkAccount, zkAccountId,
-  changeAccount, changeZkAccount, connector,
+  changeAccount, changeZkAccount, connector, logout,
   balance, poolBalance, privateAddress, generatePrivateAddress,
 }) => {
   const change = useCallback(cb => {
@@ -67,10 +67,15 @@ export default ({
         {zkAccount ? (
           <>
             <RowSpaceBetween>
-              <AccountTitle>Zero knowledge account</AccountTitle>
-              <Button type="link" onClick={() => change(changeZkAccount)}>
-                Change
-              </Button>
+              <AccountTitle>zkAccount</AccountTitle>
+              <Row>
+                <Button type="link" onClick={() => change(changeZkAccount)} style={{ marginRight: 20 }}>
+                  Change
+                </Button>
+                <Button type="link" onClick={logout}>
+                  Log out
+                </Button>
+              </Row>
             </RowSpaceBetween>
             <RowSpaceBetween>
               <Row>
@@ -95,7 +100,7 @@ export default ({
           </>
         ) : (
           <RowSpaceBetween>
-            <AccountTitle>Zero knowledge account</AccountTitle>
+            <AccountTitle>zkAccount</AccountTitle>
             <Button $small onClick={() => change(changeZkAccount)}>Create</Button>
           </RowSpaceBetween>
         )}

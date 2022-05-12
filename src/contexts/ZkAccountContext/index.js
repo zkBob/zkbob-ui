@@ -145,12 +145,21 @@ export const ZkAccountContextProvider = ({ children }) => {
     loadZkAccount(mnemonic);
   }, [loadZkAccount]);
 
+  const removeZkAccountMnemonic = useCallback(async () => {
+    window.localStorage.removeItem('seed');
+    setZkAccount(null);
+    setZkAccountId(null);
+    setBalance(0);
+    setHistory([]);
+  }, []);
+
   return (
     <ZkAccountContext.Provider
       value={{
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory,
+        removeZkAccountMnemonic,
       }}
     >
       {children}

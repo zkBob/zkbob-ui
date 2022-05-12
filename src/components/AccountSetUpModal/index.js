@@ -157,6 +157,7 @@ const Description = styled(Title)`
   text-align: center;
   font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
+  font-weight: ${({ theme }) => theme.text.weight.normal};
   line-height: 20px;
 `;
 
