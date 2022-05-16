@@ -10,7 +10,7 @@ import Card from 'components/Card';
 import Button from 'components/Button';
 import LatestAction from 'components/LatestAction';
 
-const note = 'DAI from your account will be deposited to your ZeroPool address via relayer.';
+const note = 'DAI from your account will be converted to Shielded DAI (shDAI) and deposited to your account inside the zero knowledge pool.';
 
 export default () => {
   const { account } = useWeb3React();
@@ -38,7 +38,7 @@ export default () => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button $loading disabled>Loading zero pool state...</Button>
+          else if (isLoadingState) return <Button $loading disabled>Updating zero pool state...</Button>
           else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
           else if (amount > balance) return <Button disabled>Insufficient DAI balance</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;

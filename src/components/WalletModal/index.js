@@ -19,7 +19,8 @@ export default ({ isOpen, onClose, connectors, connectWallet }) => {
         </WalletConnector>
       )}
       <Text>
-        By connecting a wallet, you agree to zkBob <Link>Terms of Service</Link>
+        By connecting a wallet, you agree to zkBob<br />
+        <Link>Terms of Service</Link>
       </Text>
     </Modal>
   );

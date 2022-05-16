@@ -7,7 +7,7 @@ import Modal from 'components/Modal';
 import daiIcon from 'assets/dai.svg';
 import zpDaiIcon from 'assets/zp-dai.svg';
 
-export default ({ isOpen, onClose, onConfirm, title, amount, receiver, isPoolToken }) => {
+export default ({ isOpen, onClose, onConfirm, title, amount, receiver, isPoolToken, isZkAddress }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -23,7 +23,7 @@ export default ({ isOpen, onClose, onConfirm, title, amount, receiver, isPoolTok
             <TokenSymbol>{isPoolToken ? 'shDAI' : 'DAI'}</TokenSymbol>
           </AmountContainer>
           <SmallText>
-            send to
+            send to {isZkAddress ? 'zkBob address' : ''}
           </SmallText>
           <Receiver>{receiver}</Receiver>
         </DetailsContainer>

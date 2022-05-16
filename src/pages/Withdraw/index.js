@@ -12,7 +12,7 @@ import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 
-const note = 'Amount withdrawn from zero knowledge pool will be deposited to the selected account.';
+const note = 'shDAI is withdrawn from the zero knowledge pool and deposited as DAI into the selected account.';
 
 export default () => {
   const { zkAccount, balance, withdraw, isLoadingState, history } = useContext(ZkAccountContext);
@@ -43,7 +43,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button $loading disabled>Loading zero pool state...</Button>;
+      button = <Button $loading disabled>Updating zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount > balance) {

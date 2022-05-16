@@ -11,7 +11,7 @@ import LatestAction from 'components/LatestAction';
 
 import { ZkAccountContext } from 'contexts';
 
-const note = 'This transfer will happen within ZeroPool and will be truly private.';
+const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
   const { zkAccount, balance, transfer, isLoadingState, history } = useContext(ZkAccountContext);
@@ -42,7 +42,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button $loading disabled>Loading zero pool state...</Button>;
+      button = <Button $loading disabled>Updating zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount > balance) {
@@ -62,7 +62,7 @@ export default () => {
       <Card title="Transfer" note={note}>
         <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
         <Input
-          placeholder="Enter ZeroPool address of receiver"
+          placeholder="Enter address of zkBob receiver"
           secondary
           value={receiver}
           onChange={handleReceiverChange}
@@ -76,6 +76,7 @@ export default () => {
           amount={amount}
           receiver={receiver}
           isPoolToken={true}
+          isZkAddress={true}
         />
       </Card>
       {latestAction && (

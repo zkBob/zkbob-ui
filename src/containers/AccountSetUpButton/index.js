@@ -7,6 +7,6 @@ import Button from 'components/Button';
 export default () => {
   const { openAccountSetUpModal } = useContext(ModalContext);
   const { isLoadingZkAccount } = useContext(ZkAccountContext);
-  const text = isLoadingZkAccount ? 'Loading zero knowledge account...' : 'Get started!';
+  const text = isLoadingZkAccount ? 'Loading zkAccount...' : 'Get started!';
   return <Button $loading={isLoadingZkAccount} disabled={isLoadingZkAccount} onClick={openAccountSetUpModal}>{text}</Button>;
 }

@@ -56,7 +56,7 @@ export default ({
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
           >
-            {isLoadingZkAccount ? 'Loading account' : 'zkAccount'}
+            {isLoadingZkAccount ? 'Loading zkAccount' : 'zkAccount'}
           </Button>
         )}
       </AccountSection>
