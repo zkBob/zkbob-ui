@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 
 import Card from 'components/Card';
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
 import Pagination from 'components/Pagination';
+import Tooltip from 'components/Tooltip';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 
@@ -91,10 +91,11 @@ export default () => {
         <>
           {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
             <Row key={index}>
-              <ActionLabel data-tip={actions[item.type].name}>
-                <img src={actions[item.type].icon} />
-                <ReactTooltip place="top" backgroundColor="#2A1B5B" effect="solid" />
-              </ActionLabel>
+              <Tooltip content={actions[item.type].name}>
+                <ActionLabel>
+                  <img src={actions[item.type].icon} />
+                </ActionLabel>
+              </Tooltip>
               <AmountContainer>
                 <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
                 <Amount>
