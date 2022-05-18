@@ -6,6 +6,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
 import PrivateAddress from 'components/PrivateAddress';
+import Tooltip from 'components/Tooltip';
 import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import daiIcon from 'assets/dai.svg';
@@ -44,7 +45,10 @@ export default ({
               </Row>
               <TokenContainer>
                 <TokenIcon src={daiIcon} />
-                {formatNumber(balance)} DAI
+                <Tooltip content={balance} placement="top">
+                  <span>{formatNumber(balance)}</span>
+                </Tooltip>
+                <span style={{ marginLeft: 5 }}>DAI</span>
               </TokenContainer>
             </RowSpaceBetween>
             <Row>
@@ -84,7 +88,10 @@ export default ({
               </Row>
               <TokenContainer>
                 <TokenIcon src={zpDaiIcon} />
-                {formatNumber(poolBalance)} shDAI
+                <Tooltip content={poolBalance} placement="top">
+                  <span>{formatNumber(poolBalance)}</span>
+                </Tooltip>
+                <span style={{ marginLeft: 5 }}>shDAI</span>
               </TokenContainer>
             </RowSpaceBetween>
             {privateAddress ? (

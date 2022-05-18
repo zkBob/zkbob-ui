@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 import moment from 'moment';
 
 import Card from 'components/Card';
@@ -91,7 +90,7 @@ export default () => {
         <>
           {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
             <Row key={index}>
-              <Tooltip content={actions[item.type].name}>
+              <Tooltip content={actions[item.type].name} delay={0.3}>
                 <ActionLabel>
                   <img src={actions[item.type].icon} />
                 </ActionLabel>
@@ -100,7 +99,10 @@ export default () => {
                 <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
                 <Amount>
                   {actions[item.type].sign}{' '}
-                  {formatNumber(ethers.utils.formatUnits(item.amount, 9), 8)} {item.type === 1 ? 'DAI' : 'shDAI'}
+                  <Tooltip content={item.amount} placement="top">
+                    <span>{formatNumber(item.amount)}</span>
+                  </Tooltip>
+                  {' '}{item.type === 1 ? 'DAI' : 'shDAI'}
                 </Amount>
               </AmountContainer>
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>

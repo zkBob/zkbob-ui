@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
@@ -36,7 +37,12 @@ export default ({
               <>
                 {connector && <Icon src={connector.icon} />}
                 <Address>{shortAddress(account)}</Address>
-                <Balance>{formatNumber(balance)} DAI</Balance>
+                <Balance>
+                  <Tooltip content={balance} placement="bottom">
+                    <span>{formatNumber(balance)}</span>
+                  </Tooltip>
+                  {' '}DAI
+                </Balance>
               </>
             )}
             {(account && zkAccount) && <Divider />}
@@ -44,7 +50,12 @@ export default ({
               <>
                 <ZkAvatar seed={zkAccountId} size={16} />
                 <Address><ZkName seed={zkAccountId} /></Address>
-                <Balance>{formatNumber(poolBalance)} shDAI</Balance>
+                <Balance>
+                  <Tooltip content={poolBalance} placement="bottom">
+                    <span>{formatNumber(poolBalance)}</span>
+                  </Tooltip>
+                  {' '}shDAI
+                </Balance>
               </>
             )}
           </AccountLabel>

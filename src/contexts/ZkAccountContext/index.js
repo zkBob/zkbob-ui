@@ -77,7 +77,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (zkAccount) {
       setIsLoadingHistory(true);
       history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
-      history = history.reverse();
+      history = history.reverse().map(item => ({ ...item, amount: Number(formatUnits(BigNumber.from(item.amount), 9)) }));
       console.log('History:', history);
     }
     setHistory(history);

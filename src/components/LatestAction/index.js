@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 import { useHistory } from 'react-router-dom';
 
 import Link from 'components/Link';
 import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
 
@@ -19,7 +19,10 @@ export default ({ type, isPoolToken, amount, txHash }) => {
         <Action>Latest {type}:</Action>
         <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
         <Amount>
-          {formatNumber(ethers.utils.formatUnits(amount, 9))} {isPoolToken ? 'shDAI' : 'DAI'}
+          <Tooltip content={amount} placement="top">
+            <span>{formatNumber(amount)}</span>
+          </Tooltip>
+          {' '}{isPoolToken ? 'shDAI' : 'DAI'}
         </Amount>
         <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
           {shortAddress(txHash)}
