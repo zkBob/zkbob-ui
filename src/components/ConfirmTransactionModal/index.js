@@ -47,7 +47,7 @@ const Container = styled.div`
 `;
 
 const SmallText = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   text-align: center;
   margin: 8px 0 11px;
