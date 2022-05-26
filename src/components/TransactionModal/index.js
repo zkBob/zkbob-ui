@@ -43,6 +43,11 @@ export default ({ isOpen, onClose, status }) => {
       onClose={[...SUCCESS_STATUSES, TX_STATUSES.REJECTED].includes(status) ? onClose : null}
       title={titles[status]}
     >
+      {status === TX_STATUSES.SIGN_MESSAGE && (
+        <SignDescription>
+          You need to sign a message to prove the ownership of the account from which the deposit will be made.
+        </SignDescription>
+      )}
       {(() => {
         if (SUCCESS_STATUSES.includes(status)) return <CheckIcon />
         else if (status === TX_STATUSES.REJECTED) return <CrossIcon />
@@ -67,6 +72,10 @@ const Description = styled.span`
   text-align: center;
   line-height: 20px;
   margin: 16px 0;
+`;
+
+const SignDescription = styled(Description)`
+  margin-top: -10px;
 `;
 
 const TransferButton = styled(Button)`
