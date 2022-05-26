@@ -13,7 +13,8 @@ export default ({ children, content, placement = 'left', delay = 0.5, ...props }
       lineHeight: '16px',
       padding: '8px 16px',
       borderRadius: '4px',
-      backgroundColor: '#2A1B5B'
+      backgroundColor: '#2A1B5B',
+      width: props.width,
     }}
     {...props}
   >

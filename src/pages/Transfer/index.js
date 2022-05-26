@@ -63,6 +63,7 @@ export default () => {
         <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
         <Input
           placeholder="Enter address of zkBob receiver"
+          hint="The address can be generated in the account modal window"
           secondary
           value={receiver}
           onChange={handleReceiverChange}
