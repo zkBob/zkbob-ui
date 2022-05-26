@@ -43,12 +43,19 @@ const light = {
   },
   button: {
     primary: {
-      background: blue,
+      background: {
+        default: blue,
+        disabled: 'rgba(27, 77, 235, 0.2)',
+        contrast: 'rgba(27, 77, 235, 0.1)',
+      },
       border: {
         color: darkGrey,
       },
       text: {
-        color: white,
+        color: {
+          default: white,
+          contrast: darkPurple,
+        },
         size: {
           small: '16px',
           default: '20px',

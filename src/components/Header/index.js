@@ -64,6 +64,7 @@ export default ({
           <Button
             $small
             $loading={isLoadingZkAccount}
+            $contrast
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
           >

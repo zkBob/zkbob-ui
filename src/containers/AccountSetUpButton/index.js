@@ -8,5 +8,14 @@ export default () => {
   const { openAccountSetUpModal } = useContext(ModalContext);
   const { isLoadingZkAccount } = useContext(ZkAccountContext);
   const text = isLoadingZkAccount ? 'Loading zkAccount...' : 'Get started!';
-  return <Button $loading={isLoadingZkAccount} disabled={isLoadingZkAccount} onClick={openAccountSetUpModal}>{text}</Button>;
+  return (
+    <Button
+      $loading={isLoadingZkAccount}
+      $contrast
+      disabled={isLoadingZkAccount}
+      onClick={openAccountSetUpModal}
+    >
+      {text}
+    </Button>
+  );
 }

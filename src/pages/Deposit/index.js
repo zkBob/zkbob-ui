@@ -38,7 +38,7 @@ export default () => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button $loading disabled>Updating zero pool state...</Button>
+          else if (isLoadingState) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
           else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
           else if (amount > balance) return <Button disabled>Insufficient DAI balance</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
