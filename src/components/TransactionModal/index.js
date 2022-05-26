@@ -24,7 +24,7 @@ const titles = {
 };
 
 const descriptions = {
-  [TX_STATUSES.DEPOSITED]: 'Deposit is completed. You can now transfer funds within the zkPool or withdraw.',
+  [TX_STATUSES.DEPOSITED]: 'Deposit is completed. You can now transfer funds within the zero knowledge pool or withdraw.',
   [TX_STATUSES.TRANSFERRED]: 'Your shDAI transfer has been completed within the zero knowledge pool.',
   [TX_STATUSES.WITHDRAWN]: 'Your shDAI withdrawal from the zero knowledge pool has been completed.',
 };
