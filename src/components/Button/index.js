@@ -22,7 +22,7 @@ const Button = styled.button`
   background: ${props =>
     props.theme.button.primary.background[props.disabled ? (props.$contrast ? 'contrast' : 'disabled') : 'default']
   };
-  color: ${props => props.theme.button.primary.text.color[props.$contrast ? 'contrast' : 'default']};
+  color: ${props => props.theme.button.primary.text.color[props.disabled && props.$contrast ? 'contrast' : 'default']};
   font-size: ${props => props.theme.button.primary.text.size[props.$small ? 'small' : 'default']};
   font-weight: ${props => props.theme.button.primary.text.weight[props.$small ? 'small' : 'default']};
   padding: ${props => props.$small ? '8px 16px' : '0'};
