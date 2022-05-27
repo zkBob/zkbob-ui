@@ -16,6 +16,7 @@ export default ({ children, content, placement = 'left', delay = 0.5, ...props }
       backgroundColor: '#2A1B5B',
       width: props.width,
     }}
+    overlayStyle={{ opacity: 1 }}
     {...props}
   >
     {children}
