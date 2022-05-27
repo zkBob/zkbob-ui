@@ -17,14 +17,14 @@ const titles = {
   [TX_STATUSES.WAITING_FOR_APPROVAL]: 'Waiting for approval transaction',
   [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
-  [TX_STATUSES.DEPOSITED]: 'Deposit complete',
-  [TX_STATUSES.TRANSFERRED]: 'Transfer complete',
-  [TX_STATUSES.WITHDRAWN]: 'Withdrawal complete',
-  [TX_STATUSES.REJECTED]: 'Transaction rejected',
+  [TX_STATUSES.DEPOSITED]: 'Deposit is completed',
+  [TX_STATUSES.TRANSFERRED]: 'Transfer is completed',
+  [TX_STATUSES.WITHDRAWN]: 'Withdrawal is completed',
+  [TX_STATUSES.REJECTED]: 'Transaction was rejected',
 };
 
 const descriptions = {
-  [TX_STATUSES.DEPOSITED]: 'Deposit is completed. You can now transfer funds within the zero knowledge pool or withdraw.',
+  [TX_STATUSES.DEPOSITED]: 'To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.',
   [TX_STATUSES.TRANSFERRED]: 'Your shDAI transfer has been completed within the zero knowledge pool.',
   [TX_STATUSES.WITHDRAWN]: 'Your shDAI withdrawal from the zero knowledge pool has been completed.',
 };
@@ -57,10 +57,7 @@ export default ({ isOpen, onClose, status }) => {
         <Description>{descriptions[status]}</Description>
       )}
       {status === TX_STATUSES.DEPOSITED && (
-        <>
-          <TransferButton onClick={() => goTo('/transfer')}>Transfer</TransferButton>
-          <WithdrawButton onClick={() => goTo('/withdraw')}>Withdraw</WithdrawButton>
-        </>
+        <OkButton onClick={onClose}>Got it!</OkButton>
       )}
     </Modal>
   );
@@ -78,12 +75,6 @@ const SignDescription = styled(Description)`
   margin-top: -10px;
 `;
 
-const TransferButton = styled(Button)`
-  margin-bottom: 16px;
-  width: 100%;
-`;
-
-const WithdrawButton = styled(Button)`
-  background: ${props => props.theme.color.blueLight};
+const OkButton = styled(Button)`
   width: 100%;
 `;
