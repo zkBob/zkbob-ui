@@ -45,7 +45,7 @@ export default ({ isOpen, onClose, status }) => {
     >
       {status === TX_STATUSES.SIGN_MESSAGE && (
         <SignDescription>
-          You need to sign a message to prove the ownership of the account from which the deposit will be made.
+          You need to sign a message allowing the contract to use your tokens for the deposit.
         </SignDescription>
       )}
       {(() => {

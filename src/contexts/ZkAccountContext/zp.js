@@ -1,11 +1,12 @@
 import { ethers, Contract } from 'ethers';
-import wasmPath from 'libzeropool-rs-wasm-web/libzeropool_rs_wasm_bg.wasm';
+import wasmPath from 'libzkbob-rs-wasm-web/libzkbob_rs_wasm_bg.wasm';
 import workerPath from 'zeropool-client-js/lib/worker.js?asset';
 import { init as initZeroPool, ZeropoolClient } from 'zeropool-client-js';
 import { deriveSpendingKey } from 'zeropool-client-js/lib/utils';
 import { EvmNetwork } from 'zeropool-client-js/lib/networks/evm';
 
 import { TX_STATUSES } from 'constants';
+import { createPermitSignature } from 'utils/token';
 
 import transferParamsUrl from 'assets/zp-params/transfer_params.bin';
 import treeParamsUrl from 'assets/zp-params/tree_update_params.bin';
@@ -48,17 +49,18 @@ const createAccount = async mnemonic => {
 
 const deposit = async (signer, account, amount, setTxStatus) => {
   setTxStatus(TX_STATUSES.APPROVE_TOKENS);
-  const tokenABI = ['function approve(address,uint256)'];
+  const tokenABI = [
+    'function name() view returns (string)',
+    'function nonces(address) view returns (uint256)',
+  ];
   const token = new Contract(TOKEN_ADDRESS, tokenABI, signer);
-  const tx = await token.approve(POOL_ADDRESS, parseEther(amount));
-  setTxStatus(TX_STATUSES.WAITING_FOR_APPROVAL);
-  await tx.wait();
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = (data) => {
+  const signFunction = (deadline, value) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
-    return signer.signMessage(ethers.utils.arrayify(data));
+    return createPermitSignature(token, signer, POOL_ADDRESS, value, deadline);
   };
-  const jobId = await account.deposit(TOKEN_ADDRESS, parseEther(amount), signFunction);
+  const myAddress = await signer.getAddress();
+  const jobId = await account.depositPermittable(TOKEN_ADDRESS, parseEther(amount), signFunction, myAddress, '0');
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   setTxStatus(TX_STATUSES.DEPOSITED);
