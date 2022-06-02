@@ -1,4 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
+import { verifyShieldedAddress } from 'zeropool-client-js/lib/utils';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
@@ -49,7 +50,7 @@ export default () => {
       button = <Button disabled>Insufficient shDAI balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
-    } else if (receiver.length !== 63) {
+    } else if (!verifyShieldedAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
       button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
