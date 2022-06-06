@@ -7943,10 +7943,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web@0.3.13:
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.3.13.tgz#fd65214c7711acf2a2b4fca3b14f4e812a153246"
-  integrity sha512-L4IXzbmbPIAmGh3e+jQ4u0UKdbpoL344KosShDjZtjGI/kKwpEsBhWfH9S4UOg7ZoTZyceZUaLokiTeP7WwBYQ==
+libzkbob-rs-wasm-web@0.3.15:
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.3.15.tgz#7a03ead47ccb2be96f31780c51d2c0222880949d"
+  integrity sha512-CKsrf/zukgqfcocIF5QhnrG/uswbL808NeD3KSO+K9zbbvTW9u28XZt/T1KUP5Z6bpWj0gt9uMUrwK0axCXFjg==
 
 lilconfig@^2.0.3, lilconfig@^2.0.4:
   version "2.0.4"
@@ -12881,14 +12881,14 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-"zeropool-client-js@https://github.com/zkBob/zeropool-client-js#v0.3.3":
-  version "0.3.3"
-  resolved "https://github.com/zkBob/zeropool-client-js#381280fe8a3ec55cd5380ed9d26ba1799af1e676"
+"zeropool-client-js@https://github.com/zkBob/zeropool-client-js#v0.3.4":
+  version "0.3.4"
+  resolved "https://github.com/zkBob/zeropool-client-js#74dff2c696ea9e756eea724595d6a74214bf5c74"
   dependencies:
     comlink "^4.3.1"
     hdwallet-babyjub "^0.0.1"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "0.3.13"
+    libzkbob-rs-wasm-web "0.3.15"
     regenerator-runtime "^0.13.9"
     web3 "^1.7.0"
     web3-eth-personal "^1.7.0"
