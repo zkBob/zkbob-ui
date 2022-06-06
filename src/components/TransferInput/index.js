@@ -8,7 +8,9 @@ import zpDaiIcon from 'assets/zp-dai.svg';
 
 export default ({ amount, setAmount, balance, isPoolToken }) => {
   const handleAmountChange = useCallback(value => {
-    setAmount(value);
+    if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
+      setAmount(value);
+    }
   }, [setAmount]);
   return (
     <Container>
@@ -16,7 +18,6 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
         placeholder={0}
         value={amount}
         onChange={e => handleAmountChange(e.target.value)}
-        type="number"
       />
       <Column>
         <TokenContainer>
@@ -33,7 +34,12 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
               Balance: {balance} DAI
             </SmallText>
           )}
-          <MaxButton type="link" onClick={() => handleAmountChange(balance)}>Max</MaxButton>
+          <MaxButton
+            type="link"
+            onClick={() => handleAmountChange(String(balance))}
+          >
+            Max
+          </MaxButton>
         </Row>
       </Column>
     </Container>
