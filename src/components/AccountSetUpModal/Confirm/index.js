@@ -5,21 +5,23 @@ import shuffle from 'lodash.shuffle';
 import Button from 'components/Button';
 
 export default ({ mnemonic, confirmMnemonic }) => {
-  const [shuffled] = useState(shuffle(mnemonic.split(' ')));
+  const [shuffled] = useState(
+    shuffle(mnemonic.split(' ').map((word, index) => ({ word, index })))
+  );
   const [repeated, setRepeated] = useState([]);
   const [match, setMatch] = useState(false);
-  const addWord = useCallback(word => {
-    const index = repeated.indexOf(word);
+  const addWord = useCallback(wordObj => {
+    const index = repeated.map(({ index }) => index).indexOf(wordObj.index);
     const newRepeated = [...repeated];
     if (index > -1) {
       newRepeated.splice(index, 1);
     } else {
-      newRepeated.push(word);
+      newRepeated.push(wordObj);
     }
     setRepeated(newRepeated);
   }, [repeated]);
   useEffect(() => {
-    const match = mnemonic === repeated.join(' ');
+    const match = mnemonic === repeated.map(({ word }) => word).join(' ');
     setMatch(match);
   }, [mnemonic, repeated]);
   return (
@@ -28,17 +30,19 @@ export default ({ mnemonic, confirmMnemonic }) => {
         Please input your seed phrase to verify it
       </Description>
       <MnemonicInput>
-        {repeated.map(word => <Word key={word}>{word}</Word>)}
+        {repeated.map(wordObj =>
+          <Word key={wordObj.index}>{wordObj.word}</Word>
+        )}
       </MnemonicInput>
       <Words>
-        {shuffled.map(word =>
+        {shuffled.map(wordObj =>
           <Word
-            key={`${word}-shuffled`}
-            active={repeated.includes(word)}
+            key={`shuffled-${wordObj.index}`}
+            active={repeated.map(({ index }) => index).includes(wordObj.index)}
             clickable
-            onClick={() => addWord(word)}
+            onClick={() => addWord(wordObj)}
           >
-            {word}
+            {wordObj.word}
           </Word>
         )}
       </Words>
