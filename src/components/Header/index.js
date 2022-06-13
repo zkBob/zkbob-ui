@@ -7,6 +7,8 @@ import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
+import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
+import SpinnerDefault from 'components/Spinner';
 
 import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS } from 'constants';
@@ -14,7 +16,7 @@ import { NETWORKS } from 'constants';
 export default ({
   openWalletModal, connector, isLoadingZkAccount,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
-  balance, poolBalance, zkAccountId,
+  balance, poolBalance, zkAccountId, refresh, isRefreshing,
 }) => {
   const logos = {
     100: <GnosisChainLogo />
@@ -34,7 +36,7 @@ export default ({
         {(account || zkAccount) && (
           <AccountLabel onClick={openAccountModal}>
             {account && (
-              <>
+              <Row $refreshing={isRefreshing}>
                 {connector && <Icon src={connector.icon} />}
                 <Address>{shortAddress(account)}</Address>
                 <Balance>
@@ -43,19 +45,27 @@ export default ({
                   </Tooltip>
                   {' '}DAI
                 </Balance>
-              </>
+              </Row>
             )}
             {(account && zkAccount) && <Divider />}
             {zkAccount && (
               <>
-                <ZkAvatar seed={zkAccountId} size={16} />
-                <Address><ZkName seed={zkAccountId} /></Address>
-                <Balance>
-                  <Tooltip content={poolBalance} placement="bottom">
-                    <span>{formatNumber(poolBalance)}</span>
-                  </Tooltip>
-                  {' '}shDAI
-                </Balance>
+                <Row $refreshing={isRefreshing}>
+                  <ZkAvatar seed={zkAccountId} size={16} />
+                  <Address><ZkName seed={zkAccountId} /></Address>
+                  <Balance>
+                    <Tooltip content={poolBalance} placement="bottom">
+                      <span>{formatNumber(poolBalance)}</span>
+                    </Tooltip>
+                    {' '}shDAI
+                  </Balance>
+                </Row>
+                <Divider />
+                {isRefreshing ? (
+                  <Spinner size={18} />
+                ) : (
+                  <RefreshIcon onClick={refresh} />
+                )}
               </>
             )}
           </AccountLabel>
@@ -80,6 +90,7 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  opacity: ${props => props.$refreshing ? 0.2 : 1};
 `;
 
 const LogoSection = styled(Row)`
@@ -129,4 +140,15 @@ const Address = styled.span`
 const Balance = styled.span`
   margin-left: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
+`;
+
+const Spinner = styled(SpinnerDefault)`
+  path {
+    stroke: ${props => props.theme.text.color.primary};
+    stroke-width: 10;
+  }
+  circle {
+    stroke: #FFF;
+    stroke-width: 10;
+  }
 `;
