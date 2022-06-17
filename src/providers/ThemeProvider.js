@@ -8,6 +8,7 @@ const purple = '#754CFF';
 const purpleLight = '#8052E0';
 const blue = '#1B4DEB';
 const blueLight = '#1B87EB';
+const blueExtraLight = '#E4EBFF';
 const textNormal = '#6D6489';
 const darkPurple = '#2A1B5B';
 const orange = '#EF8726';
@@ -28,6 +29,7 @@ const light = {
     orange,
     orangeLight,
     orangeExtraLight,
+    blueExtraLight,
   },
   text: {
     color: {

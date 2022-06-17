@@ -3,6 +3,7 @@ import { verifyShieldedAddress } from 'zeropool-client-js/lib/utils';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
+import PendingAction from 'containers/PendingAction';
 
 import Card from 'components/Card';
 import Button from 'components/Button';
@@ -15,7 +16,7 @@ import { ZkAccountContext } from 'contexts';
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
-  const { zkAccount, balance, transfer, isLoadingState, history } = useContext(ZkAccountContext);
+  const { zkAccount, balance, transfer, isLoadingState, history, isPending } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -58,7 +59,7 @@ export default () => {
   } else {
     button = <AccountSetUpButton />;
   }
-  return (
+  return isPending ? <PendingAction /> : (
     <>
       <Card title="Transfer" note={note}>
         <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />

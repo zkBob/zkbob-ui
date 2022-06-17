@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
+import PendingAction from 'containers/PendingAction';
 
 import { ZkAccountContext } from 'contexts';
 
@@ -15,7 +16,7 @@ import LatestAction from 'components/LatestAction';
 const note = 'shDAI is withdrawn from the zero knowledge pool and deposited as DAI into the selected account.';
 
 export default () => {
-  const { zkAccount, balance, withdraw, isLoadingState, history } = useContext(ZkAccountContext);
+  const { zkAccount, balance, withdraw, isLoadingState, history, isPending } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -58,7 +59,7 @@ export default () => {
   } else {
     button = <AccountSetUpButton />;
   }
-  return (
+  return isPending ? <PendingAction /> : (
     <>
       <Card title="Withdraw" note={note}>
         <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />

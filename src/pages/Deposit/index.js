@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
+import PendingAction from 'containers/PendingAction';
 
 import { ZkAccountContext, TokenBalanceContext, ModalContext } from 'contexts';
 
@@ -14,15 +15,20 @@ const note = 'DAI from your account will be converted to Shielded DAI (shDAI) an
 
 export default () => {
   const { account } = useWeb3React();
-  const { zkAccount, isLoadingZkAccount, deposit, isLoadingState, history } = useContext(ZkAccountContext);
+  const {
+      zkAccount, isLoadingZkAccount, deposit,
+      isLoadingState, history, isPending,
+    } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(ModalContext);
   const [amount, setAmount] = useState('');
   const [latestAction, setLatestAction] = useState(null);
+
   const onDeposit = useCallback(() => {
     setAmount('');
     deposit(amount);
   }, [amount, deposit]);
+
   useEffect(() => {
     let latestAction = null;
     if (history?.length) {
@@ -30,7 +36,8 @@ export default () => {
     }
     setLatestAction(latestAction);
   }, [history]);
-  return (
+
+  return isPending ? <PendingAction /> : (
     <>
       <Card title="Deposit" note={note}>
         <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={false} />
