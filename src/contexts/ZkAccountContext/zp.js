@@ -1,9 +1,9 @@
 import { ethers, Contract } from 'ethers';
 import wasmPath from 'libzkbob-rs-wasm-web/libzkbob_rs_wasm_bg.wasm';
-import workerPath from 'zeropool-client-js/lib/worker.js?asset';
-import { init as initZeroPool, ZeropoolClient } from 'zeropool-client-js';
-import { deriveSpendingKey } from 'zeropool-client-js/lib/utils';
-import { EvmNetwork } from 'zeropool-client-js/lib/networks/evm';
+import workerPath from 'zkbob-client-js/lib/worker.js?asset';
+import { init as initZkBob, ZkBobClient } from 'zkbob-client-js';
+import { deriveSpendingKey } from 'zkbob-client-js/lib/utils';
+import { EvmNetwork } from 'zkbob-client-js/lib/networks/evm';
 
 import { TX_STATUSES } from 'constants';
 import { createPermitSignature } from 'utils/token';
@@ -30,14 +30,14 @@ const snarkParams = {
 const createAccount = async mnemonic => {
   const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
   const sk = deriveSpendingKey(mnemonic, network);
-  const ctx = await initZeroPool(wasmPath, workerPath, snarkParams);
+  const ctx = await initZkBob(wasmPath, workerPath, snarkParams);
   const tokens = {
     [TOKEN_ADDRESS]: {
       poolAddress: POOL_ADDRESS,
       relayerUrl: RELAYER_URL,
     }
   };
-  return ZeropoolClient.create({
+  return ZkBobClient.create({
     sk,
     tokens,
     snarkParams: ctx.snarkParams,

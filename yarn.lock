@@ -4326,6 +4326,18 @@ copy-to-clipboard@^3, copy-to-clipboard@^3.3.1:
   dependencies:
     toggle-selection "^1.0.6"
 
+copy-webpack-plugin@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-11.0.0.tgz#96d4dbdb5f73d02dd72d0528d1958721ab72e04a"
+  integrity sha512-fX2MWpamkW0hZxMEg0+mYnA40LTosOSa5TqZ9GYIBzyJa9C3QUaMPSE2xAi/buNr8u89SfD9wHSQVBzrRa/SOQ==
+  dependencies:
+    fast-glob "^3.2.11"
+    glob-parent "^6.0.1"
+    globby "^13.1.1"
+    normalize-path "^3.0.0"
+    schema-utils "^4.0.0"
+    serialize-javascript "^6.0.0"
+
 core-js-compat@^3.20.2, core-js-compat@^3.21.0:
   version "3.21.1"
   resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.21.1.tgz#cac369f67c8d134ff8f9bd1623e3bc2c42068c82"
@@ -6378,6 +6390,17 @@ globby@^11.0.1, globby@^11.0.4:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+globby@^13.1.1:
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-13.1.2.tgz#29047105582427ab6eca4f905200667b056da515"
+  integrity sha512-LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ==
+  dependencies:
+    dir-glob "^3.0.1"
+    fast-glob "^3.2.11"
+    ignore "^5.2.0"
+    merge2 "^1.4.1"
+    slash "^4.0.0"
+
 got@9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
@@ -7943,10 +7966,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web@0.3.16:
-  version "0.3.16"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.3.16.tgz#00845301e189db79c29c3e97bdae48e1fd1e13ff"
-  integrity sha512-ocVtuuX5PqoaTbQs1i6VusiKmzDx7L1XG4z9O1qvF7bT2VT2vqrrMBWAnPNcZCbYJp67+AyYoDXBy7WQvqPqug==
+libzkbob-rs-wasm-web@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.4.1.tgz#fcaf303c7115e707da6911f47595c80182e92111"
+  integrity sha512-0yHKa+a/QPsfn31SrovI0An3bX4yrIxnMliD/9eDUKkjt/FdGnpL+82gcS7V9HPDKcUpzzJWkhMIriuZudlO1w==
 
 lilconfig@^2.0.3, lilconfig@^2.0.4:
   version "2.0.4"
@@ -12881,14 +12904,15 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-"zeropool-client-js@https://github.com/zkBob/zeropool-client-js#v0.3.6":
-  version "0.3.6"
-  resolved "https://github.com/zkBob/zeropool-client-js#6720fb02b8e96519e310cfb99e48f641932de294"
+zkbob-client-js@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.4.0.tgz#ce0806009d1082b6a2a9d1a9bf1504424f4341ca"
+  integrity sha512-rrNpQg9VWGMekxe+oEGRJx3JIwKAvo74m0e6eifNaTSLILJzTDbMy3cT5fF7RtA4PKDEpcfFejXyAwxflWk/Dw==
   dependencies:
     comlink "^4.3.1"
     hdwallet-babyjub "^0.0.1"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "0.3.16"
+    libzkbob-rs-wasm-web "0.4.1"
     regenerator-runtime "^0.13.9"
     web3 "^1.7.0"
     web3-eth-personal "^1.7.0"

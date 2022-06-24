@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { verifyShieldedAddress } from 'zeropool-client-js/lib/utils';
+import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';

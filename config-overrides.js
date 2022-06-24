@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   webpack: function(config, env) {
@@ -46,10 +47,26 @@ module.exports = {
     };
     config.plugins = [
       ...config.plugins,
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/zkbob-client-js/lib/*.worker.js', to: "static/media/[name][ext]" }
+        ],
+      }),
       new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
       }),
     ];
     return config;
+  },
+  devServer: function(configFunction) {
+    return function(proxy, allowedHost) {
+      const config = configFunction(proxy, allowedHost);
+      config.headers = {
+        ...config.headers,
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Cross-Origin-Opener-Policy': 'same-origin',
+      };
+      return config;
+    };
   },
 }

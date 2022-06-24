@@ -34,7 +34,7 @@
     "unique-names-generator": "^4.7.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zeropool-client-js": "https://github.com/zkBob/zeropool-client-js#v0.3.6"
+    "zkbob-client-js": "0.4.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -76,6 +76,7 @@
   },
   "devDependencies": {
     "buffer": "^6.0.3",
+    "copy-webpack-plugin": "^11.0.0",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
     "react-app-rewired": "^2.2.1",
