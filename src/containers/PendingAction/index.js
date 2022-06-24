@@ -6,14 +6,14 @@ import HistoryItem from 'components/HistoryItem';
 
 import { ZkAccountContext } from 'contexts';
 
-const note = 'Please do not refresh the page. The status of the transaction will be updated automatically.';
+const note = 'Do not refresh the page for at least 30 seconds! Transaction status will update automatically.';
 
 export default () => {
   const { pendingAction } = useContext(ZkAccountContext);
   return (
     <Card note={note}>
-      <Title>Please wait for the transaction to be completed.</Title>
-      <Description>You can make Deposit, Transfer or Withdrawal after<br /> the transaction is completed.</Description>
+      <Title>Please wait for your transaction to finalize</Title>
+      <Description>You can deposit, transfer or withdraw funds once the<br /> transaction is complete.</Description>
       <HistoryItemContainer>
         {pendingAction && <HistoryItem item={pendingAction} />}
       </HistoryItemContainer>
