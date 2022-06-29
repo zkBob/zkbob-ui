@@ -5,7 +5,8 @@ import Link from 'components/Link';
 import Spinner from 'components/Spinner';
 import Tooltip from 'components/Tooltip';
 
-import { formatNumber, formatDateFromNow } from 'utils';
+import { formatNumber } from 'utils';
+import { useDateFromNow } from 'hooks';
 
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
@@ -41,38 +42,39 @@ const actions = {
   }
 };
 
-export default ({ item }) => (
-  <Row $pending={item.pending}>
-    <Tooltip content={actions[item.type].name} delay={0.3}>
-      <ActionLabel>
-        <img src={actions[item.type].icon} />
-      </ActionLabel>
-    </Tooltip>
-    <AmountContainer>
-      <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
-      <Amount>
-        {actions[item.type].sign}{' '}
-        <Tooltip content={item.amount} placement="top">
-          <span>{formatNumber(item.amount)}</span>
-        </Tooltip>
-        {' '}{item.type === 1 ? 'DAI' : 'shDAI'}
-      </Amount>
-    </AmountContainer>
-    {item.txHash ? (
-      <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
-        {item.txHash.substring(0, 6)}...
-      </Link>
-    ) : (
-      <span></span>
-    )}
-    <DateRow>
-      <Date>
-        {formatDateFromNow(item.timestamp)}
-      </Date>
-      {item.pending && <SpinnerSmall size={22} />}
-    </DateRow>
-  </Row>
-);
+export default ({ item }) => {
+  const date = useDateFromNow(item.timestamp);
+  return (
+    <Row $pending={item.pending}>
+      <Tooltip content={actions[item.type].name} delay={0.3}>
+        <ActionLabel>
+          <img src={actions[item.type].icon} />
+        </ActionLabel>
+      </Tooltip>
+      <AmountContainer>
+        <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
+        <Amount>
+          {actions[item.type].sign}{' '}
+          <Tooltip content={item.amount} placement="top">
+            <span>{formatNumber(item.amount)}</span>
+          </Tooltip>
+          {' '}{item.type === 1 ? 'DAI' : 'shDAI'}
+        </Amount>
+      </AmountContainer>
+      {item.txHash ? (
+        <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
+          {item.txHash.substring(0, 6)}...
+        </Link>
+      ) : (
+        <span></span>
+      )}
+      <DateRow>
+        <Date>{date}</Date>
+        {item.pending && <SpinnerSmall size={22} />}
+      </DateRow>
+    </Row>
+  );
+}
 
 const Row = styled.div`
   display: flex;

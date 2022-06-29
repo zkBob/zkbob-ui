@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export const shortAddress = (string, length = 10) =>
   string.substring(0, length - 4) + '...' + string.substring(string.length - 4);
 
@@ -12,23 +10,4 @@ export const formatNumber = (number) => {
     return '≈ 0'
   }
   return 0;
-}
-
-export const formatDateFromNow = timestamp => {
-  const now = moment();
-  const time = moment(timestamp * 1000);
-  const days = now.diff(time, 'days');
-  const hours = now.diff(time, 'hours');
-  const minutes = now.diff(time, 'minutes');
-  const seconds = now.diff(time, 'seconds');
-
-  if (days > 0) {
-    return time.format('MMM D, YYYY');
-  } else if (hours > 0) {
-    return `${hours}h ago`;
-  } else if (minutes > 0) {
-    return `${minutes}m ago`;
-  } else {
-    return `${seconds}s ago`;
-  }
 }
