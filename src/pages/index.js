@@ -9,6 +9,7 @@ import WalletModal from 'containers/WalletModal';
 import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
+import TermsModal from 'containers/TermsModal';
 
 import ToastContainer from 'components/ToastContainer';
 
@@ -74,6 +75,7 @@ const Content = () => {
         <AccountModal />
         <AccountSetUpModal />
         <PasswordModal />
+        <TermsModal />
         <ToastContainer />
       </Layout>
     </>
