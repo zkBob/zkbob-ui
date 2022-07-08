@@ -14,7 +14,7 @@ const terms = [
   'You are willing to verify your identity upon request',
 ];
 
-export default ({ isOpen, confirm }) => {
+export default ({ isOpen, confirm, cancel }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -29,6 +29,7 @@ export default ({ isOpen, confirm }) => {
           {terms.map((term, index) => <Term key={index}>{term}</Term>)}
         </TermsContainer>
         <Button onClick={confirm}>Agree</Button>
+        <CancelButton type="link" onClick={cancel}>Cancel</CancelButton>
       </Container>
     </Modal>
   );
@@ -75,4 +76,9 @@ const Term = styled(Description)`
     top: -6px;
     font-size: 24px;
   }
+`;
+
+const CancelButton = styled(Button)`
+  display: flex;
+  align-self: center;
 `;
