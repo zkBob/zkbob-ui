@@ -44,7 +44,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
   }, []);
 
   const generate = useCallback(async () => {
-    const message = 'zkAccount';
+    const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
     const signedMessage = (await library.send(
       'personal_sign',
       [ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), account.toLowerCase()],
