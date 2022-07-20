@@ -6,7 +6,7 @@ import Button from 'components/Button';
 import daiIcon from 'assets/dai.svg';
 import zpDaiIcon from 'assets/zp-dai.svg';
 
-export default ({ amount, setAmount, balance, isPoolToken }) => {
+export default ({ amount, setAmount, balance, fee, isPoolToken, setMax }) => {
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       setAmount(value);
@@ -14,12 +14,17 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
   }, [setAmount]);
   return (
     <Container>
-      <Input
-        placeholder={0}
-        value={amount}
-        onChange={e => handleAmountChange(e.target.value)}
-      />
       <Column>
+        <Input
+          placeholder={0}
+          value={amount}
+          onChange={e => handleAmountChange(e.target.value)}
+        />
+        <SmallText>
+          Relayer fee: {fee} {isPoolToken ? 'shDAI' : 'DAI'}
+        </SmallText>
+      </Column>
+      <ColumnEnd>
         <TokenContainer>
           <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
           {isPoolToken ? 'shDAI' : 'DAI'}
@@ -27,7 +32,7 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
         <Row>
           {isPoolToken ? (
             <SmallText>
-              Pool Balance: {balance} shDAI
+              Pool balance: {balance} shDAI
             </SmallText>
           ) : (
             <SmallText>
@@ -36,12 +41,12 @@ export default ({ amount, setAmount, balance, isPoolToken }) => {
           )}
           <MaxButton
             type="link"
-            onClick={() => handleAmountChange(String(balance))}
+            onClick={setMax}
           >
             Max
           </MaxButton>
         </Row>
-      </Column>
+      </ColumnEnd>
     </Container>
   );
 };
@@ -63,6 +68,12 @@ const Container = styled.div`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+`;
+
+const ColumnEnd = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: flex-end;
   padding-left: 15px;
 `;
@@ -78,7 +89,7 @@ const Input = styled.input`
   font-size: 36px;
   color: ${props => props.theme.transferInput.text.color.placeholder};
   font-weight: ${props => props.theme.transferInput.text.weight.default};
-  width: 100px;
+  width: 100%;
   flex: 1;
   outline: none;
   &::placeholder {

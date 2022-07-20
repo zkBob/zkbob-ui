@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { toast } from 'react-toastify';
 import AES from 'crypto-js/aes';
@@ -10,8 +10,9 @@ import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'cont
 import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
+import { TxType } from 'zkbob-client-js';
 
-const { formatUnits } = ethers.utils;
+const { formatEther, parseEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
@@ -29,7 +30,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [balance, setBalance] = useState(0);
   const [history, setHistory] = useState(null);
   const [isPending, setIsPending] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
+  const [pendingActions, setPendingActions] = useState([]);
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -61,37 +62,47 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [loadZkAccount, closePasswordModal]);
 
+  const fromShieldedAmount = useCallback(shieldedAmount => {
+    const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
+    return Number(formatEther(wei));
+  }, [zkAccount]);
+
+  const toShieldedAmount = useCallback(amount => {
+    const wei = BigInt(parseEther(String(amount)));
+    return zkAccount.weiToShieldedAmount(TOKEN_ADDRESS, wei);
+  }, [zkAccount]);
+
   const updateBalance = useCallback(async () => {
     let balance = 0;
     if (zkAccount) {
       setIsLoadingState(true);
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
       console.log('Raw Pool balance:', balance);
-      balance = Number(formatUnits(BigNumber.from(balance), 18));
+      balance = fromShieldedAmount(balance);
       console.log('Pool balance:', balance);
     }
     setBalance(balance);
     setIsLoadingState(false);
-  }, [zkAccount]);
+  }, [zkAccount, fromShieldedAmount]);
 
   const updateHistory = useCallback(async () => {
     let history = [];
     let isPending = false;
-    let pendingAction = null;
+    let pendingActions = [];
     if (zkAccount) {
       setIsLoadingHistory(true);
       history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
-      history = history.reverse().map(item => ({ ...item, amount: Number(formatUnits(BigNumber.from(item.amount), 9)) }));
-      pendingAction = history.find(item => item.pending && item.type !== 2);
-      isPending = !!pendingAction;
+      history = history.reverse().map(item => ({ ...item, amount: fromShieldedAmount(item.amount) }));
+      pendingActions = history.filter(item => item.pending && item.type !== 2);
+      isPending = pendingActions.length > 0;
       console.log('Pending:', isPending);
       console.log('History:', history);
     }
     setHistory(history);
-    setPendingAction(pendingAction);
+    setPendingActions(pendingActions);
     setIsPending(isPending);
     setIsLoadingHistory(false);
-  }, [zkAccount]);
+  }, [zkAccount, fromShieldedAmount]);
 
   const updateBalanceAndHistory = useCallback(() => {
     updateBalance();
@@ -101,7 +112,9 @@ export const ZkAccountContextProvider = ({ children }) => {
   const deposit = useCallback(async (amount) => {
     openTxModal();
     try {
-      await zp.deposit(library.getSigner(0), zkAccount, amount, setTxStatus);
+      const shieldedAmount = toShieldedAmount(amount);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
+      await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
       toast.success(`Deposited ${amount} DAI.`);
       setTimeout(updateBalanceAndHistory, 5000);
       setTimeout(updateTokenBalance, 5000);
@@ -109,24 +122,34 @@ export const ZkAccountContextProvider = ({ children }) => {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [zkAccount, updateBalanceAndHistory, library, openTxModal, setTxStatus, updateTokenBalance]);
+  }, [
+    zkAccount, updateBalanceAndHistory, library, openTxModal,
+    setTxStatus, updateTokenBalance, toShieldedAmount,
+  ]);
 
   const transfer = useCallback(async (to, amount) => {
     openTxModal();
     try {
-      await zp.transfer(zkAccount, to, amount, setTxStatus);
+      const shieldedAmount = toShieldedAmount(amount);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
+      await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Transferred ${amount} shDAI.`);
       setTimeout(updateBalanceAndHistory, 5000);
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [zkAccount, updateBalanceAndHistory, openTxModal, setTxStatus]);
+  }, [
+    zkAccount, updateBalanceAndHistory, openTxModal,
+    setTxStatus, toShieldedAmount,
+  ]);
 
   const withdraw = useCallback(async (to, amount) => {
     openTxModal();
     try {
-      await zp.withdraw(zkAccount, to, amount, setTxStatus);
+      const shieldedAmount = toShieldedAmount(amount);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
+      await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Withdrawn ${amount} DAI.`);
       setTimeout(updateBalanceAndHistory, 5000);
       setTimeout(updateTokenBalance, 5000);
@@ -134,12 +157,36 @@ export const ZkAccountContextProvider = ({ children }) => {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [zkAccount, updateBalanceAndHistory, openTxModal, setTxStatus, updateTokenBalance]);
+  }, [
+    zkAccount, updateBalanceAndHistory, openTxModal,
+    setTxStatus, updateTokenBalance, toShieldedAmount,
+  ]);
 
   const generateAddress = useCallback(() => {
     if (!zkAccount) return;
     return zkAccount.generateAddress(TOKEN_ADDRESS);
   }, [zkAccount]);
+
+  const getMaxTransferable = useCallback(async () => {
+    if (!zkAccount) return null;
+    const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
+    return fromShieldedAmount(max);
+  }, [zkAccount, fromShieldedAmount]);
+
+  const estimateFee = useCallback(async (amount, txType) => {
+    if (!zkAccount) return null;
+    try {
+      const max = await getMaxTransferable();
+      if (txType !== TxType.Deposit && amount > max) {
+        amount = max;
+      }
+      const { total, txCnt } = await zkAccount.feeEstimate(TOKEN_ADDRESS, toShieldedAmount(amount), txType, false);
+      return { fee: fromShieldedAmount(total), numberOfTxs: txCnt };
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }, [zkAccount, toShieldedAmount, fromShieldedAmount, getMaxTransferable]);
 
   const saveZkAccountMnemonic = useCallback(async (mnemonic, password) => {
     const cipherText = await AES.encrypt(mnemonic, password).toString()
@@ -179,8 +226,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       value={{
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount,
-        isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingAction,
+        isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updateBalance, updateHistory,
+        estimateFee, getMaxTransferable,
       }}
     >
       {children}

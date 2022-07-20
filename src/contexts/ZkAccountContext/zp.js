@@ -1,4 +1,4 @@
-import { ethers, Contract } from 'ethers';
+import { Contract } from 'ethers';
 import wasmPath from 'libzkbob-rs-wasm-web/libzkbob_rs_wasm_bg.wasm';
 import workerPath from 'zkbob-client-js/lib/worker.js?asset';
 import { init as initZkBob, ZkBobClient } from 'zkbob-client-js';
@@ -12,8 +12,6 @@ import transferParamsUrl from 'assets/zp-params/transfer_params.bin';
 import treeParamsUrl from 'assets/zp-params/tree_update_params.bin';
 import transferVkUrl from 'assets/zp-params/transfer_verification_key.json?asset';
 import treeVkUrl from 'assets/zp-params/tree_update_verification_key.json?asset';
-
-const { parseEther } = ethers.utils;
 
 const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
@@ -47,7 +45,7 @@ const createAccount = async mnemonic => {
   });
 };
 
-const deposit = async (signer, account, amount, setTxStatus) => {
+const deposit = async (signer, account, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.APPROVE_TOKENS);
   const tokenABI = [
     'function name() view returns (string)',
@@ -60,26 +58,27 @@ const deposit = async (signer, account, amount, setTxStatus) => {
     return createPermitSignature(token, signer, POOL_ADDRESS, value, deadline);
   };
   const myAddress = await signer.getAddress();
-  const jobId = await account.depositPermittable(TOKEN_ADDRESS, parseEther(amount), signFunction, myAddress, '0');
+  const jobId = await account.depositPermittable(TOKEN_ADDRESS, amount, signFunction, myAddress, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 
-const transfer = async (account, to, amount, setTxStatus) => {
+const transfer = async (account, to, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const jobId = await account.transfer(TOKEN_ADDRESS, [{ to, amount: parseEther(amount) }]);
+  const jobId = await account.transferMulti(TOKEN_ADDRESS, to, amount, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   setTxStatus(TX_STATUSES.TRANSFERRED);
 };
 
-const withdraw = async (account, to, amount, setTxStatus) => {
+const withdraw = async (account, to, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const jobId = await account.withdraw(TOKEN_ADDRESS, to, parseEther(amount));
+  const jobId = await account.withdrawMulti(TOKEN_ADDRESS, to, amount, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   setTxStatus(TX_STATUSES.WITHDRAWN);
 };
 
-export default { createAccount, deposit, transfer, withdraw };
+const zp = { createAccount, deposit, transfer, withdraw };
+export default zp;

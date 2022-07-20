@@ -6,20 +6,36 @@ import HistoryItem from 'components/HistoryItem';
 
 import { ZkAccountContext } from 'contexts';
 
-const note = 'Do not refresh the page for at least 30 seconds! Transaction status will update automatically.';
-
 export default () => {
-  const { pendingAction } = useContext(ZkAccountContext);
+  const { pendingActions } = useContext(ZkAccountContext);
+  const multi = pendingActions.length > 1;
   return (
-    <Card note={note}>
-      <Title>Please wait for your transaction to finalize</Title>
-      <Description>You can deposit, transfer or withdraw funds once the<br /> transaction is complete.</Description>
-      <HistoryItemContainer>
-        {pendingAction && <HistoryItem item={pendingAction} />}
-      </HistoryItemContainer>
+    <Card
+      note={
+      `Do not refresh the page for at least 30 seconds! Transaction status${multi ? 'es' : ''} will update automatically.`
+      }
+    >
+      <Title>
+        Please wait for your transaction{multi ? 's' : ''} to finalize
+      </Title>
+      <Description>
+        You can deposit, transfer or withdraw funds once the<br /> transaction{multi ? 's are' : ' is'} complete.
+      </Description>
+      <ListContainer>
+        {pendingActions.map((action, index) =>
+          <HistoryItemContainer key={index}>
+            <HistoryItem item={action} />
+          </HistoryItemContainer>
+        )}
+      </ListContainer>
     </Card>
   );
 }
+
+const ListContainer = styled.div`
+  padding: 0 16px;
+  margin: 18px 0 30px;
+`;
 
 const Title = styled.span`
   font-size: 16px;
@@ -36,6 +52,8 @@ const Description = styled.span`
 `;
 
 const HistoryItemContainer = styled.div`
-  padding: 0 16px;
-  margin: 18px 0 30px;
+  margin-bottom: 12px;
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;

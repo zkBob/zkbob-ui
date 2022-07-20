@@ -1,5 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
+import { TxType } from 'zkbob-client-js';
 
 import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
@@ -13,14 +14,21 @@ import LatestAction from 'components/LatestAction';
 
 import { ZkAccountContext } from 'contexts';
 
+import { useFee } from 'hooks';
+
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
-  const { zkAccount, balance, transfer, isLoadingState, history, isPending } = useContext(ZkAccountContext);
+  const {
+    zkAccount, balance, transfer, isLoadingState,
+    history, isPending, getMaxTransferable,
+  } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState('');
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
+  const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
 
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
@@ -32,6 +40,18 @@ export default () => {
     setReceiver('');
     transfer(receiver, amount);
   }, [receiver, amount, transfer]);
+
+  const setMax = useCallback(async () => {
+    setAmount(maxAmount);
+  }, [maxAmount]);
+
+  useEffect(() => {
+    async function update() {
+      const max = await getMaxTransferable();
+      setMaxAmount(String(max));
+    }
+    update();
+  }, [getMaxTransferable]);
 
   useEffect(() => {
     let latestAction = null;
@@ -47,7 +67,7 @@ export default () => {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
-    } else if (amount > balance) {
+    } else if (amount > maxAmount) {
       button = <Button disabled>Insufficient shDAI balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
@@ -62,7 +82,14 @@ export default () => {
   return isPending ? <PendingAction /> : (
     <>
       <Card title="Transfer" note={note}>
-        <TransferInput balance={balance} amount={amount} setAmount={setAmount} isPoolToken={true} />
+        <TransferInput
+          balance={balance}
+          amount={amount}
+          setAmount={setAmount}
+          isPoolToken={true}
+          fee={fee}
+          setMax={setMax}
+        />
         <Input
           placeholder="Enter address of zkBob receiver"
           hint="The address can be generated in the account modal window"
@@ -80,6 +107,9 @@ export default () => {
           receiver={receiver}
           isPoolToken={true}
           isZkAddress={true}
+          fee={fee}
+          numberOfTxs={numberOfTxs}
+          type="transfer"
         />
       </Card>
       {latestAction && (

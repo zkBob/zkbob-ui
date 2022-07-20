@@ -7,7 +7,10 @@ import Modal from 'components/Modal';
 import daiIcon from 'assets/dai.svg';
 import zpDaiIcon from 'assets/zp-dai.svg';
 
-export default ({ isOpen, onClose, onConfirm, title, amount, receiver, isPoolToken, isZkAddress }) => {
+export default ({
+  isOpen, onClose, onConfirm, title, amount, receiver,
+  isPoolToken, isZkAddress, fee, numberOfTxs, type,
+}) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -25,7 +28,16 @@ export default ({ isOpen, onClose, onConfirm, title, amount, receiver, isPoolTok
           <SmallText>
             send to {isZkAddress ? 'zkBob address' : ''}
           </SmallText>
-          <Receiver>{receiver}</Receiver>
+          <MediumText>{receiver}</MediumText>
+          <SmallText>{type} details</SmallText>
+          <Row>
+            <MediumText>Number of transactions:</MediumText>
+            <MediumText>{numberOfTxs}</MediumText>
+          </Row>
+          <Row>
+            <MediumText>Relayer fee:</MediumText>
+            <MediumText>{fee} {isPoolToken ? 'shDAI' : 'DAI'}</MediumText>
+          </Row>
         </DetailsContainer>
         <Button onClick={onConfirm}>Confirm</Button>
       </Container>
@@ -50,7 +62,7 @@ const SmallText = styled.span`
   font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   text-align: center;
-  margin: 8px 0 11px;
+  margin: 11px 0;
 `;
 
 const TokenIcon = styled.img`
@@ -82,15 +94,22 @@ const DetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 24px 14px;
+  padding: 20px 24px;
   background-color: ${props => props.theme.color.grey};
   border-radius: 12px;
   margin-bottom: 20px;
   overflow-wrap: anywhere;
 `;
 
-const Receiver = styled.span`
+const MediumText = styled.span`
   font-size: 16px;
   text-align: center;
-  color: ${props => props.theme.text.color.primary}
+  color: ${props => props.theme.text.color.primary};
+  margin-bottom: 5px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-self: stretch;
 `;
