@@ -67,7 +67,7 @@ export default () => {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
-    } else if (amount > maxAmount) {
+    } else if (Number(amount) > Number(maxAmount)) {
       button = <Button disabled>Insufficient shDAI balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
