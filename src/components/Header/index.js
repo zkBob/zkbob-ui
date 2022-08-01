@@ -61,11 +61,13 @@ export default ({
                   </Balance>
                 </Row>
                 <Divider />
-                {isRefreshing ? (
-                  <Spinner size={18} />
-                ) : (
-                  <RefreshIcon onClick={refresh} />
-                )}
+                <RefreshButtonContainer onClick={refresh}>
+                  {isRefreshing ? (
+                    <Spinner size={18} />
+                  ) : (
+                    <RefreshIcon />
+                  )}
+                </RefreshButtonContainer>
               </>
             )}
           </AccountLabel>
@@ -114,6 +116,7 @@ const NetworkLabel = styled(Row)`
 
 const AccountLabel = styled(NetworkLabel)`
   cursor: pointer;
+  overflow: hidden;
 `;
 
 const GnosisChainLogo = styled(GnosisChainLogoDefault)`
@@ -151,4 +154,10 @@ const Spinner = styled(SpinnerDefault)`
     stroke: #FFF;
     stroke-width: 10;
   }
+`;
+
+const RefreshButtonContainer = styled.div`
+  height: 18px;
+  margin: -6px -12px -6px -8px;
+  padding: 6px 12px 6px 8px;
 `;
