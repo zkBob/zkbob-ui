@@ -116,7 +116,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
       toast.success(`Deposited ${amount} DAI.`);
-      setTimeout(updateBalanceAndHistory, 5000);
+      updateBalanceAndHistory();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
@@ -134,7 +134,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
       await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Transferred ${amount} shDAI.`);
-      setTimeout(updateBalanceAndHistory, 5000);
+      updateBalanceAndHistory();
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
@@ -151,7 +151,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Withdrawn ${amount} DAI.`);
-      setTimeout(updateBalanceAndHistory, 5000);
+      updateBalanceAndHistory();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
@@ -209,10 +209,13 @@ export const ZkAccountContextProvider = ({ children }) => {
   useEffect(() => {
     if (isPending) {
       const interval = 5000; // 5 seconds
-      const intervalId = setInterval(updateBalanceAndHistory, interval);
+      const intervalId = setInterval(() => {
+        updateBalanceAndHistory();
+        updateTokenBalance();
+      }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, updateBalanceAndHistory]);
+  }, [isPending, updateBalanceAndHistory, updateTokenBalance]);
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');

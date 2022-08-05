@@ -7966,10 +7966,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.5.1.tgz#170e9ab1344d6798bea90b403731b24b6713794d"
-  integrity sha512-cEVO5a42x/ualR3B2pRUyamTocPyXOyOIRR3GNgS7p6YkeffWT7loIleMd59UodCYpiwgHmVma21w+JQdVJrUQ==
+libzkbob-rs-wasm-web@0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.5.2.tgz#e5eba0136881b2f028477b6ec1dd0063c08bb784"
+  integrity sha512-AKQEPYLPXqWxJnR7edyciPw65EYGg9D2rYBIKNYYDm3Pf+Wb0A5HLD3Rqd/1tC2ATBqtZesixavKq7iZWVD+tA==
 
 lilconfig@^2.0.3, lilconfig@^2.0.4:
   version "2.0.4"
@@ -12904,15 +12904,15 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.5.2.tgz#c868c13b0f8a066101efa514bf7db8351bfdf995"
-  integrity sha512-RITvNbNoJrd2Ye4MNMKndC55yA3RzQclQci0KTmMBurbVdnjDrLsliJ+bVQMaOd067nKqfFiRTyJ5hoZHFM9Nw==
+zkbob-client-js@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.5.3.tgz#9469e1b809303cf7131d0de180b65e6e7f59f3cf"
+  integrity sha512-gd5ehuYdICwBXpddXAjU8jejHdYZKcPjYvxpVLQ83lSeHqk1ZHNJ3wzPvOq0j/CvBhU68CASSmuO2v7wuRzAiQ==
   dependencies:
     comlink "^4.3.1"
     hdwallet-babyjub "^0.0.1"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "0.5.1"
+    libzkbob-rs-wasm-web "0.5.2"
     regenerator-runtime "^0.13.9"
     web3 "^1.7.0"
     web3-eth-personal "^1.7.0"
