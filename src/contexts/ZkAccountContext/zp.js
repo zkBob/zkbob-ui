@@ -9,9 +9,9 @@ import { TX_STATUSES } from 'constants';
 import { createPermitSignature } from 'utils/token';
 
 import transferParamsUrl from 'assets/zp-params/transfer_params.bin';
-import treeParamsUrl from 'assets/zp-params/tree_update_params.bin';
+import treeParamsUrl from 'assets/zp-params/tree_params.bin';
 import transferVkUrl from 'assets/zp-params/transfer_verification_key.json?asset';
-import treeVkUrl from 'assets/zp-params/tree_update_verification_key.json?asset';
+import treeVkUrl from 'assets/zp-params/tree_verification_key.json?asset';
 
 const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
@@ -53,12 +53,12 @@ const deposit = async (signer, account, amount, fee, setTxStatus) => {
   ];
   const token = new Contract(TOKEN_ADDRESS, tokenABI, signer);
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = (deadline, value) => {
+  const signFunction = (deadline, value, salt) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
-    return createPermitSignature(token, signer, POOL_ADDRESS, value, deadline);
+    return createPermitSignature(token, signer, POOL_ADDRESS, value, deadline, salt);
   };
   const myAddress = await signer.getAddress();
-  const jobId = await account.depositPermittable(TOKEN_ADDRESS, amount, signFunction, myAddress, fee);
+  const jobId = await account.depositPermittableV2(TOKEN_ADDRESS, amount, signFunction, myAddress, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobCompleted(TOKEN_ADDRESS, jobId);
   setTxStatus(TX_STATUSES.DEPOSITED);

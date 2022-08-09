@@ -1,4 +1,4 @@
-export async function createPermitSignature(tokenContractInstance, signer, spenderAddress, value, deadline) {
+export async function createPermitSignature(tokenContractInstance, signer, spenderAddress, value, deadline, salt) {
   const [ownerAddress, chainId] = await Promise.all([signer.getAddress(), signer.getChainId()]);
   const [contractName, nonce] = await Promise.all([
     tokenContractInstance.name(),
@@ -20,7 +20,8 @@ export async function createPermitSignature(tokenContractInstance, signer, spend
       { name: 'spender', type: 'address' },
       { name: 'value', type: 'uint256' },
       { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' }
+      { name: 'deadline', type: 'uint256' },
+      { name: "salt", type: "bytes32" }
     ],
   };
 
@@ -31,6 +32,7 @@ export async function createPermitSignature(tokenContractInstance, signer, spend
     value: value.toString(),
     nonce: nonce.toString(),
     deadline: deadline.toString(),
+    salt,
   };
 
   return signer._signTypedData(domain, types, message);
