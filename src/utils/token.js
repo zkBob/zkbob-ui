@@ -1,3 +1,17 @@
+import { TOKEN_SYMBOL } from 'constants';
+
+import unshTokenIcon from 'assets/dai.svg';
+import shTokenIcon from 'assets/zp-dai.svg';
+
+export function tokenSymbol(shielded = false) {
+  const prefix = shielded ? 'sh' : '';
+  return prefix + TOKEN_SYMBOL;
+}
+
+export function tokenIcon(shielded = false) {
+  return shielded ? shTokenIcon : unshTokenIcon;
+}
+
 export async function createPermitSignature(tokenContractInstance, signer, spenderAddress, value, deadline, salt) {
   const [ownerAddress, chainId] = await Promise.all([signer.getAddress(), signer.getChainId()]);
   const [contractName, nonce] = await Promise.all([

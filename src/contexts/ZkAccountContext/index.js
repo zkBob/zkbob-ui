@@ -12,6 +12,8 @@ import { TX_STATUSES } from 'constants';
 import zp from './zp.js';
 import { TxType } from 'zkbob-client-js';
 
+import { tokenSymbol } from 'utils/token';
+
 const { formatEther, parseEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
@@ -115,7 +117,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
-      toast.success(`Deposited ${amount} DAI.`);
+      toast.success(`Deposited ${amount} ${tokenSymbol()}.`);
       updateBalanceAndHistory();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -133,7 +135,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
       await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Transferred ${amount} shDAI.`);
+      toast.success(`Transferred ${amount} ${tokenSymbol(true)}.`);
       updateBalanceAndHistory();
     } catch (error) {
       console.log(error);
@@ -150,7 +152,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Withdrawn ${amount} DAI.`);
+      toast.success(`Withdrawn ${amount} ${tokenSymbol()}.`);
       updateBalanceAndHistory();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {

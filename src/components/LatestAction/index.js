@@ -7,22 +7,20 @@ import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
+import { tokenSymbol, tokenIcon } from 'utils/token';
 
-import daiIcon from 'assets/dai.svg';
-import zpDaiIcon from 'assets/zp-dai.svg';
-
-export default ({ type, isPoolToken, amount, txHash }) => {
+export default ({ type, shielded, amount, txHash }) => {
   const history = useHistory();
   return (
     <Row>
       <InnerRow>
         <Action>Latest {type}:</Action>
-        <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
+        <TokenIcon src={tokenIcon(shielded)} />
         <Amount>
           <Tooltip content={amount} placement="top">
             <span>{formatNumber(amount)}</span>
           </Tooltip>
-          {' '}{isPoolToken ? 'shDAI' : 'DAI'}
+          {' '}{tokenSymbol(shielded)}
         </Amount>
         <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
           {shortAddress(txHash)}

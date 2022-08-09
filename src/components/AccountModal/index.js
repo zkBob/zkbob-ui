@@ -9,10 +9,8 @@ import PrivateAddress from 'components/PrivateAddress';
 import Tooltip from 'components/Tooltip';
 import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
-import daiIcon from 'assets/dai.svg';
-import zpDaiIcon from 'assets/zp-dai.svg';
-
 import { shortAddress, formatNumber } from 'utils';
+import { tokenSymbol, tokenIcon } from 'utils/token';
 
 export default ({
   isOpen, onClose, account = '', zkAccount, zkAccountId,
@@ -44,11 +42,11 @@ export default ({
                 <Address>{shortAddress(account)}</Address>
               </Row>
               <TokenContainer>
-                <TokenIcon src={daiIcon} />
+                <TokenIcon src={tokenIcon()} />
                 <Tooltip content={balance} placement="top">
                   <span>{formatNumber(balance)}</span>
                 </Tooltip>
-                <span style={{ marginLeft: 5 }}>DAI</span>
+                <span style={{ marginLeft: 5 }}>{tokenSymbol()}</span>
               </TokenContainer>
             </RowSpaceBetween>
             <Row>
@@ -87,11 +85,11 @@ export default ({
                 <Address><ZkName seed={zkAccountId} /></Address>
               </Row>
               <TokenContainer>
-                <TokenIcon src={zpDaiIcon} />
+                <TokenIcon src={tokenIcon(true)} />
                 <Tooltip content={poolBalance} placement="top">
                   <span>{formatNumber(poolBalance)}</span>
                 </Tooltip>
-                <span style={{ marginLeft: 5 }}>shDAI</span>
+                <span style={{ marginLeft: 5 }}>{tokenSymbol(true)}</span>
               </TokenContainer>
             </RowSpaceBetween>
             {privateAddress ? (

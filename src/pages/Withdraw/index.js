@@ -16,7 +16,9 @@ import LatestAction from 'components/LatestAction';
 
 import { useFee } from 'hooks';
 
-const note = 'shDAI is withdrawn from the zero knowledge pool and deposited as DAI into the selected account.';
+import { tokenSymbol } from 'utils/token';
+
+const note = `${tokenSymbol(true)} is withdrawn from the zero knowledge pool and deposited as ${tokenSymbol()} into the selected account.`;
 
 export default () => {
   const {
@@ -68,7 +70,7 @@ export default () => {
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (Number(amount) > Number(maxAmount)) {
-      button = <Button disabled>Insufficient shDAI balance</Button>;
+      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
@@ -86,7 +88,7 @@ export default () => {
           balance={balance}
           amount={amount}
           setAmount={setAmount}
-          isPoolToken={true}
+          shielded={true}
           fee={fee}
           setMax={setMax}
         />
@@ -104,7 +106,7 @@ export default () => {
           onConfirm={onWihdrawal}
           amount={amount}
           receiver={receiver}
-          isPoolToken={true}
+          shielded={true}
           fee={fee}
           numberOfTxs={numberOfTxs}
           type="withdrawal"
@@ -113,7 +115,7 @@ export default () => {
       {latestAction && (
         <LatestAction
           type="Withdrawal"
-          isPoolToken={true}
+          shielded={true}
           amount={latestAction.amount}
           txHash={latestAction.txHash}
         />

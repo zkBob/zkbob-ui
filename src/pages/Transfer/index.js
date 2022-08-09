@@ -16,6 +16,8 @@ import { ZkAccountContext } from 'contexts';
 
 import { useFee } from 'hooks';
 
+import { tokenSymbol } from 'utils/token';
+
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
@@ -68,7 +70,7 @@ export default () => {
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (Number(amount) > Number(maxAmount)) {
-      button = <Button disabled>Insufficient shDAI balance</Button>;
+      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!verifyShieldedAddress(receiver)) {
@@ -86,7 +88,7 @@ export default () => {
           balance={balance}
           amount={amount}
           setAmount={setAmount}
-          isPoolToken={true}
+          shielded={true}
           fee={fee}
           setMax={setMax}
         />
@@ -105,7 +107,7 @@ export default () => {
           onConfirm={onTransfer}
           amount={amount}
           receiver={receiver}
-          isPoolToken={true}
+          shielded={true}
           isZkAddress={true}
           fee={fee}
           numberOfTxs={numberOfTxs}
@@ -115,7 +117,7 @@ export default () => {
       {latestAction && (
         <LatestAction
           type="Transfer"
-          isPoolToken={true}
+          shielded={true}
           amount={latestAction.amount}
           txHash={latestAction.txHash}
         />

@@ -6,13 +6,12 @@ import Spinner from 'components/Spinner';
 import Tooltip from 'components/Tooltip';
 
 import { formatNumber } from 'utils';
+import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow } from 'hooks';
 
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
 import transferIcon from 'assets/transfer.svg';
-import daiIcon from 'assets/dai.svg';
-import zpDaiIcon from 'assets/zp-dai.svg';
 
 const actions = {
   1: {
@@ -52,13 +51,13 @@ export default ({ item }) => {
         </ActionLabel>
       </Tooltip>
       <AmountContainer>
-        <TokenIcon src={item.type === 1 ? daiIcon : zpDaiIcon} />
+        <TokenIcon src={tokenIcon(item.type !== 1)} />
         <Amount>
           {actions[item.type].sign}{' '}
           <Tooltip content={item.amount} placement="top">
             <span>{formatNumber(item.amount)}</span>
           </Tooltip>
-          {' '}{item.type === 1 ? 'DAI' : 'shDAI'}
+          {' '}{tokenSymbol(item.type !== 1)}
         </Amount>
       </AmountContainer>
       {item.txHash ? (

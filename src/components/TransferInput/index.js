@@ -3,10 +3,9 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 
-import daiIcon from 'assets/dai.svg';
-import zpDaiIcon from 'assets/zp-dai.svg';
+import { tokenSymbol, tokenIcon } from 'utils/token';
 
-export default ({ amount, setAmount, balance, fee, isPoolToken, setMax }) => {
+export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       setAmount(value);
@@ -21,24 +20,18 @@ export default ({ amount, setAmount, balance, fee, isPoolToken, setMax }) => {
           onChange={e => handleAmountChange(e.target.value)}
         />
         <SmallText>
-          Relayer fee: {fee} {isPoolToken ? 'shDAI' : 'DAI'}
+          Relayer fee: {fee} {tokenSymbol(shielded)}
         </SmallText>
       </Column>
       <ColumnEnd>
         <TokenContainer>
-          <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
-          {isPoolToken ? 'shDAI' : 'DAI'}
+          <TokenIcon src={tokenIcon(shielded)} />
+          {tokenSymbol(shielded)}
         </TokenContainer>
         <Row>
-          {isPoolToken ? (
-            <SmallText>
-              Pool balance: {balance} shDAI
-            </SmallText>
-          ) : (
-            <SmallText>
-              Balance: {balance} DAI
-            </SmallText>
-          )}
+          <SmallText>
+            {shielded ? 'Pool balance' : 'Balance'}: {balance} {tokenSymbol(shielded)}
+          </SmallText>
           <MaxButton
             type="link"
             onClick={setMax}

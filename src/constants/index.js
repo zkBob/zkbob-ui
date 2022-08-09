@@ -19,3 +19,5 @@ export const NETWORKS = {
     blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
   },
 };
+
+export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';

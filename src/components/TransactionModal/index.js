@@ -11,6 +11,8 @@ import { TX_STATUSES } from 'constants';
 import { ReactComponent as CheckIcon } from 'assets/check-circle.svg';
 import { ReactComponent as CrossIcon } from 'assets/cross-circle.svg';
 
+import { tokenSymbol } from 'utils/token';
+
 const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
   [TX_STATUSES.SIGN_MESSAGE]: 'Please sign a message',
@@ -25,8 +27,8 @@ const titles = {
 
 const descriptions = {
   [TX_STATUSES.DEPOSITED]: 'To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.',
-  [TX_STATUSES.TRANSFERRED]: 'Your shDAI transfer has been completed within the zero knowledge pool.',
-  [TX_STATUSES.WITHDRAWN]: 'Your shDAI withdrawal from the zero knowledge pool has been completed.',
+  [TX_STATUSES.TRANSFERRED]: `Your ${tokenSymbol(true)} transfer has been completed within the zero knowledge pool.`,
+  [TX_STATUSES.WITHDRAWN]: `Your ${tokenSymbol(true)} withdrawal from the zero knowledge pool has been completed.`,
 };
 
 const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];

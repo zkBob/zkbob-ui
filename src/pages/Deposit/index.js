@@ -14,7 +14,9 @@ import LatestAction from 'components/LatestAction';
 
 import { useFee } from 'hooks';
 
-const note = 'DAI from your account will be converted to Shielded DAI (shDAI) and deposited to your account inside the zero knowledge pool.';
+import { tokenSymbol } from 'utils/token';
+
+const note = `${tokenSymbol()} from your account will be converted to Shielded ${tokenSymbol()} (${tokenSymbol(true)}) and deposited to your account inside the zero knowledge pool.`;
 
 export default () => {
   const { account } = useWeb3React();
@@ -54,7 +56,7 @@ export default () => {
           balance={balance}
           amount={amount}
           setAmount={setAmount}
-          isPoolToken={false}
+          shielded={false}
           fee={fee}
           setMax={setMax}
         />
@@ -64,14 +66,14 @@ export default () => {
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
           else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
-          else if (amount > balance - fee) return <Button disabled>Insufficient DAI balance</Button>
+          else if (amount > balance - fee) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
       {latestAction && (
         <LatestAction
           type="Deposit"
-          isPoolToken={false}
+          shielded={false}
           amount={latestAction.amount}
           txHash={latestAction.txHash}
         />

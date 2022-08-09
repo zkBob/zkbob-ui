@@ -4,12 +4,11 @@ import styled from 'styled-components';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 
-import daiIcon from 'assets/dai.svg';
-import zpDaiIcon from 'assets/zp-dai.svg';
+import { tokenSymbol, tokenIcon } from 'utils/token';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
-  isPoolToken, isZkAddress, fee, numberOfTxs, type,
+  shielded, isZkAddress, fee, numberOfTxs, type,
 }) => {
   return (
     <Modal
@@ -21,9 +20,9 @@ export default ({
       <Container>
         <DetailsContainer>
           <AmountContainer>
-            <TokenIcon src={isPoolToken ? zpDaiIcon : daiIcon} />
+            <TokenIcon src={tokenIcon(shielded)} />
             <Amount>{amount}{' '}</Amount>
-            <TokenSymbol>{isPoolToken ? 'shDAI' : 'DAI'}</TokenSymbol>
+            <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
           </AmountContainer>
           <SmallText>
             send to {isZkAddress ? 'zkBob address' : ''}
@@ -36,7 +35,7 @@ export default ({
           </Row>
           <Row>
             <MediumText>Relayer fee:</MediumText>
-            <MediumText>{fee} {isPoolToken ? 'shDAI' : 'DAI'}</MediumText>
+            <MediumText>{fee} {tokenSymbol(shielded)}</MediumText>
           </Row>
         </DetailsContainer>
         <Button onClick={onConfirm}>Confirm</Button>

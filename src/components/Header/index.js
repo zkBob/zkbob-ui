@@ -11,6 +11,7 @@ import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
 import SpinnerDefault from 'components/Spinner';
 
 import { shortAddress, formatNumber } from 'utils';
+import { tokenSymbol } from 'utils/token';
 import { NETWORKS } from 'constants';
 
 export default ({
@@ -43,7 +44,7 @@ export default ({
                   <Tooltip content={balance} placement="bottom">
                     <span>{formatNumber(balance)}</span>
                   </Tooltip>
-                  {' '}DAI
+                  {' '}{tokenSymbol()}
                 </Balance>
               </Row>
             )}
@@ -57,7 +58,7 @@ export default ({
                     <Tooltip content={poolBalance} placement="bottom">
                       <span>{formatNumber(poolBalance)}</span>
                     </Tooltip>
-                    {' '}shDAI
+                    {' '}{tokenSymbol(true)}
                   </Balance>
                 </Row>
                 <Divider />
