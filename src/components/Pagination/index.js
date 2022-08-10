@@ -10,9 +10,17 @@ export default ({ currentPage, numberOfPages, setCurrentPage }) => (
   <Row>
     <Button type="link" onClick={() => setCurrentPage(1)}>First</Button>
     <InnerRow>
-      <Arrow src={arrowLeft} onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))} />
+      <Arrow
+        $visible={currentPage !== 1}
+        src={arrowLeft}
+        onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+      />
       <Text>Page {currentPage} of {numberOfPages}</Text>
-      <Arrow src={arrowRight} onClick={() => setCurrentPage(Math.min(currentPage + 1, numberOfPages))} />
+      <Arrow
+        $visible={currentPage !== numberOfPages}
+        src={arrowRight}
+        onClick={() => setCurrentPage(Math.min(currentPage + 1, numberOfPages))}
+      />
     </InnerRow>
     <Button type="link" onClick={() => setCurrentPage(numberOfPages)}>Last</Button>
   </Row>
@@ -39,4 +47,5 @@ const Text = styled.div`
 
 const Arrow = styled.img`
   cursor: pointer;
+  visibility: ${props => props.$visible ? 'visible' : 'hidden'};
 `;
