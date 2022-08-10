@@ -13,21 +13,22 @@ export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
   }, [setAmount]);
   return (
     <Container>
-      <Column>
+      <Row>
         <Input
           placeholder={0}
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        <SmallText>
-          Relayer fee: {fee} {tokenSymbol(shielded)}
-        </SmallText>
-      </Column>
-      <ColumnEnd>
         <TokenContainer>
           <TokenIcon src={tokenIcon(shielded)} />
           {tokenSymbol(shielded)}
         </TokenContainer>
+
+      </Row>
+      <Row>
+        <SmallText>
+          Relayer fee: {fee} {tokenSymbol(shielded)}
+        </SmallText>
         <Row>
           <SmallText>
             {shielded ? 'Pool balance' : 'Balance'}: {balance} {tokenSymbol(shielded)}
@@ -39,14 +40,15 @@ export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
             Max
           </MaxButton>
         </Row>
-      </ColumnEnd>
+      </Row>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   height: 100px;
   background: ${props => props.theme.input.background.secondary};
   border: 1px solid ${props => props.theme.input.border.color.default};
@@ -56,19 +58,6 @@ const Container = styled.div`
   &:focus-within {
     border-color: ${props => props.theme.input.border.color.focus};
   }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
-
-const ColumnEnd = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-left: 15px;
 `;
 
 const Row = styled.div`
@@ -115,4 +104,5 @@ const TokenContainer = styled.div`
   align-items: center;
   font-size: 16px;
   padding: 10px 0;
+  margin-left: 15px;
 `;
