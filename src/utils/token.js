@@ -49,5 +49,14 @@ export async function createPermitSignature(tokenContractInstance, signer, spend
     salt,
   };
 
-  return signer._signTypedData(domain, types, message);
+  const signature = await signer._signTypedData(domain, types, message);
+
+  // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
+  const MIN_VALID_V_VALUE = 27;
+  let sigV = parseInt(signature.slice(-2), 16);
+  if (sigV < MIN_VALID_V_VALUE) {
+    sigV += MIN_VALID_V_VALUE
+  }
+
+  return signature.slice(0, -2) + sigV.toString(16);
 }
