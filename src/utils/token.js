@@ -4,8 +4,9 @@ import unshTokenIcon from 'assets/dai.svg';
 import shTokenIcon from 'assets/zp-dai.svg';
 
 export function tokenSymbol(shielded = false) {
-  const prefix = shielded ? 'sh' : '';
-  return prefix + TOKEN_SYMBOL;
+  // const prefix = shielded ? 'sh' : '';
+  // return prefix + TOKEN_SYMBOL;
+  return TOKEN_SYMBOL;
 }
 
 export function tokenIcon(shielded = false) {

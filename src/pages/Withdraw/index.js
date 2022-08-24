@@ -18,7 +18,7 @@ import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 
-const note = `${tokenSymbol(true)} is withdrawn from the zero knowledge pool and deposited as ${tokenSymbol()} into the selected account.`;
+const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
 
 export default () => {
   const {

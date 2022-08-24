@@ -16,7 +16,7 @@ import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 
-const note = `${tokenSymbol()} from your account will be converted to Shielded ${tokenSymbol()} (${tokenSymbol(true)}) and deposited to your account inside the zero knowledge pool.`;
+const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
 export default () => {
   const { account } = useWeb3React();
