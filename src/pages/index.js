@@ -12,6 +12,7 @@ import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 
 import ToastContainer from 'components/ToastContainer';
+import Footer from 'components/Footer';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -70,6 +71,7 @@ const Content = () => {
           <Tabs />
           <Routes showWelcome={showWelcome} />
         </PageContainer>
+        <Footer />
         <TransactionModal />
         <WalletModal />
         <AccountModal />
@@ -92,6 +94,8 @@ const Layout = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 100vh;
+  box-sizing: border-box;
   padding: 14px 40px 40px;
 `;
 
@@ -99,7 +103,8 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 80px;
+  flex: 1;
+  margin: 80px 0;
 `;
 
 const Gradient = styled.div`
