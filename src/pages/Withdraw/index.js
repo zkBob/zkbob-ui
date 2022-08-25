@@ -13,6 +13,7 @@ import Button from 'components/Button';
 import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
+import Limits from 'components/Limits';
 
 import { useFee } from 'hooks';
 
@@ -24,6 +25,7 @@ export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
     history, isPending, getMaxTransferable,
+    limits, isLoadingLimits,
   } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
@@ -65,12 +67,14 @@ export default () => {
 
   let button = null;
   if (zkAccount) {
-    if (isLoadingState) {
+    if (isLoadingState || isLoadingLimits) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (!(amount > 0)) {
       button = <Button disabled>Enter an amount</Button>;
     } else if (Number(amount) > Number(maxAmount)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+    } else if (Number(amount) > limits.dailyWithdrawalLimit.available) {
+      button = <Button disabled>Limit exceeded</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
@@ -112,6 +116,11 @@ export default () => {
           type="withdrawal"
         />
       </Card>
+      <Limits
+        limits={[
+          { name: "Daily withdrawal limit", values: limits.dailyWithdrawalLimit },
+        ]}
+      />
       {latestAction && (
         <LatestAction
           type="Withdrawal"

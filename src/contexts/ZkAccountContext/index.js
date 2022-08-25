@@ -20,6 +20,13 @@ const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
+const defaultLimits = {
+  dailyDepositLimitPerAddress: { total: 10000, available: 10000 },
+  dailyDepositLimit: { total: 100000, available: 100000 },
+  dailyWithdrawalLimit: { total: 100000, available: 100000 },
+  poolSizeLimit: { total: 1000000, available: 1000000 },
+};
+
 export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
@@ -36,6 +43,8 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isLoadingLimits, setIsLoadingLimits] = useState(false);
+  const [limits, setLimits] = useState(defaultLimits);
 
   const loadZkAccount = useCallback(async mnemonic => {
     let zkAccount = null;
@@ -106,10 +115,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsLoadingHistory(false);
   }, [zkAccount, fromShieldedAmount]);
 
-  const updateBalanceAndHistory = useCallback(() => {
+  const updateLimits = useCallback(async () => {
+    let limits = defaultLimits;
+    if (zkAccount) {
+      setIsLoadingLimits(true);
+    }
+    setLimits(limits);
+    setIsLoadingLimits(false);
+  }, [zkAccount]);
+
+  const updatePoolData = useCallback(() => {
     updateBalance();
     updateHistory();
-  }, [updateBalance, updateHistory]);
+    updateLimits();
+  }, [updateBalance, updateHistory, updateLimits]);
 
   const deposit = useCallback(async (amount) => {
     openTxModal();
@@ -118,14 +137,14 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
       toast.success(`Deposited ${amount} ${tokenSymbol()}.`);
-      updateBalanceAndHistory();
+      updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updateBalanceAndHistory, library, openTxModal,
+    zkAccount, updatePoolData, library, openTxModal,
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
@@ -136,13 +155,13 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
       await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Transferred ${amount} ${tokenSymbol(true)}.`);
-      updateBalanceAndHistory();
+      updatePoolData();
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updateBalanceAndHistory, openTxModal,
+    zkAccount, updatePoolData, openTxModal,
     setTxStatus, toShieldedAmount,
   ]);
 
@@ -153,14 +172,14 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
       toast.success(`Withdrawn ${amount} ${tokenSymbol()}.`);
-      updateBalanceAndHistory();
+      updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updateBalanceAndHistory, openTxModal,
+    zkAccount, updatePoolData, openTxModal,
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
@@ -205,19 +224,19 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    updateBalanceAndHistory();
-  }, [updateBalanceAndHistory]);
+    updatePoolData();
+  }, [updatePoolData]);
 
   useEffect(() => {
     if (isPending) {
       const interval = 5000; // 5 seconds
       const intervalId = setInterval(() => {
-        updateBalanceAndHistory();
+        updatePoolData();
         updateTokenBalance();
       }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, updateBalanceAndHistory, updateTokenBalance]);
+  }, [isPending, updatePoolData, updateTokenBalance]);
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');
@@ -233,7 +252,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updateBalance, updateHistory,
-        estimateFee, getMaxTransferable,
+        estimateFee, getMaxTransferable, isLoadingLimits, limits,
       }}
     >
       {children}

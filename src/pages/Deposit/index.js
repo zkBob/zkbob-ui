@@ -11,6 +11,7 @@ import { ZkAccountContext, TokenBalanceContext, ModalContext } from 'contexts';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import LatestAction from 'components/LatestAction';
+import Limits from 'components/Limits';
 
 import { useFee } from 'hooks';
 
@@ -23,6 +24,7 @@ export default () => {
   const {
       zkAccount, isLoadingZkAccount, deposit,
       isLoadingState, history, isPending, estimateFee,
+      isLoadingLimits, limits,
     } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(ModalContext);
@@ -49,6 +51,12 @@ export default () => {
     setLatestAction(latestAction);
   }, [history]);
 
+  const minLimit = Math.min(
+    limits.dailyDepositLimitPerAddress.available,
+    limits.dailyDepositLimit.available,
+    limits.poolSizeLimit.available
+  );
+
   return isPending ? <PendingAction /> : (
     <>
       <Card title="Deposit" note={note}>
@@ -64,12 +72,20 @@ export default () => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
+          else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
           else if (!(amount > 0)) return <Button disabled>Enter an amount</Button>
           else if (amount > balance - fee) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
+          else if (amount > minLimit) return <Button disabled>Limit exceeded</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
+      <Limits
+        limits={[
+          { name: "Daily deposit limit per address", values: limits.dailyDepositLimitPerAddress },
+          { name: "Daily deposit limit", values: limits.dailyDepositLimit },
+          { name: "Pool size limit", values: limits.poolSizeLimit },
+        ]}
+      />
       {latestAction && (
         <LatestAction
           type="Deposit"
