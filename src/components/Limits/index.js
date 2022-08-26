@@ -7,6 +7,7 @@ import Tooltip from 'components/Tooltip';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { tokenSymbol } from 'utils/token';
+import { formatNumber } from 'utils';
 
 export default ({ limits }) => {
   return (
@@ -15,9 +16,9 @@ export default ({ limits }) => {
         <Row key={name}>
           <Name>{name}</Name>
           <InnerRow>
-            <Value>{values.available} {tokenSymbol()}</Value>
+            <Value>{formatNumber(values.available)} {tokenSymbol()}</Value>
             <Tooltip
-              content={`out of ${values.total} ${tokenSymbol()} total`}
+              content={`out of ${formatNumber(values.total)} ${tokenSymbol()} total`}
               placement="right"
               delay={0}
             >

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from 'components/Button';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
+import { formatNumber } from 'utils';
 
 export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
   const handleAmountChange = useCallback(value => {
@@ -31,7 +32,7 @@ export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
         </SmallText>
         <Row>
           <SmallText>
-            {shielded ? 'Pool balance' : 'Balance'}: {balance} {tokenSymbol(shielded)}
+            {shielded ? 'Pool balance' : 'Balance'}: {formatNumber(balance)} {tokenSymbol(shielded)}
           </SmallText>
           <MaxButton
             type="link"
