@@ -174,13 +174,13 @@ const RefreshButtonContainer = styled.div`
 const GetBobLink = styled.a`
   background: transparent;
   border: 1px solid ${props => props.theme.button.link.text.color};
-  font-size: ${props => props.size ? `${props.size}px` : '14px'};;
+  font-size: 16px;
   font-weight: 400;
   cursor: pointer;
   color: ${props => props.theme.button.link.text.color};
   underline: none;
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 16px;
   margin-left: 16px;
   height: 30px;
