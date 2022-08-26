@@ -32,7 +32,7 @@ export default ({
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
         {!account && (
-          <Button style={{ marginRight: 16 }} $small onClick={openWalletModal}>Connect wallet</Button>
+          <Button style={{ marginLeft: 16 }} $small onClick={openWalletModal}>Connect wallet</Button>
         )}
         {(account || zkAccount) && (
           <AccountLabel onClick={openAccountModal}>
@@ -80,10 +80,18 @@ export default ({
             $contrast
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
+            style={{ marginLeft: 16 }}
           >
             {isLoadingZkAccount ? 'Loading zkAccount' : 'zkAccount'}
           </Button>
         )}
+        <GetBobLink
+          href="https://docs.zkbob.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Get {tokenSymbol()}
+        </GetBobLink>
       </AccountSection>
     </Row>
   );
@@ -110,7 +118,6 @@ const NetworkLabel = styled(Row)`
   font-weight: ${props => props.theme.text.weight.normal};
   padding: 8px 12px;
   border-radius: 16px;
-  margin-right: 16px;
   height: 30px;
   box-sizing: border-box;
 `;
@@ -118,6 +125,7 @@ const NetworkLabel = styled(Row)`
 const AccountLabel = styled(NetworkLabel)`
   cursor: pointer;
   overflow: hidden;
+  margin-left: 16px;
 `;
 
 const GnosisChainLogo = styled(GnosisChainLogoDefault)`
@@ -161,4 +169,20 @@ const RefreshButtonContainer = styled.div`
   height: 18px;
   margin: -6px -12px -6px -8px;
   padding: 6px 12px 6px 8px;
+`;
+
+const GetBobLink = styled.a`
+  background: transparent;
+  border: 1px solid ${props => props.theme.button.link.text.color};
+  font-size: ${props => props.size ? `${props.size}px` : '14px'};;
+  font-weight: 400;
+  cursor: pointer;
+  color: ${props => props.theme.button.link.text.color};
+  underline: none;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-left: 16px;
+  height: 30px;
+  box-sizing: border-box;
 `;

@@ -11,7 +11,9 @@ export default props => {
     default:
       return (
         <Button {...props}>
-          {props.$loading && <Spinner {...props} size={props.$small ? 16 : 24} />}
+          {props.$loading &&
+            <Spinner $small={props.$small} $contrast={props.$contrast} size={props.$small ? 16 : 24} />
+          }
           {props.children}
         </Button>
       );
