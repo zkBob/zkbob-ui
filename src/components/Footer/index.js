@@ -39,11 +39,12 @@ export default () => {
         <Column>
           <Logo />
         </Column>
-        {columns.map(column => (
-          <Column>
+        {columns.map((column, index) => (
+          <Column key={index}>
             <Title>{column?.title}</Title>
-            {column?.links.map(link => (
+            {column?.links.map((link, index) => (
               <Link
+                key={index}
                 href={link.href}
                 style={{ color: theme.text.color.secondary }}
               >
