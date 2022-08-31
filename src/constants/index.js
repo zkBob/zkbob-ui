@@ -18,6 +18,20 @@ export const NETWORKS = {
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
   },
+  11155111: {
+    name: 'Sepolia',
+    tokenName: 'SEP',
+    tokenSymbol: 'SEP',
+    rpcUrl: process.env.REACT_APP_RPC_URL,
+    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+  },
+  137: {
+    name: 'Polygon',
+    tokenName: 'MATIC',
+    tokenSymbol: 'MATIC',
+    rpcUrl: process.env.REACT_APP_RPC_URL,
+    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+  },
 };
 
 export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
