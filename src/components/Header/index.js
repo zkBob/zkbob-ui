@@ -102,6 +102,7 @@ const Row = styled.div`
   align-items: center;
   justify-content: space-between;
   opacity: ${props => props.$refreshing ? 0.2 : 1};
+  position: relative;
 `;
 
 const LogoSection = styled(Row)`

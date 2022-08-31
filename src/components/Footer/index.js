@@ -1,88 +1,68 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import Link from 'components/Link';
 
-import { ReactComponent as Logo } from 'assets/logo.svg';
 
-const columns = [
-  null,
+const sections = [
   {
     title: 'Resources',
     links: [
       { name: 'Documentation', href: 'https://docs.zkbob.com/' },
-      { name: 'FAQ', href: 'https://docs.zkbob.com/' },
-    ]
-  },
-  {
-    title: 'Community',
-    links: [
-      { name: 'Telegram', href: 'https://docs.zkbob.com/' },
-      { name: 'GitHub', href: 'https://docs.zkbob.com/' },
+      { name: 'FAQ', href: 'https://docs.zkbob.com/zkbob-overview/faq' },
+      { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
     ]
   },
   {
     title: 'BOB Stable Token',
     links: [
-      { name: 'View contract', href: 'https://docs.zkbob.com/' },
-      { name: 'Buy', href: 'https://docs.zkbob.com/' },
+      {
+        name: 'View contract',
+        href: process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', process.env.REACT_APP_TOKEN_ADDRESS),
+      },
+      { name: 'Get BOB', href: 'https://docs.zkbob.com/' },
     ]
   }
 ];
 
 export default () => {
-  const theme = useTheme();
   return (
     <>
-      <Divider />
-      <Container>
-        <Column>
-          <Logo />
-        </Column>
-        {columns.map((column, index) => (
-          <Column key={index}>
+      <Row>
+        <Title>© zkBob 2022</Title>
+        {sections.map((column, index) => (
+          <InnerRow key={index}>
             <Title>{column?.title}</Title>
             {column?.links.map((link, index) => (
               <Link
                 key={index}
                 href={link.href}
-                style={{ color: theme.text.color.secondary }}
+                style={{ marginLeft: 20 }}
               >
                 {link.name}
               </Link>
             ))}
-          </Column>
+          </InnerRow>
         ))}
-      </Container>
+      </Row>
     </>
   );
 };
 
-const Divider = styled.div`
-  margin: 0 -40px;
-  height: 1px;
-  border-top: 1px solid ${props => props.theme.color.darkGrey};
+const Row = styled.div`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
 `;
 
-const Container = styled.div`
+const InnerRow = styled.div`
   display: flex;
-  padding-top: 30px;
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
-  & > * {
-    margin-bottom: 12px;
-  }
-  & > :last-child {
-    margin-bottom: 0;
-  }
+  align-items: center;
+  margin-left: 60px;
 `;
 
 const Title = styled.span`
   color: ${props => props.theme.text.color.primary};
-  font-weight: ${props => props.theme.text.weight.bold};
+  font-weight: ${props => props.theme.text.weight.normal};
 `;

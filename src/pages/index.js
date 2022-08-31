@@ -57,7 +57,6 @@ const Content = () => {
   const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
   return (
     <>
-      <Gradient />
       <BackgroundImages $show={showWelcome && location.pathname === '/'}>
         <AliceImage src={aliceImage} />
         <BobImage src={bobImage} />
@@ -66,6 +65,7 @@ const Content = () => {
         <Robot3Image src={robot3Image} />
       </BackgroundImages>
       <Layout>
+        <Gradient />
         <Header />
         <PageContainer>
           <Tabs />
@@ -93,10 +93,10 @@ export default () => (
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
-  position: relative;
   min-height: 100vh;
   box-sizing: border-box;
   padding: 14px 40px 40px;
+  background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
 `;
 
 const PageContainer = styled.div`
@@ -105,6 +105,7 @@ const PageContainer = styled.div`
   align-items: center;
   flex: 1;
   margin: 80px 0;
+  position: relative;
 `;
 
 const Gradient = styled.div`
@@ -114,7 +115,7 @@ const Gradient = styled.div`
   left: calc(50% - 270px);
   top: 100px;
   background: linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
-  filter: blur(500px);
+  filter: blur(250px);
   transform: rotate(27.74deg);
 `;
 

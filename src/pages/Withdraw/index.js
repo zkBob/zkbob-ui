@@ -118,7 +118,7 @@ export default () => {
       </Card>
       <Limits
         limits={[
-          { name: "Daily withdrawal limit", values: limits.dailyWithdrawalLimit },
+          { name: "Daily withdrawal", values: limits.dailyWithdrawalLimit },
         ]}
       />
       {latestAction && (
