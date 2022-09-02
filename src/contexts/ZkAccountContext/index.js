@@ -17,14 +17,15 @@ import { tokenSymbol } from 'utils/token';
 const { parseEther, formatEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
+const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
-  dailyDepositLimitPerAddress: { total: parseEther('10000'), available: parseEther('10000') },
-  dailyDepositLimit: { total: parseEther('100000'), available: parseEther('100000') },
-  dailyWithdrawalLimit: { total: parseEther('100000'), available: parseEther('100000') },
-  poolSizeLimit: { total: parseEther('1000000'), available: parseEther('1000000') },
+  dailyDepositLimitPerAddress: { total: parseEther('10000'), available: parseEther('0') },
+  dailyDepositLimit: { total: parseEther('100000'), available: parseEther('0') },
+  dailyWithdrawalLimit: { total: parseEther('100000'), available: parseEther('0') },
+  poolSizeLimit: { total: parseEther('1000000'), available: parseEther('0') },
 };
 
 export default ZkAccountContext;
@@ -117,10 +118,29 @@ export const ZkAccountContextProvider = ({ children }) => {
     let limits = defaultLimits;
     if (zkAccount) {
       setIsLoadingLimits(true);
+      const data = await zkAccount.getLimits(TOKEN_ADDRESS, POOL_ADDRESS);
+      limits = {
+        dailyDepositLimitPerAddress: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.available))
+        },
+        dailyDepositLimit: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.available))
+        },
+        dailyWithdrawalLimit: {
+          total: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.total)),
+          available: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.available))
+        },
+        poolSizeLimit: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.available))
+        },
+      };
     }
     setLimits(limits);
     setIsLoadingLimits(false);
-  }, [zkAccount]);
+  }, [zkAccount, fromShieldedAmount]);
 
   const updatePoolData = useCallback(() => {
     updateBalance();
