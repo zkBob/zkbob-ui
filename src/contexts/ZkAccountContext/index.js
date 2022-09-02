@@ -32,7 +32,7 @@ const defaultLimits = {
 export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
@@ -119,7 +119,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     let limits = defaultLimits;
     if (zkAccount) {
       setIsLoadingLimits(true);
-      const data = await zkAccount.getLimits(TOKEN_ADDRESS, POOL_ADDRESS);
+      const data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
       limits = {
         dailyDepositLimitPerAddress: {
           total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
@@ -141,7 +141,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
     setLimits(limits);
     setIsLoadingLimits(false);
-  }, [zkAccount, fromShieldedAmount]);
+  }, [zkAccount, account, fromShieldedAmount]);
 
   const updatePoolData = useCallback(() => {
     updateBalance();
