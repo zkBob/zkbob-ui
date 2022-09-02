@@ -5676,6 +5676,13 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
+ethereum-block-by-date@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/ethereum-block-by-date/-/ethereum-block-by-date-1.4.5.tgz#ae954a4499942d03837e702033d75acf6a0f96dd"
+  integrity sha512-mxDUx+yxIGPgKz82HjijFDCoZLT+in+p3tHJ82JDQTLDUl92uNDCNF85PPvchgzrhRlwDM4F0q7/qed5MeJKNw==
+  dependencies:
+    moment "^2.29.2"
+
 ethereum-bloom-filters@^1.0.6:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/ethereum-bloom-filters/-/ethereum-bloom-filters-1.0.10.tgz#3ca07f4aed698e75bd134584850260246a5fed8a"
@@ -7966,10 +7973,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.5.2.tgz#e5eba0136881b2f028477b6ec1dd0063c08bb784"
-  integrity sha512-AKQEPYLPXqWxJnR7edyciPw65EYGg9D2rYBIKNYYDm3Pf+Wb0A5HLD3Rqd/1tC2ATBqtZesixavKq7iZWVD+tA==
+libzkbob-rs-wasm-web@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.6.0.tgz#a8350f83368cf8f28cc16dc9ca5de34a8c8de6b7"
+  integrity sha512-Kjn97UDKu+Jdyq9BKzmT+fi55STwbVJCA1uGfSmLyhWE71jTTjTqV6MKUN6zqJflqrXob4+MFIy/Opl0PUWAxg==
 
 lilconfig@^2.0.3, lilconfig@^2.0.4:
   version "2.0.4"
@@ -8338,6 +8345,11 @@ mock-fs@^4.1.0:
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-4.14.0.tgz#ce5124d2c601421255985e6e94da80a7357b1b18"
   integrity sha512-qYvlv/exQ4+svI3UOvPUpLDF0OMX5euvUH0Ny4N5QyRyhNdgAgUrVH3iUINSzEPLvx0kbo/Bp28GJKIqvE7URw==
+
+moment@^2.29.2:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 moment@^2.29.3:
   version "2.29.3"
@@ -12904,15 +12916,16 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.6.0.tgz#e470e904c271526a2791d5e0f466408ee576c8f5"
-  integrity sha512-Gt9t+dZS6bkQucd5OjjtoNQ0UkzsdFSB+UJfxzfq0fq1HsTaTFTCykRRLyUaWdD1dqtgP6cuT8rSOA/yTV01Gw==
+zkbob-client-js@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.7.1.tgz#fbb63733f3c3d3fed55ec9580fcc08a5d811ea4c"
+  integrity sha512-umY9EBb9iRssDETs0f7hblSLcM14/oNTluiUhRHt0Fb9SEDoPX8OFcdCyc6DEy+GyMVjwFRhhA32hWZ2l8LSxg==
   dependencies:
     comlink "^4.3.1"
+    ethereum-block-by-date "^1.4.5"
     hdwallet-babyjub "^0.0.1"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "0.5.2"
+    libzkbob-rs-wasm-web "0.6.0"
     regenerator-runtime "^0.13.9"
     web3 "^1.7.0"
     web3-eth-personal "^1.7.0"

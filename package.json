@@ -34,7 +34,7 @@
     "unique-names-generator": "^4.7.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "0.6.0"
+    "zkbob-client-js": "0.7.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
