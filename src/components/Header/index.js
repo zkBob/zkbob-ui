@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
-import { ReactComponent as Logo } from 'assets/logo.svg';
+import { ReactComponent as Logo } from 'assets/logo-beta.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
 import SpinnerDefault from 'components/Spinner';
