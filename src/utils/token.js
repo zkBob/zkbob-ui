@@ -1,16 +1,13 @@
 import { TOKEN_SYMBOL } from 'constants';
 
-import unshTokenIcon from 'assets/dai.svg';
-import shTokenIcon from 'assets/zp-dai.svg';
+import icon from 'assets/bob.svg';
 
-export function tokenSymbol(shielded = false) {
-  // const prefix = shielded ? 'sh' : '';
-  // return prefix + TOKEN_SYMBOL;
+export function tokenSymbol() {
   return TOKEN_SYMBOL;
 }
 
-export function tokenIcon(shielded = false) {
-  return shielded ? shTokenIcon : unshTokenIcon;
+export function tokenIcon() {
+  return icon;
 }
 
 export async function createPermitSignature(tokenContractInstance, signer, spenderAddress, value, deadline, salt) {
