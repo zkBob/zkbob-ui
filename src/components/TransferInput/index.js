@@ -1,17 +1,18 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Button from 'components/Button';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
-export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
+export default ({ amount, onChange, balance, fee, shielded, setMax }) => {
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
-      setAmount(value);
+      onChange(value);
     }
-  }, [setAmount]);
+  }, [onChange]);
   return (
     <Container>
       <Row>
@@ -28,7 +29,7 @@ export default ({ amount, setAmount, balance, fee, shielded, setMax }) => {
       </Row>
       <Row>
         <SmallText>
-          Relayer fee: {fee} {tokenSymbol(shielded)}
+          Relayer fee: {formatNumber(fee)} {tokenSymbol(shielded)}
         </SmallText>
         <Row>
           <SmallText>

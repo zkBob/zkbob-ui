@@ -1,13 +1,21 @@
+import { ethers } from 'ethers';
+
+const { parseEther, formatEther, commify } = ethers.utils;
+
 export const shortAddress = (string, length = 10) =>
   string.substring(0, length - 4) + '...' + string.substring(string.length - 4);
 
-export const formatNumber = (number) => {
-  if (number > 0) {
-    if (number > 0.0001) {
-      let decimals = number > 1 ? 2 : 4;
-      return (Math.trunc(number * Math.pow(10, decimals)) / Math.pow(10, decimals)).toLocaleString('en-US');
-    }
-    return '≈ 0'
+export const formatNumber = wei => {
+  if (wei.isZero()) return '0';
+  if (wei.lte(parseEther('0.0001'))) return '≈ 0';
+
+  const decimals = wei.gt(parseEther('1')) ? 2 : 4;
+  const formatted = commify(formatEther(wei));
+  let [prefix, suffix] = formatted.split('.');
+  if (suffix === '0') {
+    suffix = '';
+  } else {
+    suffix = '.' + suffix.slice(0, decimals);
   }
-  return 0;
+  return prefix + suffix;
 }

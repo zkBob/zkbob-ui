@@ -2,12 +2,12 @@ import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
 
-import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
 import { ZkAccountContext } from 'contexts';
 
+import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Input from 'components/Input';
@@ -27,8 +27,9 @@ export default () => {
     history, isPending, getMaxTransferable,
     limits, isLoadingLimits,
   } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
+  const [amount, setAmount] = useState(ethers.constants.Zero);
+  const [displayAmount, setDisplayAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState(ethers.constants.Zero);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
@@ -40,19 +41,23 @@ export default () => {
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
-    setAmount('');
+    setDisplayAmount('');
     setReceiver('');
     withdraw(receiver, amount);
   }, [receiver, amount, withdraw]);
 
   const setMax = useCallback(async () => {
-    setAmount(maxAmount);
+    setDisplayAmount(ethers.utils.formatEther(maxAmount));
   }, [maxAmount]);
+
+  useEffect(() => {
+    setAmount(displayAmount ? ethers.utils.parseEther(displayAmount) : ethers.constants.Zero);
+  }, [displayAmount]);
 
   useEffect(() => {
     async function update() {
       const max = await getMaxTransferable();
-      setMaxAmount(String(max));
+      setMaxAmount(max);
     }
     update();
   }, [getMaxTransferable]);
@@ -69,11 +74,11 @@ export default () => {
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
-    } else if (!(amount > 0)) {
+    } else if (amount.isZero()) {
       button = <Button disabled>Enter an amount</Button>;
-    } else if (Number(amount) > Number(maxAmount)) {
+    } else if (amount.gt(maxAmount)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
-    } else if (Number(amount) > limits.dailyWithdrawalLimit.available) {
+    } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
       button = <Button disabled>Limit exceeded</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
@@ -90,8 +95,8 @@ export default () => {
       <Card title="Withdraw" note={note}>
         <TransferInput
           balance={balance}
-          amount={amount}
-          setAmount={setAmount}
+          amount={displayAmount}
+          onChange={setDisplayAmount}
           shielded={true}
           fee={fee}
           setMax={setMax}

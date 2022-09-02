@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
+import { formatNumber } from 'utils';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
@@ -21,7 +22,7 @@ export default ({
         <DetailsContainer>
           <AmountContainer>
             <TokenIcon src={tokenIcon(shielded)} />
-            <Amount>{amount}{' '}</Amount>
+            <Amount>{formatNumber(amount)}{' '}</Amount>
             <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
           </AmountContainer>
           <SmallText>
@@ -35,7 +36,7 @@ export default ({
           </Row>
           <Row>
             <MediumText>Relayer fee:</MediumText>
-            <MediumText>{fee} {tokenSymbol(shielded)}</MediumText>
+            <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
           </Row>
         </DetailsContainer>
         <Button onClick={onConfirm}>Confirm</Button>

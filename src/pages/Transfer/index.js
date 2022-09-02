@@ -1,11 +1,12 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
 import { TxType } from 'zkbob-client-js';
+import { ethers } from 'ethers';
 
-import TransferInput from 'containers/TransferInput';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
+import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Input from 'components/Input';
@@ -25,8 +26,9 @@ export default () => {
     zkAccount, balance, transfer, isLoadingState,
     history, isPending, getMaxTransferable,
   } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
+  const [amount, setAmount] = useState(ethers.constants.Zero);
+  const [displayAmount, setDisplayAmount] = useState('');
+  const [maxAmount, setMaxAmount] = useState(ethers.constants.Zero);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
@@ -38,19 +40,23 @@ export default () => {
 
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
-    setAmount('');
+    setDisplayAmount('');
     setReceiver('');
     transfer(receiver, amount);
   }, [receiver, amount, transfer]);
 
   const setMax = useCallback(async () => {
-    setAmount(maxAmount);
+    setDisplayAmount(ethers.utils.formatEther(maxAmount));
   }, [maxAmount]);
+
+  useEffect(() => {
+    setAmount(displayAmount ? ethers.utils.parseEther(displayAmount) : ethers.constants.Zero);
+  }, [displayAmount]);
 
   useEffect(() => {
     async function update() {
       const max = await getMaxTransferable();
-      setMaxAmount(String(max));
+      setMaxAmount(max);
     }
     update();
   }, [getMaxTransferable]);
@@ -67,9 +73,9 @@ export default () => {
   if (zkAccount) {
     if (isLoadingState) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
-    } else if (!(amount > 0)) {
+    } else if (amount.isZero()) {
       button = <Button disabled>Enter an amount</Button>;
-    } else if (Number(amount) > Number(maxAmount)) {
+    } else if (amount.gt(maxAmount)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
@@ -86,8 +92,8 @@ export default () => {
       <Card title="Transfer" note={note}>
         <TransferInput
           balance={balance}
-          amount={amount}
-          setAmount={setAmount}
+          amount={displayAmount}
+          onChange={setDisplayAmount}
           shielded={true}
           fee={fee}
           setMax={setMax}

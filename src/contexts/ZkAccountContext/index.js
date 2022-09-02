@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { toast } from 'react-toastify';
 import AES from 'crypto-js/aes';
@@ -14,17 +14,17 @@ import { TxType } from 'zkbob-client-js';
 
 import { tokenSymbol } from 'utils/token';
 
-const { formatEther, parseEther } = ethers.utils;
+const { parseEther, formatEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
-  dailyDepositLimitPerAddress: { total: 10000, available: 10000 },
-  dailyDepositLimit: { total: 100000, available: 100000 },
-  dailyWithdrawalLimit: { total: 100000, available: 100000 },
-  poolSizeLimit: { total: 1000000, available: 1000000 },
+  dailyDepositLimitPerAddress: { total: parseEther('10000'), available: parseEther('10000') },
+  dailyDepositLimit: { total: parseEther('100000'), available: parseEther('100000') },
+  dailyWithdrawalLimit: { total: parseEther('100000'), available: parseEther('100000') },
+  poolSizeLimit: { total: parseEther('1000000'), available: parseEther('1000000') },
 };
 
 export default ZkAccountContext;
@@ -36,7 +36,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(ethers.constants.Zero);
   const [history, setHistory] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const [pendingActions, setPendingActions] = useState([]);
@@ -50,7 +50,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     let zkAccount = null;
     let zkAccountId = null;
     if (mnemonic) {
-      setBalance(0);
+      setBalance(ethers.constants.Zero);
       setHistory(null);
       setIsLoadingZkAccount(true);
       zkAccount = await zp.createAccount(mnemonic);
@@ -75,22 +75,20 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const fromShieldedAmount = useCallback(shieldedAmount => {
     const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
-    return Number(formatEther(wei));
+    return BigNumber.from(wei);
   }, [zkAccount]);
 
-  const toShieldedAmount = useCallback(amount => {
-    const wei = BigInt(parseEther(String(amount)));
-    return zkAccount.weiToShieldedAmount(TOKEN_ADDRESS, wei);
+  const toShieldedAmount = useCallback(wei => {
+    return zkAccount.weiToShieldedAmount(TOKEN_ADDRESS, wei.toBigInt());
   }, [zkAccount]);
 
   const updateBalance = useCallback(async () => {
-    let balance = 0;
+    let balance = ethers.constants.Zero;
     if (zkAccount) {
       setIsLoadingState(true);
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
-      console.log('Raw Pool balance:', balance);
       balance = fromShieldedAmount(balance);
-      console.log('Pool balance:', balance);
+      console.log('Pool balance:', formatEther(balance));
     }
     setBalance(balance);
     setIsLoadingState(false);
@@ -198,7 +196,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (!zkAccount) return null;
     try {
       const max = await getMaxTransferable();
-      if (txType !== TxType.Deposit && amount > max) {
+      if (txType !== TxType.Deposit && amount.gt(max)) {
         amount = max;
       }
       const { total, txCnt } = await zkAccount.feeEstimate(TOKEN_ADDRESS, toShieldedAmount(amount), txType, false);
@@ -219,7 +217,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     window.localStorage.removeItem('seed');
     setZkAccount(null);
     setZkAccountId(null);
-    setBalance(0);
+    setBalance(ethers.constants.Zero);
     setHistory([]);
   }, []);
 
