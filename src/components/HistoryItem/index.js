@@ -54,7 +54,7 @@ export default ({ item }) => {
         <TokenIcon src={tokenIcon(item.type !== 1)} />
         <Amount>
           {actions[item.type].sign}{' '}
-          <Tooltip content={item.amount} placement="top">
+          <Tooltip content={formatNumber(item.amount, 18)} placement="top">
             <span>{formatNumber(item.amount)}</span>
           </Tooltip>
           {' '}{tokenSymbol(item.type !== 1)}

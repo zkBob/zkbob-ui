@@ -41,7 +41,7 @@ export default ({
                 {connector && <Icon src={connector.icon} />}
                 <Address>{shortAddress(account)}</Address>
                 <Balance>
-                  <Tooltip content={balance} placement="bottom">
+                  <Tooltip content={formatNumber(balance, 18)} placement="bottom">
                     <span>{formatNumber(balance)}</span>
                   </Tooltip>
                   {' '}{tokenSymbol()}
@@ -55,7 +55,7 @@ export default ({
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address><ZkName seed={zkAccountId} /></Address>
                   <Balance>
-                    <Tooltip content={poolBalance} placement="bottom">
+                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
                       <span>{formatNumber(poolBalance)}</span>
                     </Tooltip>
                     {' '}{tokenSymbol(true)}

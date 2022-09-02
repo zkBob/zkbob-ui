@@ -17,7 +17,7 @@ export default ({ type, shielded, amount, txHash }) => {
         <Action>Latest {type}:</Action>
         <TokenIcon src={tokenIcon(shielded)} />
         <Amount>
-          <Tooltip content={amount} placement="top">
+          <Tooltip content={formatNumber(amount, 18)} placement="top">
             <span>{formatNumber(amount)}</span>
           </Tooltip>
           {' '}{tokenSymbol(shielded)}

@@ -43,7 +43,7 @@ export default ({
               </Row>
               <TokenContainer>
                 <TokenIcon src={tokenIcon()} />
-                <Tooltip content={balance} placement="top">
+                <Tooltip content={formatNumber(balance, 18)} placement="top">
                   <span>{formatNumber(balance)}</span>
                 </Tooltip>
                 <span style={{ marginLeft: 5 }}>{tokenSymbol()}</span>
@@ -86,7 +86,7 @@ export default ({
               </Row>
               <TokenContainer>
                 <TokenIcon src={tokenIcon(true)} />
-                <Tooltip content={poolBalance} placement="top">
+                <Tooltip content={formatNumber(poolBalance, 18)} placement="top">
                   <span>{formatNumber(poolBalance)}</span>
                 </Tooltip>
                 <span style={{ marginLeft: 5 }}>{tokenSymbol(true)}</span>
