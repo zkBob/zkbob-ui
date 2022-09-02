@@ -13,6 +13,7 @@ import zp from './zp.js';
 import { TxType } from 'zkbob-client-js';
 
 import { tokenSymbol } from 'utils/token';
+import { formatNumber } from 'utils';
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -154,7 +155,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
-      toast.success(`Deposited ${amount} ${tokenSymbol()}.`);
+      toast.success(`Deposited ${formatNumber(amount)} ${tokenSymbol()}.`);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -172,7 +173,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
       await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Transferred ${amount} ${tokenSymbol(true)}.`);
+      toast.success(`Transferred ${formatNumber(amount)} ${tokenSymbol(true)}.`);
       updatePoolData();
     } catch (error) {
       console.log(error);
@@ -189,7 +190,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Withdrawn ${amount} ${tokenSymbol()}.`);
+      toast.success(`Withdrawn ${formatNumber(amount)} ${tokenSymbol()}.`);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
