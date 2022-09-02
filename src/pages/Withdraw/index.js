@@ -19,6 +19,8 @@ import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 
+import { NETWORKS } from 'constants';
+
 const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
 
 export default () => {
@@ -102,7 +104,7 @@ export default () => {
           setMax={setMax}
         />
         <Input
-          placeholder="Enter Kovan address of receiver"
+          placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
           secondary
           value={receiver}
           onChange={handleReceiverChange}
