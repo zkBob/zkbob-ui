@@ -28,6 +28,8 @@ import robot3Image from 'assets/robot-3.png';
 
 import { ZkAccountContext } from 'contexts';
 
+import { useRestriction } from 'hooks';
+
 const Routes = ({ showWelcome }) => (
   <Switch>
     {showWelcome && (
@@ -55,6 +57,14 @@ const Content = () => {
   const { zkAccount, isLoadingZkAccount } = useContext(ZkAccountContext);
   const location = useLocation();
   const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
+  const isRestricted = useRestriction();
+  if (isRestricted) {
+    return (
+      <Layout>
+        <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
+      </Layout>
+    )
+  }
   return (
     <>
       <BackgroundImages $show={showWelcome && location.pathname === '/'}>
@@ -173,4 +183,13 @@ const Robot3Image = styled.img`
   right: 23%;
   opacity: 0.2;
   filter: blur(2px);
+`;
+
+const ErrorText = styled.span`
+  font-size: 16px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
 `;
