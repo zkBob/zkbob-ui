@@ -20,7 +20,7 @@ const sections = [
         name: 'View contract',
         href: process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', process.env.REACT_APP_TOKEN_ADDRESS),
       },
-      { name: 'Get BOB', href: 'https://docs.zkbob.com/' },
+      { name: 'Get BOB', href: 'https://zkbob.page.link/getBOB' },
     ]
   }
 ];
