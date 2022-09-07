@@ -18,6 +18,7 @@ import Limits from 'components/Limits';
 import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
+import { formatNumber } from 'utils';
 
 import { NETWORKS } from 'constants';
 
@@ -27,7 +28,7 @@ export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
     history, isPending, getMaxTransferable,
-    limits, isLoadingLimits,
+    limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -78,6 +79,8 @@ export default () => {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (amount.isZero()) {
       button = <Button disabled>Enter an amount</Button>;
+    } else if (amount.lt(minTxAmount)) {
+      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(maxAmount)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {

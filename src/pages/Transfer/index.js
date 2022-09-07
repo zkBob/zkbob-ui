@@ -18,13 +18,14 @@ import { ZkAccountContext } from 'contexts';
 import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
+import { formatNumber } from 'utils';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
-    history, isPending, getMaxTransferable,
+    history, isPending, getMaxTransferable, minTxAmount,
   } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -75,6 +76,8 @@ export default () => {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (amount.isZero()) {
       button = <Button disabled>Enter an amount</Button>;
+    } else if (amount.lt(minTxAmount)) {
+      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(maxAmount)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (!receiver) {

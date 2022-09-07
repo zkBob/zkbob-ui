@@ -17,6 +17,7 @@ import Limits from 'components/Limits';
 import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
+import { formatNumber } from 'utils';
 
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
@@ -25,7 +26,7 @@ export default () => {
   const {
       zkAccount, isLoadingZkAccount, deposit,
       isLoadingState, history, isPending,
-      isLoadingLimits, limits,
+      isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(ModalContext);
@@ -81,6 +82,7 @@ export default () => {
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
           else if (amount.isZero()) return <Button disabled>Enter an amount</Button>
+          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
           else if (amount.gt(balance.sub(fee))) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
           else if (!withinLimits(amount)) return <Button disabled>Limit exceeded</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;

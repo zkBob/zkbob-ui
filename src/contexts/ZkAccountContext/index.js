@@ -47,6 +47,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isLoadingLimits, setIsLoadingLimits] = useState(false);
   const [limits, setLimits] = useState(defaultLimits);
+  const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
 
   const loadZkAccount = useCallback(async mnemonic => {
     let zkAccount = null;
@@ -142,6 +143,15 @@ export const ZkAccountContextProvider = ({ children }) => {
     setLimits(limits);
     setIsLoadingLimits(false);
   }, [zkAccount, account, fromShieldedAmount]);
+
+  const loadMinTxAmount = useCallback(async () => {
+    let minTxAmount = ethers.constants.Zero;
+    if (zkAccount) {
+      minTxAmount = await zkAccount.minTxAmount(TOKEN_ADDRESS);
+      minTxAmount = fromShieldedAmount(minTxAmount);
+    }
+    setMinTxAmount(minTxAmount);
+  }, [zkAccount, fromShieldedAmount]);
 
   const updatePoolData = useCallback(() => {
     updateBalance();
@@ -247,6 +257,10 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [updatePoolData]);
 
   useEffect(() => {
+    loadMinTxAmount();
+  }, [loadMinTxAmount]);
+
+  useEffect(() => {
     if (isPending) {
       const interval = 5000; // 5 seconds
       const intervalId = setInterval(() => {
@@ -270,7 +284,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
-        removeZkAccountMnemonic, updateBalance, updateHistory,
+        removeZkAccountMnemonic, updateBalance, updateHistory, minTxAmount,
         estimateFee, getMaxTransferable, isLoadingLimits, limits,
       }}
     >
