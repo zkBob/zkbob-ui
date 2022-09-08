@@ -62,7 +62,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
   const confirmPassword = useCallback(password => {
     saveZkAccountMnemonic(confirmedMnemonic, password);
     closeModal();
-  }, [confirmedMnemonic, saveZkAccountMnemonic]);
+  }, [confirmedMnemonic, saveZkAccountMnemonic, closeModal]);
 
   let title = null;
   let state = null;

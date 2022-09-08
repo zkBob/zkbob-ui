@@ -47,7 +47,7 @@ export default ({ item }) => {
     <Row $pending={item.pending}>
       <Tooltip content={actions[item.type].name} delay={0.3}>
         <ActionLabel>
-          <img src={actions[item.type].icon} />
+          <img src={actions[item.type].icon} alt="" />
         </ActionLabel>
       </Tooltip>
       <AmountContainer>

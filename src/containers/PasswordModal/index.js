@@ -18,11 +18,11 @@ export default () => {
     } catch (error) {
       setError(error);
     }
-  }, [password]);
+  }, [password, unlockAccount]);
   const reset = useCallback(async () => {
     closePasswordModal();
     openAccountSetUpModal();
-  });
+  }, [closePasswordModal, openAccountSetUpModal]);
   return (
     <PasswordModal
       isOpen={isPasswordModalOpen}

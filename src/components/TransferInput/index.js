@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 
 import Button from 'components/Button';
 

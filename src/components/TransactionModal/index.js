@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
@@ -34,11 +33,6 @@ const descriptions = {
 const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];
 
 export default ({ isOpen, onClose, status }) => {
-  const history = useHistory();
-  const goTo = useCallback(path => {
-    onClose();
-    history.push(path);
-  }, [history, onClose]);
   return (
     <Modal
       isOpen={isOpen}

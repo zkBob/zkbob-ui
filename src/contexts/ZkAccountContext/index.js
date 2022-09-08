@@ -18,7 +18,6 @@ import { formatNumber } from 'utils';
 const { parseEther, formatEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
-const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
@@ -273,10 +272,10 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');
-    if (seed && !zkAccount) {
+    if (seed && !zkAccount && !isLoadingZkAccount) {
       openPasswordModal();
     }
-  }, []);
+  }, [zkAccount, isLoadingZkAccount, openPasswordModal]);
 
   return (
     <ZkAccountContext.Provider
