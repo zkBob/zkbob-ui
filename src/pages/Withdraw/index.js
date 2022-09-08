@@ -54,7 +54,11 @@ export default () => {
   }, [maxAmount]);
 
   useEffect(() => {
-    setAmount(displayAmount ? ethers.utils.parseEther(displayAmount) : ethers.constants.Zero);
+    let amount = ethers.constants.Zero;
+    try {
+      amount = ethers.utils.parseEther(displayAmount);
+    } catch (error) {}
+    setAmount(amount);
   }, [displayAmount]);
 
   useEffect(() => {
