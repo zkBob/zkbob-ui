@@ -6,7 +6,7 @@ export default () => {
   useEffect(() => {
     async function check() {
       try {
-        const RESTRICTED_COUNTRIES = JSON.parse(process.env.REACT_APP_RESTRICTED_COUNTRIES);
+        const RESTRICTED_COUNTRIES = process.env.REACT_APP_RESTRICTED_COUNTRIES.split(',');
         const country = await (await fetch('https://ipapi.co/country')).text();
         if (RESTRICTED_COUNTRIES.includes(country)) {
           setIsRestricted(true);
