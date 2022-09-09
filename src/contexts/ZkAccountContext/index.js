@@ -272,10 +272,10 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');
-    if (seed && !zkAccount && !isLoadingZkAccount) {
+    if (seed && !zkAccount) {
       openPasswordModal();
     }
-  }, [zkAccount, isLoadingZkAccount, openPasswordModal]);
+  }, []);
 
   return (
     <ZkAccountContext.Provider
