@@ -29,7 +29,7 @@ export default () => {
   return (
     <>
       <Row>
-        <Title>© zkBob 2022</Title>
+        {/* <Title>© zkBob 2022</Title> */}
         {sections.map((column, index) => (
           <InnerRow key={index}>
             <Title>{column?.title}</Title>
@@ -60,6 +60,9 @@ const InnerRow = styled.div`
   display: flex;
   align-items: center;
   margin-left: 60px;
+  &:first-child {
+    margin-left: 0;
+  }
 `;
 
 const Title = styled.span`

@@ -86,7 +86,7 @@ export default ({
           </Button>
         )}
         <GetBobLink
-          href="https://docs.zkbob.com/"
+          href="https://zkbob.page.link/getBOB"
           target="_blank"
           rel="noopener noreferrer"
         >
