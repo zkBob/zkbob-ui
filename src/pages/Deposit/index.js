@@ -41,7 +41,7 @@ export default () => {
   }, [amount, deposit]);
 
   const setMax = useCallback(async () => {
-    const max = balance.sub(fee);
+    const max = balance.gt(fee) ? balance.sub(fee) : ethers.constants.Zero;
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [balance, fee]);
 
