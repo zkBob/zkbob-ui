@@ -25,11 +25,10 @@ const note = 'The transfer will be performed privately within the zero knowledge
 export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
-    history, isPending, getMaxTransferable, minTxAmount,
+    history, isPending, maxTransferable, minTxAmount,
   } = useContext(ZkAccountContext);
   const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
-  const [maxAmount, setMaxAmount] = useState(ethers.constants.Zero);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
@@ -47,8 +46,8 @@ export default () => {
   }, [receiver, amount, transfer]);
 
   const setMax = useCallback(async () => {
-    setDisplayAmount(ethers.utils.formatEther(maxAmount));
-  }, [maxAmount]);
+    setDisplayAmount(ethers.utils.formatEther(maxTransferable));
+  }, [maxTransferable]);
 
   useEffect(() => {
     let amount = ethers.constants.Zero;
@@ -57,14 +56,6 @@ export default () => {
     } catch (error) {}
     setAmount(amount);
   }, [displayAmount]);
-
-  useEffect(() => {
-    async function update() {
-      const max = await getMaxTransferable();
-      setMaxAmount(max);
-    }
-    update();
-  }, [getMaxTransferable]);
 
   useEffect(() => {
     let latestAction = null;
@@ -82,7 +73,7 @@ export default () => {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-    } else if (amount.gt(maxAmount)) {
+    } else if (amount.gt(maxTransferable)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;

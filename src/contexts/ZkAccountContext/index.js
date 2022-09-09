@@ -47,6 +47,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingLimits, setIsLoadingLimits] = useState(false);
   const [limits, setLimits] = useState(defaultLimits);
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
+  const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
 
   const loadZkAccount = useCallback(async mnemonic => {
     let zkAccount = null;
@@ -143,6 +144,15 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsLoadingLimits(false);
   }, [zkAccount, account, fromShieldedAmount]);
 
+  const updateMaxTransferable = useCallback(async () => {
+    let maxTransferable = ethers.constants.Zero;
+    if (zkAccount) {
+      const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
+      maxTransferable = fromShieldedAmount(max);
+    }
+    setMaxTransferable(maxTransferable);
+  }, [zkAccount, fromShieldedAmount]);
+
   const loadMinTxAmount = useCallback(async () => {
     let minTxAmount = ethers.constants.Zero;
     if (zkAccount) {
@@ -216,18 +226,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     return zkAccount.generateAddress(TOKEN_ADDRESS);
   }, [zkAccount]);
 
-  const getMaxTransferable = useCallback(async () => {
-    if (!zkAccount) return null;
-    const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
-    return fromShieldedAmount(max);
-  }, [zkAccount, fromShieldedAmount]);
-
   const estimateFee = useCallback(async (amount, txType) => {
     if (!zkAccount) return null;
     try {
-      const max = await getMaxTransferable();
-      if (txType !== TxType.Deposit && amount.gt(max)) {
-        amount = max;
+      if (txType !== TxType.Deposit && amount.gt(maxTransferable)) {
+        amount = maxTransferable;
       }
       const { total, txCnt } = await zkAccount.feeEstimate(TOKEN_ADDRESS, toShieldedAmount(amount), txType, false);
       return { fee: fromShieldedAmount(total), numberOfTxs: txCnt };
@@ -235,7 +238,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       console.log(error);
       return null;
     }
-  }, [zkAccount, toShieldedAmount, fromShieldedAmount, getMaxTransferable]);
+  }, [zkAccount, toShieldedAmount, fromShieldedAmount, maxTransferable]);
 
   const saveZkAccountMnemonic = useCallback(async (mnemonic, password) => {
     const cipherText = await AES.encrypt(mnemonic, password).toString()
@@ -258,6 +261,10 @@ export const ZkAccountContextProvider = ({ children }) => {
   useEffect(() => {
     loadMinTxAmount();
   }, [loadMinTxAmount]);
+
+  useEffect(() => {
+    updateMaxTransferable();
+  }, [updateMaxTransferable, balance]);
 
   useEffect(() => {
     if (isPending) {
@@ -284,7 +291,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updateBalance, updateHistory, minTxAmount,
-        estimateFee, getMaxTransferable, isLoadingLimits, limits,
+        estimateFee, maxTransferable, isLoadingLimits, limits,
       }}
     >
       {children}
