@@ -4,12 +4,12 @@
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Opener-Policy = "same-origin"
 
-[[redirects]]
-  from = "/*"
-  to = "451.html"
-  status = 451
-  force = true
-  conditions = {Country=["BY","CU","IR","IQ","CI","LR","KP","RU","SD","SY","US","ZW"]}
+# [[redirects]]
+#   from = "/*"
+#   to = "451.html"
+#   status = 451
+#   force = true
+#   conditions = {Country=["BY","CU","IR","IQ","CI","LR","KP","RU","SD","SY","US","ZW"]}
 
 [[redirects]]
   from = "/*"
