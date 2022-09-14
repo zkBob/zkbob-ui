@@ -20,11 +20,11 @@ import Transfer from 'pages/Transfer';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
 
-import aliceImage from 'assets/alice.png';
-import bobImage from 'assets/bob.png';
-import robot1Image from 'assets/robot-1.png';
-import robot2Image from 'assets/robot-2.png';
-import robot3Image from 'assets/robot-3.png';
+import aliceImage from 'assets/alice.webp';
+import bobImage from 'assets/bob.webp';
+import robot1Image from 'assets/robot-1.webp';
+import robot2Image from 'assets/robot-2.webp';
+import robot3Image from 'assets/robot-3.webp';
 
 import { ZkAccountContext } from 'contexts';
 
