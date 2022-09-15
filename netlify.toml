@@ -39,3 +39,15 @@
   REACT_APP_RPC_URL = "https://rpc.sepolia.org"
   REACT_APP_ZEROPOOL_NETWORK = "ethereum"
   REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
+
+[context.test-meta-tags.environment]
+  REACT_APP_EXPLORER_ADDRESS_TEMPLATE = "https://sepolia.etherscan.io/address/%s"
+  REACT_APP_EXPLORER_TX_TEMPLATE = "https://sepolia.etherscan.io/tx/%s"
+  REACT_APP_EXPLORER_URL = "https://sepolia.etherscan.io"
+  REACT_APP_NETWORK = "11155111"
+  REACT_APP_CONTRACT_ADDRESS = "0x3bd088C19960A8B5d72E4e01847791BD0DD1C9E6"
+  REACT_APP_TOKEN_ADDRESS = "0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f"
+  REACT_APP_RELAYER_URL = "https://relayer.thgkjlr.website/"
+  REACT_APP_RPC_URL = "https://rpc.sepolia.org"
+  REACT_APP_ZEROPOOL_NETWORK = "ethereum"
+  REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
