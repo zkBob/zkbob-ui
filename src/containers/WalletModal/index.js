@@ -10,6 +10,8 @@ import WalletModal from 'components/WalletModal';
 import connectors from 'connectors';
 import { NETWORKS } from 'constants';
 
+const chainId = process.env.REACT_APP_NETWORK;
+
 async function switchChainInMetaMask(chainId) {
   const network = NETWORKS[chainId];
   try {
@@ -55,16 +57,15 @@ async function switchChainInMetaMask(chainId) {
 
 export default () => {
   const { isWalletModalOpen, closeWalletModal } = useContext(ModalContext);
-  const { activate, chainId, connector } = useWeb3React();
+  const { activate, connector, error } = useWeb3React();
+  const isUnsupportedChainIdError = error instanceof UnsupportedChainIdError;
 
-  const activateConnector = useCallback(async connector => {
+  const activateConnector = useCallback(async (connector, switchNetwork = false) => {
     try {
       await activate(connector, undefined, true);
     } catch (error) {
       console.log(error);
-      if (error instanceof UnsupportedChainIdError) {
-        const chainId = process.env.REACT_APP_NETWORK;
-        toast.warn(`Wrong network. Please connect to ${NETWORKS[chainId].name}.`);
+      if (error instanceof UnsupportedChainIdError && switchNetwork) {
         const success = await switchChainInMetaMask(chainId);
         if (success) {
           activateConnector(connector);
@@ -73,8 +74,14 @@ export default () => {
     }
   }, [activate]);
 
+  useEffect(() => {
+    if (isUnsupportedChainIdError) {
+      toast.warn(`Wrong network. Please connect to ${NETWORKS[chainId].name}.`);
+    }
+  }, [isUnsupportedChainIdError]);
+
   const connectWallet = useCallback(async connector => {
-    await activateConnector(connector);
+    await activateConnector(connector, true);
     closeWalletModal();
   }, [activateConnector, closeWalletModal]);
 
@@ -86,7 +93,7 @@ export default () => {
       }
     }
     connect();
-  }, [activateConnector, chainId, connector]);
+  }, [activateConnector, connector]);
 
   return (
     <WalletModal
