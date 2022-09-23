@@ -2,12 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Modal from 'components/Modal';
+import Link from 'components/Link';
+
+import { tokenSymbol } from 'utils/token';
 
 export default ({ isOpen, onClose, connectors, connectWallet }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Connect web3 wallet">
       <Text>
-        Your wallet will be used to derive a private key to encrypt your data and sign private transactions.
+        Connect your wallet to deposit {tokenSymbol()} into your zkAccount.{' '}
+        If you are creating a new zkAccount, your wallet is used{' '}
+        to derive a private encryption key for the zkBob application.
       </Text>
       {connectors.map(connector =>
         <WalletConnector
@@ -20,7 +25,9 @@ export default ({ isOpen, onClose, connectors, connectWallet }) => {
       )}
       <Text>
         By connecting a wallet, you agree to zkBob<br />
-        <Link>Terms of Service</Link>
+        <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security">
+          Terms of Service
+        </Link>
       </Text>
     </Modal>
   );
@@ -35,12 +42,6 @@ const Text = styled.span`
   &:last-child {
     margin-bottom: 0;
   }
-`;
-
-const Link = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.button.link.text.color};
-  cursor: pointer;
 `;
 
 const WalletConnector = styled.div`
