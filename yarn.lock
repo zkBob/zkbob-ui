@@ -12802,10 +12802,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@0.7.4:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.7.4.tgz#42d52c75d1885ac64549b8f323bfbbe9b60d811d"
-  integrity sha512-bsVY7ghOPKIuIL8yhMKDbnKHYZkOJrHpVJ6UrtEnL2FDLgB+HX1eyD/YzUPg8Tj1cadkplQJKOHVuHB1VzVfcA==
+zkbob-client-js@0.7.5:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.7.5.tgz#9adf2a115766f8de890fba3fcc97fb47be677b7c"
+  integrity sha512-BONSUPr4/cFq+EDbesGCRLFlKfJiemTTPkFeO3JeYmJoC7RrSI+5Ybs5j3r5RnP+0qPsyymZbjH78nUSAI3mmw==
   dependencies:
     comlink "^4.3.1"
     ethereum-block-by-date "^1.4.5"

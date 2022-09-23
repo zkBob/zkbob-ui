@@ -26,7 +26,7 @@
   REACT_APP_RELAYER_URL = "https://relayer-mvp.zkbob.com"
   REACT_APP_RPC_URL = "https://polygon-rpc.com"
   REACT_APP_ZEROPOOL_NETWORK = "ethereum"
-  REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
+  # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
 
 [context.staging.environment]
   REACT_APP_EXPLORER_ADDRESS_TEMPLATE = "https://sepolia.etherscan.io/address/%s"
@@ -38,4 +38,4 @@
   REACT_APP_RELAYER_URL = "https://relayer.thgkjlr.website/"
   REACT_APP_RPC_URL = "https://rpc.sepolia.org"
   REACT_APP_ZEROPOOL_NETWORK = "ethereum"
-  REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
+  # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
