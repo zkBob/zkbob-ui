@@ -11,7 +11,7 @@ export default () => {
   const { balance, updateBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
-    zkAccountId, updateBalance: updatePoolBalance, updateHistory,
+    zkAccountId, updatePoolData,
   } = useContext(ZkAccountContext);
   const { openWalletModal, openAccountModal, openAccountSetUpModal } = useContext(ModalContext);
   const connector = useSelectedConnector();
@@ -22,11 +22,10 @@ export default () => {
     setIsRefreshing(true);
     await Promise.all([
       updateBalance(),
-      updatePoolBalance(),
-      updateHistory(),
+      updatePoolData(),
     ]);
     setIsRefreshing(false);
-  }, [updateBalance, updatePoolBalance, updateHistory]);
+  }, [updateBalance, updatePoolData]);
 
   return (
     <>

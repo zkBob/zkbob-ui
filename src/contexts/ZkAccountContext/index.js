@@ -162,11 +162,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     setMinTxAmount(minTxAmount);
   }, [zkAccount, fromShieldedAmount]);
 
-  const updatePoolData = useCallback(() => {
-    updateBalance();
-    updateHistory();
-    updateLimits();
-  }, [updateBalance, updateHistory, updateLimits]);
+  const updatePoolData = useCallback(() => Promise.all([
+    updateBalance(),
+    updateHistory(),
+    updateLimits(),
+  ]), [updateBalance, updateHistory, updateLimits]);
 
   const deposit = useCallback(async (amount) => {
     openTxModal();
@@ -290,7 +290,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
-        removeZkAccountMnemonic, updateBalance, updateHistory, minTxAmount,
+        removeZkAccountMnemonic, updatePoolData, minTxAmount,
         estimateFee, maxTransferable, isLoadingLimits, limits,
       }}
     >
