@@ -11,6 +11,7 @@ const sections = [
       { name: 'Documentation', href: 'https://docs.zkbob.com/' },
       { name: 'FAQ', href: 'https://docs.zkbob.com/zkbob-overview/faq' },
       { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
+      { name: 'Dune Analytics', href: 'https://dune.com/maxaleks/zkbob' },
     ]
   },
   {
@@ -18,7 +19,7 @@ const sections = [
     links: [
       {
         name: 'View contract',
-        href: process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', process.env.REACT_APP_TOKEN_ADDRESS),
+        href: `${process.env.REACT_APP_EXPLORER_URL}/token/${process.env.REACT_APP_TOKEN_ADDRESS}`,
       },
       { name: 'Get BOB', href: 'https://zkbob.page.link/getBOB' },
     ]
