@@ -11,6 +11,7 @@ const sections = [
       { name: 'Documentation', href: 'https://docs.zkbob.com/' },
       { name: 'FAQ', href: 'https://docs.zkbob.com/zkbob-overview/faq' },
       { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
+      { name: 'Dune Analytics', href: 'https://dune.com/maxaleks/zkbob' },
     ]
   },
   {
