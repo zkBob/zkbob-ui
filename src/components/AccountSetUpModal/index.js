@@ -92,21 +92,21 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     state = (
       <>
         <OptionContainer>
-          <Title>Create a new zkBob Account</Title>
-          <Description>
-            Create a new account with seed phrase or you can use wallet private key for creation
-          </Description>
-          <CreateButton onClick={() => setNextAction('create')}>
-            Create from seed phrase
+          <Title>Create a new zkBob Account with</Title>
+          <CreateButton onClick={() => setNextAction('generate')}>
+            MetaMask/WalletConnect
           </CreateButton>
-          <GenerateButton onClick={() => setNextAction('generate')}>
-            Create from wallet private key
-          </GenerateButton>
+          <Row>
+            <Text>or</Text>
+            <Button type="link" onClick={() => setNextAction('create')}>
+              secret recovery phrase
+            </Button>
+          </Row>
         </OptionContainer>
         <OptionContainer>
-          <Title>I already have a seed phrase</Title>
+          <Title>I already have a secret recovery phrase</Title>
           <Description>
-          Import your existing account using your 12 word seed phrase.
+          Import your existing account using your 12 word secret recovery phrase.
           </Description>
           <RestoreButton onClick={() => setNextAction('restore')}>
             Restore account
@@ -163,12 +163,22 @@ const Description = styled(Title)`
 
 const CreateButton = styled(Button)`
   margin-bottom: 10px;
-`;
-
-const GenerateButton = styled(Button)`
-  background: ${({ theme }) => theme.color.blueLight};
+  position: relative;
 `;
 
 const RestoreButton = styled(Button)`
-background: ${({ theme }) => theme.color.purpleLight};
+  background: ${({ theme }) => theme.color.purpleLight};
+`;
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Text = styled.span`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text.color.primary};
+  font-weight: ${({ theme }) => theme.text.weight.normal};
+  margin-right: 5px;
 `;
