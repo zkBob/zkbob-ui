@@ -37,6 +37,7 @@ export default ({ amount, onChange, balance, fee, shielded, setMax }) => {
           <MaxButton
             type="link"
             onClick={setMax}
+            tabIndex="-1"
           >
             Max
           </MaxButton>
