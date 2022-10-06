@@ -25,10 +25,10 @@ const snarkParams = {
   treeVkUrl,
 };
 
-const createAccount = async mnemonic => {
+const createAccount = async (mnemonic, statusCallback) => {
   const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
   const sk = deriveSpendingKey(mnemonic, network);
-  const ctx = await initZkBob(wasmPath, workerPath, snarkParams);
+  const ctx = await initZkBob(wasmPath, workerPath, snarkParams, RELAYER_URL, statusCallback);
   const tokens = {
     [TOKEN_ADDRESS]: {
       poolAddress: POOL_ADDRESS,

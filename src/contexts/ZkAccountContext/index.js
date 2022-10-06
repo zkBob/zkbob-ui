@@ -48,6 +48,14 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [limits, setLimits] = useState(defaultLimits);
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
+
+  const updateLoadingStatus = status => {
+    const { loaded, total } = status.download;
+    if (total > 0) {
+      setLoadingPercentage(Math.round(loaded / total * 100));
+    }
+  };
 
   const loadZkAccount = useCallback(async mnemonic => {
     let zkAccount = null;
@@ -56,12 +64,13 @@ export const ZkAccountContextProvider = ({ children }) => {
       setBalance(ethers.constants.Zero);
       setHistory(null);
       setIsLoadingZkAccount(true);
-      zkAccount = await zp.createAccount(mnemonic);
+      zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus);
       zkAccountId = ethers.utils.id(mnemonic);
     }
     setZkAccount(zkAccount);
     setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
+    setLoadingPercentage(0);
   }, []);
 
   const unlockAccount = useCallback(password => {
@@ -290,7 +299,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
-        removeZkAccountMnemonic, updatePoolData, minTxAmount,
+        removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits,
       }}
     >

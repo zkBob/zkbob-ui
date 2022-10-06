@@ -5951,6 +5951,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-sha256@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/fast-sha256/-/fast-sha256-1.3.0.tgz#7916ba2054eeb255982608cccd0f6660c79b7ae6"
+  integrity sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==
+
 fastq@^1.6.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.13.0.tgz#616760f88a7526bdfc596b7cab8c18938c36b98c"
@@ -12802,14 +12807,15 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.7.5.tgz#9adf2a115766f8de890fba3fcc97fb47be677b7c"
-  integrity sha512-BONSUPr4/cFq+EDbesGCRLFlKfJiemTTPkFeO3JeYmJoC7RrSI+5Ybs5j3r5RnP+0qPsyymZbjH78nUSAI3mmw==
+zkbob-client-js@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-0.8.0.tgz#187d771bf57a88d72ab7d2ddf541c023ca561a13"
+  integrity sha512-WdVDbTzPwS5CZ903JA1AMugox+KJ2af/D0DRcvl2msYKkeXy9ZAV37NCWHqfF+B+jo2qnHrRIxH2CxkbIBJ/DQ==
   dependencies:
     comlink "^4.3.1"
     ethereum-block-by-date "^1.4.5"
     ethereumjs-util "^7.1.5"
+    fast-sha256 "^1.3.0"
     hdwallet-babyjub "^0.0.1"
     idb "^7.0.0"
     libzkbob-rs-wasm-web "0.6.1"
