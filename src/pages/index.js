@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
@@ -61,9 +62,18 @@ const Content = () => {
   if (isRestricted) {
     return (
       <Layout>
+        <Header empty />
         <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
       </Layout>
-    )
+    );
+  }
+  if (isMobile) {
+    return (
+      <MobileLayout>
+        <Header empty />
+        <ErrorText>We're sorry, but the mobile version of zkBob is not yet ready.</ErrorText>
+      </MobileLayout>
+    );
   }
   return (
     <>
@@ -107,6 +117,10 @@ const Layout = styled.div`
   box-sizing: border-box;
   padding: 14px 40px 40px;
   background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
+`;
+
+const MobileLayout = styled(Layout)`
+  padding-top: 30px;
 `;
 
 const PageContainer = styled.div`

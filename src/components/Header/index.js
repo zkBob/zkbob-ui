@@ -15,12 +15,21 @@ import { tokenSymbol } from 'utils/token';
 import { NETWORKS } from 'constants';
 
 export default ({
-  openWalletModal, connector, isLoadingZkAccount,
+  openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
 }) => {
   const logos = {
     100: <GnosisChainLogo />
+  }
+  if (empty) {
+    return (
+      <Row>
+        <LogoSection>
+          <Logo />
+        </LogoSection>
+      </Row>
+    );
   }
   return (
     <Row>
