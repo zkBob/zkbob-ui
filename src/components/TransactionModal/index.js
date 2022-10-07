@@ -22,21 +22,24 @@ const titles = {
   [TX_STATUSES.TRANSFERRED]: 'Transfer is completed',
   [TX_STATUSES.WITHDRAWN]: 'Withdrawal is completed',
   [TX_STATUSES.REJECTED]: 'Transaction was rejected',
+  [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
 };
 
 const descriptions = {
   [TX_STATUSES.DEPOSITED]: 'To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.',
   [TX_STATUSES.TRANSFERRED]: `Your ${tokenSymbol(true)} transfer has been completed within the zero knowledge pool.`,
   [TX_STATUSES.WITHDRAWN]: `Your ${tokenSymbol(true)} withdrawal from the zero knowledge pool has been completed.`,
+  [TX_STATUSES.SIGNATURE_EXPIRED]: `Your signature has expired. Please try again.`,
 };
 
 const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];
+const FAILURE_STATUSES = [TX_STATUSES.REJECTED, TX_STATUSES.SIGNATURE_EXPIRED];
 
 export default ({ isOpen, onClose, status }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={[...SUCCESS_STATUSES, TX_STATUSES.REJECTED].includes(status) ? onClose : null}
+      onClose={[...SUCCESS_STATUSES, ...FAILURE_STATUSES].includes(status) ? onClose : null}
       title={titles[status]}
     >
       {status === TX_STATUSES.SIGN_MESSAGE && (
@@ -46,7 +49,7 @@ export default ({ isOpen, onClose, status }) => {
       )}
       {(() => {
         if (SUCCESS_STATUSES.includes(status)) return <CheckIcon />
-        else if (status === TX_STATUSES.REJECTED) return <CrossIcon />
+        else if (FAILURE_STATUSES.includes(status)) return <CrossIcon />
         else return <Spinner />;
       })()}
       {descriptions[status] && (

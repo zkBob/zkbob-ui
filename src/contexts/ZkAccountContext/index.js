@@ -10,7 +10,7 @@ import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'cont
 import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
-import { TxType } from 'zkbob-client-js';
+import { TxType, TxDepositDeadlineExpiredError } from 'zkbob-client-js';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
@@ -188,7 +188,11 @@ export const ZkAccountContextProvider = ({ children }) => {
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.log(error);
-      setTxStatus(TX_STATUSES.REJECTED);
+      if (error instanceof TxDepositDeadlineExpiredError) {
+        setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
+      } else {
+        setTxStatus(TX_STATUSES.REJECTED);
+      }
     }
   }, [
     zkAccount, updatePoolData, library, openTxModal,

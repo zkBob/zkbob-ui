@@ -46,16 +46,17 @@ const createAccount = async (mnemonic, statusCallback) => {
 };
 
 const deposit = async (signer, account, amount, fee, setTxStatus) => {
-  setTxStatus(TX_STATUSES.APPROVE_TOKENS);
   const tokenABI = [
     'function name() view returns (string)',
     'function nonces(address) view returns (uint256)',
   ];
   const token = new Contract(TOKEN_ADDRESS, tokenABI, signer);
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = (deadline, value, salt) => {
+  const signFunction = async (deadline, value, salt) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
-    return createPermitSignature(token, signer, POOL_ADDRESS, value, deadline, salt);
+    const signature = await createPermitSignature(token, signer, POOL_ADDRESS, value, deadline, salt);
+    setTxStatus(TX_STATUSES.GENERATING_PROOF);
+    return signature;
   };
   const myAddress = await signer.getAddress();
   const jobId = await account.depositPermittableV2(TOKEN_ADDRESS, amount, signFunction, myAddress, fee);
