@@ -8,33 +8,34 @@ import Tooltip from 'components/Tooltip';
 import { formatNumber } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow } from 'hooks';
+import { HISTORY_ACTION_TYPES } from 'constants';
 
 import depositIcon from 'assets/deposit.svg';
 import withdrawIcon from 'assets/withdraw.svg';
 import transferIcon from 'assets/transfer.svg';
 
 const actions = {
-  1: {
+  [HISTORY_ACTION_TYPES.DEPOSIT]: {
     name: 'Deposit',
     icon: depositIcon,
     sign: '+',
   },
-  2: {
+  [HISTORY_ACTION_TYPES.TRANSFER_IN]: {
     name: 'Transfer',
     icon: transferIcon,
     sign: '+',
   },
-  3: {
+  [HISTORY_ACTION_TYPES.TRANSFER_OUT]: {
     name: 'Transfer',
     icon: transferIcon,
     sign: '-',
   },
-  4: {
+  [HISTORY_ACTION_TYPES.WITHDRAWAL]: {
     name: 'Withdrawal',
     icon: withdrawIcon,
     sign: '-',
   },
-  5: {
+  [HISTORY_ACTION_TYPES.TRANSFER_SELF]: {
     name: 'Transfer',
     icon: transferIcon,
     sign: '',
@@ -51,13 +52,13 @@ export default ({ item }) => {
         </ActionLabel>
       </Tooltip>
       <AmountContainer>
-        <TokenIcon src={tokenIcon(item.type !== 1)} />
+        <TokenIcon src={tokenIcon()} />
         <Amount>
           {actions[item.type].sign}{' '}
           <Tooltip content={formatNumber(item.amount, 18)} placement="top">
             <span>{formatNumber(item.amount)}</span>
           </Tooltip>
-          {' '}{tokenSymbol(item.type !== 1)}
+          {' '}{tokenSymbol()}
         </Amount>
       </AmountContainer>
       {item.txHash ? (

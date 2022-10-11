@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -14,11 +14,13 @@ import Button from 'components/Button';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 
-import { useFee } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
+
+import { HISTORY_ACTION_TYPES } from 'constants';
 
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
@@ -26,14 +28,14 @@ export default () => {
   const { account } = useWeb3React();
   const {
       zkAccount, isLoadingZkAccount, deposit,
-      isLoadingState, history, isPending,
+      isLoadingState, isPending,
       isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(ModalContext);
-  const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
-  const [latestAction, setLatestAction] = useState(null);
+  const amount = useParsedAmount(displayAmount);
+  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.DEPOSIT);
   const { fee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
@@ -50,22 +52,6 @@ export default () => {
     }
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [balance, fee, depositLimit]);
-
-  useEffect(() => {
-    let amount = ethers.constants.Zero;
-    try {
-      amount = ethers.utils.parseEther(displayAmount);
-    } catch (error) {}
-    setAmount(amount);
-  }, [displayAmount]);
-
-  useEffect(() => {
-    let latestAction = null;
-    if (history?.length) {
-      latestAction = history.find(item => item.type === 1);
-    }
-    setLatestAction(latestAction);
-  }, [history]);
 
   return isPending ? <PendingAction /> : (
     <>

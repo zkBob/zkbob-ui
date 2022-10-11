@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -15,24 +15,26 @@ import LatestAction from 'components/LatestAction';
 
 import { ZkAccountContext } from 'contexts';
 
-import { useFee } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 import { useMaxAmountExceeded } from './hooks';
+
+import { HISTORY_ACTION_TYPES } from 'constants';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
-    history, isPending, maxTransferable, minTxAmount,
+    isPending, maxTransferable, minTxAmount,
   } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
+  const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [latestAction, setLatestAction] = useState(null);
+  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
   const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
@@ -50,22 +52,6 @@ export default () => {
   const setMax = useCallback(async () => {
     setDisplayAmount(ethers.utils.formatEther(maxTransferable));
   }, [maxTransferable]);
-
-  useEffect(() => {
-    let amount = ethers.constants.Zero;
-    try {
-      amount = ethers.utils.parseEther(displayAmount);
-    } catch (error) {}
-    setAmount(amount);
-  }, [displayAmount]);
-
-  useEffect(() => {
-    let latestAction = null;
-    if (history?.length) {
-      latestAction = history.find(item => [2, 3, 5].includes(item.type));
-    }
-    setLatestAction(latestAction);
-  }, [history]);
 
   let button = null;
   if (zkAccount) {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
 
@@ -15,12 +15,12 @@ import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 
-import { useFee } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
 
-import { NETWORKS } from 'constants';
+import { NETWORKS, HISTORY_ACTION_TYPES } from 'constants';
 import { useMaxAmountExceeded } from './hooks';
 
 const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
@@ -31,11 +31,11 @@ export default () => {
     history, isPending, maxTransferable,
     limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
+  const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [latestAction, setLatestAction] = useState(null);
+  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
   const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
 
@@ -54,22 +54,6 @@ export default () => {
     const max = minBigNumber(maxTransferable, limits.dailyWithdrawalLimit.available);
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [maxTransferable, limits]);
-
-  useEffect(() => {
-    let amount = ethers.constants.Zero;
-    try {
-      amount = ethers.utils.parseEther(displayAmount);
-    } catch (error) {}
-    setAmount(amount);
-  }, [displayAmount]);
-
-  useEffect(() => {
-    let latestAction = null;
-    if (history?.length) {
-      latestAction = history.find(item => item.type === 4);
-    }
-    setLatestAction(latestAction);
-  }, [history]);
 
   let button = null;
   if (zkAccount) {
