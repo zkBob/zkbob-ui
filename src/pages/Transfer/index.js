@@ -19,6 +19,7 @@ import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useMaxAmountExceeded } from './hooks';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
@@ -33,6 +34,7 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
   const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
@@ -73,8 +75,10 @@ export default () => {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-    } else if (amount.gt(maxTransferable)) {
+    } else if (amount.gt(balance)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+    } else if (amount.gt(maxTransferable)) {
+      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!verifyShieldedAddress(receiver)) {
@@ -95,6 +99,7 @@ export default () => {
           shielded={true}
           fee={fee}
           setMax={setMax}
+          maxAmountExceeded={maxAmountExceeded}
         />
         <Input
           placeholder="Enter address of zkBob receiver"

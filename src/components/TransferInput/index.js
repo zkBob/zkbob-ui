@@ -1,17 +1,23 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
+import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
-export default ({ amount, onChange, balance, fee, shielded, setMax }) => {
+export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExceeded }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       onChange(value);
     }
   }, [onChange]);
+  useEffect(() => {
+    setShowTooltip(maxAmountExceeded);
+  }, [maxAmountExceeded]);
   return (
     <Container>
       <Row>
@@ -41,6 +47,17 @@ export default ({ amount, onChange, balance, fee, shielded, setMax }) => {
           >
             Max
           </MaxButton>
+          <Tooltip
+            content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
+            placement="right"
+            delay={0}
+            width={180}
+            visible={showTooltip}
+            onVisibleChange={setShowTooltip}
+            trigger="hover"
+          >
+            <InfoIcon />
+          </Tooltip>
         </Row>
       </Row>
     </Container>
@@ -65,6 +82,7 @@ const Container = styled.div`
 const Row = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Input = styled.input`
@@ -107,4 +125,14 @@ const TokenContainer = styled.div`
   font-size: 16px;
   padding: 10px 0;
   margin-left: 15px;
+`;
+
+const InfoIcon = styled(InfoIconDefault)`
+  margin-left: 2px;
+  margin-right: -2px;
+  &:hover {
+    & > path {
+      fill: ${props => props.theme.color.purple};
+    }
+  }
 `;

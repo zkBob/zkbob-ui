@@ -18,9 +18,10 @@ import Limits from 'components/Limits';
 import { useFee } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
-import { formatNumber } from 'utils';
+import { formatNumber, minBigNumber } from 'utils';
 
 import { NETWORKS } from 'constants';
+import { useMaxAmountExceeded } from './hooks';
 
 const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
 
@@ -36,6 +37,7 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [latestAction, setLatestAction] = useState(null);
   const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
 
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
@@ -49,8 +51,9 @@ export default () => {
   }, [receiver, amount, withdraw]);
 
   const setMax = useCallback(async () => {
-    setDisplayAmount(ethers.utils.formatEther(maxTransferable));
-  }, [maxTransferable]);
+    const max = minBigNumber(maxTransferable, limits.dailyWithdrawalLimit.available);
+    setDisplayAmount(ethers.utils.formatEther(max));
+  }, [maxTransferable, limits]);
 
   useEffect(() => {
     let amount = ethers.constants.Zero;
@@ -76,10 +79,12 @@ export default () => {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-    } else if (amount.gt(maxTransferable)) {
+    } else if (amount.gt(balance)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+    } else if (amount.gt(maxTransferable)) {
+      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
-      button = <Button disabled>Limit exceeded</Button>;
+      button = <Button disabled>Amount exceeds daily limit</Button>;
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
@@ -100,6 +105,7 @@ export default () => {
           shielded={true}
           fee={fee}
           setMax={setMax}
+          maxAmountExceeded={maxAmountExceeded}
         />
         <Input
           placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}

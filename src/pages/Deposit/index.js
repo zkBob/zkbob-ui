@@ -15,9 +15,10 @@ import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 
 import { useFee } from 'hooks';
+import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 
 import { tokenSymbol } from 'utils/token';
-import { formatNumber } from 'utils';
+import { formatNumber, minBigNumber } from 'utils';
 
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
@@ -34,6 +35,8 @@ export default () => {
   const [displayAmount, setDisplayAmount] = useState('');
   const [latestAction, setLatestAction] = useState(null);
   const { fee } = useFee(amount, TxType.Deposit);
+  const depositLimit = useDepositLimit();
+  const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -41,9 +44,12 @@ export default () => {
   }, [amount, deposit]);
 
   const setMax = useCallback(async () => {
-    const max = balance.gt(fee) ? balance.sub(fee) : ethers.constants.Zero;
+    let max = ethers.constants.Zero;
+    if (balance.gt(fee)) {
+      max = minBigNumber(balance.sub(fee), depositLimit);
+    }
     setDisplayAmount(ethers.utils.formatEther(max));
-  }, [balance, fee]);
+  }, [balance, fee, depositLimit]);
 
   useEffect(() => {
     let amount = ethers.constants.Zero;
@@ -61,14 +67,6 @@ export default () => {
     setLatestAction(latestAction);
   }, [history]);
 
-  const withinLimits = amount => {
-    return (
-      amount.lte(limits.dailyDepositLimitPerAddress.available) &&
-      amount.lte(limits.dailyDepositLimit.available) &&
-      amount.lte(limits.poolSizeLimit.available)
-    );
-  };
-
   return isPending ? <PendingAction /> : (
     <>
       <Card title="Deposit" note={note}>
@@ -79,6 +77,7 @@ export default () => {
           shielded={false}
           fee={fee}
           setMax={setMax}
+          maxAmountExceeded={maxAmountExceeded}
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
@@ -87,8 +86,9 @@ export default () => {
           else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
           else if (amount.isZero()) return <Button disabled>Enter an amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-          else if (amount.gt(balance.sub(fee))) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
-          else if (!withinLimits(amount)) return <Button disabled>Limit exceeded</Button>
+          else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
+          else if (amount.gt(balance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
+          else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
