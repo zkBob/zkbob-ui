@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { isMobile } from 'react-device-detect';
+import { toast } from 'react-toastify';
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
@@ -59,20 +60,19 @@ const Content = () => {
   const location = useLocation();
   const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
   const isRestricted = useRestriction();
+  useEffect(() => {
+    if (!isMobile) return;
+    toast.warn(
+      `We're sorry, but the mobile version of zkBob is not yet ready. The app may not work correctly.`,
+      { autoClose: false },
+    );
+  }, []);
   if (isRestricted) {
     return (
       <Layout>
         <Header empty />
         <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
       </Layout>
-    );
-  }
-  if (isMobile) {
-    return (
-      <MobileLayout>
-        <Header empty />
-        <ErrorText>We're sorry, but the mobile version of zkBob is not yet ready.</ErrorText>
-      </MobileLayout>
     );
   }
   return (
