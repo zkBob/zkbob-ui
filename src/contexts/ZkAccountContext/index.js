@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
-import { toast } from 'react-toastify';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 
@@ -11,9 +10,6 @@ import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
 import { TxType, TxDepositDeadlineExpiredError } from 'zkbob-client-js';
-
-import { tokenSymbol } from 'utils/token';
-import { formatNumber } from 'utils';
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -32,7 +28,7 @@ export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
   const { library, account } = useWeb3React();
-  const { openTxModal, setTxStatus } = useContext(TransactionModalContext);
+  const { openTxModal, setTxStatus, setTxAmount } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const [zkAccount, setZkAccount] = useState(null);
@@ -179,11 +175,11 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const deposit = useCallback(async (amount) => {
     openTxModal();
+    setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
-      toast.success(`Deposited ${formatNumber(amount)} ${tokenSymbol()}.`);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -195,17 +191,17 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
     }
   }, [
-    zkAccount, updatePoolData, library, openTxModal,
+    zkAccount, updatePoolData, library, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
   const transfer = useCallback(async (to, amount) => {
     openTxModal();
+    setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
       await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Transferred ${formatNumber(amount)} ${tokenSymbol(true)}.`);
       updatePoolData();
     } catch (error) {
       console.log(error);
@@ -213,16 +209,16 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [
     zkAccount, updatePoolData, openTxModal,
-    setTxStatus, toShieldedAmount,
+    setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
   const withdraw = useCallback(async (to, amount) => {
     openTxModal();
+    setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
-      toast.success(`Withdrawn ${formatNumber(amount)} ${tokenSymbol()}.`);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -230,7 +226,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updatePoolData, openTxModal,
+    zkAccount, updatePoolData, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
