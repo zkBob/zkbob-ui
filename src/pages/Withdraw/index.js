@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
+import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
 
@@ -14,6 +15,10 @@ import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
+import Tooltip from 'components/Tooltip';
+
+import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
+import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
@@ -98,6 +103,19 @@ export default () => {
           onChange={handleReceiverChange}
         />
         {button}
+        <MessageContainer>
+          <Text>Withdraw at least</Text>
+          <BobIcon />
+          <Text><b>10 BOB</b> and receive an additional <b>0.1 MATIC *</b></Text>
+          <Tooltip
+            content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
+            placement="right"
+            delay={0}
+            width={180}
+          >
+            <InfoIcon />
+          </Tooltip>
+        </MessageContainer>
         <ConfirmTransactionModal
           title="Withdrawal confirmation"
           isOpen={isConfirmModalOpen}
@@ -127,3 +145,33 @@ export default () => {
     </>
   );
 };
+
+const MessageContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  background: #FBEED0;
+  border-radius: 10px;
+`;
+
+const Text = styled.span`
+  font-size: 13px;
+  color: ${({ theme }) => theme.text.color.secondary};
+`;
+
+const InfoIcon = styled(InfoIconDefault)`
+  margin-left: 2px;
+  margin-right: -2px;
+  &:hover {
+    & > path {
+      fill: ${props => props.theme.color.purple};
+    }
+  }
+`;
+
+const BobIcon = styled(BobIconDefault)`
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+`;
