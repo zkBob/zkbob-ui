@@ -56,7 +56,7 @@ export default ({
             <CopyToClipboard text={account} onCopy={onCopy}>
               <AddressContainer>
                 {connector?.icon && <Icon src={connector.icon} />}
-                <Address>{shortAddress(account, 16)}</Address>
+                <Address>{shortAddress(account, 22)}</Address>
                 <Tooltip content="Copied" placement="right" visible={isCopied}>
                   {isCopied ? <CheckIcon /> : <CopyIcon />}
                 </Tooltip>
