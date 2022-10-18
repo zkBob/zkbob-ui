@@ -80,9 +80,10 @@ export default () => {
       </Card>
       <Limits
         limits={[
-          { name: "Daily deposit", values: limits.dailyDepositLimitPerAddress, perAddress: true },
-          { name: "Daily deposit", values: limits.dailyDepositLimit },
-          { name: "Pool size", values: limits.poolSizeLimit },
+          { prefix: "Deposit", suffix: "limit per transaction", value: limits.singleDepositLimit },
+          { prefix: "Daily deposit", suffix: "limit per address", value: limits.dailyDepositLimitPerAddress },
+          { prefix: "Daily deposit", suffix: "limit", value: limits.dailyDepositLimit },
+          { prefix: "Pool size", suffix: "limit", value: limits.poolSizeLimit },
         ]}
       />
       {latestAction && (

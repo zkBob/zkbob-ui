@@ -11,6 +11,7 @@ export const useDepositLimit = () => {
 
   useEffect(() => {
     const minLimit = minBigNumber(
+      limits.singleDepositLimit,
       limits.dailyDepositLimitPerAddress.available,
       limits.dailyDepositLimit.available,
       limits.poolSizeLimit.available,

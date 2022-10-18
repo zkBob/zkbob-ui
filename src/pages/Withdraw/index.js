@@ -33,7 +33,7 @@ const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool an
 export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    history, isPending, maxTransferable,
+    isPending, maxTransferable,
     limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -131,7 +131,7 @@ export default () => {
       </Card>
       <Limits
         limits={[
-          { name: "Daily withdrawal", values: limits.dailyWithdrawalLimit },
+          { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
         ]}
       />
       {latestAction && (

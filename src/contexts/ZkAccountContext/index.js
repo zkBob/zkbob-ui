@@ -18,6 +18,7 @@ const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
+  singleDepositLimit: parseEther('0'),
   dailyDepositLimitPerAddress: { total: parseEther('10000'), available: parseEther('0') },
   dailyDepositLimit: { total: parseEther('100000'), available: parseEther('0') },
   dailyWithdrawalLimit: { total: parseEther('100000'), available: parseEther('0') },
@@ -127,6 +128,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setIsLoadingLimits(true);
       const data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
       limits = {
+        singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
         dailyDepositLimitPerAddress: {
           total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
           available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.available))

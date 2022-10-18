@@ -11,20 +11,28 @@ import { formatNumber } from 'utils';
 export default ({ limits }) => {
   return (
     <Container>
-      {limits.map(({ name, values, perAddress }, index) => (
+      {limits.map(({ prefix, suffix, value }, index) => (
         <Row key={index}>
           <Name>
-            {name}{' '}
-            <NamePostfix>limit{perAddress && ' per address'}</NamePostfix>
+            {prefix}{' '}
+            <NameSuffix>{suffix}</NameSuffix>
           </Name>
-          <Value>{formatNumber(values.available)} {tokenSymbol()}</Value>
-          <Tooltip
-            content={`out of ${formatNumber(values.total)} ${tokenSymbol()} total`}
-            placement="right"
-            delay={0}
-          >
-            <InfoIcon />
-          </Tooltip>
+          {!!value.total ? (
+            <>
+              <Value>{formatNumber(value.available)} {tokenSymbol()}</Value>
+              <Tooltip
+                content={`out of ${formatNumber(value.total)} ${tokenSymbol()} total`}
+                placement="right"
+                delay={0}
+              >
+                <InfoIcon />
+              </Tooltip>
+            </>
+          ) : (
+            <Value style={{ marginRight: 23 }}>
+              {formatNumber(value)} {tokenSymbol()}
+            </Value>
+          )}
         </Row>
       ))}
     </Container>
@@ -61,7 +69,7 @@ const Name = styled.span`
   flex: 1;
 `;
 
-const NamePostfix = styled(Name)`
+const NameSuffix = styled(Name)`
   font-weight: ${props => props.theme.text.weight.normal};
 `;
 
