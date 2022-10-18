@@ -1,7 +1,7 @@
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 
-export default ({ children, content, placement = 'left', delay = 0.5, ...props }) => (
+export default ({ children, content, placement = 'left', delay = 0.5, style, ...props }) => (
   <Tooltip
     placement={placement}
     overlay={content}
@@ -15,6 +15,7 @@ export default ({ children, content, placement = 'left', delay = 0.5, ...props }
       borderRadius: '4px',
       backgroundColor: '#2A1B5B',
       width: props.width,
+      ...style,
     }}
     {...props}
   >

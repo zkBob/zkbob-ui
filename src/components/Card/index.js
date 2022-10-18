@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export default ({ title, note, children, style }) => (
+export default ({ title, note, children, style, titleStyle }) => (
   <Card style={style}>
-    {title && <Title>{title}</Title>}
+    {title && <Title style={titleStyle}>{title}</Title>}
     {children}
     {note && <Note>{note}</Note>}
   </Card>

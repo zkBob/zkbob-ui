@@ -31,7 +31,7 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 7px 10px;
+  padding: 12px 7px 10px;
 `;
 
 const InnerRow = styled.div`
