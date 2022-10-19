@@ -9,9 +9,9 @@ import PendingAction from 'containers/PendingAction';
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
+import MultilineInput from 'components/MultilineInput';
 
 import { ZkAccountContext } from 'contexts';
 
@@ -87,10 +87,9 @@ export default () => {
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
         />
-        <Input
+        <MultilineInput
           placeholder="Enter address of zkBob receiver"
           hint="The address can be generated in the account modal window"
-          secondary
           value={receiver}
           onChange={handleReceiverChange}
         />
