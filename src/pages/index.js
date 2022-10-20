@@ -13,6 +13,7 @@ import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 
+import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
 
@@ -97,6 +98,7 @@ const Content = () => {
         <AccountModal />
         <AccountSetUpModal />
         <PasswordModal />
+        <ChangePasswordModal />
         <TermsModal />
         <ToastContainer />
       </Layout>

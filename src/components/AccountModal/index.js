@@ -17,7 +17,7 @@ import { tokenSymbol, tokenIcon } from 'utils/token';
 
 export default ({
   isOpen, onClose, account = '', zkAccount, zkAccountId,
-  changeAccount, changeZkAccount, connector, logout,
+  changeAccount, changeZkAccount, connector, logout, changePassword,
   balance, poolBalance, privateAddress, generatePrivateAddress,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -108,7 +108,9 @@ export default ({
               Receive tokens to this address or a previously generated address.
             </PrivateAddressDescription>
             <RowSpaceBetween>
-              <div></div>
+              <Button type="link" onClick={() => change(changePassword)}>
+                Change password
+              </Button>
               <Row>
                 <Button type="link" onClick={() => change(changeZkAccount)} style={{ marginRight: 20 }}>
                   Switch

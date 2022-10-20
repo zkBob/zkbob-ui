@@ -93,7 +93,7 @@ const RulesContainer = styled.div`
 `;
 
 const Rule = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   color: ${props => props.theme.text.color[props.$error ? 'error' : 'secondary']};
   position: relative;
   margin-bottom: 8px;

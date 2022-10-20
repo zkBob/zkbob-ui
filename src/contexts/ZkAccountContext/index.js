@@ -70,18 +70,6 @@ export const ZkAccountContextProvider = ({ children }) => {
     setLoadingPercentage(0);
   }, []);
 
-  const unlockAccount = useCallback(password => {
-    try {
-        const cipherText = window.localStorage.getItem('seed');
-        const mnemonic = AES.decrypt(cipherText, password).toString(Utf8);
-        if (!ethers.utils.isValidMnemonic(mnemonic)) throw new Error('invalid mnemonic');
-        closePasswordModal();
-        loadZkAccount(mnemonic);
-    } catch (error) {
-        throw new Error('Incorrect password');
-    }
-  }, [loadZkAccount, closePasswordModal]);
-
   const fromShieldedAmount = useCallback(shieldedAmount => {
     const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
     return BigNumber.from(wei);
@@ -251,6 +239,38 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [zkAccount, toShieldedAmount, fromShieldedAmount, maxTransferable]);
 
+  const decryptMnemonic = password => {
+    const cipherText = window.localStorage.getItem('seed');
+    const mnemonic = AES.decrypt(cipherText, password).toString(Utf8);
+    if (!ethers.utils.isValidMnemonic(mnemonic)) throw new Error('invalid mnemonic');
+    return mnemonic;
+  }
+
+  const unlockAccount = useCallback(password => {
+    try {
+        const mnemonic = decryptMnemonic(password);
+        closePasswordModal();
+        loadZkAccount(mnemonic);
+    } catch (error) {
+        throw new Error('Incorrect password');
+    }
+  }, [loadZkAccount, closePasswordModal]);
+
+  const verifyPassword = useCallback(password => {
+    try {
+      decryptMnemonic(password);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }, []);
+
+  const changePassword = useCallback(async (oldPassword, newPassword) => {
+    const mnemonic = decryptMnemonic(oldPassword);
+    const cipherText = await AES.encrypt(mnemonic, newPassword).toString();
+    window.localStorage.setItem('seed', cipherText);
+  }, []);
+
   const saveZkAccountMnemonic = useCallback(async (mnemonic, password) => {
     const cipherText = await AES.encrypt(mnemonic, password).toString()
     window.localStorage.setItem('seed', cipherText);
@@ -302,7 +322,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         withdraw, transfer, generateAddress, history, unlockAccount,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
-        estimateFee, maxTransferable, isLoadingLimits, limits,
+        estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
       }}
     >
       {children}

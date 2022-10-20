@@ -8,7 +8,8 @@ import ConfirmLogoutModal from 'components/ConfirmLogoutModal';
 
 export default () => {
   const {
-    isAccountModalOpen, closeAccountModal, openAccountModal, openWalletModal, openAccountSetUpModal,
+    isAccountModalOpen, closeAccountModal, openAccountModal,
+    openWalletModal, openAccountSetUpModal, openChangePasswordModal,
   } = useContext(ModalContext);
   const { account } = useWeb3React();
   const { balance } = useContext(TokenBalanceContext);
@@ -60,6 +61,7 @@ export default () => {
         generatePrivateAddress={generatePrivateAddress}
         zkAccountId={zkAccountId}
         logout={openConfirmLogoutModal}
+        changePassword={openChangePasswordModal}
       />
       <ConfirmLogoutModal
         isOpen={isConfirmModalOpen}
