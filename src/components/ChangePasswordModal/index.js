@@ -33,6 +33,16 @@ export default () => {
     setNewPasswordConfirmation(e.target.value);
   }, []);
 
+  const closeModal = useCallback(() => {
+    setWrongPasswordError(false);
+    setLengthError(false);
+    setMatchError(false);
+    setOldPassword('');
+    setNewPassword('');
+    setNewPasswordConfirmation('');
+    closeChangePasswordModal();
+  }, [closeChangePasswordModal]);
+
   const confirm = useCallback(async () => {
     const wrongPasswordError = !verifyPassword(oldPassword);
     const lengthError = !newPassword || newPassword.length < 6;
@@ -42,11 +52,11 @@ export default () => {
     setMatchError(matchError);
     if (!lengthError && !matchError && !wrongPasswordError) {
       changePassword(oldPassword, newPassword);
-      closeChangePasswordModal();
+      closeModal();
     }
   }, [
     oldPassword, newPassword, newPasswordConfirmation,
-    changePassword, verifyPassword, closeChangePasswordModal,
+    changePassword, verifyPassword, closeModal,
   ]);
 
   const handleKeyPress = useCallback(event => {
@@ -58,7 +68,7 @@ export default () => {
   return (
     <Modal
       isOpen={isChangePasswordModalOpen}
-      onClose={closeChangePasswordModal}
+      onClose={closeModal}
       title="Change password"
     >
       <Container onKeyPress={handleKeyPress}>
