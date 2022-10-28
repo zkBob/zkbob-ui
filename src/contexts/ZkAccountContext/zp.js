@@ -38,7 +38,6 @@ const createAccount = async (mnemonic, statusCallback) => {
   return ZkBobClient.create({
     sk,
     tokens,
-    snarkParams: ctx.snarkParams,
     worker: ctx.worker,
     networkName: network,
     network: new EvmNetwork(RPC_URL),

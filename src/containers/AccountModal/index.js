@@ -21,8 +21,8 @@ export default () => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const generatePrivateAddress = useCallback(() => {
-    setPrivateAddress(generateAddress());
+  const generatePrivateAddress = useCallback(async () => {
+    setPrivateAddress(await generateAddress());
   }, [generateAddress]);
 
   const onClose = useCallback(() => {

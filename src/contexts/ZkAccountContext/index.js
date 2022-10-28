@@ -220,9 +220,9 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
-  const generateAddress = useCallback(() => {
+  const generateAddress = useCallback(async () => {
     if (!zkAccount) return;
-    return zkAccount.generateAddress(TOKEN_ADDRESS);
+    return await zkAccount.generateAddress(TOKEN_ADDRESS);
   }, [zkAccount]);
 
   const estimateFee = useCallback(async (amount, txType) => {

@@ -1,5 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
-import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 
@@ -33,6 +32,7 @@ export default () => {
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
+  const [receiverValid, setReceiverValid] = useState(true);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
   const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
@@ -46,12 +46,23 @@ export default () => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
+    setReceiverValid(true);
     transfer(receiver, amount);
   }, [receiver, amount, transfer]);
 
   const setMax = useCallback(async () => {
     setDisplayAmount(ethers.utils.formatEther(maxTransferable));
   }, [maxTransferable]);
+
+  useEffect(() => {
+    const verifyShieldedAddress = async () => {
+      if (zkAccount) {
+        let receiverValid = await zkAccount.verifyShieldedAddress(receiver);
+        setReceiverValid(receiverValid);
+      }
+    }
+    verifyShieldedAddress().catch(console.error);
+  }, [zkAccount, receiver])
 
   let button = null;
   if (zkAccount) {
@@ -67,7 +78,7 @@ export default () => {
       button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
-    } else if (!verifyShieldedAddress(receiver)) {
+    } else if (!receiverValid) {
       button = <Button disabled>Invalid address</Button>;
     } else {
       button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
