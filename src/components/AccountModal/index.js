@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import PrivateAddress from 'components/PrivateAddress';
 import Tooltip from 'components/Tooltip';
-import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
+import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
@@ -82,7 +82,7 @@ export default ({
             <RowSpaceBetween>
               <Row>
                 <ZkAvatar seed={zkAccountId} size={20} />
-                <Address><ZkName seed={zkAccountId} /></Address>
+                <Address>zkAccount</Address>
               </Row>
               <TokenContainer>
                 <TokenIcon src={tokenIcon(true)} />
