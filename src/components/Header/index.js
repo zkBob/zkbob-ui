@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
-import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
+import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as Logo } from 'assets/logo-beta.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
@@ -40,58 +40,53 @@ export default ({
         <NetworkLabel>
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
-        {!account && (
-          <Button style={{ marginLeft: 16 }} $small onClick={openWalletModal}>Connect wallet</Button>
+        {account ? (
+          <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
+            <Row>
+              {connector && <Icon src={connector.icon} />}
+              <Address>{shortAddress(account)}</Address>
+              <Balance>
+                <Tooltip content={formatNumber(balance, 18)} placement="bottom">
+                  <span>{formatNumber(balance)}</span>
+                </Tooltip>
+                {' '}{tokenSymbol()}
+              </Balance>
+            </Row>
+          </AccountLabel>
+        ) : (
+          <Button $small onClick={openWalletModal}>Connect wallet</Button>
         )}
-        {(account || zkAccount) && (
-          <AccountLabel onClick={openAccountModal}>
-            {account && (
-              <Row $refreshing={isRefreshing}>
-                {connector && <Icon src={connector.icon} />}
-                <Address>{shortAddress(account)}</Address>
+        {zkAccount ? (
+          <>
+            <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
+              <Row>
+                <ZkAvatar seed={zkAccountId} size={16} />
+                <Address>zkAccount</Address>
                 <Balance>
-                  <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-                    <span>{formatNumber(balance)}</span>
+                  <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
+                    <span>{formatNumber(poolBalance)}</span>
                   </Tooltip>
-                  {' '}{tokenSymbol()}
+                  {' '}{tokenSymbol(true)}
                 </Balance>
               </Row>
-            )}
-            {(account && zkAccount) && <Divider />}
-            {zkAccount && (
-              <>
-                <Row $refreshing={isRefreshing}>
-                  <ZkAvatar seed={zkAccountId} size={16} />
-                  <Address><ZkName seed={zkAccountId} /></Address>
-                  <Balance>
-                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                      <span>{formatNumber(poolBalance)}</span>
-                    </Tooltip>
-                    {' '}{tokenSymbol(true)}
-                  </Balance>
-                </Row>
-                <Divider />
-                <RefreshButtonContainer onClick={refresh}>
-                  {isRefreshing ? (
-                    <Spinner size={18} />
-                  ) : (
-                    <RefreshIcon />
-                  )}
-                </RefreshButtonContainer>
-              </>
-            )}
-          </AccountLabel>
-        )}
-        {!zkAccount && (
+            </AccountLabel>
+            <RefreshButtonContainer onClick={refresh}>
+              {isRefreshing ? (
+                <Spinner size={18} />
+              ) : (
+                <RefreshIcon />
+              )}
+            </RefreshButtonContainer>
+          </>
+        ) : (
           <Button
             $small
             $loading={isLoadingZkAccount}
             $contrast
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
-            style={{ marginLeft: 16 }}
           >
-            {isLoadingZkAccount ? 'Loading zkAccount' : 'zkAccount'}
+            {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
           </Button>
         )}
         <GetBobLink
@@ -110,7 +105,6 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  opacity: ${props => props.$refreshing ? 0.2 : 1};
   position: relative;
 `;
 
@@ -120,6 +114,9 @@ const LogoSection = styled(Row)`
 
 const AccountSection = styled(Row)`
   justify-content: center;
+  & > * {
+    margin-left: 10px;
+  }
 `;
 
 const NetworkLabel = styled(Row)`
@@ -135,7 +132,13 @@ const NetworkLabel = styled(Row)`
 const AccountLabel = styled(NetworkLabel)`
   cursor: pointer;
   overflow: hidden;
-  margin-left: 16px;
+  border: 1px solid ${props => props.theme.button.primary.text.color.contrast};
+  &:hover {
+    border-color: ${props => props.theme.button.link.text.color};
+    & span {
+      color: ${props => props.theme.button.link.text.color};
+    }
+  }
 `;
 
 const GnosisChainLogo = styled(GnosisChainLogoDefault)`
@@ -146,13 +149,6 @@ const GnosisChainLogo = styled(GnosisChainLogoDefault)`
 const Icon = styled.img`
   width: 18px;
   height: 16px;
-`;
-
-const Divider = styled.div`
-  width: 1px;
-  height: 16px;
-  margin: 0 8px;
-  background: ${({ theme }) => theme.input.border.color.default};
 `;
 
 const Address = styled.span`
@@ -175,10 +171,13 @@ const Spinner = styled(SpinnerDefault)`
   }
 `;
 
-const RefreshButtonContainer = styled.div`
-  height: 18px;
-  margin: -6px -12px -6px -8px;
-  padding: 6px 12px 6px 8px;
+const RefreshButtonContainer = styled(Row)`
+  background-color: ${props => props.theme.networkLabel.background};
+  padding: 8px 12px;
+  border-radius: 16px;
+  height: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
 `;
 
 const GetBobLink = styled.a`
@@ -192,7 +191,6 @@ const GetBobLink = styled.a`
   text-decoration: none;
   padding: 5px 12px;
   border-radius: 16px;
-  margin-left: 16px;
   height: 30px;
   box-sizing: border-box;
 `;
