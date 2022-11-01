@@ -8,21 +8,17 @@ import { EvmNetwork } from 'zkbob-client-js/lib/networks/evm';
 import { TX_STATUSES } from 'constants';
 import { createPermitSignature } from 'utils/token';
 
-import transferParamsUrl from 'assets/zp-params/transfer_params.bin';
-import treeParamsUrl from 'assets/zp-params/tree_params.bin';
-import transferVkUrl from 'assets/zp-params/transfer_verification_key.json?asset';
-import treeVkUrl from 'assets/zp-params/tree_verification_key.json?asset';
-
 const POOL_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
 const RPC_URL = process.env.REACT_APP_RPC_URL;
+const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 
 const snarkParams = {
-  transferParamsUrl,
-  treeParamsUrl,
-  transferVkUrl,
-  treeVkUrl,
+  transferParamsUrl: `${BUCKET_URL}/transfer_params.bin`,
+  treeParamsUrl: `${BUCKET_URL}/tree_params.bin`,
+  transferVkUrl: `${BUCKET_URL}/transfer_verification_key.json`,
+  treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
 };
 
 const createAccount = async (mnemonic, statusCallback) => {
