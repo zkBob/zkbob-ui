@@ -6,7 +6,7 @@ import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
 import { useSelectedConnector } from 'hooks';
 
 
-export default () => {
+export default ({ empty }) => {
   const { account } = useWeb3React();
   const { balance, updateBalance } = useContext(TokenBalanceContext);
   const {
@@ -42,6 +42,7 @@ export default () => {
         zkAccountId={zkAccountId}
         isRefreshing={isRefreshing}
         refresh={refresh}
+        empty={empty}
       />
     </>
   );

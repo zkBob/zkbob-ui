@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
+import { toast } from 'react-toastify';
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
@@ -11,6 +13,7 @@ import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 
+import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
 
@@ -58,12 +61,20 @@ const Content = () => {
   const location = useLocation();
   const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
   const isRestricted = useRestriction();
+  useEffect(() => {
+    if (!isMobile) return;
+    toast.warn(
+      `We're sorry, but the mobile version of zkBob is not yet ready. The app may not work correctly.`,
+      { autoClose: false },
+    );
+  }, []);
   if (isRestricted) {
     return (
       <Layout>
+        <Header empty />
         <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
       </Layout>
-    )
+    );
   }
   return (
     <>
@@ -87,6 +98,7 @@ const Content = () => {
         <AccountModal />
         <AccountSetUpModal />
         <PasswordModal />
+        <ChangePasswordModal />
         <TermsModal />
         <ToastContainer />
       </Layout>
@@ -107,6 +119,10 @@ const Layout = styled.div`
   box-sizing: border-box;
   padding: 14px 40px 40px;
   background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
+`;
+
+const MobileLayout = styled(Layout)`
+  padding-top: 30px;
 `;
 
 const PageContainer = styled.div`

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -9,30 +9,34 @@ import PendingAction from 'containers/PendingAction';
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Input from 'components/Input';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
+import MultilineInput from 'components/MultilineInput';
 
 import { ZkAccountContext } from 'contexts';
 
-import { useFee } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useMaxAmountExceeded } from './hooks';
+
+import { HISTORY_ACTION_TYPES } from 'constants';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 
 export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
-    history, isPending, maxTransferable, minTxAmount,
+    isPending, maxTransferable, minTxAmount,
   } = useContext(ZkAccountContext);
-  const [amount, setAmount] = useState(ethers.constants.Zero);
   const [displayAmount, setDisplayAmount] = useState('');
+  const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [latestAction, setLatestAction] = useState(null);
+  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
   const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
   const handleReceiverChange = useCallback(e => {
     setReceiver(e.target.value);
@@ -49,22 +53,6 @@ export default () => {
     setDisplayAmount(ethers.utils.formatEther(maxTransferable));
   }, [maxTransferable]);
 
-  useEffect(() => {
-    let amount = ethers.constants.Zero;
-    try {
-      amount = ethers.utils.parseEther(displayAmount);
-    } catch (error) {}
-    setAmount(amount);
-  }, [displayAmount]);
-
-  useEffect(() => {
-    let latestAction = null;
-    if (history?.length) {
-      latestAction = history.find(item => [2, 3, 5].includes(item.type));
-    }
-    setLatestAction(latestAction);
-  }, [history]);
-
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
@@ -73,8 +61,10 @@ export default () => {
       button = <Button disabled>Enter an amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-    } else if (amount.gt(maxTransferable)) {
+    } else if (amount.gt(balance)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+    } else if (amount.gt(maxTransferable)) {
+      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
     } else if (!receiver) {
       button = <Button disabled>Enter an address</Button>;
     } else if (!verifyShieldedAddress(receiver)) {
@@ -95,11 +85,11 @@ export default () => {
           shielded={true}
           fee={fee}
           setMax={setMax}
+          maxAmountExceeded={maxAmountExceeded}
         />
-        <Input
+        <MultilineInput
           placeholder="Enter address of zkBob receiver"
           hint="The address can be generated in the account modal window"
-          secondary
           value={receiver}
           onChange={handleReceiverChange}
         />

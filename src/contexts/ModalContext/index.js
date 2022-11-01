@@ -21,6 +21,10 @@ export const ModalContextProvider = ({ children }) => {
   const openPasswordModal = () => setIsPasswordModalOpen(true);
   const closePasswordModal = () => setIsPasswordModalOpen(false);
 
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const openChangePasswordModal = () => setIsChangePasswordModalOpen(true);
+  const closeChangePasswordModal = () => setIsChangePasswordModalOpen(false);
+
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const openTermsModal = () => setIsTermsModalOpen(true);
   const closeTermsModal = () => setIsTermsModalOpen(false);
@@ -32,6 +36,7 @@ export const ModalContextProvider = ({ children }) => {
         isAccountModalOpen, openAccountModal, closeAccountModal,
         isAccountSetUpModalOpen, openAccountSetUpModal, closeAccountSetUpModal,
         isPasswordModalOpen, openPasswordModal, closePasswordModal,
+        isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
       }}
     >

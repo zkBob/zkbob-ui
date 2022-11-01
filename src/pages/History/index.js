@@ -11,9 +11,12 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 import { ZkAccountContext } from 'contexts';
 
 export default () => {
-  const { history, zkAccount, isLoadingZkAccount, isLoadingHistory } = useContext(ZkAccountContext);
+  const {
+    history, zkAccount, zkAccountId,
+    isLoadingZkAccount, isLoadingHistory,
+  } = useContext(ZkAccountContext);
 
-  const pageSize = 7;
+  const pageSize = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
   const isLoading = isLoadingZkAccount || isLoadingHistory;
@@ -21,7 +24,7 @@ export default () => {
   const title = 'History';
 
   return (
-    <Card title={!isHistoryEmpty ? title : null}>
+    <Card title={!isHistoryEmpty ? title : null} titleStyle={{ marginBottom: 22 }}>
       {((isLoading && isHistoryEmpty) || isHistoryEmpty || !zkAccount) && (
         <Title>{title}</Title>
       )}
@@ -40,7 +43,7 @@ export default () => {
       {!isHistoryEmpty && (
         <>
           {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
-            <HistoryItem key={index} item={item} />
+            <HistoryItem key={index} item={item} zkAccountId={zkAccountId} />
           )}
           {history.length > pageSize && (
             <Pagination

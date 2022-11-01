@@ -18,4 +18,10 @@ export const formatNumber = (wei, customDecimals) => {
     suffix = '.' + suffix.slice(0, decimals);
   }
   return prefix + suffix;
-}
+};
+
+export const minBigNumber = (...numbers) =>
+  numbers.reduce((p, v) =>  (p.lt(v) ? p : v));
+
+export const maxBigNumber = (...numbers) =>
+  numbers.reduce((p, v) =>  (p.gt(v) ? p : v));
