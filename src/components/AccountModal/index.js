@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import PrivateAddress from 'components/PrivateAddress';
 import Tooltip from 'components/Tooltip';
-import { ZkAvatar } from 'components/ZkAccountIdentifier';
+import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
@@ -94,7 +94,7 @@ export default ({
             <RowSpaceBetween>
               <Row>
                 <ZkAvatar seed={zkAccountId} size={20} />
-                <Address>zkAccount</Address>
+                <Address><ZkName seed={zkAccountId} /></Address>
               </Row>
             </RowSpaceBetween>
             {privateAddress ? (
