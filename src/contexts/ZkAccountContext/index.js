@@ -9,7 +9,7 @@ import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'cont
 import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
-import { TxType, TxDepositDeadlineExpiredError } from 'zkbob-client-js';
+import { TxType, TxDepositDeadlineExpiredError, InitState } from 'zkbob-client-js';
 
 const { parseEther, formatEther } = ethers.utils;
 
@@ -45,13 +45,15 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [limits, setLimits] = useState(defaultLimits);
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
-  const [loadingPercentage, setLoadingPercentage] = useState(0);
+  const [loadingPercentage, setLoadingPercentage] = useState(null);
 
   const updateLoadingStatus = status => {
-    const { loaded, total } = status.download;
-    if (total > 0) {
-      setLoadingPercentage(Math.round(loaded / total * 100));
+    let loadingPercentage = null;
+    if (status.state === InitState.DownloadingParams) {
+      const { loaded, total } = status.download;
+      loadingPercentage = Math.round(loaded / total * 100);
     }
+    setLoadingPercentage(loadingPercentage);
   };
 
   const loadZkAccount = useCallback(async mnemonic => {
