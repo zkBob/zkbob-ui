@@ -138,7 +138,7 @@ export default () => {
         <LatestAction
           type="Withdrawal"
           shielded={true}
-          amount={latestAction.amount}
+          actions={latestAction.actions}
           txHash={latestAction.txHash}
         />
       )}

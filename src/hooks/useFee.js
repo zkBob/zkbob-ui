@@ -10,7 +10,7 @@ export default (amount, txType) => {
 
   useEffect(() => {
     async function updateFee() {
-      const data = await estimateFee(amount, txType);
+      const data = await estimateFee([amount], txType);
       const fee = data?.fee;
       const numberOfTxs = data?.numberOfTxs;
       setFee(fee || ethers.constants.Zero);

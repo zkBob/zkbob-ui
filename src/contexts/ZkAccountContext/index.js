@@ -100,8 +100,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (zkAccount) {
       setIsLoadingHistory(true);
       history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
-      history = history.reverse().map(item => ({ ...item, amount: fromShieldedAmount(item.amount) }));
-      pendingActions = history.filter(item => item.pending && item.type !== 2);
+      history = history.reverse().map(item => ({
+        ...item,
+        actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
+      }));
+      pendingActions = history.filter(item => item.state === 1 && item.type !== 2);
       isPending = pendingActions.length > 0;
       console.log('Pending:', isPending);
       console.log('History:', history);
@@ -170,7 +173,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Deposit, false);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, [shieldedAmount], TxType.Deposit, false);
       await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -192,8 +195,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Transfer, false);
-      await zp.transfer(zkAccount, to, shieldedAmount, fee, setTxStatus);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, [shieldedAmount], TxType.Transfer, false);
+      await zp.transfer(zkAccount, [{ destination: to, amountGwei: shieldedAmount }], fee, setTxStatus);
       updatePoolData();
     } catch (error) {
       console.log(error);
@@ -204,12 +207,32 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
+  const transferMulti = useCallback(async data => {
+    openTxModal();
+    try {
+      const transfers = data.map(({ address, amount }) => ({
+        destination: address,
+        amountGwei: toShieldedAmount(amount)
+      }));
+      const shieldedAmounts = transfers.map(tr => tr.amountGwei);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, TxType.Transfer, false);
+      await zp.transfer(zkAccount, transfers, fee, setTxStatus);
+      updatePoolData();
+    } catch (error) {
+      console.log(error);
+      setTxStatus(TX_STATUSES.REJECTED);
+    }
+  }, [
+    zkAccount, updatePoolData, openTxModal,
+    setTxStatus, toShieldedAmount,
+  ]);
+
   const withdraw = useCallback(async (to, amount) => {
     openTxModal();
     setTxAmount(amount);
     try {
       const shieldedAmount = toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmount, TxType.Withdraw, false);
+      const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, [shieldedAmount], TxType.Withdraw, false);
       await zp.withdraw(zkAccount, to, shieldedAmount, fee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -227,19 +250,17 @@ export const ZkAccountContextProvider = ({ children }) => {
     return zkAccount.generateAddress(TOKEN_ADDRESS);
   }, [zkAccount]);
 
-  const estimateFee = useCallback(async (amount, txType) => {
+  const estimateFee = useCallback(async (amounts, txType) => {
     if (!zkAccount) return null;
     try {
-      if (txType !== TxType.Deposit && amount.gt(maxTransferable)) {
-        amount = maxTransferable;
-      }
-      const { total, txCnt } = await zkAccount.feeEstimate(TOKEN_ADDRESS, toShieldedAmount(amount), txType, false);
-      return { fee: fromShieldedAmount(total), numberOfTxs: txCnt };
+      const shieldedAmounts = amounts.map(amount => toShieldedAmount(amount));
+      const { total, txCnt, insufficientFunds } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, txType, false);
+      return { fee: fromShieldedAmount(total), numberOfTxs: txCnt, insufficientFunds };
     } catch (error) {
       console.log(error);
       return null;
     }
-  }, [zkAccount, toShieldedAmount, fromShieldedAmount, maxTransferable]);
+  }, [zkAccount, toShieldedAmount, fromShieldedAmount]);
 
   const decryptMnemonic = password => {
     const cipherText = window.localStorage.getItem('seed');
@@ -321,7 +342,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     <ZkAccountContext.Provider
       value={{
         zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
-        withdraw, transfer, generateAddress, history, unlockAccount,
+        withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,

@@ -61,12 +61,12 @@ const deposit = async (signer, account, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 
-const transfer = async (account, to, amount, fee, setTxStatus) => {
+const transfer = async (account, transfers, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const jobIds = await account.transferMulti(TOKEN_ADDRESS, to, amount, fee);
+  const jobIds = await account.transferMulti(TOKEN_ADDRESS, transfers, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await account.waitJobsCompleted(TOKEN_ADDRESS, jobIds);
-  setTxStatus(TX_STATUSES.TRANSFERRED);
+  setTxStatus(TX_STATUSES[transfers.length > 1 ? 'TRANSFERRED_MULTI' : 'TRANSFERRED']);
 };
 
 const withdraw = async (account, to, amount, fee, setTxStatus) => {
