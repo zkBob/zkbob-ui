@@ -250,6 +250,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     return zkAccount.generateAddress(TOKEN_ADDRESS);
   }, [zkAccount]);
 
+  const verifyShieldedAddress = useCallback(address => {
+    if (!zkAccount) return false;
+    return zkAccount.verifyShieldedAddress(address);
+  }, [zkAccount]);
+
   const estimateFee = useCallback(async (amounts, txType) => {
     if (!zkAccount) return null;
     try {
@@ -346,6 +351,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
+        verifyShieldedAddress,
       }}
     >
       {children}

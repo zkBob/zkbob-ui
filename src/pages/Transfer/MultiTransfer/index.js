@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
-import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
 import { ethers } from 'ethers';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
@@ -19,7 +18,10 @@ import { formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
 
 export default forwardRef((props, ref) => {
-  const { zkAccount, isLoadingState, transferMulti, estimateFee } = useContext(ZkAccountContext);
+  const {
+    zkAccount, isLoadingState, transferMulti,
+    estimateFee, verifyShieldedAddress,
+  } = useContext(ZkAccountContext);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -35,15 +37,21 @@ export default forwardRef((props, ref) => {
     setErrorType(null);
     let errors = [];
     const rows = data.split('\n');
-    const parsedData = rows.map((row, index) => {
-      const rowData = row.replace(/\s/g, '').split(',');
-      const [address, amount] = rowData;
-      if (!address || !amount || rowData.length !== 2 || !verifyShieldedAddress(address) || !(Number(amount) > 0)) {
+    const parsedData = await Promise.all(rows.map(async (row, index) => {
+      try {
+        const rowData = row.replace(/\s/g, '').split(',');
+        const [address, amount] = rowData;
+        if (!address || !amount || rowData.length !== 2) throw Error;
+
+        const isValidAddress = await verifyShieldedAddress(address);
+        if (!isValidAddress || !(Number(amount) > 0)) throw Error;
+
+        return { address, amount: ethers.utils.parseEther(amount) };
+      } catch (err) {
         errors.push(index);
         return null;
       }
-      return { address, amount: ethers.utils.parseEther(amount) };
-    });
+    }));
     setErrors(errors);
     if (errors.length > 0) {
       setErrorType('syntax');

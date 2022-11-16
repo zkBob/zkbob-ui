@@ -25,7 +25,7 @@
   REACT_APP_TOKEN_ADDRESS = "0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B"
   REACT_APP_RELAYER_URL = "https://relayer-mvp.zkbob.com"
   REACT_APP_RPC_URL = "https://polygon-rpc.com"
-  REACT_APP_ZEROPOOL_NETWORK = "ethereum"
+  REACT_APP_ZEROPOOL_NETWORK = "polygon"
   REACT_APP_BUCKET_URL = "https://r2.zkbob.com"
   # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
 
@@ -38,6 +38,6 @@
   REACT_APP_TOKEN_ADDRESS = "0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f"
   REACT_APP_RELAYER_URL = "https://relayer.thgkjlr.website/"
   REACT_APP_RPC_URL = "https://rpc.sepolia.org"
-  REACT_APP_ZEROPOOL_NETWORK = "ethereum"
+  REACT_APP_ZEROPOOL_NETWORK = "sepolia"
   REACT_APP_BUCKET_URL = "https://r2-staging.zkbob.com"
   # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
