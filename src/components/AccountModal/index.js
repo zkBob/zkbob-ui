@@ -7,7 +7,6 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import PrivateAddress from 'components/PrivateAddress';
 import Tooltip from 'components/Tooltip';
-import { ZkAvatar, ZkName } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
@@ -16,7 +15,7 @@ import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 
 export default ({
-  isOpen, onClose, account = '', zkAccount, zkAccountId,
+  isOpen, onClose, account = '', zkAccount,
   changeAccount, changeZkAccount, connector, logout, changePassword,
   balance, poolBalance, privateAddress, generatePrivateAddress,
 }) => {
@@ -90,12 +89,6 @@ export default ({
                 </Tooltip>
                 <span style={{ marginLeft: 5 }}>{tokenSymbol(true)}</span>
               </TokenContainer>
-            </RowSpaceBetween>
-            <RowSpaceBetween>
-              <Row>
-                <ZkAvatar seed={zkAccountId} size={20} />
-                <Address><ZkName seed={zkAccountId} /></Address>
-              </Row>
             </RowSpaceBetween>
             {privateAddress ? (
               <PrivateAddress>{privateAddress}</PrivateAddress>
