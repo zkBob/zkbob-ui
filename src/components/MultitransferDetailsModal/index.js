@@ -10,7 +10,7 @@ import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
 
-export default ({ isOpen, onClose, transfers }) => {
+export default ({ isOpen, onClose, transfers, isSent }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -28,7 +28,7 @@ export default ({ isOpen, onClose, transfers }) => {
             </TotalAmount>
             <TokenSymbol>{tokenSymbol()}</TokenSymbol>
           </AmountContainer>
-          <Text>will be transferred to {transfers.length} zkBob addresses</Text>
+          <Text>{isSent ? 'has been' : 'will be'} transferred to {transfers.length} zkBob addresses</Text>
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (

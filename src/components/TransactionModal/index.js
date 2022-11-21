@@ -21,7 +21,7 @@ const titles = {
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
   [TX_STATUSES.DEPOSITED]: 'Deposit sent',
   [TX_STATUSES.TRANSFERRED]: 'Transfer sent',
-  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multiransfer sent',
+  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multitransfer sent',
   [TX_STATUSES.WITHDRAWN]: 'Withdrawal sent',
   [TX_STATUSES.REJECTED]: 'Transaction was rejected',
   [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',

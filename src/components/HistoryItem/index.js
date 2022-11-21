@@ -164,6 +164,7 @@ export default ({ item, zkAccountId }) => {
           transfers={item.actions.map(action => ({ address: action.to, amount: action.amount }))}
           isOpen={isDetailsModalOpen}
           onClose={() => setIsDetailsModalOpen(false)}
+          isSent={true}
         />
       )}
     </Container>
