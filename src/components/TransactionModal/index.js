@@ -30,23 +30,23 @@ const titles = {
 const descriptions = {
   [TX_STATUSES.DEPOSITED]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in process.<br /><br />
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in process.<br /><br />
       To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
     </span>
   ),
   [TX_STATUSES.TRANSFERRED]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in process.
     </span>
   ),
-  [TX_STATUSES.TRANSFERRED_MULTI]: () => (
+  [TX_STATUSES.TRANSFERRED_MULTI]: amount => (
     <span>
-      Your multitransfer within the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in process.
     </span>
   ),
   [TX_STATUSES.WITHDRAWN]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in process.
     </span>
   ),
   [TX_STATUSES.SIGNATURE_EXPIRED]: () => (

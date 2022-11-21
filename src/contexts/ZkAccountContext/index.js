@@ -192,8 +192,8 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const transfer = useCallback(async (to, amount) => {
     openTxModal();
-    setTxAmount(amount);
     try {
+      setTxAmount(amount);
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, [shieldedAmount], TxType.Transfer, false);
       await zp.transfer(zkAccount, [{ destination: to, amountGwei: shieldedAmount }], fee, setTxStatus);
@@ -210,13 +210,14 @@ export const ZkAccountContextProvider = ({ children }) => {
   const transferMulti = useCallback(async data => {
     openTxModal();
     try {
+      setTxAmount(data.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
       const transfers = data.map(({ address, amount }) => ({
         destination: address,
         amountGwei: toShieldedAmount(amount)
       }));
       const shieldedAmounts = transfers.map(tr => tr.amountGwei);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, TxType.Transfer, false);
-      await zp.transfer(zkAccount, transfers, fee, setTxStatus);
+      await zp.transfer(zkAccount, transfers, fee, setTxStatus, true);
       updatePoolData();
     } catch (error) {
       console.log(error);
@@ -224,7 +225,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [
     zkAccount, updatePoolData, openTxModal,
-    setTxStatus, toShieldedAmount,
+    setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
   const withdraw = useCallback(async (to, amount) => {
