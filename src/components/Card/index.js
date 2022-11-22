@@ -29,6 +29,7 @@ const Card = styled.div`
 const Title = styled.span`
   color: ${props => props.theme.card.title.color};
   font-weight: ${props => props.theme.text.weight.normal};
+  padding: 0 10px;
 `;
 
 const Note = styled.span`
@@ -38,4 +39,5 @@ const Note = styled.span`
   font-weight: ${props => props.theme.text.weight.normal};
   align-self: center;
   text-align: center;
+  padding: 0 10px;
 `;

@@ -18,7 +18,7 @@ export default ({ tabs, activeTab, onTabClick }) => {
 const Tabs = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   background-color: ${props => props.theme.tab.background.default};
   border-radius: 16px;
   padding: 8px;

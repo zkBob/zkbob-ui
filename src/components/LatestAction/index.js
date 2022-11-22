@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { ethers } from 'ethers';
 
 import Link from 'components/Link';
 import Button from 'components/Button';
@@ -9,7 +10,7 @@ import Tooltip from 'components/Tooltip';
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 
-export default ({ type, shielded, amount, txHash }) => {
+export default ({ type, shielded, actions, txHash }) => {
   const history = useHistory();
   return (
     <Row>
@@ -17,9 +18,14 @@ export default ({ type, shielded, amount, txHash }) => {
         <Action>Latest {type}:</Action>
         <TokenIcon src={tokenIcon(shielded)} />
         <Amount>
-          <Tooltip content={formatNumber(amount, 18)} placement="top">
-            <span>{formatNumber(amount)}</span>
-          </Tooltip>
+          {(() => {
+            const total = actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+            return (
+              <Tooltip content={formatNumber(total, 18)} placement="top">
+                <span>{formatNumber(total, 18)}</span>
+              </Tooltip>
+            );
+          })()}
           {' '}{tokenSymbol(shielded)}
         </Amount>
         <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>

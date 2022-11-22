@@ -7,7 +7,10 @@ import Button from 'components/Button';
 export default () => {
   const { openAccountSetUpModal } = useContext(ModalContext);
   const { isLoadingZkAccount, loadingPercentage } = useContext(ZkAccountContext);
-  const text = isLoadingZkAccount ? `Loading zkAccount: ${loadingPercentage}%` : 'Get started!';
+  let text = 'Get started!';
+  if (isLoadingZkAccount) {
+    text = loadingPercentage === null ? 'Loading zkAccount...' : `Downloading parameters: ${loadingPercentage}%`;
+  }
   return (
     <Button
       $loading={isLoadingZkAccount}

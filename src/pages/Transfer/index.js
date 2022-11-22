@@ -1,121 +1,120 @@
-import React, { useState, useContext, useCallback } from 'react';
-import { verifyShieldedAddress } from 'zkbob-client-js/lib/utils';
-import { TxType } from 'zkbob-client-js';
-import { ethers } from 'ethers';
+import React, { useContext, useState, useRef } from 'react';
+import styled from 'styled-components';
 
-import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
-import Button from 'components/Button';
-import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
-import MultilineInput from 'components/MultilineInput';
+import Switch from 'components/Switch';
+import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
+import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
+
+import SingleTransfer from './SingleTransfer';
+import MultiTransfer from './MultiTransfer';
 
 import { ZkAccountContext } from 'contexts';
 
-import { useFee, useParsedAmount, useLatestAction } from 'hooks';
-
-import { tokenSymbol } from 'utils/token';
-import { formatNumber } from 'utils';
-import { useMaxAmountExceeded } from './hooks';
+import { useLatestAction } from 'hooks';
 
 import { HISTORY_ACTION_TYPES } from 'constants';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
+const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {
-  const {
-    zkAccount, balance, transfer, isLoadingState,
-    isPending, maxTransferable, minTxAmount,
-  } = useContext(ZkAccountContext);
-  const [displayAmount, setDisplayAmount] = useState('');
-  const amount = useParsedAmount(displayAmount);
-  const [receiver, setReceiver] = useState('');
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const { isPending } = useContext(ZkAccountContext);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
-  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
+  const [isMulti, setIsMulti] = useState(false);
+  const multitransferRef = useRef(null);
+  const fileInputRef = useRef(null);
 
-  const handleReceiverChange = useCallback(e => {
-    setReceiver(e.target.value);
-  }, []);
-
-  const onTransfer = useCallback(() => {
-    setIsConfirmModalOpen(false);
-    setDisplayAmount('');
-    setReceiver('');
-    transfer(receiver, amount);
-  }, [receiver, amount, transfer]);
-
-  const setMax = useCallback(async () => {
-    setDisplayAmount(ethers.utils.formatEther(maxTransferable));
-  }, [maxTransferable]);
-
-  let button = null;
-  if (zkAccount) {
-    if (isLoadingState) {
-      button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
-    } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
-    } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-    } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
-    } else if (amount.gt(maxTransferable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
-    } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
-    } else if (!verifyShieldedAddress(receiver)) {
-      button = <Button disabled>Invalid address</Button>;
-    } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
-    }
-  } else {
-    button = <AccountSetUpButton />;
-  }
   return isPending ? <PendingAction /> : (
     <>
-      <Card title="Transfer" note={note}>
-        <TransferInput
-          balance={balance}
-          amount={displayAmount}
-          onChange={setDisplayAmount}
-          shielded={true}
-          fee={fee}
-          setMax={setMax}
-          maxAmountExceeded={maxAmountExceeded}
-        />
-        <MultilineInput
-          placeholder="Enter address of zkBob receiver"
-          hint="The address can be generated in the account modal window"
-          value={receiver}
-          onChange={handleReceiverChange}
-        />
-        {button}
-        <ConfirmTransactionModal
-          title="Transfer confirmation"
-          isOpen={isConfirmModalOpen}
-          onClose={() => setIsConfirmModalOpen(false)}
-          onConfirm={onTransfer}
-          amount={amount}
-          receiver={receiver}
-          shielded={true}
-          isZkAddress={true}
-          fee={fee}
-          numberOfTxs={numberOfTxs}
-          type="transfer"
-        />
+      <Card note={note}>
+        <TitleRow>
+          <Title>Transfer</Title>
+          <Row>
+            <Text>Multitransfer</Text>
+            <Switch checked={isMulti} onChange={setIsMulti} />
+            <CsvButtonContainer disabled={!isMulti}>
+              <Button
+                type="link"
+                onClick={() => fileInputRef?.current?.click()}
+              >
+                Upload CSV
+              </Button>
+              <input
+                type="file"
+                accept=".csv"
+                ref={fileInputRef}
+                onChange={e => multitransferRef?.current?.handleFileUpload(e)}
+                style={{ display: 'none' }}
+              />
+              <Tooltip content={tooltipText} placement="right" delay={0} width={180}>
+                <InfoIcon />
+              </Tooltip>
+            </CsvButtonContainer>
+          </Row>
+        </TitleRow>
+        {isMulti ? <MultiTransfer ref={multitransferRef} /> : <SingleTransfer />}
       </Card>
       {latestAction && (
         <LatestAction
           type="Transfer"
           shielded={true}
-          amount={latestAction.amount}
+          actions={latestAction.actions}
           txHash={latestAction.txHash}
         />
       )}
     </>
   );
 };
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TitleRow = styled(Row)`
+  padding: 0 10px;
+`;
+
+const Title = styled.span`
+  color: ${props => props.theme.card.title.color};
+  font-size: 16px;
+  font-weight: ${props => props.theme.text.weight.normal};
+  flex: 1;
+`;
+
+const Text = styled(Title)`
+  color: ${props => props.theme.card.title.color};
+  font-size: 14px;
+  font-weight: ${props => props.theme.text.weight.normal};
+  margin-right: 6px;
+`;
+
+const InfoIcon = styled(InfoIconDefault)`
+  margin-left: 4px;
+  &:hover {
+    & > path {
+      fill: ${props => props.theme.color.purple};
+    }
+  }
+`;
+
+const CsvButtonContainer = styled(Row)`
+  margin-left: 12px;
+  opacity: ${props => props.disabled ? 0.2 : 1};
+  position: relative;
+  ${props => props.disabled && `
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+    }
+  `}
+`;

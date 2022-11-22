@@ -15,6 +15,7 @@
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
+    "codemirror": "5.65.9",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.1.1",
     "ethers": "^5.4.7",
@@ -23,6 +24,7 @@
     "moment": "^2.29.3",
     "rc-tooltip": "^5.1.1",
     "react": "^17.0.2",
+    "react-codemirror2": "^7.2.1",
     "react-copy-to-clipboard": "^5.0.4",
     "react-device-detect": "^2.2.2",
     "react-dom": "^17.0.2",
@@ -30,13 +32,14 @@
     "react-outside-click-handler": "^1.3.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "5.0.0",
+    "react-switch": "^7.0.0",
     "react-toastify": "^8.2.0",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.0",
     "unique-names-generator": "^4.7.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "0.8.0"
+    "zkbob-client-js": "1.1.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -66,9 +69,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",

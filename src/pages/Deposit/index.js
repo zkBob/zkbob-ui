@@ -90,7 +90,7 @@ export default () => {
         <LatestAction
           type="Deposit"
           shielded={false}
-          amount={latestAction.amount}
+          actions={latestAction.actions}
           txHash={latestAction.txHash}
         />
       )}

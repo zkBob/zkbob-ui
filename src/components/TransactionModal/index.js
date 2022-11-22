@@ -21,6 +21,7 @@ const titles = {
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
   [TX_STATUSES.DEPOSITED]: 'Deposit sent',
   [TX_STATUSES.TRANSFERRED]: 'Transfer sent',
+  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multitransfer sent',
   [TX_STATUSES.WITHDRAWN]: 'Withdrawal sent',
   [TX_STATUSES.REJECTED]: 'Transaction was rejected',
   [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
@@ -29,18 +30,23 @@ const titles = {
 const descriptions = {
   [TX_STATUSES.DEPOSITED]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in process.<br /><br />
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in process.<br /><br />
       To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
     </span>
   ),
   [TX_STATUSES.TRANSFERRED]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in process.
+    </span>
+  ),
+  [TX_STATUSES.TRANSFERRED_MULTI]: amount => (
+    <span>
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in process.
     </span>
   ),
   [TX_STATUSES.WITHDRAWN]: amount => (
     <span>
-      Your <b>{formatNumber(amount)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in process.
     </span>
   ),
   [TX_STATUSES.SIGNATURE_EXPIRED]: () => (
@@ -50,8 +56,16 @@ const descriptions = {
   ),
 };
 
-const SUCCESS_STATUSES = [TX_STATUSES.DEPOSITED, TX_STATUSES.TRANSFERRED, TX_STATUSES.WITHDRAWN];
-const FAILURE_STATUSES = [TX_STATUSES.REJECTED, TX_STATUSES.SIGNATURE_EXPIRED];
+const SUCCESS_STATUSES = [
+  TX_STATUSES.DEPOSITED,
+  TX_STATUSES.TRANSFERRED,
+  TX_STATUSES.TRANSFERRED_MULTI,
+  TX_STATUSES.WITHDRAWN,
+];
+const FAILURE_STATUSES = [
+  TX_STATUSES.REJECTED,
+  TX_STATUSES.SIGNATURE_EXPIRED,
+];
 
 export default ({ isOpen, onClose, status, amount }) => {
   return (

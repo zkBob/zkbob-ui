@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
@@ -10,6 +11,7 @@ import { formatNumber } from 'utils';
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
   shielded, isZkAddress, fee, numberOfTxs, type,
+  isMultitransfer, transfers, openDetails,
 }) => {
   return (
     <Modal
@@ -22,13 +24,27 @@ export default ({
         <DetailsContainer>
           <AmountContainer>
             <TokenIcon src={tokenIcon(shielded)} />
-            <Amount>{formatNumber(amount)}{' '}</Amount>
+            <Amount>
+              {formatNumber(isMultitransfer
+                ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
+                : amount, 18
+              )}{' '}
+            </Amount>
             <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
           </AmountContainer>
-          <SmallText>
-            send to {isZkAddress ? 'zkBob address' : ''}
-          </SmallText>
-          <MediumText>{receiver}</MediumText>
+          {isMultitransfer ? (
+            <>
+              <MediumTextMulti>will be transferred to {transfers.length} zkBob addresses</MediumTextMulti>
+              <ViewAllButton type="link" onClick={openDetails}>view all</ViewAllButton>
+            </>
+          ) : (
+            <>
+              <SmallText>
+                send to {isZkAddress ? 'zkBob address' : ''}
+              </SmallText>
+              <MediumText>{receiver}</MediumText>
+            </>
+          )}
           <SmallText>{type} details</SmallText>
           <Row>
             <MediumText>Number of transactions:</MediumText>
@@ -39,7 +55,7 @@ export default ({
             <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
           </Row>
         </DetailsContainer>
-        <Button onClick={onConfirm}>Confirm</Button>
+        <Button onClick={onConfirm}>Confirm {isMultitransfer && 'multitransfer'}</Button>
       </Container>
     </Modal>
   );
@@ -112,4 +128,14 @@ const Row = styled.div`
   display: flex;
   justify-content: space-between;
   align-self: stretch;
+`;
+
+const ViewAllButton = styled(Button)`
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+const MediumTextMulti = styled(MediumText)`
+  margin-bottom: 0;
+  margin-top: 10px;
 `;

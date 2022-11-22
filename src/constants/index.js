@@ -6,6 +6,7 @@ export const TX_STATUSES = {
   WAITING_FOR_RELAYER: 'waiting_for_relayer',
   DEPOSITED: 'deposited',
   TRANSFERRED: 'transferred',
+  TRANSFERRED_MULTI: 'transferred_multi',
   WITHDRAWN: 'withdrawn',
   REJECTED: 'rejected',
 };

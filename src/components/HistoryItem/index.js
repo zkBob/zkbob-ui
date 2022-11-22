@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
 import Tooltip from 'components/Tooltip';
+import Button from 'components/Button';
+import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
@@ -47,7 +50,7 @@ const actions = {
 };
 
 const AddressLink = ({ action }) => {
-  const address = action.type === DEPOSIT ? action.from : action.to;
+  const address = action.type === DEPOSIT ? action.actions[0].from : action.actions[0].to;
   return (
     <Link size={16} href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}>
       {shortAddress(address, 22)}
@@ -57,6 +60,7 @@ const AddressLink = ({ action }) => {
 
 export default ({ item, zkAccountId }) => {
   const date = useDateFromNow(item.timestamp);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -68,17 +72,22 @@ export default ({ item, zkAccountId }) => {
         <RowSpaceBetween>
           <Row>
             <TokenIcon src={tokenIcon()} />
-            <Text>
-              {actions[item.type].sign}{' '}
-              <Tooltip content={formatNumber(item.amount, 18)} placement="top">
-                <span>{formatNumber(item.amount)}</span>
-              </Tooltip>
-              {' '}{tokenSymbol()}
-            </Text>
+              <Text>
+                {actions[item.type].sign}{' '}
+                {(() => {
+                  const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+                  return (
+                    <Tooltip content={formatNumber(total, 18)} placement="top">
+                      <span>{formatNumber(total, 18)}</span>
+                    </Tooltip>
+                  );
+                })()}
+                {' '}{tokenSymbol()}
+              </Text>
           </Row>
           <Row>
             <Date>{date}</Date>
-            {item.pending && <SpinnerSmall size={22} />}
+            {item.state === 1 && <SpinnerSmall size={22} />}
           </Row>
         </RowSpaceBetween>
         <RowSpaceBetween>
@@ -89,38 +98,75 @@ export default ({ item, zkAccountId }) => {
             {[DEPOSIT, WITHDRAWAL].includes(item.type) ? (
               <AddressLink action={item} />
             ) : (
-              <Tooltip
-                content={item.to}
-                delay={0.3}
-                placement="bottom"
-                width={300}
-                style={{
-                  wordBreak: 'break-all',
-                  textAlign: 'center',
-                }}
-              >
+              item.actions.length === 1 ? (
+                <Tooltip
+                  content={item.actions[0].to}
+                  delay={0.3}
+                  placement="bottom"
+                  width={300}
+                  style={{
+                    wordBreak: 'break-all',
+                    textAlign: 'center',
+                  }}
+                >
+                  <ZkAddress>
+                    {item.type === TRANSFER_OUT ? (
+                      <IncognitoAvatar />
+                    ) : (
+                      <ZkAvatar seed={zkAccountId} size={16} />
+                    )}
+                    <Text style={{ marginLeft: 5 }}>
+                      {shortAddress(item.actions[0].to, 22)}
+                    </Text>
+                  </ZkAddress>
+                </Tooltip>
+              ) : (
                 <ZkAddress>
                   {item.type === TRANSFER_OUT ? (
-                    <IncognitoAvatar />
+                    <>
+                      <IncognitoAvatar />
+                      <Button
+                        type="link"
+                        onClick={() => setIsDetailsModalOpen(true)}
+                        style={{ marginLeft: 5, fontSize: 16 }}
+                      >
+                        {item.actions.length} addresses
+                      </Button>
+                    </>
                   ) : (
-                    <ZkAvatar seed={zkAccountId} size={16} />
+                    <>
+                      <ZkAvatar seed={zkAccountId} size={16} />
+                      <Text style={{ marginLeft: 5 }}>
+                        {shortAddress(item.actions[0].to, 22)}
+                      </Text>
+                    </>
                   )}
-                  <Text style={{ marginLeft: 5 }}>
-                    {shortAddress(item.to, 22)}
-                  </Text>
                 </ZkAddress>
-              </Tooltip>
+              )
             )}
           </Row>
-          {item.txHash ? (
-            <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
-              View tx
-            </Link>
-          ) : (
-            <span></span>
-          )}
+          <Row>
+            {item.actions.length > 1 && item.type === TRANSFER_OUT && (
+              <Label>Multitransfer</Label>
+            )}
+            {item.txHash ? (
+              <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
+                View tx
+              </Link>
+            ) : (
+              <span></span>
+            )}
+          </Row>
         </RowSpaceBetween>
       </Column>
+      {item.actions.length > 1 && (
+        <MultitransferDetailsModal
+          transfers={item.actions.map(action => ({ address: action.to, amount: action.amount }))}
+          isOpen={isDetailsModalOpen}
+          onClose={() => setIsDetailsModalOpen(false)}
+          isSent={true}
+        />
+      )}
     </Container>
   );
 }
@@ -193,4 +239,14 @@ const SpinnerSmall = styled(Spinner)`
 
 const ZkAddress = styled(Row)`
   cursor: pointer;
+`;
+
+const Label = styled.div`
+  background: #E6FFFA;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #319795;
+  padding: 0 8px;
+  margin-right: 10px;
 `;
