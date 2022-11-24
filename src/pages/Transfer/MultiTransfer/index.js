@@ -116,7 +116,7 @@ export default forwardRef((props, ref) => {
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder="M7ng2KXZuuSK8CU7N5pxMyuSCc1RoagsRWhH7yux1thVYUk57mpYr2Jk6jh21cb, 100.75"
+        placeholder="M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75"
         errorLines={errors}
         error={errorType}
       />
