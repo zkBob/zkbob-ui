@@ -12,6 +12,7 @@ import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
+import SwapModal from 'containers/SwapModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -101,6 +102,7 @@ const Content = () => {
         <ChangePasswordModal />
         <TermsModal />
         <ToastContainer />
+        <SwapModal />
       </Layout>
     </>
   );

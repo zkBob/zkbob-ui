@@ -18,6 +18,7 @@ export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openAccountModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
+  openSwapModal,
 }) => {
   const logos = {
     100: <GnosisChainLogo />
@@ -89,13 +90,9 @@ export default ({
             {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
           </Button>
         )}
-        <GetBobLink
-          href="https://zkbob.page.link/getBOB"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <GetBobButton onClick={openSwapModal}>
           Get {tokenSymbol()}
-        </GetBobLink>
+        </GetBobButton>
       </AccountSection>
     </Row>
   );
@@ -180,7 +177,7 @@ const RefreshButtonContainer = styled(Row)`
   cursor: pointer;
 `;
 
-const GetBobLink = styled.a`
+const GetBobButton = styled.button`
   background: transparent;
   border: 1px solid ${props => props.theme.button.link.text.color};
   font-size: 16px;
