@@ -22,7 +22,7 @@ export default ({ type, shielded, actions, txHash }) => {
             const total = actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
             return (
               <Tooltip content={formatNumber(total, 18)} placement="top">
-                <span>{formatNumber(total, 18)}</span>
+                <span>{formatNumber(total, 2)}</span>
               </Tooltip>
             );
           })()}
