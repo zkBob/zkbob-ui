@@ -1,0 +1,60 @@
+name: E2E tests
+
+on:
+  pull_request:
+    branches:
+      main
+        
+env:
+  ENV: local
+jobs:
+  test:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+      ZKACCOUNT_PASSWORD: ${{ secrets.ZKACCOUNT_PASSWORD }}
+      ZKACCOUNT_SEED_PHRASE: ${{ secrets.ZKACCOUNT_SEED_PHRASE }}
+      ZKBOB_RECEIVER_ADDRESS: ${{ secrets.ZKBOB_RECEIVER_ADDRESS }}
+      METAMASK_PASSWORD: ${{ secrets.METAMASK_PASSWORD }}
+      METAMASK_SEED_PHRASE: ${{ secrets.METAMASK_SEED_PHRASE }}
+      ADDRESS_METAMASK_ACCOUNT: ${{ secrets.ADDRESS_METAMASK_ACCOUNT }}
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@v3
+      
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: v14.17.0
+      
+      - name: Install Playwright
+        run: |
+          npm install --global yarn
+          yarn
+          npx playwright install
+      
+      - name: Create account
+        run: |
+          xvfb-run yarn test zkaccount.test.ts
+      
+      - name: Deposit
+        if: always()
+        run: |
+            xvfb-run yarn test deposit.test.ts
+
+      - name: Transfer
+        if: always()
+        run: |
+            xvfb-run yarn test transfer.test.ts  
+
+      - name: Withdraw
+        run: |
+            xvfb-run yarn test withdraw.test.ts    
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: report
+          path: e2e-ci-cd/test-results/
+
