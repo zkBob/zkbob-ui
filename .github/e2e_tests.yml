@@ -5,6 +5,8 @@ on:
     branches:
       main
   push:
+    branches:
+      e2e_tests
         
 env:
   ENV: local
