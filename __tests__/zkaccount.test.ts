@@ -1,4 +1,4 @@
-import { test } from '../fixtures/testContextFixture';
+import { test } from '../e2e-ci-cd/fixtures/testContextFixture';
 
 test.describe.configure({mode: `parallel`})
 
