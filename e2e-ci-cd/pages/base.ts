@@ -58,7 +58,7 @@ export default abstract class BasePage {
     return this.page.context().waitForEvent(event, { timeout });
   }
 
-  public async waitForPage(timeout = TIMEOUTS.oneMinute): Promise<Page> {
+  public async waitForPage(timeout = TIMEOUTS.fiveMinutes): Promise<Page> {
     return this.page.context().waitForEvent('page', { timeout });
   }
 

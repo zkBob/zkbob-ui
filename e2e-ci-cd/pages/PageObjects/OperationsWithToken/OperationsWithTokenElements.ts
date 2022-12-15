@@ -29,7 +29,7 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async Deposit(): Promise<void> {
       await this.focus();
-      await this.locator(OperationsWithTokenElementsLocators.input_amount).type('1');
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_deposit).type('1');
       const [popup] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
       await popup.locator('//button[text()="Sign"]').click();
       await expect(this.locator('//span[text()="Deposit sent"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
@@ -41,7 +41,7 @@ export default class OperationsWithTokenPages extends BasePage{
 
       await this.locator(OperationsWithTokenElementsLocators.tab_transfer).click();
       expect(this.page.url()).toContain('/transfer');
-      await this.locator(OperationsWithTokenElementsLocators.input_amount).type('1');
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_transfer).type('1');
       await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
       await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).type(this.ZKBOB_RECEIVER_ADDRESS);
       await this.locator(OperationsWithTokenElementsLocators.button_transfer).click();
@@ -75,7 +75,7 @@ export default class OperationsWithTokenPages extends BasePage{
 
       await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
       expect(this.page.url()).toContain('/withdraw');
-      await this.locator(OperationsWithTokenElementsLocators.input_amount).type('1');
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_withdraw).type('1');
       await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).type(this.ADDRESS_METAMASK_ACCOUNT);
       await this.locator(OperationsWithTokenElementsLocators.button_withdraw).click({timeout:TIMEOUTS.tenMinutes});
       await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
