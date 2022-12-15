@@ -39,9 +39,7 @@ jobs:
       
       - name: Create account
         run: |
-          cd zkBob-ci-cd/
-          ls
-          xvfb-run yarn test zkaccount.test.ts
+          cd zkBob-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
       
       - name: Deposit
         if: always()
