@@ -19,6 +19,13 @@ export default () => {
         primary: { main: '#1B4DEB' },
         secondary: { main: '#754CFF' },
       },
+      components: {
+        MuiAvatar: {
+          defaultProps: {
+            imgProps: { crossOrigin: 'anonymous' },
+          },
+        },
+      },
     },
     fromChain: 1,
     fromToken: '0xdAC17F958D2ee523a2206206994597C13D831ec7',

@@ -7,7 +7,7 @@
     "@dicebear/avatars-bottts-sprites": "^4.10.2",
     "@dicebear/avatars-identicon-sprites": "^4.10.2",
     "@dicebear/pixel-art": "^4.10.2",
-    "@lifi/widget": "^1.26.1",
+    "@lifi/widget": "^1.27.2",
     "@sentry/react": "^7.16.0",
     "@sentry/tracing": "^7.16.0",
     "@testing-library/jest-dom": "^5.11.4",
