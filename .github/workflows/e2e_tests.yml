@@ -25,9 +25,6 @@ jobs:
     steps:
       - name: Check out this repo
         uses: actions/checkout@v3
-
-      - name: Go to the tests directory
-        run: cd zkBob-ci-cd/
       
       - name: Setup node
         uses: actions/setup-node@v3
@@ -36,28 +33,29 @@ jobs:
       
       - name: Install Playwright
         run: |
+          cd e2e-ci-cd/
           npm install --global yarn
           yarn
           npx playwright install
       
       - name: Create account
         run: |
-          xvfb-run yarn test zkaccount.test.ts
+            cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
       
       - name: Deposit
         if: always()
         run: |
-            xvfb-run yarn test deposit.test.ts
+            cd e2e-ci-cd/ && xvfb-run yarn test deposit.test.ts
 
       - name: Transfer
         if: always()
         run: |
-            xvfb-run yarn test transfer.test.ts  
+            cd e2e-ci-cd/ && xvfb-run yarn test transfer.test.ts  
 
       - name: Withdraw
         if: always()
         run: |
-            xvfb-run yarn test withdraw.test.ts    
+            cd e2e-ci-cd/ && xvfb-run yarn test withdraw.test.ts    
 
       - uses: actions/upload-artifact@v3
         if: always()
