@@ -1,4 +1,4 @@
-import { test } from '../e2e-ci-cd/fixtures/testContextFixture';
+import { test } from '../fixtures/testContextFixture';
 
 test.beforeEach(async ({metamask, zkAccount}) => {
   await zkAccount.open('/')

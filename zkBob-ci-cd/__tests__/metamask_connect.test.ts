@@ -1,4 +1,4 @@
-import { test } from '../e2e-ci-cd/fixtures/testContextFixture';
+import { test } from '../fixtures/testContextFixture';
 
 test('Import wallet', async ({app, metamask}) => {
   await metamask.importWallet()
