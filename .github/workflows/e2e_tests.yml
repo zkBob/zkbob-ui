@@ -39,7 +39,8 @@ jobs:
       
       - name: Create account
         run: |
-          cd zkBob-ci-cd
+          cd zkBob-ci-cd/
+          ls
           xvfb-run yarn test zkaccount.test.ts
       
       - name: Deposit
