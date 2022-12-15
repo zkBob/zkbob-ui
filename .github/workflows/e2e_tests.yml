@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Check out this repo
         uses: actions/checkout@v3
+
+      - name: Go to the tests directory
+        run: cd zkBob-ci-cd/
       
       - name: Setup node
         uses: actions/setup-node@v3
@@ -39,7 +42,7 @@ jobs:
       
       - name: Create account
         run: |
-          cd zkBob-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
+          xvfb-run yarn test zkaccount.test.ts
       
       - name: Deposit
         if: always()
@@ -52,6 +55,7 @@ jobs:
             xvfb-run yarn test transfer.test.ts  
 
       - name: Withdraw
+        if: always()
         run: |
             xvfb-run yarn test withdraw.test.ts    
 
