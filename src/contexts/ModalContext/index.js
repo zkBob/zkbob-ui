@@ -33,6 +33,10 @@ export const ModalContextProvider = ({ children }) => {
   const openSwapModal = () => setIsSwapModalOpen(true);
   const closeSwapModal = () => setIsSwapModalOpen(false);
 
+  const [isSuspiciousAddressModalOpen, setIsSuspiciousAddressModalOpen] = useState(false);
+  const openSuspiciousAddressModal = () => setIsSuspiciousAddressModalOpen(true);
+  const closeSuspiciousAddressModal = () => setIsSuspiciousAddressModalOpen(false);
+
   return (
     <ModalContext.Provider
       value={{
@@ -43,6 +47,7 @@ export const ModalContextProvider = ({ children }) => {
         isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
         isSwapModalOpen, openSwapModal, closeSwapModal,
+        isSuspiciousAddressModalOpen, openSuspiciousAddressModal, closeSuspiciousAddressModal,
       }}
     >
       {children}

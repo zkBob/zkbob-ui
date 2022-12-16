@@ -13,7 +13,7 @@ import Restore from 'components/AccountSetUpModal/Restore';
 import Generate from 'components/AccountSetUpModal/Generate';
 import Password from 'components/AccountSetUpModal/Password';
 
-export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => {
+export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal, isSuspiciousAddress }) => {
   const { library, account } = useWeb3React();
   const [action, setAction] = useState();
   const [newMnemonic, setNewMnemonic] = useState();
@@ -81,7 +81,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     prevAction = null;
   } else if (action === 'generate') {
     title = 'Create account';
-    state = <Generate generate={generate} account={account} connectWallet={connectWallet} />;
+    state = (
+      <Generate
+        generate={generate}
+        account={account}
+        connectWallet={connectWallet}
+        isSuspiciousAddress={isSuspiciousAddress}
+      />
+    );
     prevAction = null;
   } else if (action === 'password') {
     title = 'Create password';

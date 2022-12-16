@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { ModalContext, ZkAccountContext } from 'contexts';
+import { ModalContext, ZkAccountContext, WalletScreeningContext } from 'contexts';
 import AccountSetUpModal from 'components/AccountSetUpModal';
 
 export default () => {
@@ -8,6 +8,7 @@ export default () => {
     isAccountSetUpModalOpen, closeAccountSetUpModal, openWalletModal,
   } = useContext(ModalContext);
   const { zkAccount, saveZkAccountMnemonic } = useContext(ZkAccountContext);
+  const { isSuspiciousAddress } = useContext(WalletScreeningContext);
   return (
     <AccountSetUpModal
       isOpen={isAccountSetUpModalOpen}
@@ -15,6 +16,7 @@ export default () => {
       openWalletModal={openWalletModal}
       zkAccount={zkAccount}
       saveZkAccountMnemonic={saveZkAccountMnemonic}
+      isSuspiciousAddress={isSuspiciousAddress}
     />
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
@@ -23,6 +23,7 @@ import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
+import checkSuspiciousAddress from 'utils/checkSuspiciousAddress';
 import { formatNumber, minBigNumber } from 'utils';
 
 import { NETWORKS, HISTORY_ACTION_TYPES } from 'constants';
@@ -39,6 +40,8 @@ export default () => {
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
+  const [isSuspiciousAddress, setIsSuspiciousAddress] = useState(false);
+  const [isCheckingAddress, setIsCheckingAddress] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
   const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
@@ -60,6 +63,19 @@ export default () => {
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [maxTransferable, limits]);
 
+  useEffect(() => {
+    setIsSuspiciousAddress(false);
+    if (ethers.utils.isAddress(receiver)) {
+      async function check() {
+        setIsCheckingAddress(true);
+        const isSuspiciousAddress = await checkSuspiciousAddress(receiver);
+        setIsSuspiciousAddress(isSuspiciousAddress);
+        setIsCheckingAddress(false);
+      }
+      check();
+    }
+  }, [receiver])
+
   let button = null;
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
@@ -78,6 +94,10 @@ export default () => {
       button = <Button disabled>Enter an address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
+    } else if (isCheckingAddress) {
+      button = <Button $loading disabled>Checking address...</Button>;
+    } else if (isSuspiciousAddress) {
+      button = <Button disabled>Suspicious recipient address</Button>;
     } else {
       button = <Button onClick={() => setIsConfirmModalOpen(true)}>Withdraw</Button>;
     }

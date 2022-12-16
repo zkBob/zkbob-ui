@@ -6,7 +6,10 @@ import { ethers } from 'ethers';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, TokenBalanceContext, ModalContext } from 'contexts';
+import {
+  ZkAccountContext, TokenBalanceContext,
+  ModalContext, WalletScreeningContext,
+} from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -33,6 +36,7 @@ export default () => {
     } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
   const { openWalletModal } = useContext(ModalContext);
+  const { isSuspiciousAddress } = useContext(WalletScreeningContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.DEPOSIT);
@@ -70,6 +74,7 @@ export default () => {
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
+          else if (isSuspiciousAddress) return <Button disabled>Suspicious wallet connected</Button>
           else if (amount.isZero()) return <Button disabled>Enter an amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
           else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
