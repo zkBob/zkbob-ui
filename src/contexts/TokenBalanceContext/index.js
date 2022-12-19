@@ -20,7 +20,6 @@ export const TokenBalanceContextProvider = ({ children }) => {
       const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
       const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
       balance = await token.balanceOf(account);
-      console.log('Balance:', formatEther(balance));
     }
     setBalance(balance);
   }, [library, account]);

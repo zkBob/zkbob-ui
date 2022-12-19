@@ -87,7 +87,6 @@ export const ZkAccountContextProvider = ({ children }) => {
       setIsLoadingState(true);
       balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
       balance = fromShieldedAmount(balance);
-      console.log('Pool balance:', formatEther(balance));
     }
     setBalance(balance);
     setIsLoadingState(false);
@@ -106,8 +105,6 @@ export const ZkAccountContextProvider = ({ children }) => {
       }));
       pendingActions = history.filter(item => item.state === 1 && item.type !== 2);
       isPending = pendingActions.length > 0;
-      console.log('Pending:', isPending);
-      console.log('History:', history);
     }
     setHistory(history);
     setPendingActions(pendingActions);
