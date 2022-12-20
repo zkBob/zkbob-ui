@@ -50,11 +50,15 @@ export default () => {
   }, [amount, deposit]);
 
   const setMax = useCallback(async () => {
-    let max = ethers.constants.Zero;
-    if (balance.gt(fee)) {
-      max = minBigNumber(balance.sub(fee), depositLimit);
+    try {
+      let max = ethers.constants.Zero;
+      if (balance.gt(fee)) {
+        max = minBigNumber(balance.sub(fee), depositLimit);
+      }
+      setDisplayAmount(ethers.utils.formatEther(max));
+    } catch (error) {
+      console.error(`Deposit.setMax():\n`, error);
     }
-    setDisplayAmount(ethers.utils.formatEther(max));
   }, [balance, fee, depositLimit]);
 
   return isPending ? <PendingAction /> : (

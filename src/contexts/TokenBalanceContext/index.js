@@ -17,9 +17,13 @@ export const TokenBalanceContextProvider = ({ children }) => {
   const updateBalance = useCallback(async () => {
     let balance = ethers.constants.Zero;
     if (account) {
-      const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
-      const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
-      balance = await token.balanceOf(account);
+      try {
+        const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
+        const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
+        balance = await token.balanceOf(account);
+      } catch (error) {
+        console.error(`TokenBalanceContext.updateBalance():\n`, error);
+      }
     }
     setBalance(balance);
   }, [library, account]);

@@ -64,12 +64,15 @@ export default () => {
     try {
       await activate(connector, undefined, true);
     } catch (error) {
-      console.log(error);
-      if (error instanceof UnsupportedChainIdError && switchNetwork) {
-        const success = await switchChainInMetaMask(chainId);
-        if (success) {
-          activateConnector(connector);
+      if (error instanceof UnsupportedChainIdError) {
+        if (switchNetwork) {
+          const success = await switchChainInMetaMask(chainId);
+          if (success) {
+            activateConnector(connector);
+          }
         }
+      } else {
+        console.error(`WalletModal.activateConnector():\n`, error);
       }
     }
   }, [activate]);

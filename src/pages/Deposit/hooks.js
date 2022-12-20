@@ -10,13 +10,17 @@ export const useDepositLimit = () => {
   const [depositLimit, setDepositLimit] = useState(ethers.constants.Zero);
 
   useEffect(() => {
-    const minLimit = minBigNumber(
-      limits.singleDepositLimit,
-      limits.dailyDepositLimitPerAddress.available,
-      limits.dailyDepositLimit.available,
-      limits.poolSizeLimit.available,
-    );
-    setDepositLimit(minLimit);
+    try {
+      const minLimit = minBigNumber(
+        limits.singleDepositLimit,
+        limits.dailyDepositLimitPerAddress.available,
+        limits.dailyDepositLimit.available,
+        limits.poolSizeLimit.available,
+      );
+      setDepositLimit(minLimit);
+    } catch (error) {
+      console.error(`Deposit.useDepositLimit():\n`, error);
+    }
   }, [limits]);
 
   return depositLimit;
@@ -26,8 +30,12 @@ export const useMaxAmountExceeded = (amount, balance, fee, limit) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
 
   useEffect(() => {
-    const exceeded = !balance.isZero() && (amount.gt(balance.sub(fee)) || amount.gt(limit));
-    setMaxAmountExceeded(exceeded);
+    try {
+      const exceeded = !balance.isZero() && (amount.gt(balance.sub(fee)) || amount.gt(limit));
+      setMaxAmountExceeded(exceeded);
+    } catch (error) {
+      console.error(`Deposit.useMaxAmountExceeded():\n`, error);
+    }
   }, [amount, balance, fee, limit]);
 
   return maxAmountExceeded;

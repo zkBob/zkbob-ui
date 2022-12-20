@@ -63,7 +63,11 @@ export const ZkAccountContextProvider = ({ children }) => {
       setBalance(ethers.constants.Zero);
       setHistory(null);
       setIsLoadingZkAccount(true);
-      zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus);
+      try {
+        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus);
+      } catch (error) {
+        console.error(`ZkAccountContext.loadZkAccount():\n`, error);
+      }
       zkAccountId = ethers.utils.id(mnemonic);
     }
     setZkAccount(zkAccount);
@@ -85,8 +89,12 @@ export const ZkAccountContextProvider = ({ children }) => {
     let balance = ethers.constants.Zero;
     if (zkAccount) {
       setIsLoadingState(true);
-      balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
-      balance = fromShieldedAmount(balance);
+      try {
+        balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
+        balance = fromShieldedAmount(balance);
+      } catch (error) {
+        console.error(`ZkAccountContext.updateBalance():\n`, error);
+      }
     }
     setBalance(balance);
     setIsLoadingState(false);
@@ -98,13 +106,17 @@ export const ZkAccountContextProvider = ({ children }) => {
     let pendingActions = [];
     if (zkAccount) {
       setIsLoadingHistory(true);
-      history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
-      history = history.reverse().map(item => ({
-        ...item,
-        actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
-      }));
-      pendingActions = history.filter(item => item.state === 1 && item.type !== 2);
-      isPending = pendingActions.length > 0;
+      try {
+        history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
+        history = history.reverse().map(item => ({
+          ...item,
+          actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
+        }));
+        pendingActions = history.filter(item => item.state === 1 && item.type !== 2);
+        isPending = pendingActions.length > 0;
+      } catch (error) {
+        console.error(`ZkAccountContext.updateHistory():\n`, error);
+      }
     }
     setHistory(history);
     setPendingActions(pendingActions);
@@ -116,26 +128,30 @@ export const ZkAccountContextProvider = ({ children }) => {
     let limits = defaultLimits;
     if (zkAccount) {
       setIsLoadingLimits(true);
-      const data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
-      limits = {
-        singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
-        dailyDepositLimitPerAddress: {
-          total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
-          available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.available))
-        },
-        dailyDepositLimit: {
-          total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.total)),
-          available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.available))
-        },
-        dailyWithdrawalLimit: {
-          total: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.total)),
-          available: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.available))
-        },
-        poolSizeLimit: {
-          total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
-          available: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.available))
-        },
-      };
+      try {
+        const data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
+        limits = {
+          singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
+          dailyDepositLimitPerAddress: {
+            total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
+            available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.available))
+          },
+          dailyDepositLimit: {
+            total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.total)),
+            available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.available))
+          },
+          dailyWithdrawalLimit: {
+            total: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.total)),
+            available: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.available))
+          },
+          poolSizeLimit: {
+            total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
+            available: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.available))
+          },
+        };
+      } catch (error) {
+        console.error(`ZkAccountContext.updateLimits():\n`, error);
+      }
     }
     setLimits(limits);
     setIsLoadingLimits(false);
@@ -144,8 +160,12 @@ export const ZkAccountContextProvider = ({ children }) => {
   const updateMaxTransferable = useCallback(async () => {
     let maxTransferable = ethers.constants.Zero;
     if (zkAccount) {
-      const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
-      maxTransferable = fromShieldedAmount(max);
+      try {
+        const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
+        maxTransferable = fromShieldedAmount(max);
+      } catch (error) {
+        console.error(`ZkAccountContext.updateMaxTransferable():\n`, error);
+      }
     }
     setMaxTransferable(maxTransferable);
   }, [zkAccount, fromShieldedAmount]);
@@ -153,8 +173,12 @@ export const ZkAccountContextProvider = ({ children }) => {
   const loadMinTxAmount = useCallback(async () => {
     let minTxAmount = ethers.constants.Zero;
     if (zkAccount) {
-      minTxAmount = await zkAccount.minTxAmount(TOKEN_ADDRESS);
-      minTxAmount = fromShieldedAmount(minTxAmount);
+      try {
+        minTxAmount = await zkAccount.minTxAmount(TOKEN_ADDRESS);
+        minTxAmount = fromShieldedAmount(minTxAmount);
+      } catch (error) {
+        console.error(`ZkAccountContext.loadMinTxAmount():\n`, error);
+      }
     }
     setMinTxAmount(minTxAmount);
   }, [zkAccount, fromShieldedAmount]);
@@ -175,7 +199,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
-      console.log(error);
+      console.error(`ZkAccountContext.deposit():\n`, error);
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
       } else {
@@ -196,7 +220,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.transfer(zkAccount, [{ destination: to, amountGwei: shieldedAmount }], fee, setTxStatus);
       updatePoolData();
     } catch (error) {
-      console.log(error);
+      console.error(`ZkAccountContext.transfer():\n`, error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
@@ -217,7 +241,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.transfer(zkAccount, transfers, fee, setTxStatus, true);
       updatePoolData();
     } catch (error) {
-      console.log(error);
+      console.error(`ZkAccountContext.transferMulti():\n`, error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
@@ -235,7 +259,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
-      console.log(error);
+      console.error(`ZkAccountContext.withdraw():\n`, error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
@@ -260,7 +284,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { total, txCnt, insufficientFunds } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, txType, false);
       return { fee: fromShieldedAmount(total), numberOfTxs: txCnt, insufficientFunds };
     } catch (error) {
-      console.log(error);
+      console.error(`ZkAccountContext.estimateFee():\n`, error);
       return null;
     }
   }, [zkAccount, toShieldedAmount, fromShieldedAmount]);

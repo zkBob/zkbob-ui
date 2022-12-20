@@ -19,6 +19,7 @@ async function checkSuspiciousAddress(address) {
 
     return !data.result;
   } catch (error) {
+    console.error(`utils.checkSuspiciousAddress():\n`, error);
     return false;
   }
 }

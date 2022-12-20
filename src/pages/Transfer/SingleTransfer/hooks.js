@@ -4,7 +4,11 @@ export const useMaxAmountExceeded = (amount, maxTransferable) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
 
   useEffect(() => {
-    setMaxAmountExceeded(amount.gt(maxTransferable));
+    try {
+      setMaxAmountExceeded(amount.gt(maxTransferable));
+    } catch (error) {
+      console.error(`SingleTransfer.useMaxAmountExceeded():\n`, error);
+    }
   }, [amount, maxTransferable]);
 
   return maxAmountExceeded;
