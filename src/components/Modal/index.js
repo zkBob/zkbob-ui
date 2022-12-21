@@ -70,7 +70,8 @@ const CrossIcon = styled(CrossIconDefault)`
 
 const BackIcon = styled(BackIconDefault)`
   position: absolute;
-  top: 31px;
-  left: 21px;
+  top: 21px;
+  left: 11px;
   cursor: pointer;
+  padding: 10px;
 `;
