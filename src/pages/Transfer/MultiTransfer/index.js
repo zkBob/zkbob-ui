@@ -168,7 +168,7 @@ export default forwardRef((props, ref) => {
         <MultitransferDetailsModal
           title="Multitransfer"
           isOpen={isDetailsModalOpen}
-          onClose={closeDetailsModal}
+          onBack={closeDetailsModal}
           transfers={parsedData}
         />
     </>
