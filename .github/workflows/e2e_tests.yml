@@ -1,9 +1,9 @@
 name: E2E tests
 
 on:
-  pull_request:
+  push:
     branches:
-      main
+      staging
         
 env:
   ENV: local
