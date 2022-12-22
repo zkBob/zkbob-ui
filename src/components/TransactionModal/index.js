@@ -67,7 +67,7 @@ const FAILURE_STATUSES = [
   TX_STATUSES.SIGNATURE_EXPIRED,
 ];
 
-export default ({ isOpen, onClose, status, amount }) => {
+export default ({ isOpen, onClose, status, amount, error }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -86,6 +86,9 @@ export default ({ isOpen, onClose, status, amount }) => {
       })()}
       {descriptions[status] && (
         <Description>{descriptions[status](amount)}</Description>
+      )}
+      {(status === TX_STATUSES.REJECTED && error) && (
+        <Description>{error}</Description>
       )}
       {status === TX_STATUSES.DEPOSITED && (
         <OkButton onClick={onClose}>Got it!</OkButton>

@@ -2,8 +2,6 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { ethers, Contract } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 
-const { formatEther } = ethers.utils;
-
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
 const TokenBalanceContext = createContext({ balance: null });

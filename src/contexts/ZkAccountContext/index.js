@@ -10,8 +10,9 @@ import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
 import { TxType, TxDepositDeadlineExpiredError, InitState } from 'zkbob-client-js';
+import { HistoryRecordState } from 'zkbob-client-js/lib/history';
 
-const { parseEther, formatEther } = ethers.utils;
+const { parseEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
@@ -29,7 +30,7 @@ export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
   const { library, account } = useWeb3React();
-  const { openTxModal, setTxStatus, setTxAmount } = useContext(TransactionModalContext);
+  const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const [zkAccount, setZkAccount] = useState(null);
@@ -110,9 +111,10 @@ export const ZkAccountContextProvider = ({ children }) => {
         history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
         history = history.reverse().map(item => ({
           ...item,
+          failed: [HistoryRecordState.RejectedByRelayer, HistoryRecordState.RejectedByPool].includes(item.state),
           actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
         }));
-        pendingActions = history.filter(item => item.state === 1 && item.type !== 2);
+        pendingActions = history.filter(item => item.state === HistoryRecordState.Pending && item.type !== 2);
         isPending = pendingActions.length > 0;
       } catch (error) {
         console.error(`ZkAccountContext.updateHistory():\n`, error);
@@ -203,12 +205,13 @@ export const ZkAccountContextProvider = ({ children }) => {
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
       } else {
+        setTxError(error.message);
         setTxStatus(TX_STATUSES.REJECTED);
       }
     }
   }, [
     zkAccount, updatePoolData, library, openTxModal, setTxAmount,
-    setTxStatus, updateTokenBalance, toShieldedAmount,
+    setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
   ]);
 
   const transfer = useCallback(async (to, amount) => {
@@ -221,10 +224,11 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
     } catch (error) {
       console.error(`ZkAccountContext.transfer():\n`, error);
+      setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updatePoolData, openTxModal,
+    zkAccount, updatePoolData, openTxModal, setTxError,
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
@@ -242,10 +246,11 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
     } catch (error) {
       console.error(`ZkAccountContext.transferMulti():\n`, error);
+      setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updatePoolData, openTxModal,
+    zkAccount, updatePoolData, openTxModal, setTxError,
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
@@ -260,10 +265,11 @@ export const ZkAccountContextProvider = ({ children }) => {
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.error(`ZkAccountContext.withdraw():\n`, error);
+      setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    zkAccount, updatePoolData, openTxModal, setTxAmount,
+    zkAccount, updatePoolData, openTxModal, setTxAmount, setTxError,
     setTxStatus, updateTokenBalance, toShieldedAmount,
   ]);
 
