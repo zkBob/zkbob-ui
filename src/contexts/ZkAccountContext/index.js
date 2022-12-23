@@ -3,6 +3,7 @@ import { ethers, BigNumber } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
+import * as Sentry from "@sentry/react";
 
 import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'contexts';
 
@@ -67,7 +68,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       try {
         zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus);
       } catch (error) {
-        console.error(`ZkAccountContext.loadZkAccount():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
       }
       zkAccountId = ethers.utils.id(mnemonic);
     }
@@ -94,7 +96,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         balance = await zkAccount.getTotalBalance(TOKEN_ADDRESS);
         balance = fromShieldedAmount(balance);
       } catch (error) {
-        console.error(`ZkAccountContext.updateBalance():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateBalance' } });
       }
     }
     setBalance(balance);
@@ -117,7 +120,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         pendingActions = history.filter(item => item.state === HistoryRecordState.Pending && item.type !== 2);
         isPending = pendingActions.length > 0;
       } catch (error) {
-        console.error(`ZkAccountContext.updateHistory():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateHistory' } });
       }
     }
     setHistory(history);
@@ -152,7 +156,8 @@ export const ZkAccountContextProvider = ({ children }) => {
           },
         };
       } catch (error) {
-        console.error(`ZkAccountContext.updateLimits():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateLimits' } });
       }
     }
     setLimits(limits);
@@ -166,7 +171,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         const max = await zkAccount.calcMaxAvailableTransfer(TOKEN_ADDRESS, false);
         maxTransferable = fromShieldedAmount(max);
       } catch (error) {
-        console.error(`ZkAccountContext.updateMaxTransferable():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateMaxTransferable' } });
       }
     }
     setMaxTransferable(maxTransferable);
@@ -179,7 +185,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         minTxAmount = await zkAccount.minTxAmount(TOKEN_ADDRESS);
         minTxAmount = fromShieldedAmount(minTxAmount);
       } catch (error) {
-        console.error(`ZkAccountContext.loadMinTxAmount():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadMinTxAmount' } });
       }
     }
     setMinTxAmount(minTxAmount);
@@ -201,7 +208,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
-      console.error(`ZkAccountContext.deposit():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit' } });
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
       } else {
@@ -223,7 +231,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.transfer(zkAccount, [{ destination: to, amountGwei: shieldedAmount }], fee, setTxStatus);
       updatePoolData();
     } catch (error) {
-      console.error(`ZkAccountContext.transfer():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.transfer' } });
       setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
@@ -245,7 +254,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       await zp.transfer(zkAccount, transfers, fee, setTxStatus, true);
       updatePoolData();
     } catch (error) {
-      console.error(`ZkAccountContext.transferMulti():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.transferMulti' } });
       setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
@@ -264,7 +274,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
-      console.error(`ZkAccountContext.withdraw():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.withdraw' } });
       setTxError(error.message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
@@ -290,7 +301,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       const { total, txCnt, insufficientFunds } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, txType, false);
       return { fee: fromShieldedAmount(total), numberOfTxs: txCnt, insufficientFunds };
     } catch (error) {
-      console.error(`ZkAccountContext.estimateFee():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.estimateFee' } });
       return null;
     }
   }, [zkAccount, toShieldedAmount, fromShieldedAmount]);

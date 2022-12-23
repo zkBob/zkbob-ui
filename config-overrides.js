@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = {
   webpack: function(config, env) {
@@ -54,6 +55,12 @@ module.exports = {
       }),
       new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
+      }),
+      new SentryWebpackPlugin({
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        include: './build',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
       }),
     ];
     return config;

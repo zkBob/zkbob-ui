@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react';
+
 async function checkSuspiciousAddress(address) {
   try {
     const response = await fetch(`${process.env.REACT_APP_TRM_URL}/wallet_screening`, {
@@ -19,7 +21,8 @@ async function checkSuspiciousAddress(address) {
 
     return !data.result;
   } catch (error) {
-    console.error(`utils.checkSuspiciousAddress():\n`, error);
+    console.error(error);
+    Sentry.captureException(error, { tags: { method: 'utils.checkSuspiciousAddress' } });
     return false;
   }
 }

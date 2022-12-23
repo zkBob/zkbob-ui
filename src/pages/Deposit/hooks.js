@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import { ZkAccountContext } from 'contexts';
 
@@ -19,7 +20,8 @@ export const useDepositLimit = () => {
       );
       setDepositLimit(minLimit);
     } catch (error) {
-      console.error(`Deposit.useDepositLimit():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'Deposit.useDepositLimit' } });
     }
   }, [limits]);
 
@@ -34,7 +36,8 @@ export const useMaxAmountExceeded = (amount, balance, fee, limit) => {
       const exceeded = !balance.isZero() && (amount.gt(balance.sub(fee)) || amount.gt(limit));
       setMaxAmountExceeded(exceeded);
     } catch (error) {
-      console.error(`Deposit.useMaxAmountExceeded():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'Deposit.useMaxAmountExceeded' } });
     }
   }, [amount, balance, fee, limit]);
 

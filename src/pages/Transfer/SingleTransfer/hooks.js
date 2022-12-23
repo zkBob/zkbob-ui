@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import * as Sentry from '@sentry/react';
 
 export const useMaxAmountExceeded = (amount, maxTransferable) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
@@ -7,7 +8,8 @@ export const useMaxAmountExceeded = (amount, maxTransferable) => {
     try {
       setMaxAmountExceeded(amount.gt(maxTransferable));
     } catch (error) {
-      console.error(`SingleTransfer.useMaxAmountExceeded():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'SingleTransfer.useMaxAmountExceeded' } });
     }
   }, [amount, maxTransferable]);
 

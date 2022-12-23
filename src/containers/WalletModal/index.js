@@ -3,6 +3,7 @@ import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import { ModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
@@ -72,7 +73,8 @@ export default () => {
           }
         }
       } else {
-        console.error(`WalletModal.activateConnector():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'WalletModal.activateConnector' } });
       }
     }
   }, [activate]);

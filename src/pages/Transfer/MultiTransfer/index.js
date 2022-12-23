@@ -2,6 +2,7 @@ import React, { useState, useCallback, useContext, forwardRef, useImperativeHand
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
@@ -83,7 +84,8 @@ export default forwardRef((props, ref) => {
       setParsedData(parsedData);
       setIsConfirmModalOpen(true);
     } catch (error) {
-      console.error(`MultiTransfer.validate():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'MultiTransfer.validate' } });
     }
   }, [data, estimateFee, verifyShieldedAddress]);
 
@@ -97,7 +99,8 @@ export default forwardRef((props, ref) => {
         }
         reader.readAsText(event.target.files[0]);
       } catch (error) {
-        console.error(`MultiTransfer.handleFileUpload():\n`, error);
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'MultiTransfer.handleFileUpload' } });
       }
     }
   }));

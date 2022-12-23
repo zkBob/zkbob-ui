@@ -67,7 +67,7 @@ const FAILURE_STATUSES = [
   TX_STATUSES.SIGNATURE_EXPIRED,
 ];
 
-export default ({ isOpen, onClose, status, amount, error }) => {
+export default ({ isOpen, onClose, status, amount, error, supportId }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -90,6 +90,9 @@ export default ({ isOpen, onClose, status, amount, error }) => {
       {(status === TX_STATUSES.REJECTED && error) && (
         <Description>{error}</Description>
       )}
+      {(status === TX_STATUSES.REJECTED) && (
+        <Description>Support ID: {supportId}</Description>
+      )}
       {status === TX_STATUSES.DEPOSITED && (
         <OkButton onClick={onClose}>Got it!</OkButton>
       )}
@@ -102,7 +105,7 @@ const Description = styled.span`
   color: ${props => props.theme.text.color.secondary};
   text-align: center;
   line-height: 20px;
-  margin: 16px 0;
+  margin-top: 16px;
 `;
 
 const SignDescription = styled(Description)`

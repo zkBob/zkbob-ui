@@ -2,6 +2,7 @@ import React, { useState, useContext, useCallback } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -57,7 +58,8 @@ export default () => {
       }
       setDisplayAmount(ethers.utils.formatEther(max));
     } catch (error) {
-      console.error(`Deposit.setMax():\n`, error);
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
   }, [balance, fee, depositLimit]);
 
