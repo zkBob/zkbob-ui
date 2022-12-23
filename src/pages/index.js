@@ -14,6 +14,7 @@ import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 import SwapModal from 'containers/SwapModal';
 import SuspiciousAddressModal from 'containers/SuspiciousAddressModal';
+import SwapOptionsModal from 'containers/SwapOptionsModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -105,6 +106,7 @@ const Content = () => {
         <ToastContainer />
         <SwapModal />
         <SuspiciousAddressModal />
+        <SwapOptionsModal />
       </Layout>
     </>
   );

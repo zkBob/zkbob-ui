@@ -15,7 +15,7 @@ export default ({ empty }) => {
   } = useContext(ZkAccountContext);
   const {
     openWalletModal, openAccountModal,
-    openAccountSetUpModal, openSwapModal,
+    openAccountSetUpModal, openSwapOptionsModal,
   } = useContext(ModalContext);
   const connector = useSelectedConnector();
 
@@ -36,7 +36,7 @@ export default ({ empty }) => {
         openWalletModal={openWalletModal}
         openAccountModal={openAccountModal}
         openAccountSetUpModal={openAccountSetUpModal}
-        openSwapModal={openSwapModal}
+        openSwapModal={openSwapOptionsModal}
         account={account}
         zkAccount={zkAccount}
         isLoadingZkAccount={isLoadingZkAccount}
