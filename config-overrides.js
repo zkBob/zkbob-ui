@@ -56,13 +56,17 @@ module.exports = {
       new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
       }),
-      new SentryWebpackPlugin({
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        include: './build',
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-      }),
     ];
+    if (process.env.SENTRY_ORG) {
+      config.plugins.push(
+        new SentryWebpackPlugin({
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          include: './build',
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+        })
+      );
+    }
     return config;
   },
   devServer: function(configFunction) {
