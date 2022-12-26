@@ -33,10 +33,6 @@ export const ModalContextProvider = ({ children }) => {
   const openSwapModal = () => setIsSwapModalOpen(true);
   const closeSwapModal = () => setIsSwapModalOpen(false);
 
-  const [isSuspiciousAddressModalOpen, setIsSuspiciousAddressModalOpen] = useState(false);
-  const openSuspiciousAddressModal = () => setIsSuspiciousAddressModalOpen(true);
-  const closeSuspiciousAddressModal = () => setIsSuspiciousAddressModalOpen(false);
-
   const [isSwapOptionsModalOpen, setIsSwapOptionsModalOpen] = useState(false);
   const openSwapOptionsModal = () => setIsSwapOptionsModalOpen(true);
   const closeSwapOptionsModal = () => setIsSwapOptionsModalOpen(false);
@@ -51,7 +47,6 @@ export const ModalContextProvider = ({ children }) => {
         isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
         isSwapModalOpen, openSwapModal, closeSwapModal,
-        isSuspiciousAddressModalOpen, openSuspiciousAddressModal, closeSuspiciousAddressModal,
         isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
       }}
     >

@@ -3,16 +3,14 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 
-export default ({ generate, account, connectWallet, isSuspiciousAddress }) => {
+export default ({ generate, account, connectWallet }) => {
   return (
     <Container>
       <Description>
         Your key identifies your account on Layer 2 and is saved locally on your browser.
       </Description>
       {account ? (
-        isSuspiciousAddress
-          ? <Button disabled>Suspicious wallet connected</Button>
-          : <Button onClick={generate}>Generate key</Button>
+        <Button onClick={generate}>Generate key</Button>
       ) : (
         <Button onClick={connectWallet}>Connect wallet</Button>
       )}
