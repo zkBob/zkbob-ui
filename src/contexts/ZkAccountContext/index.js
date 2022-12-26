@@ -58,7 +58,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setLoadingPercentage(loadingPercentage);
   };
 
-  const loadZkAccount = useCallback(async mnemonic => {
+  const loadZkAccount = useCallback(async (mnemonic, isNewAccount = false) => {
     let zkAccount = null;
     let zkAccountId = null;
     if (mnemonic) {
@@ -66,7 +66,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
-        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus);
+        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
@@ -139,16 +139,16 @@ export const ZkAccountContextProvider = ({ children }) => {
         limits = {
           singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
           dailyDepositLimitPerAddress: {
-            total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.total)),
-            available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAddress.available))
+            total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.total)),
+            available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.available))
           },
           dailyDepositLimit: {
-            total: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.total)),
-            available: fromShieldedAmount(BigInt(data.deposit.components.daylyForAll.available))
+            total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.total)),
+            available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.available))
           },
           dailyWithdrawalLimit: {
-            total: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.total)),
-            available: fromShieldedAmount(BigInt(data.withdraw.components.daylyForAll.available))
+            total: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.total)),
+            available: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.available))
           },
           poolSizeLimit: {
             total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
@@ -339,19 +339,22 @@ export const ZkAccountContextProvider = ({ children }) => {
     window.localStorage.setItem('seed', cipherText);
   }, []);
 
-  const saveZkAccountMnemonic = useCallback(async (mnemonic, password) => {
+  const saveZkAccountMnemonic = useCallback(async (mnemonic, password, isNewAccount) => {
     const cipherText = await AES.encrypt(mnemonic, password).toString()
     window.localStorage.setItem('seed', cipherText);
-    loadZkAccount(mnemonic);
+    loadZkAccount(mnemonic, isNewAccount);
   }, [loadZkAccount]);
 
   const removeZkAccountMnemonic = useCallback(async () => {
+    if (zkAccount) {
+      await zkAccount.cleanState(TOKEN_ADDRESS);
+    }
     window.localStorage.removeItem('seed');
     setZkAccount(null);
     setZkAccountId(null);
     setBalance(ethers.constants.Zero);
     setHistory([]);
-  }, []);
+  }, [zkAccount]);
 
   useEffect(() => {
     updatePoolData();

@@ -32,9 +32,6 @@ module.exports = {
         type: 'asset/resource',
       },
     ];
-    const index1 = config.module.rules.findIndex(rule => rule.oneOf);
-    const index2 = config.module.rules[index1].oneOf.findIndex(rule => String(rule.test) === String(/\.(js|mjs)$/));
-    config.module.rules[index1].oneOf[index2].exclude = /(@babel(?:\/|\\{1,2})runtime|.*worker.*)/;
 
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -48,11 +45,6 @@ module.exports = {
     };
     config.plugins = [
       ...config.plugins,
-      new CopyPlugin({
-        patterns: [
-          { from: 'node_modules/zkbob-client-js/lib/*.worker.js', to: "static/media/[name][ext]" }
-        ],
-      }),
       new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
       }),

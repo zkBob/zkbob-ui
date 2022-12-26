@@ -26,10 +26,11 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
   }, [onClose]);
 
   const setNextAction = useCallback(nextAction => {
+    let newMnemonic = null;
     if (nextAction === 'create') {
-      const newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
-      setNewMnemonic(newMnemonic);
+      newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
     }
+    setNewMnemonic(newMnemonic);
     setAction(nextAction);
   }, []);
 
@@ -60,9 +61,10 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
   }, [openWalletModal, closeModal]);
 
   const confirmPassword = useCallback(password => {
-    saveZkAccountMnemonic(confirmedMnemonic, password);
+    const isNewAccount = !!newMnemonic;
+    saveZkAccountMnemonic(confirmedMnemonic, password, isNewAccount);
     closeModal();
-  }, [confirmedMnemonic, saveZkAccountMnemonic, closeModal]);
+  }, [newMnemonic, confirmedMnemonic, saveZkAccountMnemonic, closeModal]);
 
   let title = null;
   let state = null;

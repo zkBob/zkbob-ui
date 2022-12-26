@@ -42,7 +42,7 @@
     "uuid": "^9.0.0",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "1.1.0"
+    "zkbob-client-js": "1.2.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
