@@ -5,7 +5,6 @@ export default ({ children, content, placement = 'left', delay = 0.5, style, ...
   <Tooltip
     placement={placement}
     overlay={content}
-    showArrow={false}
     mouseEnterDelay={delay}
     overlayInnerStyle={{
       minHeight: 0,

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
+import WalletDropdown from 'components/WalletDropdown';
+import ZkAccountDropdown from 'components/ZkAccountDropdown';
 
 import { ReactComponent as Logo } from 'assets/logo-beta.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
@@ -16,10 +18,13 @@ import { NETWORKS } from 'constants';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
-  openAccountSetUpModal, account, zkAccount, openAccountModal,
+  openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
-  openSwapModal,
+  openSwapModal, generateAddress, openChangePasswordModal,
 }) => {
+  const walletButtonRef = useRef(null);
+  const zkAccountButtonRef = useRef(null);
+
   const logos = {
     100: <GnosisChainLogo />
   }
@@ -42,35 +47,49 @@ export default ({
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
         {account ? (
-          <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
-            <Row>
-              {connector && <Icon src={connector.icon} />}
-              <Address>{shortAddress(account)}</Address>
-              <Balance>
-                <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-                  <span>{formatNumber(balance)}</span>
-                </Tooltip>
-                {' '}{tokenSymbol()}
-              </Balance>
-            </Row>
-          </AccountLabel>
+          <WalletDropdown
+            address={account}
+            balance={balance}
+            connector={connector}
+            changeWallet={openWalletModal}
+            buttonRef={walletButtonRef}
+          >
+            <AccountLabel ref={walletButtonRef} $refreshing={isRefreshing}>
+              <Row>
+                {connector && <Icon src={connector.icon} />}
+                <Address>{shortAddress(account)}</Address>
+                <Balance>
+                  {formatNumber(balance)} {tokenSymbol()}
+                </Balance>
+              </Row>
+            </AccountLabel>
+          </WalletDropdown>
         ) : (
           <Button $small onClick={openWalletModal}>Connect wallet</Button>
         )}
         {zkAccount ? (
           <>
-            <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
-              <Row>
-                <ZkAvatar seed={zkAccountId} size={16} />
-                <Address>zkAccount</Address>
-                <Balance>
-                  <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                    <span>{formatNumber(poolBalance)}</span>
-                  </Tooltip>
-                  {' '}{tokenSymbol(true)}
-                </Balance>
-              </Row>
-            </AccountLabel>
+            <ZkAccountDropdown
+              balance={poolBalance}
+              generateAddress={generateAddress}
+              switchAccount={openAccountSetUpModal}
+              changePassword={openChangePasswordModal}
+              logout={openConfirmLogoutModal}
+              buttonRef={zkAccountButtonRef}
+            >
+              <AccountLabel ref={zkAccountButtonRef} $refreshing={isRefreshing}>
+                <Row>
+                  <ZkAvatar seed={zkAccountId} size={16} />
+                  <Address>zkAccount</Address>
+                  <Balance>
+                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
+                      <span>{formatNumber(poolBalance)}</span>
+                    </Tooltip>
+                    {' '}{tokenSymbol(true)}
+                  </Balance>
+                </Row>
+              </AccountLabel>
+            </ZkAccountDropdown>
             <RefreshButtonContainer onClick={refresh}>
               {isRefreshing ? (
                 <Spinner size={18} />

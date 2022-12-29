@@ -11,12 +11,12 @@ import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
 import TransactionModal from 'containers/TransactionModal';
 import WalletModal from 'containers/WalletModal';
-import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 import SwapModal from 'containers/SwapModal';
 import SwapOptionsModal from 'containers/SwapOptionsModal';
+import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -118,7 +118,6 @@ const Content = () => {
         <Footer />
         <TransactionModal />
         <WalletModal />
-        <AccountModal />
         <AccountSetUpModal />
         <PasswordModal />
         <ChangePasswordModal />
@@ -126,6 +125,7 @@ const Content = () => {
         <ToastContainer />
         <SwapModal />
         <SwapOptionsModal />
+        <ConfirmLogoutModal />
       </Layout>
     </>
   );

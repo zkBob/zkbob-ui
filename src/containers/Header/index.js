@@ -11,11 +11,12 @@ export default ({ empty }) => {
   const { balance, updateBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
-    zkAccountId, updatePoolData,
+    zkAccountId, updatePoolData, generateAddress,
   } = useContext(ZkAccountContext);
   const {
-    openWalletModal, openAccountModal,
+    openWalletModal,
     openAccountSetUpModal, openSwapOptionsModal,
+    openChangePasswordModal, openConfirmLogoutModal,
   } = useContext(ModalContext);
   const connector = useSelectedConnector();
 
@@ -34,9 +35,10 @@ export default ({ empty }) => {
     <>
       <Header
         openWalletModal={openWalletModal}
-        openAccountModal={openAccountModal}
         openAccountSetUpModal={openAccountSetUpModal}
         openSwapModal={openSwapOptionsModal}
+        openChangePasswordModal={openChangePasswordModal}
+        openConfirmLogoutModal={openConfirmLogoutModal}
         account={account}
         zkAccount={zkAccount}
         isLoadingZkAccount={isLoadingZkAccount}
@@ -47,6 +49,7 @@ export default ({ empty }) => {
         isRefreshing={isRefreshing}
         refresh={refresh}
         empty={empty}
+        generateAddress={generateAddress}
       />
     </>
   );
