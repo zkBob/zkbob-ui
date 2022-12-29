@@ -49,7 +49,6 @@ Sentry.init({
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
     }),
     new Sentry.Integrations.Breadcrumbs({
-      console: false,
       dom: { serializeAttribute: 'aria-label' },
     }),
   ],
