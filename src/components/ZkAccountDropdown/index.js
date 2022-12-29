@@ -29,7 +29,7 @@ const Content = ({
   return (
     <Container>
       <RowSpaceBetween>
-        <SmallText>Wallet</SmallText>
+        <SmallText>zkAccount</SmallText>
         <Row>
           <TokenIcon src={tokenIcon()} />
           <Tooltip content={formatNumber(balance, 18)} placement="bottom">
