@@ -20,6 +20,7 @@ export default ({ children, content, ...props }) => {
         backgroundColor: '#FFFFFF',
         width: 370,
         boxSizing: 'border-box',
+        boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.1)',
       }}
       overlayStyle={{
         opacity: isVisible ? 1 : 0,
