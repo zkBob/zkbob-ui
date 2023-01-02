@@ -6,11 +6,12 @@ import Tooltip from 'components/Tooltip';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
+import SpinnerDefault from 'components/Spinner';
 
 import { ReactComponent as Logo } from 'assets/logo-beta.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
-import SpinnerDefault from 'components/Spinner';
+import { ReactComponent as DropdownIcon } from 'assets/dropdown.svg';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
@@ -61,6 +62,7 @@ export default ({
                 <Balance>
                   {formatNumber(balance)} {tokenSymbol()}
                 </Balance>
+                <DropdownIcon />
               </Row>
             </AccountLabel>
           </WalletDropdown>
@@ -87,6 +89,7 @@ export default ({
                     </Tooltip>
                     {' '}{tokenSymbol(true)}
                   </Balance>
+                  <DropdownIcon />
                 </Row>
               </AccountLabel>
             </ZkAccountDropdown>
@@ -154,6 +157,9 @@ const AccountLabel = styled(NetworkLabel)`
     & span {
       color: ${props => props.theme.button.link.text.color};
     }
+    & path {
+      fill: ${props => props.theme.button.link.text.color};
+    }
   }
 `;
 
@@ -173,6 +179,7 @@ const Address = styled.span`
 
 const Balance = styled.span`
   margin-left: 8px;
+  margin-right: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
 `;
 
