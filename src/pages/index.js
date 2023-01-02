@@ -1,17 +1,22 @@
 import React, { useContext, useEffect } from 'react';
-import { BrowserRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import { Router, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { isMobile } from 'react-device-detect';
 import { toast } from 'react-toastify';
+import { createBrowserHistory } from 'history';
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
 import TransactionModal from 'containers/TransactionModal';
 import WalletModal from 'containers/WalletModal';
-import AccountModal from 'containers/AccountModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
+import SwapModal from 'containers/SwapModal';
+import SwapOptionsModal from 'containers/SwapOptionsModal';
+import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -33,25 +38,42 @@ import { ZkAccountContext } from 'contexts';
 
 import { useRestriction } from 'hooks';
 
+const SentryRoute = Sentry.withSentryRouting(Route);
+
+const history = createBrowserHistory();
+
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [
+    new BrowserTracing({
+      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    }),
+    new Sentry.Integrations.Breadcrumbs({
+      dom: { serializeAttribute: 'aria-label' },
+    }),
+  ],
+  tracesSampleRate: 1.0,
+});
+
 const Routes = ({ showWelcome }) => (
   <Switch>
     {showWelcome && (
-      <Route exact strict path="/">
+      <SentryRoute exact strict path="/">
         <Welcome />
-      </Route>
+      </SentryRoute>
     )}
-    <Route exact strict path="/deposit">
+    <SentryRoute exact strict path="/deposit">
       <Deposit />
-    </Route>
-    <Route exact strict path="/transfer">
+    </SentryRoute>
+    <SentryRoute exact strict path="/transfer">
       <Transfer />
-    </Route>
-    <Route exact strict path="/withdraw">
+    </SentryRoute>
+    <SentryRoute exact strict path="/withdraw">
       <Withdraw />
-    </Route>
-    <Route exact strict path="/history">
+    </SentryRoute>
+    <SentryRoute exact strict path="/history">
       <History />
-    </Route>
+    </SentryRoute>
     <Redirect to="/deposit" />
   </Switch>
 );
@@ -95,21 +117,23 @@ const Content = () => {
         <Footer />
         <TransactionModal />
         <WalletModal />
-        <AccountModal />
         <AccountSetUpModal />
         <PasswordModal />
         <ChangePasswordModal />
         <TermsModal />
         <ToastContainer />
+        <SwapModal />
+        <SwapOptionsModal />
+        <ConfirmLogoutModal />
       </Layout>
     </>
   );
 }
 
 export default () => (
-  <BrowserRouter>
+  <Router history={history}>
     <Content />
-  </BrowserRouter>
+  </Router>
 );
 
 const Layout = styled.div`
@@ -119,10 +143,6 @@ const Layout = styled.div`
   box-sizing: border-box;
   padding: 14px 40px 40px;
   background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
-`;
-
-const MobileLayout = styled(Layout)`
-  padding-top: 30px;
 `;
 
 const PageContainer = styled.div`

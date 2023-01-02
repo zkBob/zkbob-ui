@@ -9,10 +9,6 @@ export const ModalContextProvider = ({ children }) => {
   const openWalletModal = () => setIsWalletModalOpen(true);
   const closeWalletModal = () => setIsWalletModalOpen(false);
 
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
-  const openAccountModal = () => setIsAccountModalOpen(true);
-  const closeAccountModal = () => setIsAccountModalOpen(false);
-
   const [isAccountSetUpModalOpen, setIsAccountSetUpModalOpen] = useState(false);
   const openAccountSetUpModal = () => setIsAccountSetUpModalOpen(true);
   const closeAccountSetUpModal = () => setIsAccountSetUpModalOpen(false);
@@ -29,15 +25,29 @@ export const ModalContextProvider = ({ children }) => {
   const openTermsModal = () => setIsTermsModalOpen(true);
   const closeTermsModal = () => setIsTermsModalOpen(false);
 
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+  const openSwapModal = () => setIsSwapModalOpen(true);
+  const closeSwapModal = () => setIsSwapModalOpen(false);
+
+  const [isSwapOptionsModalOpen, setIsSwapOptionsModalOpen] = useState(false);
+  const openSwapOptionsModal = () => setIsSwapOptionsModalOpen(true);
+  const closeSwapOptionsModal = () => setIsSwapOptionsModalOpen(false);
+
+  const [isConfirmLogoutModalOpen, setIsConfirmLogoutModalOpen] = useState(false);
+  const openConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(true);
+  const closeConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(false);
+
   return (
     <ModalContext.Provider
       value={{
         isWalletModalOpen, openWalletModal, closeWalletModal,
-        isAccountModalOpen, openAccountModal, closeAccountModal,
         isAccountSetUpModalOpen, openAccountSetUpModal, closeAccountSetUpModal,
         isPasswordModalOpen, openPasswordModal, closePasswordModal,
         isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
+        isSwapModalOpen, openSwapModal, closeSwapModal,
+        isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
+        isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
       }}
     >
       {children}

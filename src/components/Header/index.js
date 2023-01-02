@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
+import WalletDropdown from 'components/WalletDropdown';
+import ZkAccountDropdown from 'components/ZkAccountDropdown';
+import SpinnerDefault from 'components/Spinner';
 
 import { ReactComponent as Logo } from 'assets/logo-beta.svg';
 import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
-import SpinnerDefault from 'components/Spinner';
+import { ReactComponent as DropdownIcon } from 'assets/dropdown.svg';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
@@ -16,9 +19,13 @@ import { NETWORKS } from 'constants';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
-  openAccountSetUpModal, account, zkAccount, openAccountModal,
+  openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
+  openSwapModal, generateAddress, openChangePasswordModal,
 }) => {
+  const walletButtonRef = useRef(null);
+  const zkAccountButtonRef = useRef(null);
+
   const logos = {
     100: <GnosisChainLogo />
   }
@@ -41,35 +48,51 @@ export default ({
           {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
         </NetworkLabel>
         {account ? (
-          <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
-            <Row>
-              {connector && <Icon src={connector.icon} />}
-              <Address>{shortAddress(account)}</Address>
-              <Balance>
-                <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-                  <span>{formatNumber(balance)}</span>
-                </Tooltip>
-                {' '}{tokenSymbol()}
-              </Balance>
-            </Row>
-          </AccountLabel>
+          <WalletDropdown
+            address={account}
+            balance={balance}
+            connector={connector}
+            changeWallet={openWalletModal}
+            buttonRef={walletButtonRef}
+          >
+            <AccountLabel ref={walletButtonRef} $refreshing={isRefreshing}>
+              <Row>
+                {connector && <Icon src={connector.icon} />}
+                <Address>{shortAddress(account)}</Address>
+                <Balance>
+                  {formatNumber(balance)} {tokenSymbol()}
+                </Balance>
+                <DropdownIcon />
+              </Row>
+            </AccountLabel>
+          </WalletDropdown>
         ) : (
           <Button $small onClick={openWalletModal}>Connect wallet</Button>
         )}
         {zkAccount ? (
           <>
-            <AccountLabel onClick={openAccountModal} $refreshing={isRefreshing}>
-              <Row>
-                <ZkAvatar seed={zkAccountId} size={16} />
-                <Address>zkAccount</Address>
-                <Balance>
-                  <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                    <span>{formatNumber(poolBalance)}</span>
-                  </Tooltip>
-                  {' '}{tokenSymbol(true)}
-                </Balance>
-              </Row>
-            </AccountLabel>
+            <ZkAccountDropdown
+              balance={poolBalance}
+              generateAddress={generateAddress}
+              switchAccount={openAccountSetUpModal}
+              changePassword={openChangePasswordModal}
+              logout={openConfirmLogoutModal}
+              buttonRef={zkAccountButtonRef}
+            >
+              <AccountLabel ref={zkAccountButtonRef} $refreshing={isRefreshing}>
+                <Row>
+                  <ZkAvatar seed={zkAccountId} size={16} />
+                  <Address>zkAccount</Address>
+                  <Balance>
+                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
+                      <span>{formatNumber(poolBalance)}</span>
+                    </Tooltip>
+                    {' '}{tokenSymbol(true)}
+                  </Balance>
+                  <DropdownIcon />
+                </Row>
+              </AccountLabel>
+            </ZkAccountDropdown>
             <RefreshButtonContainer onClick={refresh}>
               {isRefreshing ? (
                 <Spinner size={18} />
@@ -89,13 +112,9 @@ export default ({
             {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
           </Button>
         )}
-        <GetBobLink
-          href="https://zkbob.page.link/getBOB"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <GetBobButton onClick={openSwapModal}>
           Get {tokenSymbol()}
-        </GetBobLink>
+        </GetBobButton>
       </AccountSection>
     </Row>
   );
@@ -138,6 +157,9 @@ const AccountLabel = styled(NetworkLabel)`
     & span {
       color: ${props => props.theme.button.link.text.color};
     }
+    & path {
+      fill: ${props => props.theme.button.link.text.color};
+    }
   }
 `;
 
@@ -157,6 +179,7 @@ const Address = styled.span`
 
 const Balance = styled.span`
   margin-left: 8px;
+  margin-right: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
 `;
 
@@ -180,7 +203,7 @@ const RefreshButtonContainer = styled(Row)`
   cursor: pointer;
 `;
 
-const GetBobLink = styled.a`
+const GetBobButton = styled.button`
   background: transparent;
   border: 1px solid ${props => props.theme.button.link.text.color};
   font-size: 16px;

@@ -10,12 +10,13 @@ import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
 
-export default ({ isOpen, onClose, transfers, isSent }) => {
+export default ({ isOpen, onClose, onBack, transfers, isSent }) => {
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Multitransfer"
+      onBack={onBack}
+      title="Addresses list"
       width={460}
     >
       <Container>

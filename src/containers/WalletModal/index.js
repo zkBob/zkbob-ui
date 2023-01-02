@@ -3,6 +3,7 @@ import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import { ModalContext } from 'contexts';
 import WalletModal from 'components/WalletModal';
@@ -64,12 +65,16 @@ export default () => {
     try {
       await activate(connector, undefined, true);
     } catch (error) {
-      console.log(error);
-      if (error instanceof UnsupportedChainIdError && switchNetwork) {
-        const success = await switchChainInMetaMask(chainId);
-        if (success) {
-          activateConnector(connector);
+      if (error instanceof UnsupportedChainIdError) {
+        if (switchNetwork) {
+          const success = await switchChainInMetaMask(chainId);
+          if (success) {
+            activateConnector(connector);
+          }
         }
+      } else {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'WalletModal.activateConnector' } });
       }
     }
   }, [activate]);

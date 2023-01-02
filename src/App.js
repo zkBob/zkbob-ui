@@ -19,7 +19,7 @@ const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Gilroy';
     src: url(${GilroyMedium}) format('woff');
-    font-weight: 600;
+    font-weight: 500 600;
   }
   @font-face {
     font-family: 'Gilroy';

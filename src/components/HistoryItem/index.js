@@ -14,37 +14,38 @@ import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow } from 'hooks';
 import { HISTORY_ACTION_TYPES } from 'constants';
 
-import depositIcon from 'assets/deposit.svg';
-import withdrawIcon from 'assets/withdraw.svg';
-import transferIcon from 'assets/transfer.svg';
+import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
+import { ReactComponent as WithdrawIcon } from 'assets/withdraw.svg';
+import { ReactComponent as TransferIcon } from 'assets/transfer.svg';
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
+import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 const { DEPOSIT, TRANSFER_IN, TRANSFER_OUT, WITHDRAWAL, TRANSFER_SELF } = HISTORY_ACTION_TYPES;
 
 const actions = {
   [DEPOSIT]: {
     name: 'Deposit',
-    icon: depositIcon,
+    icon: DepositIcon,
     sign: '+',
   },
   [TRANSFER_IN]: {
     name: 'Transfer',
-    icon: transferIcon,
+    icon: TransferIcon,
     sign: '+',
   },
   [TRANSFER_OUT]: {
     name: 'Transfer',
-    icon: transferIcon,
+    icon: TransferIcon,
     sign: '-',
   },
   [WITHDRAWAL]: {
     name: 'Withdrawal',
-    icon: withdrawIcon,
+    icon: WithdrawIcon,
     sign: '-',
   },
   [TRANSFER_SELF]: {
     name: 'Transfer',
-    icon: transferIcon,
+    icon: TransferIcon,
     sign: '',
   }
 };
@@ -64,30 +65,38 @@ export default ({ item, zkAccountId }) => {
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
-        <ActionLabel>
-          <img src={actions[item.type].icon} alt="" />
+        <ActionLabel $error={item.failed}>
+          {React.createElement(actions[item.type].icon, {})}
         </ActionLabel>
       </Tooltip>
       <Column>
         <RowSpaceBetween>
           <Row>
             <TokenIcon src={tokenIcon()} />
-              <Text>
-                {actions[item.type].sign}{' '}
-                {(() => {
-                  const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
-                  return (
-                    <Tooltip content={formatNumber(total, 18)} placement="top">
-                      <span>{formatNumber(total, 18)}</span>
-                    </Tooltip>
-                  );
-                })()}
-                {' '}{tokenSymbol()}
-              </Text>
+            <Text $error={item.failed}>
+              {actions[item.type].sign}{' '}
+              {(() => {
+                const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+                return (
+                  <Tooltip content={formatNumber(total, 18)} placement="top">
+                    <span>{formatNumber(total, 18)}</span>
+                  </Tooltip>
+                );
+              })()}
+              {' '}{tokenSymbol()}
+            </Text>
           </Row>
           <Row>
             <Date>{date}</Date>
             {item.state === 1 && <SpinnerSmall size={22} />}
+            {item.failed && (
+              <>
+                <Text $error style={{ marginLeft: 10 }}>failed</Text>
+                <Tooltip content={item.failureReason || 'No description'} placement="right" delay={0} width={180}>
+                  <InfoIcon />
+                </Tooltip>
+              </>
+            )}
           </Row>
         </RowSpaceBetween>
         <RowSpaceBetween>
@@ -149,7 +158,7 @@ export default ({ item, zkAccountId }) => {
             {item.actions.length > 1 && item.type === TRANSFER_OUT && (
               <Label>Multitransfer</Label>
             )}
-            {item.txHash ? (
+            {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
                 View tx
               </Link>
@@ -198,7 +207,7 @@ const ActionLabel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.input.border.color.default};
+  border: 1px solid ${props => props.theme.input.border.color[props.$error ? 'error' : 'default']};
   border-radius: 12px;
   width: 34px;
   height: 34px;
@@ -206,6 +215,11 @@ const ActionLabel = styled.div`
   cursor: pointer;
   margin-right: 10px;
   background-color: ${props => props.theme.color.white};
+  ${props => props.$error && `
+    & path {
+      fill: ${props.theme.input.border.color.error};
+    };
+  `}
 `;
 
 const TokenIcon = styled.img`
@@ -216,7 +230,7 @@ const TokenIcon = styled.img`
 
 const Text = styled.span`
   font-size: 16px;
-  color: ${({ theme }) => theme.text.color.primary};
+  color: ${props => props.theme.text.color[props.$error ? 'error' : 'primary']};
 `;
 
 const Date = styled.span`
@@ -249,4 +263,14 @@ const Label = styled.div`
   color: #319795;
   padding: 0 8px;
   margin-right: 10px;
+`;
+
+const InfoIcon = styled(InfoIconDefault)`
+  margin-bottom: -2px;
+  margin-left: 3px;
+  &:hover {
+    & > path {
+      fill: ${props => props.theme.color.purple};
+    }
+  }
 `;

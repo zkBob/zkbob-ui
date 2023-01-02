@@ -1,8 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { ethers, Contract } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
-
-const { formatEther } = ethers.utils;
+import * as Sentry from '@sentry/react';
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 
@@ -17,10 +16,14 @@ export const TokenBalanceContextProvider = ({ children }) => {
   const updateBalance = useCallback(async () => {
     let balance = ethers.constants.Zero;
     if (account) {
-      const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
-      const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
-      balance = await token.balanceOf(account);
-      console.log('Balance:', formatEther(balance));
+      try {
+        const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
+        const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
+        balance = await token.balanceOf(account);
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'TokenBalanceContext.updateBalance' } });
+      }
     }
     setBalance(balance);
   }, [library, account]);

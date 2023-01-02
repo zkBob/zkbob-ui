@@ -2,6 +2,7 @@ import React, { useState, useCallback, useContext, forwardRef, useImperativeHand
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
+import * as Sentry from '@sentry/react';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
@@ -33,64 +34,74 @@ export default forwardRef((props, ref) => {
   const [totalAmount, setTotalAmount] = useState(ethers.constants.Zero);
 
   const validate = useCallback(async () => {
-    setParsedData([]);
-    setErrorType(null);
-    let errors = [];
-    const rows = data.split('\n');
-    const parsedData = await Promise.all(rows.map(async (row, index) => {
-      try {
-        const rowData = row.replace(/\s/g, '').split(',');
-        const [address, amount] = rowData;
-        if (!address || !amount || rowData.length !== 2) throw Error;
+    try {
+      setParsedData([]);
+      setErrorType(null);
+      let errors = [];
+      const rows = data.split('\n');
+      const parsedData = await Promise.all(rows.map(async (row, index) => {
+        try {
+          const rowData = row.replace(/\s/g, '').split(',');
+          const [address, amount] = rowData;
+          if (!address || !amount || rowData.length !== 2) throw Error;
 
-        const isValidAddress = await verifyShieldedAddress(address);
-        if (!isValidAddress || !(Number(amount) > 0)) throw Error;
+          const isValidAddress = await verifyShieldedAddress(address);
+          if (!isValidAddress || !(Number(amount) > 0)) throw Error;
 
-        return { address, amount: ethers.utils.parseEther(amount) };
-      } catch (err) {
-        errors.push(index);
-        return null;
+          return { address, amount: ethers.utils.parseEther(amount) };
+        } catch (err) {
+          errors.push(index);
+          return null;
+        }
+      }));
+      setErrors(errors);
+      if (errors.length > 0) {
+        setErrorType('syntax');
+        return;
       }
-    }));
-    setErrors(errors);
-    if (errors.length > 0) {
-      setErrorType('syntax');
-      return;
-    }
 
-    const dupes = {};
-    parsedData.forEach((item, index) => {
-      dupes[item.address] = dupes[item.address] || [];
-      dupes[item.address].push(index);
-    });
-    const dupeLines = Object.values(dupes).reduce((acc, curr) => curr.length > 1 ? acc.concat(curr) : acc, []);
-    setErrors(dupeLines);
-    if (dupeLines.length > 0) {
-      setErrorType('duplicates');
-      return;
-    }
+      const dupes = {};
+      parsedData.forEach((item, index) => {
+        dupes[item.address] = dupes[item.address] || [];
+        dupes[item.address].push(index);
+      });
+      const dupeLines = Object.values(dupes).reduce((acc, curr) => curr.length > 1 ? acc.concat(curr) : acc, []);
+      setErrors(dupeLines);
+      if (dupeLines.length > 0) {
+        setErrorType('duplicates');
+        return;
+      }
 
-    const { fee, numberOfTxs, insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
-    setFee(fee);
-    setNumberOfTxs(numberOfTxs);
-    setTotalAmount(parsedData.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
-    if (insufficientFunds) {
-      setErrorType('insufficient_funds');
-      return;
-    }
+      const { fee, numberOfTxs, insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
+      setFee(fee);
+      setNumberOfTxs(numberOfTxs);
+      setTotalAmount(parsedData.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
+      if (insufficientFunds) {
+        setErrorType('insufficient_funds');
+        return;
+      }
 
-    setParsedData(parsedData);
-    setIsConfirmModalOpen(true);
-  }, [data, estimateFee]);
+      setParsedData(parsedData);
+      setIsConfirmModalOpen(true);
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'MultiTransfer.validate' } });
+    }
+  }, [data, estimateFee, verifyShieldedAddress]);
 
   useImperativeHandle(ref, () => ({
     handleFileUpload(event) {
-      const reader = new FileReader();
-      reader.onload = function() {
-        setData(reader.result.replace(/\n+$/, ''));
-        event.target.value = null;
+      try {
+        const reader = new FileReader();
+        reader.onload = function() {
+          setData(reader.result.replace(/\n+$/, ''));
+          event.target.value = null;
+        }
+        reader.readAsText(event.target.files[0]);
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'MultiTransfer.handleFileUpload' } });
       }
-      reader.readAsText(event.target.files[0]);
     }
   }));
 
@@ -160,7 +171,7 @@ export default forwardRef((props, ref) => {
         <MultitransferDetailsModal
           title="Multitransfer"
           isOpen={isDetailsModalOpen}
-          onClose={closeDetailsModal}
+          onBack={closeDetailsModal}
           transfers={parsedData}
         />
     </>
