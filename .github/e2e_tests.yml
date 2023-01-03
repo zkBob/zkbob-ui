@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       staging
+  push:
+    branches:
+      e2e-tests
         
 env:
   ENV: local
@@ -30,32 +33,32 @@ jobs:
       
       - name: Install Playwright
         run: |
-          cd e2e-tests
+          cd e2e-ci-cd/
           npm install --global yarn
           yarn
           npx playwright install
       
       - name: Create account
         run: |
-          cd e2e-tests && xvfb-run yarn test zkaccount.test.ts
+          cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
       
       - name: Deposit
         if: always()
         run: |
-          cd e2e-tests && xvfb-run yarn test deposit.test.ts
+          cd e2e-ci-cd/ && xvfb-run yarn test deposit.test.ts
 
       - name: Transfer
         if: always()
         run: |
-          cd e2e-tests && xvfb-run yarn test transfer.test.ts  
+          cd e2e-ci-cd/ && xvfb-run yarn test transfer.test.ts  
 
       - name: Withdraw
         run: |
-          cd e2e-tests && xvfb-run yarn test withdraw.test.ts    
+          cd e2e-ci-cd/ && xvfb-run yarn test withdraw.test.ts    
 
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: report
-          path: test-results/
+          path: e2e-ci-cd/test-results/
 
