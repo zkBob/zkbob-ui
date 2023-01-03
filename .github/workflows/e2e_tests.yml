@@ -53,6 +53,7 @@ jobs:
           cd e2e-ci-cd/ && xvfb-run yarn test transfer.test.ts  
 
       - name: Withdraw
+        if: always()
         run: |
           cd e2e-ci-cd/ && xvfb-run yarn test withdraw.test.ts    
 
