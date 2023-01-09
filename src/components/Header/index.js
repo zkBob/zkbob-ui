@@ -8,10 +8,11 @@ import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
 import SpinnerDefault from 'components/Spinner';
 
-import { ReactComponent as Logo } from 'assets/logo-beta.svg';
-import { ReactComponent as GnosisChainLogoDefault } from 'assets/gnosis-chain-logo.svg';
+import { ReactComponent as LogoDefault } from 'assets/logo-beta.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
-import { ReactComponent as DropdownIcon } from 'assets/dropdown.svg';
+import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
+import { ReactComponent as AccountIconDefault } from 'assets/account.svg';
+import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
@@ -27,9 +28,6 @@ export default ({
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
 
-  const logos = {
-    100: <GnosisChainLogo />
-  }
   if (empty) {
     return (
       <Row>
@@ -46,7 +44,12 @@ export default ({
       </LogoSection>
       <AccountSection>
         <NetworkLabel>
-          {logos[process.env.REACT_APP_NETWORK] || NETWORKS[process.env.REACT_APP_NETWORK].name}
+          {NETWORKS[process.env.REACT_APP_NETWORK].icon && (
+            <NetworkIcon src={NETWORKS[process.env.REACT_APP_NETWORK].icon} />
+          )}
+          <NetworkName>
+            {NETWORKS[process.env.REACT_APP_NETWORK].name}
+          </NetworkName>
         </NetworkLabel>
         {account ? (
           <WalletDropdown
@@ -68,7 +71,10 @@ export default ({
             </AccountLabel>
           </WalletDropdown>
         ) : (
-          <Button $small onClick={openWalletModal}>Connect wallet</Button>
+          <Button $small onClick={openWalletModal}>
+            <LargeButtonContent>Connect wallet</LargeButtonContent>
+            <WalletIcon />
+          </Button>
         )}
         {zkAccount ? (
           <>
@@ -111,7 +117,10 @@ export default ({
             disabled={isLoadingZkAccount}
             onClick={openAccountSetUpModal}
           >
-            {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
+            <LargeButtonContent>
+              {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
+            </LargeButtonContent>
+            {!isLoadingZkAccount && <AccountIcon />}
           </Button>
         )}
         <GetBobButton onClick={openSwapModal}>
@@ -133,10 +142,24 @@ const LogoSection = styled(Row)`
   justify-content: flex-start;
 `;
 
+const Logo = styled(LogoDefault)`
+  @media only screen and (max-width: 1000px) {
+    height: 20px;
+    width: 100px;
+    margin-left: 10px;
+  }
+`;
+
 const AccountSection = styled(Row)`
   justify-content: center;
   & > * {
     margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+    @media only screen and (max-width: 370px) {
+      margin-left: 5px;
+    }
   }
 `;
 
@@ -144,9 +167,9 @@ const NetworkLabel = styled(Row)`
   background-color: ${props => props.theme.networkLabel.background};
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.normal};
-  padding: 8px 12px;
+  padding: 0 12px;
   border-radius: 16px;
-  height: 30px;
+  min-height: 30px;
   box-sizing: border-box;
 `;
 
@@ -165,11 +188,6 @@ const AccountLabel = styled(NetworkLabel)`
   }
 `;
 
-const GnosisChainLogo = styled(GnosisChainLogoDefault)`
-  width: 18px;
-  height: 18px;
-`;
-
 const Icon = styled.img`
   width: 18px;
   height: 16px;
@@ -177,12 +195,17 @@ const Icon = styled.img`
 
 const Address = styled.span`
   margin-left: 8px;
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const Balance = styled.span`
   margin-left: 8px;
-  margin-right: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const Spinner = styled(SpinnerDefault)`
@@ -218,4 +241,47 @@ const GetBobButton = styled.button`
   border-radius: 16px;
   height: 30px;
   box-sizing: border-box;
+  white-space: nowrap;
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
+`;
+
+const DropdownIcon = styled(DropdownIconDefault)`
+  margin-left: 8px;
+`;
+
+const NetworkIcon = styled.img`
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  @media only screen and (max-width: 1000px) {
+    margin-right: 0;
+  }
+`;
+
+const NetworkName = styled.span`
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
+`;
+
+const LargeButtonContent = styled.div`
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
+`;
+
+const AccountIcon = styled(AccountIconDefault)`
+  display: none;
+  @media only screen and (max-width: 1000px) {
+    display: block;
+  }
+`;
+
+const WalletIcon = styled(WalletIconDefault)`
+  display: none;
+  @media only screen and (max-width: 1000px) {
+    display: block;
+  }
 `;

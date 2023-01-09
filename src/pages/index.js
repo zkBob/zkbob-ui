@@ -1,8 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Router, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { isMobile } from 'react-device-detect';
-import { toast } from 'react-toastify';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
@@ -84,13 +82,7 @@ const Content = () => {
   const location = useLocation();
   const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
   const isRestricted = useRestriction();
-  useEffect(() => {
-    if (!isMobile) return;
-    toast.warn(
-      `We're sorry, but the mobile version of zkBob is not yet ready. The app may not work correctly.`,
-      { autoClose: false },
-    );
-  }, []);
+
   if (isRestricted) {
     return (
       <Layout>
@@ -145,6 +137,9 @@ const Layout = styled.div`
   box-sizing: border-box;
   padding: 14px 40px 40px;
   background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
+  @media only screen and (max-width: 560px) {
+    padding: 21px 7px 28px;
+  }
 `;
 
 const PageContainer = styled.div`
@@ -154,6 +149,9 @@ const PageContainer = styled.div`
   flex: 1;
   margin: 80px 0;
   position: relative;
+  @media only screen and (max-width: 560px) {
+    margin: 30px 0;
+  }
 `;
 
 const Gradient = styled.div`
@@ -175,6 +173,9 @@ const BackgroundImages = styled.div`
   visibility: ${props => props.$show ? 'visible' : 'hidden'};
   opacity: ${props => props.$show ? 1 : 0};
   transition: visibility 0.05s linear 0.05s, opacity 0.05s linear 0.05s;
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const AliceImage = styled.img`

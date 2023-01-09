@@ -25,6 +25,7 @@ export const NETWORKS = {
     tokenSymbol: 'SEP',
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+    icon: require('assets/ethereum.svg').default,
   },
   137: {
     name: 'Polygon',
@@ -32,6 +33,7 @@ export const NETWORKS = {
     tokenSymbol: 'MATIC',
     rpcUrl: process.env.REACT_APP_RPC_URL,
     blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+    icon: require('assets/polygon.svg').default,
   },
 };
 

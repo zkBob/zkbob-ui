@@ -47,6 +47,7 @@ const Container = styled.div`
   margin-top: 20px;
   padding: 12px;
   width: 480px;
+  max-width: 100%;
   box-sizing: border-box;
   & > * {
     margin-bottom: 6px;

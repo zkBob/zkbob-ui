@@ -56,7 +56,10 @@ export default () => {
         <InnerRow>
           <Text>Web: v{process.env.REACT_APP_VERSION}</Text>
           <Text>Library: v{zkBobLibPackage.version}</Text>
-          <Text>Support ID: {supportId}</Text>
+          <TextRow>
+            <Text style={{ marginRight: 4 }}>Support ID:</Text>
+            <Text>{supportId}</Text>
+          </TextRow>
         </InnerRow>
       </Row>
     </Column>
@@ -74,18 +77,17 @@ const Row = styled.div`
   position: relative;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  flex-wrap: wrap;
 `;
 
 const InnerRow = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 10px;
-  &:first-child {
-    margin-left: 0;
-  }
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px 5px 0;
   & > * {
-    margin-left: 20px;
+    margin: 4px 10px 0;
   }
 `;
 
@@ -93,4 +95,12 @@ const Text = styled.span`
   font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.text.weight.normal};
+  line-height: 20px;
+  text-align: center;
+`;
+
+const TextRow = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 `;

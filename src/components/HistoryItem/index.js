@@ -11,7 +11,7 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
-import { useDateFromNow } from 'hooks';
+import { useDateFromNow, useWindowDimensions } from 'hooks';
 import { HISTORY_ACTION_TYPES } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
@@ -50,18 +50,20 @@ const actions = {
   }
 };
 
-const AddressLink = ({ action }) => {
+const AddressLink = ({ action, isMobile }) => {
   const address = action.type === DEPOSIT ? action.actions[0].from : action.actions[0].to;
   return (
     <Link size={16} href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}>
-      {shortAddress(address, 22)}
+      {shortAddress(address, isMobile ? 10 : 22)}
     </Link>
   );
 };
 
 export default ({ item, zkAccountId }) => {
   const date = useDateFromNow(item.timestamp);
+  const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const isMobile = width <= 500;
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -79,7 +81,7 @@ export default ({ item, zkAccountId }) => {
                 const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
                 return (
                   <Tooltip content={formatNumber(total, 18)} placement="top">
-                    <span>{formatNumber(total, 18)}</span>
+                    <span>{formatNumber(total, isMobile ? 4 : 18)}</span>
                   </Tooltip>
                 );
               })()}
@@ -105,7 +107,7 @@ export default ({ item, zkAccountId }) => {
               {item.type === DEPOSIT ? 'From' : 'To'}
             </Text>
             {[DEPOSIT, WITHDRAWAL].includes(item.type) ? (
-              <AddressLink action={item} />
+              <AddressLink action={item} isMobile={isMobile} />
             ) : (
               item.actions.length === 1 ? (
                 <Tooltip
@@ -125,7 +127,7 @@ export default ({ item, zkAccountId }) => {
                       <ZkAvatar seed={zkAccountId} size={16} />
                     )}
                     <Text style={{ marginLeft: 5 }}>
-                      {shortAddress(item.actions[0].to, 22)}
+                      {shortAddress(item.actions[0].to, isMobile ? 10 : 22)}
                     </Text>
                   </ZkAddress>
                 </Tooltip>
@@ -146,7 +148,7 @@ export default ({ item, zkAccountId }) => {
                     <>
                       <ZkAvatar seed={zkAccountId} size={16} />
                       <Text style={{ marginLeft: 5 }}>
-                        {shortAddress(item.actions[0].to, 22)}
+                        {shortAddress(item.actions[0].to, isMobile ? 10 : 22)}
                       </Text>
                     </>
                   )}
@@ -156,7 +158,7 @@ export default ({ item, zkAccountId }) => {
           </Row>
           <Row>
             {item.actions.length > 1 && item.type === TRANSFER_OUT && (
-              <Label>Multitransfer</Label>
+              <Label>{isMobile ? 'Multi' : 'Multitransfer'}</Label>
             )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
