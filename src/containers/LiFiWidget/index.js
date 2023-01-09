@@ -1,15 +1,19 @@
 import React from 'react';
 import { LiFiWidget } from '@lifi/widget';
 
+import { useWindowDimensions } from 'hooks';
+
 export default () => {
+  const { width } = useWindowDimensions();
+
   const widgetConfig = {
     integrator: 'zkBob',
     variant: 'standard',
     appearance: 'light',
     disableAppearance: true,
     containerStyle: {
-      maxWidth: 480,
-      width: 480,
+      width: width > 500 ? 480 : '100%',
+      maxWidth: width > 500 ? 480 : '100%',
     },
     theme: {
       typography: {
