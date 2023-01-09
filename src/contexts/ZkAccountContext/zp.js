@@ -19,7 +19,7 @@ const snarkParams = {
   treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
 };
 
-const createAccount = async (mnemonic, statusCallback, isNewAccount = false) => {
+const createAccount = async (mnemonic, statusCallback, isNewAccount = false, supportId) => {
   const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
   const sk = deriveSpendingKeyZkBob(mnemonic, network);
   const ctx = await initZkBob(snarkParams, RELAYER_URL, statusCallback);
@@ -37,6 +37,7 @@ const createAccount = async (mnemonic, statusCallback, isNewAccount = false) => 
     worker: ctx.worker,
     networkName: network,
     network: new EvmNetwork(RPC_URL),
+    supportId,
   });
 };
 

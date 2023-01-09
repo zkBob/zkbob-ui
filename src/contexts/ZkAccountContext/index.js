@@ -5,7 +5,10 @@ import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
 
-import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'contexts';
+import {
+  TransactionModalContext, ModalContext,
+  TokenBalanceContext, SupportIdContext,
+} from 'contexts';
 
 import { TX_STATUSES } from 'constants';
 
@@ -34,6 +37,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
+  const { supportId } = useContext(SupportIdContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
@@ -66,7 +70,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
-        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount);
+        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount, supportId);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
@@ -77,7 +81,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
     setLoadingPercentage(0);
-  }, []);
+  }, [supportId]);
 
   const fromShieldedAmount = useCallback(shieldedAmount => {
     const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
