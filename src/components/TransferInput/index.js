@@ -99,6 +99,7 @@ const Input = styled.input`
   width: 100%;
   flex: 1;
   outline: none;
+  padding: 0;
   &::placeholder {
     color: ${props => props.theme.transferInput.text.color.placeholder};
   }
