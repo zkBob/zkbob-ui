@@ -1,6 +1,7 @@
 import { Contract } from 'ethers';
 import { init as initZkBob, ZkBobClient } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
+import { ProverMode } from 'zkbob-client-js/lib/config';
 import { EvmNetwork } from 'zkbob-client-js/lib/networks/evm';
 
 import { TX_STATUSES } from 'constants';
@@ -29,6 +30,7 @@ const createAccount = async (mnemonic, statusCallback, isNewAccount = false, sup
       relayerUrl: RELAYER_URL,
       coldStorageConfigPath: `${BUCKET_URL}/coldstorage/coldstorage.cfg`,
       birthindex: isNewAccount ? -1 : undefined,
+      proverMode: ProverMode.Local,
     }
   };
   return ZkBobClient.create({

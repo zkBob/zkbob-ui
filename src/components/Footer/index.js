@@ -5,12 +5,13 @@ import zkBobLibPackage from 'zkbob-client-js/package.json';
 import Link from 'components/Link';
 import Button from 'components/Button';
 
-import { ModalContext, SupportIdContext } from 'contexts';
+import { ModalContext, SupportIdContext, ZkAccountContext } from 'contexts';
 
 
 export default () => {
   const { openSwapOptionsModal } = useContext(ModalContext);
   const { supportId } = useContext(SupportIdContext);
+  const { relayerVersion } = useContext(ZkAccountContext);
 
   const sections = [
     {
@@ -56,6 +57,9 @@ export default () => {
         <InnerRow>
           <Text>Web: v{process.env.REACT_APP_VERSION}</Text>
           <Text>Library: v{zkBobLibPackage.version}</Text>
+          {relayerVersion && (
+            <Text>Relayer: {relayerVersion}</Text>
+          )}
           <TextRow>
             <Text style={{ marginRight: 4 }}>Support ID:</Text>
             <Text>{supportId}</Text>

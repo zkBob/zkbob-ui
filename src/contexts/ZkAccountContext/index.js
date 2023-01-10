@@ -52,6 +52,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
+  const [relayerVersion, setRelayerVersion] = useState(null);
 
   const updateLoadingStatus = status => {
     let loadingPercentage = null;
@@ -195,6 +196,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
     setMinTxAmount(minTxAmount);
   }, [zkAccount, fromShieldedAmount]);
+
+  const loadRelayerVersion = useCallback(async () => {
+    let version = null;
+    if (zkAccount) {
+      try {
+        const data = await zkAccount.getRelayerVersion(TOKEN_ADDRESS);
+        version = data.ref;
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadRelayerVersion' } });
+      }
+    }
+    setRelayerVersion(version);
+  }, [zkAccount]);
 
   const updatePoolData = useCallback(() => Promise.all([
     updateBalance(),
@@ -384,6 +399,13 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [isPending, updatePoolData, updateTokenBalance]);
 
   useEffect(() => {
+    loadRelayerVersion();
+    const interval = 3600 * 1000; // 1 hour
+    const intervalId = setInterval(loadRelayerVersion, interval);
+    return () => clearInterval(intervalId);
+  }, [loadRelayerVersion]);
+
+  useEffect(() => {
     const seed = window.localStorage.getItem('seed');
     if (seed && !zkAccount) {
       openPasswordModal();
@@ -398,7 +420,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
-        verifyShieldedAddress, decryptMnemonic,
+        verifyShieldedAddress, decryptMnemonic, relayerVersion,
       }}
     >
       {children}
