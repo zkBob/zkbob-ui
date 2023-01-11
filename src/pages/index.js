@@ -41,8 +41,13 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 
 const history = createBrowserHistory();
 
+const PUBLIC_KEY = process.env.REACT_APP_SENTRY_PUBLIC_KEY;
+const PRIVATE_KEY = process.env.REACT_APP_SENTRY_PRIVATE_KEY;
+const PROJECT_ID = process.env.REACT_APP_SENTRY_PROJECT_ID;
+
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: `https://${PUBLIC_KEY}@${PRIVATE_KEY}.ingest.sentry.io/${PROJECT_ID}`,
+  tunnel: '/telemetry',
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),

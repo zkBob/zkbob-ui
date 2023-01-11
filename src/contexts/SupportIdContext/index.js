@@ -19,6 +19,20 @@ export const SupportIdContextProvider = ({ children }) => {
     });
   }, [supportId]);
 
+  useEffect(() => {
+    async function getIpAddress() {
+      try {
+        const data = await (await fetch('https://ipapi.co/json')).json();
+        Sentry.configureScope(scope => {
+          scope.setTag('ip', data.ip);
+        });
+      } catch (error) {
+        console.error('Failed to get IP.');
+      }
+    }
+    getIpAddress();
+  }, []);
+
   return (
     <SupportIdContext.Provider value={{ supportId }}>
       {children}

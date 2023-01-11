@@ -18,6 +18,9 @@
 
 [[plugins]]
   package = "/plugins/netlify/env"
+  [plugins.inputs]
+      source = '_redirects'
+      base = '/opt/build/repo/public'
 
 [context.production.environment]
   REACT_APP_EXPLORER_ADDRESS_TEMPLATE = "https://polygonscan.com/address/%s"
