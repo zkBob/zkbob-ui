@@ -410,7 +410,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (seed && !zkAccount) {
       openPasswordModal();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ZkAccountContext.Provider
