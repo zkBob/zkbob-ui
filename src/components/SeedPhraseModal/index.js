@@ -64,32 +64,6 @@ const Container = styled.div`
   }
 `;
 
-const Mnemonic = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 0;
-`;
-
-const WordContainer = styled.div`
-  padding: 8px 10px;
-  border: 1px solid ${({ theme }) => theme.walletConnectorOption.border.default};
-  border-radius: 10px;
-  box-sizing: border-box;
-  margin-bottom: 16px;
-  margin-right: 8px;
-`;
-
-const Word = styled.span`
-  font-size: 16px;
-  color: ${({ theme }) => theme.text.color.primary};
-`;
-
-const Number = styled(Word)`
-  color: ${({ theme }) => theme.text.color.secondary};
-`;
-
 const Description = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
