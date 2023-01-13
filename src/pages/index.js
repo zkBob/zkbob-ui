@@ -45,8 +45,13 @@ const PUBLIC_KEY = process.env.REACT_APP_SENTRY_PUBLIC_KEY;
 const PRIVATE_KEY = process.env.REACT_APP_SENTRY_PRIVATE_KEY;
 const PROJECT_ID = process.env.REACT_APP_SENTRY_PROJECT_ID;
 
+let sentryDsn;
+if (PUBLIC_KEY && PRIVATE_KEY && PROJECT_ID) {
+  sentryDsn = `https://${PUBLIC_KEY}@${PRIVATE_KEY}.ingest.sentry.io/${PROJECT_ID}`;
+}
+
 Sentry.init({
-  dsn: `https://${PUBLIC_KEY}@${PRIVATE_KEY}.ingest.sentry.io/${PROJECT_ID}`,
+  dsn: sentryDsn,
   tunnel: '/telemetry',
   integrations: [
     new BrowserTracing({
