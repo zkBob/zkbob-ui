@@ -57,9 +57,7 @@ export default () => {
         <InnerRow>
           <Text>Web: v{process.env.REACT_APP_VERSION}</Text>
           <Text>Library: v{zkBobLibPackage.version}</Text>
-          {relayerVersion && (
-            <Text>Relayer: {relayerVersion}</Text>
-          )}
+          <Text>Relayer: {relayerVersion || 'N/A'}</Text>
           <TextRow>
             <Text style={{ marginRight: 4 }}>Support ID:</Text>
             <Text>{supportId}</Text>
