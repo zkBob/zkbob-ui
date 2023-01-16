@@ -47,7 +47,12 @@ export async function createPermitSignature(tokenContractInstance, signer, spend
     salt,
   };
 
-  const signature = await signer._signTypedData(domain, types, message);
+  let signature;
+  try {
+    signature = await signer._signTypedData(domain, types, message);
+  } catch (error) {
+    throw Error('User denied message signature.');
+  }
 
   // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
   const MIN_VALID_V_VALUE = 27;
