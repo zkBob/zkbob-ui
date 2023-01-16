@@ -20,6 +20,8 @@ export default ({ children, isOpen, onClose, title, onBack, width, style, contai
       borderRadius: '24px',
       background: theme.modal.background,
       opacity: '1',
+      maxWidth: 'calc(100% - 14px)',
+      maxHeight: 'calc(100% - 14px)',
     },
     overlay: {
       background: theme.modal.overlay,
@@ -49,9 +51,13 @@ const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   width: ${props => props.width ? `${props.width}px` : '420px'};
+  max-width: 100%;
   padding: 26px;
   box-sizing: border-box;
   position: relative;
+  @media only screen and (max-width: 420px) {
+    padding: 26px 13px;
+  }
 `;
 
 const Title = styled.span`

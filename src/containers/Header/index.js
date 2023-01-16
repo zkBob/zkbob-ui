@@ -14,7 +14,7 @@ export default ({ empty }) => {
     zkAccountId, updatePoolData, generateAddress,
   } = useContext(ZkAccountContext);
   const {
-    openWalletModal,
+    openWalletModal, openSeedPhraseModal,
     openAccountSetUpModal, openSwapOptionsModal,
     openChangePasswordModal, openConfirmLogoutModal,
   } = useContext(ModalContext);
@@ -50,6 +50,7 @@ export default ({ empty }) => {
         refresh={refresh}
         empty={empty}
         generateAddress={generateAddress}
+        openSeedPhraseModal={openSeedPhraseModal}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback } from 'react';
+import { useContext, useCallback } from 'react';
 
 import { ModalContext } from 'contexts';
 import LiFiWidget from 'containers/LiFiWidget';
@@ -8,15 +8,6 @@ export default () => {
   const {
     isSwapModalOpen, closeSwapModal, openSwapOptionsModal,
   } = useContext(ModalContext);
-  const [isShown, setIsShown] = useState(true);
-
-  useEffect(() => {
-    if (!isSwapModalOpen) {
-      // reset LiFi widget state
-      setIsShown(false);
-      setTimeout(() => setIsShown(true), 100);
-    }
-  }, [isSwapModalOpen]);
 
   const goBack = useCallback(() => {
     closeSwapModal();
@@ -25,12 +16,11 @@ export default () => {
 
   return (
     <Modal
-      isOpen={isShown}
+      isOpen={isSwapModalOpen}
       onClose={closeSwapModal}
       onBack={goBack}
       width={480}
       style={{ padding: '26px 0 0' }}
-      containerStyle={{ display: isSwapModalOpen ? 'block' : 'none' }}
     >
       <LiFiWidget />
     </Modal>

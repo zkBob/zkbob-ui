@@ -9,6 +9,14 @@ import useAutosizeTextArea from './hooks/useAutosizeTextArea';
 export default ({ value, onChange, hint, placeholder }) => {
   const textAreaRef = useRef(null);
   useAutosizeTextArea(textAreaRef.current, value);
+
+  const handleKeyPress = event => {
+    console.log(event.key);
+    if(event.key === 'Enter' || event.key === ' '){
+      event.preventDefault();
+    }
+  };
+
   return (
     <Container hint={hint} onClick={() => textAreaRef.current.focus()}>
       <TextArea
@@ -16,6 +24,7 @@ export default ({ value, onChange, hint, placeholder }) => {
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onKeyPress={handleKeyPress}
         spellCheck={false}
         rows={1}
       />
@@ -36,8 +45,9 @@ const Container = styled.div`
   border-radius: 16px;
   background: ${props => props.theme.input.background.secondary};
   box-sizing: border-box;
-  height: 60px;
-  padding: 0 24px;
+  min-height: 60px;
+  max-height: 60px;
+  padding: 9px 24px;
   padding-right: ${props => props.hint ? '50px' : '24px'};
   outline: none;
   cursor: text;
@@ -49,6 +59,9 @@ const Container = styled.div`
   &:focus-within {
     border-color: ${props => props.theme.input.border.color[props.error ? 'error' : 'focus']};
   }
+  @media only screen and (max-width: 500px) {
+    max-height: 80px;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -59,13 +72,15 @@ const TextArea = styled.textarea`
   font-size: 16px;
   line-height: 20px;
   font-weight: 400;
+  max-height: 40px;
   resize: none;
   padding: 0;
-  max-height: 40px;
-  margin-top: 1px;
   &::placeholder {
     color: ${props => props.theme.text.color.secondary};
     opacity: 0.6;
+  }
+  @media only screen and (max-width: 500px) {
+    max-height: 60px;
   }
 `;
 

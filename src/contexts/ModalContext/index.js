@@ -37,6 +37,10 @@ export const ModalContextProvider = ({ children }) => {
   const openConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(true);
   const closeConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(false);
 
+  const [isSeedPhraseModalOpen, setIsSeedPhraseModalOpen] = useState(false);
+  const openSeedPhraseModal = () => setIsSeedPhraseModalOpen(true);
+  const closeSeedPhraseModal = () => setIsSeedPhraseModalOpen(false);
+
   return (
     <ModalContext.Provider
       value={{
@@ -48,6 +52,7 @@ export const ModalContextProvider = ({ children }) => {
         isSwapModalOpen, openSwapModal, closeSwapModal,
         isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
         isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
+        isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
       }}
     >
       {children}

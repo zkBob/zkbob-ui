@@ -30,35 +30,32 @@ export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExc
           <TokenIcon src={tokenIcon(shielded)} />
           {tokenSymbol(shielded)}
         </TokenContainer>
-
       </Row>
       <Row>
-        <SmallText>
-          Relayer fee: {formatNumber(fee)} {tokenSymbol(shielded)}
-        </SmallText>
-        <Row>
-          <SmallText>
-            {shielded ? 'Pool balance' : 'Balance'}: {formatNumber(balance)} {tokenSymbol(shielded)}
-          </SmallText>
-          <MaxButton
-            type="link"
-            onClick={setMax}
-            tabIndex="-1"
-          >
-            Max
-          </MaxButton>
-          <Tooltip
-            content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
-            placement="right"
-            delay={0}
-            width={180}
-            visible={showTooltip}
-            onVisibleChange={setShowTooltip}
-            trigger="hover"
-          >
-            <InfoIcon />
-          </Tooltip>
-        </Row>
+        <RowWrap style={{ marginRight: 20 }}>
+          <Text style={{ marginRight: 4 }}>Relayer fee:</Text>
+          <Text>{formatNumber(fee)} {tokenSymbol(shielded)}</Text>
+        </RowWrap>
+        <RowFlexEnd>
+          <Text style={{ marginRight: 4 }}>
+            {shielded ? 'Pool balance' : 'Balance'}:
+          </Text>
+          <Row>
+            <Text>{formatNumber(balance)} {tokenSymbol(shielded)}</Text>
+            <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
+            <Tooltip
+              content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
+              placement="right"
+              delay={0}
+              width={180}
+              visible={showTooltip}
+              onVisibleChange={setShowTooltip}
+              trigger="hover"
+            >
+              <InfoIcon />
+            </Tooltip>
+          </Row>
+        </RowFlexEnd>
       </Row>
     </Container>
   );
@@ -85,6 +82,14 @@ const Row = styled.div`
   align-items: center;
 `;
 
+const RowWrap = styled(Row)`
+  flex-wrap: wrap;
+`;
+
+const RowFlexEnd = styled(RowWrap)`
+  justify-content: flex-end;
+`;
+
 const Input = styled.input`
   border: 0;
   background: transparent;
@@ -94,6 +99,7 @@ const Input = styled.input`
   width: 100%;
   flex: 1;
   outline: none;
+  padding: 0;
   &::placeholder {
     color: ${props => props.theme.transferInput.text.color.placeholder};
   }
@@ -102,7 +108,7 @@ const Input = styled.input`
   }
 `;
 
-const SmallText = styled.span`
+const Text = styled.span`
   font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.transferInput.text.weight.small};
@@ -123,6 +129,7 @@ const TokenContainer = styled.div`
   display: flex;
   align-items: center;
   font-size: 16px;
+  color: ${props => props.theme.text.color.primary};
   padding: 10px 0;
   margin-left: 15px;
 `;

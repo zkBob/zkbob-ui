@@ -18,7 +18,7 @@ export default ({ isOpen, confirm, reset, password, onPasswordChange, error }) =
     >
       <Container onKeyPress={handleKeyPress}>
         <Description>
-          To enhance security, password entry is required each<br /> time a page reloads.
+          To enhance security, password entry is required each time a page reloads.
         </Description>
         <Input
           autoFocus

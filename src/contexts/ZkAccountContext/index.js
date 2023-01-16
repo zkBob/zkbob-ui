@@ -5,7 +5,10 @@ import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
 
-import { TransactionModalContext, ModalContext, TokenBalanceContext } from 'contexts';
+import {
+  TransactionModalContext, ModalContext,
+  TokenBalanceContext, SupportIdContext,
+} from 'contexts';
 
 import { TX_STATUSES } from 'constants';
 
@@ -34,6 +37,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
+  const { supportId } = useContext(SupportIdContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
@@ -48,6 +52,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
+  const [relayerVersion, setRelayerVersion] = useState(null);
 
   const updateLoadingStatus = status => {
     let loadingPercentage = null;
@@ -66,7 +71,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
-        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount);
+        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount, supportId);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
@@ -77,7 +82,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
     setLoadingPercentage(0);
-  }, []);
+  }, [supportId]);
 
   const fromShieldedAmount = useCallback(shieldedAmount => {
     const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
@@ -191,6 +196,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
     setMinTxAmount(minTxAmount);
   }, [zkAccount, fromShieldedAmount]);
+
+  const loadRelayerVersion = useCallback(async () => {
+    let version = null;
+    if (zkAccount) {
+      try {
+        const data = await zkAccount.getRelayerVersion(TOKEN_ADDRESS);
+        version = data.ref;
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadRelayerVersion' } });
+      }
+    }
+    setRelayerVersion(version);
+  }, [zkAccount]);
 
   const updatePoolData = useCallback(() => Promise.all([
     updateBalance(),
@@ -380,11 +399,18 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [isPending, updatePoolData, updateTokenBalance]);
 
   useEffect(() => {
+    loadRelayerVersion();
+    const interval = 3600 * 1000; // 1 hour
+    const intervalId = setInterval(loadRelayerVersion, interval);
+    return () => clearInterval(intervalId);
+  }, [loadRelayerVersion]);
+
+  useEffect(() => {
     const seed = window.localStorage.getItem('seed');
     if (seed && !zkAccount) {
       openPasswordModal();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ZkAccountContext.Provider
@@ -394,7 +420,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
-        verifyShieldedAddress,
+        verifyShieldedAddress, decryptMnemonic, relayerVersion,
       }}
     >
       {children}

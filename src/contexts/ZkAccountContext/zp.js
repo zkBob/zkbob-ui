@@ -1,6 +1,7 @@
 import { Contract } from 'ethers';
 import { init as initZkBob, ZkBobClient } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
+import { ProverMode } from 'zkbob-client-js/lib/config';
 import { EvmNetwork } from 'zkbob-client-js/lib/networks/evm';
 
 import { TX_STATUSES } from 'constants';
@@ -19,7 +20,7 @@ const snarkParams = {
   treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
 };
 
-const createAccount = async (mnemonic, statusCallback, isNewAccount = false) => {
+const createAccount = async (mnemonic, statusCallback, isNewAccount = false, supportId) => {
   const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
   const sk = deriveSpendingKeyZkBob(mnemonic, network);
   const ctx = await initZkBob(snarkParams, RELAYER_URL, statusCallback);
@@ -29,6 +30,7 @@ const createAccount = async (mnemonic, statusCallback, isNewAccount = false) => 
       relayerUrl: RELAYER_URL,
       coldStorageConfigPath: `${BUCKET_URL}/coldstorage/coldstorage.cfg`,
       birthindex: isNewAccount ? -1 : undefined,
+      proverMode: ProverMode.Local,
     }
   };
   return ZkBobClient.create({
@@ -37,6 +39,7 @@ const createAccount = async (mnemonic, statusCallback, isNewAccount = false) => 
     worker: ctx.worker,
     networkName: network,
     network: new EvmNetwork(RPC_URL),
+    supportId,
   });
 };
 

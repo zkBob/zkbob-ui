@@ -28,9 +28,9 @@ export default ({ type, shielded, actions, txHash }) => {
           })()}
           {' '}{tokenSymbol(shielded)}
         </Amount>
-        <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
+        <TxLink size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
           {shortAddress(txHash)}
-        </Link>
+        </TxLink>
       </InnerRow>
       <HistoryButton
         type="link"
@@ -45,8 +45,11 @@ export default ({ type, shielded, actions, txHash }) => {
 const Row = styled.div`
   display: flex;
   align-items: center;
-  width: 456px;
+  width: 480px;
+  max-width: 100%;
+  padding: 0 12px;
   margin-top: 25px;
+  box-sizing: border-box;
 `;
 
 const InnerRow = styled.div`
@@ -78,4 +81,10 @@ const Amount = styled.span`
 
 const HistoryButton = styled(Button)`
   justify-self: flex-end;
+`;
+
+const TxLink = styled(Link)`
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
 `;

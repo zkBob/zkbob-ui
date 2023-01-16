@@ -13,7 +13,7 @@ import { tokenIcon, tokenSymbol } from 'utils/token';
 
 const Content = ({
   balance, generateAddress, switchAccount,
-  changePassword, logout, buttonRef,
+  changePassword, logout, buttonRef, showSeedPhrase,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
 
@@ -49,6 +49,7 @@ const Content = ({
         Receive tokens to this address or a previously generated address.
       </PrivateAddressDescription>
       <OptionButton onClick={() => onClick(changePassword)}>Change password</OptionButton>
+      <OptionButton onClick={() => onClick(showSeedPhrase)}>Show secret recovery phrase</OptionButton>
       <OptionButton onClick={() => onClick(switchAccount)}>Switch account</OptionButton>
       <OptionButton onClick={() => onClick(logout)}>Log out</OptionButton>
     </Container>
@@ -56,7 +57,7 @@ const Content = ({
 };
 
 export default ({
-  balance, generateAddress, switchAccount,
+  balance, generateAddress, switchAccount, showSeedPhrase,
   changePassword, logout, buttonRef, children,
 }) => (
   <Dropdown
@@ -68,6 +69,7 @@ export default ({
         changePassword={changePassword}
         logout={logout}
         buttonRef={buttonRef}
+        showSeedPhrase={showSeedPhrase}
       />
     )}
   >

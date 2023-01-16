@@ -28,6 +28,12 @@ const Tabs = styled.div`
   & > * {
     flex: 1;
   }
+  @media only screen and (max-width: 400px) {
+    width: 100%;
+  }
+  @media only screen and (max-width: 560px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const Tab = styled.div`
@@ -39,5 +45,9 @@ const Tab = styled.div`
   cursor: pointer;
   &:hover {
     color: ${props => props.theme.text.color.primary};
+  }
+  @media only screen and (max-width: 400px) {
+    padding: 8px 10px;
+    text-align: center;
   }
 `;

@@ -11,7 +11,7 @@ import { ZkAccountContext } from 'contexts';
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Input from 'components/Input';
+import MultilineInput from 'components/MultilineInput';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
@@ -96,7 +96,7 @@ export default () => {
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
         />
-        <Input
+        <MultilineInput
           placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
           secondary
           value={receiver}
@@ -104,17 +104,22 @@ export default () => {
         />
         {button}
         <MessageContainer>
-          <Text>Withdraw at least</Text>
-          <BobIcon />
-          <Text><b>10 BOB</b> and receive an additional <b>0.1 MATIC *</b></Text>
-          <Tooltip
-            content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
-            placement="right"
-            delay={0}
-            width={180}
-          >
-            <InfoIcon />
-          </Tooltip>
+          <Row>
+            <Text>Withdraw at least</Text>
+            <BobIcon />
+            <Text style={{ marginRight: 4 }}><b>10 BOB</b></Text>
+          </Row>
+          <Row>
+            <Text>and receive an additional <b>0.1 MATIC *</b></Text>
+            <Tooltip
+              content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
+              placement="right"
+              delay={0}
+              width={180}
+            >
+              <InfoIcon />
+            </Tooltip>
+          </Row>
         </MessageContainer>
         <ConfirmTransactionModal
           title="Withdrawal confirmation"
@@ -146,13 +151,17 @@ export default () => {
   );
 };
 
-const MessageContainer = styled.div`
+const Row = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const MessageContainer = styled(Row)`
   justify-content: center;
-  height: 34px;
+  flex-wrap: wrap;
   background: #FBEED0;
   border-radius: 10px;
+  padding: 7px 10px;
 `;
 
 const Text = styled.span`
