@@ -1,17 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import styled from 'styled-components';
 
 import Tooltip from 'components/Tooltip';
+import QRCodeReader from 'components/QRCodeReader';
+
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import useAutosizeTextArea from './hooks/useAutosizeTextArea';
 
-export default ({ value, onChange, hint, placeholder }) => {
+export default ({ value, onChange, hint, placeholder, qrCode }) => {
   const textAreaRef = useRef(null);
   useAutosizeTextArea(textAreaRef.current, value);
 
+  const handleChange = useCallback(e => {
+    onChange(e.target.value);
+  }, [onChange])
+
   const handleKeyPress = event => {
-    console.log(event.key);
     if(event.key === 'Enter' || event.key === ' '){
       event.preventDefault();
     }
@@ -23,16 +28,17 @@ export default ({ value, onChange, hint, placeholder }) => {
         ref={textAreaRef}
         placeholder={placeholder}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         onKeyPress={handleKeyPress}
         spellCheck={false}
         rows={1}
       />
-      {hint &&
+      {(hint && !qrCode) &&
         <Tooltip content={hint} placement="right" delay={0} width={180}>
           <InfoIcon />
         </Tooltip>
       }
+      {qrCode && <QRCodeReader onResult={onChange} />}
     </Container>
   );
 };

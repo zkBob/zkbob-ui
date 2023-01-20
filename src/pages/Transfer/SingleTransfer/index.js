@@ -1,6 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
+import { isMobile } from 'react-device-detect';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -22,7 +23,7 @@ export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
     isPending, maxTransferable, minTxAmount,
-    verifyShieldedAddress,
+    verifyShieldedAddress, isDemo,
   } = useContext(ZkAccountContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
@@ -31,10 +32,6 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
-
-  const handleReceiverChange = useCallback(e => {
-    setReceiver(e.target.value);
-  }, []);
 
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -93,7 +90,8 @@ export default () => {
         placeholder="Enter address of zkBob receiver"
         hint="The address can be generated in the account modal window"
         value={receiver}
-        onChange={handleReceiverChange}
+        onChange={setReceiver}
+        qrCode={isDemo && isMobile}
       />
       {button}
       <ConfirmTransactionModal

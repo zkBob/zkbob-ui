@@ -53,6 +53,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
+  const [isDemo, setIsDemo] = useState(false);
 
   const updateLoadingStatus = status => {
     let loadingPercentage = null;
@@ -63,20 +64,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     setLoadingPercentage(loadingPercentage);
   };
 
-  const loadZkAccount = useCallback(async (mnemonic, isNewAccount = false) => {
+  const loadZkAccount = useCallback(async (secretKey, birthIndex) => {
     let zkAccount = null;
     let zkAccountId = null;
-    if (mnemonic) {
+    if (secretKey) {
       setBalance(ethers.constants.Zero);
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
-        zkAccount = await zp.createAccount(mnemonic, updateLoadingStatus, isNewAccount, supportId);
+        zkAccount = await zp.createAccount(secretKey, updateLoadingStatus, birthIndex, supportId);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
       }
-      zkAccountId = ethers.utils.id(mnemonic);
+      zkAccountId = ethers.utils.id(secretKey);
     }
     setZkAccount(zkAccount);
     setZkAccountId(zkAccountId);
@@ -361,7 +362,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const saveZkAccountMnemonic = useCallback(async (mnemonic, password, isNewAccount) => {
     const cipherText = await AES.encrypt(mnemonic, password).toString()
     window.localStorage.setItem('seed', cipherText);
-    loadZkAccount(mnemonic, isNewAccount);
+    loadZkAccount(mnemonic, isNewAccount ? -1 : undefined);
   }, [loadZkAccount]);
 
   const removeZkAccountMnemonic = useCallback(async () => {
@@ -407,10 +408,22 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');
-    if (seed && !zkAccount) {
+    const demoCode = (new URLSearchParams(window.location.search)).get('code');
+    if (demoCode) {
+      setIsDemo(true);
+    } else if (seed && !zkAccount) {
       openPasswordModal();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (isDemo) {
+      const params = new URLSearchParams(window.location.search);
+      const privateKey = params.get('code');
+      const birthIndex = Number(params.get('index'));
+      loadZkAccount(privateKey, birthIndex);
+    }
+  }, [isDemo, loadZkAccount]);
 
   return (
     <ZkAccountContext.Provider
@@ -420,7 +433,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
-        verifyShieldedAddress, decryptMnemonic, relayerVersion,
+        verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo,
       }}
     >
       {children}

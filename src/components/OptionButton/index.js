@@ -26,10 +26,11 @@ const ButtonLink = styled(Link)`
   box-sizing: border-box;
   cursor: pointer;
   &:hover {
-    background-color: ${({ theme }) => theme.walletConnectorOption.background.hover};
-    border: 1px solid ${({ theme }) => theme.walletConnectorOption.border.hover};
+    background-color: ${props => props.theme.walletConnectorOption.background[props.disabled ? 'default' : 'hover']};
+    border: 1px solid ${props => props.theme.walletConnectorOption.border[props.disabled ? 'default' : 'hover']};
   }
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.primary};
   font-weight: ${({ theme }) => theme.text.weight.normal};
+  opacity: ${props => props.disabled ? 0.5 : 1};
 `;

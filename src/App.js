@@ -38,6 +38,8 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
     min-height: 100vh;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     background-image: ${props => props.theme.background};
   }
   input::-webkit-outer-spin-button,

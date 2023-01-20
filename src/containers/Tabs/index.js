@@ -14,8 +14,8 @@ export default () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
   const handleTabClick = useCallback(index => {
-    history.push(tabs[index].path);
-  }, [history]);
+    history.push(tabs[index].path + location.search);
+  }, [history, location]);
   useEffect(() => {
     setActiveTab(tabs.findIndex(item => item.path === location.pathname));
   }, [location]);

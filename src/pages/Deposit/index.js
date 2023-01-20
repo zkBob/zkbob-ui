@@ -14,6 +14,7 @@ import Card from 'components/Card';
 import Button from 'components/Button';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
+import DemoCard from 'components/DemoCard';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { useDepositLimit, useMaxAmountExceeded } from './hooks';
@@ -29,7 +30,7 @@ export default () => {
   const { account } = useWeb3React();
   const {
       zkAccount, isLoadingZkAccount, deposit,
-      isLoadingState, isPending,
+      isLoadingState, isPending, isDemo,
       isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
   const { balance } = useContext(TokenBalanceContext);
@@ -58,6 +59,8 @@ export default () => {
       Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
   }, [balance, fee, depositLimit]);
+
+  if (isDemo) return <DemoCard />;
 
   return isPending ? <PendingAction /> : (
     <>

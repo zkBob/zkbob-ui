@@ -16,6 +16,7 @@ import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import Tooltip from 'components/Tooltip';
+import DemoCard from 'components/DemoCard';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
@@ -33,7 +34,7 @@ const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool an
 export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    isPending, maxTransferable,
+    isPending, maxTransferable, isDemo,
     limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -43,10 +44,6 @@ export default () => {
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
   const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
-
-  const handleReceiverChange = useCallback(e => {
-    setReceiver(e.target.value);
-  }, []);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -59,6 +56,8 @@ export default () => {
     const max = minBigNumber(maxTransferable, limits.dailyWithdrawalLimit.available);
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [maxTransferable, limits]);
+
+  if (isDemo) return <DemoCard />;
 
   let button = null;
   if (zkAccount) {
@@ -100,7 +99,7 @@ export default () => {
           placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
           secondary
           value={receiver}
-          onChange={handleReceiverChange}
+          onChange={setReceiver}
         />
         {button}
         <MessageContainer>
