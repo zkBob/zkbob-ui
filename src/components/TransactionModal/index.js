@@ -7,8 +7,8 @@ import Button from 'components/Button';
 
 import { TX_STATUSES } from 'constants';
 
-import { ReactComponent as CheckIcon } from 'assets/check-circle.svg';
-import { ReactComponent as CrossIcon } from 'assets/cross-circle.svg';
+import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
+import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
@@ -25,6 +25,8 @@ const titles = {
   [TX_STATUSES.WITHDRAWN]: 'Withdrawal sent',
   [TX_STATUSES.REJECTED]: 'Transaction was rejected',
   [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: 'Suspicious wallet connected',
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: 'Suspicious recipient address',
 };
 
 const descriptions = {
@@ -54,6 +56,18 @@ const descriptions = {
       Your signature has expired. Please try again.
     </span>
   ),
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: () => (
+    <span>
+      We found that your wallet was involved in suspicious activities.{' '}
+      Because of this, you can't use this wallet at zkBob. Please, try another wallet.
+    </span>
+  ),
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: () => (
+    <span>
+      We found that the recipient's address was involved in suspicious activities.{' '}
+      Because of this, you can't withdraw funds to this address.
+    </span>
+  ),
 };
 
 const SUCCESS_STATUSES = [
@@ -66,12 +80,20 @@ const FAILURE_STATUSES = [
   TX_STATUSES.REJECTED,
   TX_STATUSES.SIGNATURE_EXPIRED,
 ];
+const SUSPICIOUS_ACCOUNT_STATUSES = [
+  TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT,
+  TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL,
+];
 
 export default ({ isOpen, onClose, status, amount, error, supportId }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={[...SUCCESS_STATUSES, ...FAILURE_STATUSES].includes(status) ? onClose : null}
+      onClose={[
+        ...SUCCESS_STATUSES,
+        ...FAILURE_STATUSES,
+        ...SUSPICIOUS_ACCOUNT_STATUSES,
+      ].includes(status) ? onClose : null}
       title={titles[status]}
     >
       {status === TX_STATUSES.SIGN_MESSAGE && (
@@ -82,6 +104,7 @@ export default ({ isOpen, onClose, status, amount, error, supportId }) => {
       {(() => {
         if (SUCCESS_STATUSES.includes(status)) return <CheckIcon />
         else if (FAILURE_STATUSES.includes(status)) return <CrossIcon />
+        else if (SUSPICIOUS_ACCOUNT_STATUSES.includes(status)) return null
         else return <Spinner />;
       })()}
       {descriptions[status] && (
@@ -96,6 +119,9 @@ export default ({ isOpen, onClose, status, amount, error, supportId }) => {
       {status === TX_STATUSES.DEPOSITED && (
         <OkButton onClick={onClose}>Got it!</OkButton>
       )}
+      {SUSPICIOUS_ACCOUNT_STATUSES.includes(status) && (
+        <OkButton onClick={onClose}>Okay</OkButton>
+      )}
     </Modal>
   );
 };
@@ -105,7 +131,10 @@ const Description = styled.span`
   color: ${props => props.theme.text.color.secondary};
   text-align: center;
   line-height: 20px;
-  margin-top: 16px;
+  margin-bottom: 16px;
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const SignDescription = styled(Description)`
@@ -114,5 +143,12 @@ const SignDescription = styled(Description)`
 
 const OkButton = styled(Button)`
   width: 100%;
-  margin-top: 16px;
+`;
+
+const CheckIcon = styled(CheckIconDefault)`
+  margin-bottom: 16px;
+`;
+
+const CrossIcon = styled(CrossIconDefault)`
+  margin-bottom: 16px;
 `;

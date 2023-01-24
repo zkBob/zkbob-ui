@@ -232,6 +232,8 @@ export const ZkAccountContextProvider = ({ children }) => {
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit' } });
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
+      } if (error?.message?.includes('Internal account validation failed')) {
+        setTxStatus(TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT);
       } else {
         setTxError(error.message);
         setTxStatus(TX_STATUSES.REJECTED);
@@ -296,8 +298,12 @@ export const ZkAccountContextProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.withdraw' } });
-      setTxError(error.message);
-      setTxStatus(TX_STATUSES.REJECTED);
+      if (error?.message?.includes('Internal account validation failed')) {
+        setTxStatus(TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL);
+      } else {
+        setTxError(error.message);
+        setTxStatus(TX_STATUSES.REJECTED);
+      }
     }
   }, [
     zkAccount, updatePoolData, openTxModal, setTxAmount, setTxError,
