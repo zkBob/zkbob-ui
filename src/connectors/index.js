@@ -11,7 +11,7 @@ const walletconnect = new WalletConnectConnector({
   },
 });
 
-const connectors = {
+const defaultConnectors = {
   injected: {
     name: 'MetaMask',
     icon: metaMaskIcon,
@@ -24,4 +24,12 @@ const connectors = {
   },
 };
 
-export default connectors;
+const getConnectors = () => {
+  let connectors = defaultConnectors;
+  if (!window?.ethereum) {
+    delete connectors['injected'];
+  }
+  return connectors;
+}
+
+export default getConnectors();

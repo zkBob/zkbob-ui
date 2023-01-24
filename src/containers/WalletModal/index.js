@@ -92,7 +92,7 @@ export default () => {
 
   useEffect(() => {
     async function connect() {
-      const isAuthorized = await connectors.injected.connector.isAuthorized();
+      const isAuthorized = await connectors.injected?.connector.isAuthorized();
       if (isAuthorized && (connector instanceof InjectedConnector || !connector)) {
         activateConnector(connectors.injected.connector);
       }
