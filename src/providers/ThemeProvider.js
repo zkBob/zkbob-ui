@@ -6,6 +6,7 @@ const grey = '#F4F3F8';
 const darkGrey = '#DCD8EA';
 const purple = '#754CFF';
 const purpleLight = '#8052E0';
+const purpleExtraLight = '#B96BCD';
 const blue = '#1B4DEB';
 const blueLight = '#1B87EB';
 const blueExtraLight = '#E4EBFF';
@@ -30,6 +31,7 @@ const light = {
     orangeLight,
     orangeExtraLight,
     blueExtraLight,
+    purpleExtraLight,
   },
   text: {
     color: {

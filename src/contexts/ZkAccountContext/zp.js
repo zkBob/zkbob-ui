@@ -1,4 +1,4 @@
-import { Contract } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { init as initZkBob, ZkBobClient } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
 import { ProverMode } from 'zkbob-client-js/lib/config';
@@ -20,16 +20,18 @@ const snarkParams = {
   treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
 };
 
-const createAccount = async (mnemonic, statusCallback, isNewAccount = false, supportId) => {
-  const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
-  const sk = deriveSpendingKeyZkBob(mnemonic, network);
+const createAccount = async (secretKey, statusCallback, birthIndex, supportId) => {
   const ctx = await initZkBob(snarkParams, RELAYER_URL, statusCallback);
+  const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
+  let sk = ethers.utils.isValidMnemonic(secretKey)
+    ? deriveSpendingKeyZkBob(secretKey, network)
+    : ethers.utils.arrayify(secretKey);
   const tokens = {
     [TOKEN_ADDRESS]: {
       poolAddress: POOL_ADDRESS,
       relayerUrl: RELAYER_URL,
       coldStorageConfigPath: `${BUCKET_URL}/coldstorage/coldstorage.cfg`,
-      birthindex: isNewAccount ? -1 : undefined,
+      birthindex: birthIndex,
       proverMode: ProverMode.Local,
     }
   };

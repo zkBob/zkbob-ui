@@ -20,6 +20,7 @@ import SeedPhraseModal from 'containers/SeedPhraseModal';
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
+import DemoBanner from 'components/DemoBanner';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -64,7 +65,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-const Routes = ({ showWelcome }) => (
+const Routes = ({ showWelcome, params }) => (
   <Switch>
     {showWelcome && (
       <SentryRoute exact strict path="/">
@@ -83,14 +84,14 @@ const Routes = ({ showWelcome }) => (
     <SentryRoute exact strict path="/history">
       <History />
     </SentryRoute>
-    <Redirect to="/deposit" />
+    <Redirect to={'/deposit' + params} />
   </Switch>
 );
 
 const Content = () => {
-  const { zkAccount, isLoadingZkAccount } = useContext(ZkAccountContext);
+  const { zkAccount, isLoadingZkAccount, isDemo } = useContext(ZkAccountContext);
   const location = useLocation();
-  const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
+  const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
   const isRestricted = useRestriction();
 
   if (isRestricted) {
@@ -110,12 +111,13 @@ const Content = () => {
         <Robot2Image src={robot2Image} />
         <Robot3Image src={robot3Image} />
       </BackgroundImages>
+      <Gradient />
+      {isDemo && <DemoBanner />}
       <Layout>
-        <Gradient />
         <Header />
         <PageContainer>
           <Tabs />
-          <Routes showWelcome={showWelcome} />
+          <Routes showWelcome={showWelcome} params={location.search} />
         </PageContainer>
         <Footer />
         <TransactionModal />
@@ -141,9 +143,9 @@ export default () => (
 );
 
 const Layout = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   box-sizing: border-box;
   padding: 14px 40px 40px;
   background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);

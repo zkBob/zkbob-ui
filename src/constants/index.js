@@ -9,6 +9,8 @@ export const TX_STATUSES = {
   TRANSFERRED_MULTI: 'transferred_multi',
   WITHDRAWN: 'withdrawn',
   REJECTED: 'rejected',
+  SUSPICIOUS_ACCOUNT_DEPOSIT: 'suspicious_account_deposit',
+  SUSPICIOUS_ACCOUNT_WITHDRAWAL: 'suspicious_account_withdrawal',
 };
 
 export const NETWORKS = {

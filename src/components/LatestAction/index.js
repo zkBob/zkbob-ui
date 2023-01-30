@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
 
 import Link from 'components/Link';
@@ -12,6 +12,7 @@ import { tokenSymbol, tokenIcon } from 'utils/token';
 
 export default ({ type, shielded, actions, txHash }) => {
   const history = useHistory();
+  const location = useLocation();
   return (
     <Row>
       <InnerRow>
@@ -34,7 +35,7 @@ export default ({ type, shielded, actions, txHash }) => {
       </InnerRow>
       <HistoryButton
         type="link"
-        onClick={() => history.push('/history')}
+        onClick={() => history.push('/history' + location.search)}
       >
         View History
       </HistoryButton>

@@ -96,7 +96,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
         <OptionContainer>
           <Title>Create a new zkBob Account with</Title>
           <CreateButton onClick={() => setNextAction('generate')}>
-            MetaMask or WalletConnect
+            {window?.ethereum && 'MetaMask or'} WalletConnect
           </CreateButton>
           <Row>
             <Text>or</Text>

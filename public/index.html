@@ -37,6 +37,17 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script>
+      !function(d,w){var t="%REACT_APP_CHAMELEON_TOKEN%",c="chmln",i=d.createElement("script");if(w[c]||(w[c]={}),!w[c].root){w[c].accountToken=t,w[c].location=w.location.href.toString(),w[c].now=new Date,w[c].fastUrl='https://fast.chameleon.io/';var m="identify alias track clear set show on off custom help _data".split(" ");for(var s=0;s<m.length;s++){!function(){var t=w[c][m[s]+"_a"]=[];w[c][m[s]]=function(){t.push(arguments);};}();}i.src=w[c].fastUrl+"messo/"+t+"/messo.min.js",i.async=!0,i.crossOrigin="anonymous",d.head.appendChild(i);}}(document,window);
+
+      let userId = localStorage.getItem('chameleon_used_id');
+      if (!userId) {
+        userId = crypto.randomUUID();
+        localStorage.setItem('chameleon_used_id', userId);
+      }
+
+      chmln.identify(userId);
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

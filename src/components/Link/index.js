@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default props => (
-  <Link {...props} target="_blank" rel="noopener noreferrer" />
+  <Link
+    {...props}
+    target={props.internal ? '' : '_blank'}
+    rel={props.internal ? '' : 'noopener noreferrer'}
+  />
 );
 
 const Link = styled.a`
