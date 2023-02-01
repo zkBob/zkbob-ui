@@ -43,6 +43,7 @@
   REACT_APP_CONTRACT_ADDRESS = "0x3bd088C19960A8B5d72E4e01847791BD0DD1C9E6"
   REACT_APP_TOKEN_ADDRESS = "0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f"
   REACT_APP_RELAYER_URL = "https://relayer.thgkjlr.website/"
+  REACT_APP_PROVER_URL = "https://prover-staging.thgkjlr.website/"
   REACT_APP_RPC_URL = "https://rpc.sepolia.org"
   REACT_APP_ZEROPOOL_NETWORK = "sepolia"
   REACT_APP_BUCKET_URL = "https://r2-staging.zkbob.com"

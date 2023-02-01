@@ -64,7 +64,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setLoadingPercentage(loadingPercentage);
   };
 
-  const loadZkAccount = useCallback(async (secretKey, birthIndex) => {
+  const loadZkAccount = useCallback(async (secretKey, birthIndex, useDelegatedProver = false) => {
     let zkAccount = null;
     let zkAccountId = null;
     if (secretKey) {
@@ -72,7 +72,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
-        zkAccount = await zp.createAccount(secretKey, updateLoadingStatus, birthIndex, supportId);
+        zkAccount = await zp.createAccount(secretKey, updateLoadingStatus, birthIndex, supportId, useDelegatedProver);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
@@ -427,7 +427,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const params = new URLSearchParams(window.location.search);
       const privateKey = params.get('code');
       const birthIndex = Number(params.get('index'));
-      loadZkAccount(privateKey, birthIndex);
+      loadZkAccount(privateKey, birthIndex, true);
     }
   }, [isDemo, loadZkAccount]);
 
