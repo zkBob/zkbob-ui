@@ -7,7 +7,7 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 import Card from 'components/Card';
 import Button from 'components/Button';
 
-import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
+// import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
 
 import { ZkAccountContext } from 'contexts';
 
@@ -88,8 +88,8 @@ const Description = styled.div`
   margin: 16px 0 24px;
 `;
 
-const BobIcon = styled(BobIconDefault)`
-  width: 20px;
-  height: 20px;
-  margin: 0 5px;
-`;
+// const BobIcon = styled(BobIconDefault)`
+//   width: 20px;
+//   height: 20px;
+//   margin: 0 5px;
+// `;

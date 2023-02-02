@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
@@ -33,7 +33,13 @@ const defaultLimits = {
 export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
-  const { library, account } = useWeb3React();
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
+  const { chain, chains } = useNetwork();
+  const { switchNetworkAsync } = useSwitchNetwork({
+    chainId: chains[0]?.id,
+    throwForSwitchChainNotSupported: true,
+  });
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
@@ -222,9 +228,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     openTxModal();
     setTxAmount(amount);
     try {
+      if (chain.id !== chains[0].id) {
+        setTxStatus(TX_STATUSES.SWITCH_NETWORK);
+        try {
+          await switchNetworkAsync();
+        } catch (error) {
+          console.error(error);
+          Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit.switchNetwork' } });
+          setTxStatus(TX_STATUSES.WRONG_NETWORK);
+          return;
+        }
+      }
       const shieldedAmount = toShieldedAmount(amount);
       const { totalPerTx: fee } = await zkAccount.feeEstimate(TOKEN_ADDRESS, [shieldedAmount], TxType.Deposit, false);
-      await zp.deposit(library.getSigner(0), zkAccount, shieldedAmount, fee, setTxStatus);
+      await zp.deposit(signer, zkAccount, shieldedAmount, fee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -240,8 +257,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
     }
   }, [
-    zkAccount, updatePoolData, library, openTxModal, setTxAmount,
+    zkAccount, updatePoolData, signer, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
+    chain, chains, switchNetworkAsync,
   ]);
 
   const transfer = useCallback(async (to, amount) => {

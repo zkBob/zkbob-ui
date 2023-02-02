@@ -1,13 +1,12 @@
 import React, { useContext, useState, useCallback } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount, useDisconnect } from 'wagmi';
 import Header from 'components/Header';
 
 import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
-import { useSelectedConnector } from 'hooks';
-
 
 export default ({ empty }) => {
-  const { account } = useWeb3React();
+  const { address, connector } = useAccount();
+  const { disconnect } = useDisconnect();
   const { balance, updateBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
@@ -18,7 +17,6 @@ export default ({ empty }) => {
     openAccountSetUpModal, openSwapOptionsModal,
     openChangePasswordModal, openConfirmLogoutModal,
   } = useContext(ModalContext);
-  const connector = useSelectedConnector();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refresh = useCallback(async e => {
@@ -39,7 +37,7 @@ export default ({ empty }) => {
         openSwapModal={openSwapOptionsModal}
         openChangePasswordModal={openChangePasswordModal}
         openConfirmLogoutModal={openConfirmLogoutModal}
-        account={account}
+        account={address}
         zkAccount={zkAccount}
         isLoadingZkAccount={isLoadingZkAccount}
         connector={connector}
@@ -52,6 +50,7 @@ export default ({ empty }) => {
         generateAddress={generateAddress}
         openSeedPhraseModal={openSeedPhraseModal}
         isDemo={isDemo}
+        disconnect={disconnect}
       />
     </>
   );

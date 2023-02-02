@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount, useSignMessage } from 'wagmi';
 import md5 from 'js-md5';
 
 import Modal from 'components/Modal';
@@ -14,7 +14,8 @@ import Generate from 'components/AccountSetUpModal/Generate';
 import Password from 'components/AccountSetUpModal/Password';
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => {
-  const { library, account } = useWeb3React();
+  const { address: account } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const [action, setAction] = useState();
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
@@ -46,14 +47,11 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
 
   const generate = useCallback(async () => {
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    const signedMessage = (await library.send(
-      'personal_sign',
-      [ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), account.toLowerCase()],
-    ));
+    const signedMessage = await signMessageAsync({ message });
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
     setAction('password');
-  }, [library, account]);
+  }, [signMessageAsync]);
 
   const connectWallet = useCallback(() => {
     closeModal();

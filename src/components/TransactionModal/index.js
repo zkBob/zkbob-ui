@@ -5,7 +5,7 @@ import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 import Button from 'components/Button';
 
-import { TX_STATUSES } from 'constants';
+import { TX_STATUSES, NETWORKS } from 'constants';
 
 import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
 import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
@@ -27,6 +27,8 @@ const titles = {
   [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
   [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: 'Suspicious wallet connected',
   [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: 'Suspicious recipient address',
+  [TX_STATUSES.WRONG_NETWORK]: 'Wrong network',
+  [TX_STATUSES.SWITCH_NETWORK]: 'Please switch the network',
 };
 
 const descriptions = {
@@ -68,6 +70,12 @@ const descriptions = {
       Because of this, you can't withdraw funds to this address.
     </span>
   ),
+  [TX_STATUSES.WRONG_NETWORK]: () => (
+    <span>
+      Failed to switch the network.{' '}
+      Please connect your wallet to {NETWORKS[process.env.REACT_APP_NETWORK].name} and try again.
+    </span>
+  ),
 };
 
 const SUCCESS_STATUSES = [
@@ -79,6 +87,7 @@ const SUCCESS_STATUSES = [
 const FAILURE_STATUSES = [
   TX_STATUSES.REJECTED,
   TX_STATUSES.SIGNATURE_EXPIRED,
+  TX_STATUSES.WRONG_NETWORK,
 ];
 const SUSPICIOUS_ACCOUNT_STATUSES = [
   TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT,
@@ -113,7 +122,7 @@ export default ({ isOpen, onClose, status, amount, error, supportId }) => {
       {(status === TX_STATUSES.REJECTED && error) && (
         <Description>{error}</Description>
       )}
-      {(status === TX_STATUSES.REJECTED) && (
+      {(FAILURE_STATUSES.includes(status)) && (
         <Description>Support ID: {supportId}</Description>
       )}
       {status === TX_STATUSES.DEPOSITED && (

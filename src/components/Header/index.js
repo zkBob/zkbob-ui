@@ -16,14 +16,14 @@ import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
-import { NETWORKS } from 'constants';
+import { NETWORKS, CONNECTORS_ICONS } from 'constants';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
   openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo,
+  openSeedPhraseModal, isDemo, disconnect,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
@@ -57,11 +57,12 @@ export default ({
             balance={balance}
             connector={connector}
             changeWallet={openWalletModal}
+            disconnect={disconnect}
             buttonRef={walletButtonRef}
           >
             <AccountLabel ref={walletButtonRef} $refreshing={isRefreshing}>
               <Row>
-                {connector && <Icon src={connector.icon} />}
+                {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
                 <Balance>
                   {formatNumber(balance)} {tokenSymbol()}

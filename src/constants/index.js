@@ -11,6 +11,8 @@ export const TX_STATUSES = {
   REJECTED: 'rejected',
   SUSPICIOUS_ACCOUNT_DEPOSIT: 'suspicious_account_deposit',
   SUSPICIOUS_ACCOUNT_WITHDRAWAL: 'suspicious_account_withdrawal',
+  WRONG_NETWORK: 'wrong_network',
+  SWITCH_NETWORK: 'switch_network',
 };
 
 export const NETWORKS = {
@@ -47,4 +49,9 @@ export const HISTORY_ACTION_TYPES = {
   TRANSFER_OUT: 3,
   WITHDRAWAL: 4,
   TRANSFER_SELF: 5,
+};
+
+export const CONNECTORS_ICONS = {
+  'MetaMask': require('assets/metamask.svg').default,
+  'WalletConnect': require('assets/walletconnect.svg').default,
 };

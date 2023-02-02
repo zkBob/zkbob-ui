@@ -1,11 +1,12 @@
 import { createGlobalStyle } from 'styled-components';
-import { Web3ReactProvider } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
 
 import ContextsProvider from 'contexts';
 
-import Pages from 'pages';
 import ThemeProvider from 'providers/ThemeProvider';
+import Web3Provider from 'providers/Web3Provider';
+
+import Pages from 'pages';
+
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 import GilroyBold from 'fonts/Gilroy-Bold.woff';
@@ -52,17 +53,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-function getLibrary(provider) {
-  return new Web3Provider(provider);
-}
-
 export default () => (
   <ThemeProvider>
     <GlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
+    <Web3Provider>
       <ContextsProvider>
         <Pages />
       </ContextsProvider>
-    </Web3ReactProvider>
+    </Web3Provider>
   </ThemeProvider>
 );
