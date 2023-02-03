@@ -39,14 +39,15 @@
     -->
     <script>
       !function(d,w){var t="%REACT_APP_CHAMELEON_TOKEN%",c="chmln",i=d.createElement("script");if(w[c]||(w[c]={}),!w[c].root){w[c].accountToken=t,w[c].location=w.location.href.toString(),w[c].now=new Date,w[c].fastUrl='https://fast.chameleon.io/';var m="identify alias track clear set show on off custom help _data".split(" ");for(var s=0;s<m.length;s++){!function(){var t=w[c][m[s]+"_a"]=[];w[c][m[s]]=function(){t.push(arguments);};}();}i.src=w[c].fastUrl+"messo/"+t+"/messo.min.js",i.async=!0,i.crossOrigin="anonymous",d.head.appendChild(i);}}(document,window);
-
-      let userId = localStorage.getItem('chameleon_used_id');
-      if (!userId) {
-        userId = crypto.randomUUID();
-        localStorage.setItem('chameleon_used_id', userId);
-      }
-
-      chmln.identify(userId);
+    </script>
+    <script>
+      (function(apiKey){
+          (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
+          v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
+              o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
+              y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
+              z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
+      })('%REACT_APP_PENDO_API_KEY%');
     </script>
   </head>
   <body>

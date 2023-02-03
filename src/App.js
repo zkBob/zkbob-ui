@@ -7,6 +7,8 @@ import Web3Provider from 'providers/Web3Provider';
 
 import Pages from 'pages';
 
+import 'services';
+
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 import GilroyBold from 'fonts/Gilroy-Bold.woff';
