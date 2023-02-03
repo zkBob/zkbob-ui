@@ -5,13 +5,15 @@ import AccountSetUpModal from 'components/AccountSetUpModal';
 
 export default () => {
   const {
-    isAccountSetUpModalOpen, closeAccountSetUpModal, openWalletModal,
+    isAccountSetUpModalOpen, closeAccountSetUpModal,
+    isWalletModalOpen, openWalletModal,
   } = useContext(ModalContext);
   const { zkAccount, saveZkAccountMnemonic } = useContext(ZkAccountContext);
   return (
     <AccountSetUpModal
       isOpen={isAccountSetUpModalOpen}
       onClose={closeAccountSetUpModal}
+      isWalletModalOpen={isWalletModalOpen}
       openWalletModal={openWalletModal}
       zkAccount={zkAccount}
       saveZkAccountMnemonic={saveZkAccountMnemonic}

@@ -13,7 +13,7 @@ import Restore from 'components/AccountSetUpModal/Restore';
 import Generate from 'components/AccountSetUpModal/Generate';
 import Password from 'components/AccountSetUpModal/Password';
 
-export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => {
+export default ({ isOpen, onClose, saveZkAccountMnemonic, isWalletModalOpen, openWalletModal }) => {
   const { address: account } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [action, setAction] = useState();
@@ -53,11 +53,6 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     setAction('password');
   }, [signMessageAsync]);
 
-  const connectWallet = useCallback(() => {
-    closeModal();
-    openWalletModal();
-  }, [openWalletModal, closeModal]);
-
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
     saveZkAccountMnemonic(confirmedMnemonic, password, isNewAccount);
@@ -81,7 +76,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
     prevAction = null;
   } else if (action === 'generate') {
     title = 'Create account';
-    state = <Generate generate={generate} account={account} connectWallet={connectWallet} />;
+    state = <Generate generate={generate} account={account} connectWallet={openWalletModal} />;
     prevAction = null;
   } else if (action === 'password') {
     title = 'Create password';
@@ -121,6 +116,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, openWalletModal }) => 
       onClose={closeModal}
       onBack={action ? () => setAction(prevAction) : null}
       title={title}
+      containerStyle={{ visibility: isWalletModalOpen ? 'hidden' : 'visible' }}
     >
       {state}
     </Modal>
