@@ -10,7 +10,7 @@ export default ({ isOpen, onClose, openSwapModal }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Get BOB">
       <SwapOption onClick={openSwapModal}>
-        <SwapOptionName>Bridge and swap using LI.FI widget</SwapOptionName>
+        <SwapOptionName>Swap using Li.Fi</SwapOptionName>
       </SwapOption>
       <SwapOptionLink href="https://zkbob.page.link/getBOB">
         <SwapOptionName>Other options</SwapOptionName>
