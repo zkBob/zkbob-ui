@@ -51,6 +51,7 @@ export async function createPermitSignature(tokenContractInstance, signer, spend
   try {
     signature = await signer._signTypedData(domain, types, message);
   } catch (error) {
+    console.error(error);
     throw Error('User denied message signature.');
   }
   if (typeof signature !== 'string') throw Error('Something went wrong.');
