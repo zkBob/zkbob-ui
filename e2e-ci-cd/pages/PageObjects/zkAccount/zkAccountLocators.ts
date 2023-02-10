@@ -1,4 +1,4 @@
-const button_zkAccount = '//button[text()="Create zkAccount"]';
+const button_zkAccount = '//button[text()="Get started!"]';
 const button_Agree = '//button[text()="Agree"]';
 const button_CreateWithSecretRecoveryPhrase = '//button[text()="secret recovery phrase"]';
 const button_CreateWithWeb3Wallet = '//button[text()="MetaMask or WalletConnect"]';
