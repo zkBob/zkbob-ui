@@ -33,6 +33,7 @@
   REACT_APP_RPC_URL = "https://polygon-rpc.com"
   REACT_APP_ZEROPOOL_NETWORK = "polygon"
   REACT_APP_BUCKET_URL = "https://r2.zkbob.com"
+  REACT_APP_RESTRICTED_COUNTRIES = "AE"
   # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
 
 [context.staging.environment]
@@ -47,4 +48,5 @@
   REACT_APP_RPC_URL = "https://rpc.sepolia.org"
   REACT_APP_ZEROPOOL_NETWORK = "sepolia"
   REACT_APP_BUCKET_URL = "https://r2-staging.zkbob.com"
+  REACT_APP_RESTRICTED_COUNTRIES = "AE"
   # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
