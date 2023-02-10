@@ -21,6 +21,7 @@ import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
 import DemoBanner from 'components/DemoBanner';
+import RestrictionModal from 'components/RestrictionModal';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -96,10 +97,15 @@ const Content = () => {
 
   if (isRestricted) {
     return (
-      <Layout>
-        <Header empty />
-        <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
-      </Layout>
+      <>
+        <Gradient />
+        <Layout>
+          <Header empty />
+          <PageContainer>
+            <RestrictionModal />
+          </PageContainer>
+        </Layout>
+      </>
     );
   }
   return (
@@ -234,13 +240,4 @@ const Robot3Image = styled.img`
   right: 23%;
   opacity: 0.2;
   filter: blur(2px);
-`;
-
-const ErrorText = styled.span`
-  font-size: 16px;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%);
 `;
