@@ -1,11 +1,17 @@
 import { WagmiConfig, configureChains, createClient } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { sepolia, polygon } from 'wagmi/chains';
+import { sepolia, polygon, goerli } from 'wagmi/chains';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
+const chainsMap = {
+  '137': polygon,
+  '11155111': sepolia,
+  '5': goerli,
+};
+
 const { chains, provider, webSocketProvider } = configureChains(
-  [Number(process.env.REACT_APP_NETWORK) === 137 ? polygon : sepolia],
+  [chainsMap[process.env.REACT_APP_NETWORK]],
   [publicProvider()],
 );
 

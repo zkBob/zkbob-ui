@@ -16,28 +16,17 @@ export const TX_STATUSES = {
 };
 
 export const NETWORKS = {
-  42: {
-    name: 'Kovan',
-    tokenName: 'Ether',
-    tokenSymbol: 'ETH',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
-  },
   11155111: {
     name: 'Sepolia',
-    tokenName: 'SEP',
-    tokenSymbol: 'SEP',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
     icon: require('assets/ethereum.svg').default,
   },
   137: {
     name: 'Polygon',
-    tokenName: 'MATIC',
-    tokenSymbol: 'MATIC',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
     icon: require('assets/polygon.svg').default,
+  },
+  5: {
+    name: 'Goerli',
+    icon: require('assets/ethereum.svg').default,
   },
 };
 
@@ -49,6 +38,7 @@ export const HISTORY_ACTION_TYPES = {
   TRANSFER_OUT: 3,
   WITHDRAWAL: 4,
   TRANSFER_SELF: 5,
+  DIRECT_DEPOSIT: 6,
 };
 
 export const CONNECTORS_ICONS = {

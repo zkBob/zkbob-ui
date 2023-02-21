@@ -10494,15 +10494,15 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web-mt@0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web-mt/-/libzkbob-rs-wasm-web-mt-0.9.0.tgz#0f3cf5353392c384e8cf827f2abc0daf31acadb3"
-  integrity sha512-3z6gw9n+iW7QGS63uqTM7bUtdNBcCA50JsptrfIOW11+kjxGSEH1fY/VB84C3Cod5SST7Ye8mF2YwmbzsaNCFw==
+libzkbob-rs-wasm-web-mt@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web-mt/-/libzkbob-rs-wasm-web-mt-1.0.0.tgz#243d785cbc433d3da4e6f6e7fb01dce1ab27b857"
+  integrity sha512-4jNpN18ViLG9DDkHrUax9Py3CEkJDl1tcJ3V2OFxvfnYV9AMjyxS9p7YQkQuKRyIbyiXaofmmpugfYr8MxxRpw==
 
-libzkbob-rs-wasm-web@0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-0.9.0.tgz#8bf6198382bbdd3750ee7386b0ffc32ea2be09c3"
-  integrity sha512-H9a6QYuR7ZXhwSOstJWAobJh128xV5EI66wQSw/oMFjGvMgD8JuClVw/eDLV+WDncFuT7p2OPnAPwBdeehVx7A==
+libzkbob-rs-wasm-web@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-1.0.0.tgz#74eba1caa2bfc728be8fd1f3161e5089360f2a72"
+  integrity sha512-3xW0BjAZ9NDoNLCwlGHNjg5q1GN7fEpXCVf7+emQxQrt/vey9PNTAQnNIEjWZ/M0Fn52t06Og2P6zgqcGUCz7Q==
 
 lie@3.1.1:
   version "3.1.1"
@@ -16304,10 +16304,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-1.4.0.tgz#17a0123c6df9eb60972ce5b54226f5e1d74bb538"
-  integrity sha512-wgtQpCQt8OPqn/XN9brNEbIPloEQ5nDqnObepztczA+N6IGXpOoxo8IXWpa9cTtC7UA1X8gFKBqZ+0+U4+twhw==
+zkbob-client-js@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-2.0.0.tgz#147e27b474fedf02c4c2308f7acd8a2b0968e4a8"
+  integrity sha512-GuPl8tvVKr7Kx9df0AtWEihxHP8nrkCOH+m/0KuYW/SsCJB9vwIuT8T1q8uTEinyU006mPdPzHuN4oWbExvXZw==
   dependencies:
     "@ethereumjs/util" "^8.0.2"
     "@metamask/eth-sig-util" "5.0.0"
@@ -16317,8 +16317,8 @@ zkbob-client-js@1.4.0:
     fast-sha256 "^1.3.0"
     hdwallet-babyjub "^0.0.2"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "0.9.0"
-    libzkbob-rs-wasm-web-mt "0.9.0"
+    libzkbob-rs-wasm-web "1.0.0"
+    libzkbob-rs-wasm-web-mt "1.0.0"
     regenerator-runtime "^0.13.9"
     wasm-feature-detect "^1.2.11"
     web3 "1.8.0"
