@@ -13,12 +13,13 @@ const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
 const RPC_URL = process.env.REACT_APP_RPC_URL;
 const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 const PROVER_URL = process.env.REACT_APP_PROVER_URL;
+const SNARK_PARAMS_VERSION = process.env.REACT_APP_SNARK_PARAMS_VERSION;
 
 const snarkParams = {
-  transferParamsUrl: `${BUCKET_URL}/transfer_params.bin`,
-  treeParamsUrl: `${BUCKET_URL}/tree_params.bin`,
-  transferVkUrl: `${BUCKET_URL}/transfer_verification_key.json`,
-  treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
+  transferParamsUrl: `${BUCKET_URL}/transfer_params_${SNARK_PARAMS_VERSION}.bin`,
+  treeParamsUrl: `${BUCKET_URL}/tree_params_${SNARK_PARAMS_VERSION}.bin`,
+  transferVkUrl: `${BUCKET_URL}/transfer_verification_key_${SNARK_PARAMS_VERSION}.json`,
+  treeVkUrl: `${BUCKET_URL}/tree_verification_key_${SNARK_PARAMS_VERSION}.json`,
 };
 
 const createAccount = async (secretKey, statusCallback, birthIndex, supportId, useDelegatedProver) => {
