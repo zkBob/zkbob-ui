@@ -163,7 +163,10 @@ export default ({ item, zkAccountId }) => {
                     <>
                       <ZkAvatar seed={zkAccountId} size={16} />
                       <Text style={{ marginLeft: 5 }}>
-                        {shortAddress(item.actions[0].to, isMobile ? 10 : 22)}
+                        {shortAddress(
+                          item.actions[0].to,
+                          isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                        )}
                       </Text>
                     </>
                   )}
