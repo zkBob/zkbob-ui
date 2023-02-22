@@ -77,7 +77,7 @@ const Content = ({
           <Balance style={{ marginLeft: 5 }}>{tokenSymbol()}</Balance>
         </Row>
       </RowSpaceBetween>
-      {(isDemo && isMobile) &&
+      {isMobile &&
         <Button style={{ marginBottom: 10 }} onClick={generateQRCode}>
           Generate QR code address
         </Button>

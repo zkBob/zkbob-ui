@@ -23,7 +23,7 @@ export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
     isPending, maxTransferable, minTxAmount,
-    verifyShieldedAddress, isDemo,
+    verifyShieldedAddress,
   } = useContext(ZkAccountContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
@@ -91,7 +91,7 @@ export default () => {
         hint="The address can be generated in the account modal window"
         value={receiver}
         onChange={setReceiver}
-        qrCode={isDemo && isMobile}
+        qrCode={isMobile}
       />
       {button}
       <ConfirmTransactionModal
