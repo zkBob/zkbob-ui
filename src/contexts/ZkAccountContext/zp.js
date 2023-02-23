@@ -12,15 +12,17 @@ const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
 const RPC_URL = process.env.REACT_APP_RPC_URL;
 const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
+const PROVER_URL = process.env.REACT_APP_PROVER_URL;
+const SNARK_PARAMS_VERSION = process.env.REACT_APP_SNARK_PARAMS_VERSION;
 
 const snarkParams = {
-  transferParamsUrl: `${BUCKET_URL}/transfer_params.bin`,
-  treeParamsUrl: `${BUCKET_URL}/tree_params.bin`,
-  transferVkUrl: `${BUCKET_URL}/transfer_verification_key.json`,
-  treeVkUrl: `${BUCKET_URL}/tree_verification_key.json`,
+  transferParamsUrl: `${BUCKET_URL}/transfer_params_${SNARK_PARAMS_VERSION}.bin`,
+  treeParamsUrl: `${BUCKET_URL}/tree_params_${SNARK_PARAMS_VERSION}.bin`,
+  transferVkUrl: `${BUCKET_URL}/transfer_verification_key_${SNARK_PARAMS_VERSION}.json`,
+  treeVkUrl: `${BUCKET_URL}/tree_verification_key_${SNARK_PARAMS_VERSION}.json`,
 };
 
-const createAccount = async (secretKey, statusCallback, birthIndex, supportId) => {
+const createAccount = async (secretKey, statusCallback, birthIndex, supportId, useDelegatedProver) => {
   const ctx = await initZkBob(snarkParams, RELAYER_URL, statusCallback);
   const network = process.env.REACT_APP_ZEROPOOL_NETWORK;
   let sk = ethers.utils.isValidMnemonic(secretKey)
@@ -32,7 +34,8 @@ const createAccount = async (secretKey, statusCallback, birthIndex, supportId) =
       relayerUrl: RELAYER_URL,
       coldStorageConfigPath: `${BUCKET_URL}/coldstorage/coldstorage.cfg`,
       birthindex: birthIndex,
-      proverMode: ProverMode.Local,
+      proverMode: (useDelegatedProver && !!PROVER_URL) ? ProverMode.Delegated : ProverMode.Local,
+      delegatedProverUrl: PROVER_URL,
     }
   };
   return ZkBobClient.create({

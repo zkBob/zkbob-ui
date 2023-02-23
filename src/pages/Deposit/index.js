@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
@@ -27,7 +27,7 @@ import { HISTORY_ACTION_TYPES } from 'constants';
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
 export default () => {
-  const { account } = useWeb3React();
+  const { address: account } = useAccount();
   const {
       zkAccount, isLoadingZkAccount, deposit,
       isLoadingState, isPending, isDemo,

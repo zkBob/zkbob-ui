@@ -13,8 +13,10 @@ import { ReactComponent as CheckIcon } from 'assets/check.svg';
 import { formatNumber } from 'utils';
 import { tokenIcon, tokenSymbol } from 'utils/token';
 
+import { CONNECTORS_ICONS } from 'constants';
 
-const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
+
+const Content = ({ address, balance, connector, changeWallet, disconnect, buttonRef }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -28,6 +30,11 @@ const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
     buttonRef.current.click();
     changeWallet();
   }, [changeWallet, buttonRef]);
+
+  const onDisconnect = useCallback(() => {
+    buttonRef.current.click();
+    disconnect();
+  }, [disconnect, buttonRef]);
 
   return (
     <Container>
@@ -43,7 +50,7 @@ const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>
         <AddressContainer>
-          {connector?.icon && <Icon src={connector.icon} />}
+          {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
           <ShortAddress address={address} />
           <Tooltip content="Copied" placement="right" visible={isCopied}>
             {isCopied ? <CheckIcon /> : <CopyIcon />}
@@ -57,11 +64,12 @@ const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
         View in Explorer
       </OptionButton>
       <OptionButton onClick={onChangeWallet}>Change wallet</OptionButton>
+      <OptionButton onClick={onDisconnect}>Disconnect</OptionButton>
     </Container>
   );
 };
 
-export default ({ address, balance, connector, changeWallet, buttonRef, children }) => (
+export default ({ address, balance, connector, changeWallet, disconnect, buttonRef, children }) => (
   <Dropdown
     content={() => (
       <Content
@@ -69,6 +77,7 @@ export default ({ address, balance, connector, changeWallet, buttonRef, children
         balance={balance}
         connector={connector}
         changeWallet={changeWallet}
+        disconnect={disconnect}
         buttonRef={buttonRef}
       />
     )}

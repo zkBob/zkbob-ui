@@ -20,7 +20,14 @@ import { ReactComponent as TransferIcon } from 'assets/transfer.svg';
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-const { DEPOSIT, TRANSFER_IN, TRANSFER_OUT, WITHDRAWAL, TRANSFER_SELF } = HISTORY_ACTION_TYPES;
+const {
+  DEPOSIT,
+  TRANSFER_IN,
+  TRANSFER_OUT,
+  WITHDRAWAL,
+  TRANSFER_SELF,
+  DIRECT_DEPOSIT,
+} = HISTORY_ACTION_TYPES;
 
 const actions = {
   [DEPOSIT]: {
@@ -47,6 +54,11 @@ const actions = {
     name: 'Transfer',
     icon: TransferIcon,
     sign: '',
+  },
+  [DIRECT_DEPOSIT]: {
+    name: 'Deposit',
+    icon: DepositIcon,
+    sign: '+',
   }
 };
 
@@ -127,7 +139,10 @@ export default ({ item, zkAccountId }) => {
                       <ZkAvatar seed={zkAccountId} size={16} />
                     )}
                     <Text style={{ marginLeft: 5 }}>
-                      {shortAddress(item.actions[0].to, isMobile ? 10 : 22)}
+                      {shortAddress(
+                        item.actions[0].to,
+                        isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                      )}
                     </Text>
                   </ZkAddress>
                 </Tooltip>
@@ -148,7 +163,10 @@ export default ({ item, zkAccountId }) => {
                     <>
                       <ZkAvatar seed={zkAccountId} size={16} />
                       <Text style={{ marginLeft: 5 }}>
-                        {shortAddress(item.actions[0].to, isMobile ? 10 : 22)}
+                        {shortAddress(
+                          item.actions[0].to,
+                          isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                        )}
                       </Text>
                     </>
                   )}
@@ -159,6 +177,9 @@ export default ({ item, zkAccountId }) => {
           <Row>
             {item.actions.length > 1 && item.type === TRANSFER_OUT && (
               <Label>{isMobile ? 'Multi' : 'Multitransfer'}</Label>
+            )}
+            {item.type === DIRECT_DEPOSIT && (
+              <Label>{isMobile ? 'Direct' : 'Direct deposit'}</Label>
             )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>

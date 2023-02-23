@@ -8,6 +8,7 @@ export default () => {
 
   const widgetConfig = {
     integrator: 'zkBob',
+    fee: 0.00075,
     variant: 'standard',
     appearance: 'light',
     disableAppearance: true,

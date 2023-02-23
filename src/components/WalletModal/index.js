@@ -6,6 +6,16 @@ import Link from 'components/Link';
 
 import { tokenSymbol } from 'utils/token';
 
+import { CONNECTORS_ICONS } from 'constants';
+
+const getConnectorName = connector => {
+  let version = '';
+  if (connector.name === 'WalletConnect') {
+    version = connector.options?.version === '2' ? 'v2' : 'v1';
+  }
+  return `${connector.name} ${version}`;
+}
+
 export default ({ isOpen, onClose, connectors, connectWallet }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Connect web3 wallet">
@@ -14,13 +24,13 @@ export default ({ isOpen, onClose, connectors, connectWallet }) => {
         If you are creating a new zkAccount, your wallet is used{' '}
         to derive a private encryption key for the zkBob application.
       </Text>
-      {connectors.map(connector =>
+      {connectors.map((connector, index) => connector.ready &&
         <WalletConnector
-          key={connector.name}
-          onClick={() => connectWallet(connector.connector)}
+          key={index}
+          onClick={() => connectWallet(connector)}
         >
-          <WalletConnectorName>{connector.name}</WalletConnectorName>
-          <WalletConnectorIcon src={connector.icon} />
+          <WalletConnectorName>{getConnectorName(connector)}</WalletConnectorName>
+          <WalletConnectorIcon src={CONNECTORS_ICONS[connector.name]} />
         </WalletConnector>
       )}
       <Text>

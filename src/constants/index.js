@@ -11,31 +11,22 @@ export const TX_STATUSES = {
   REJECTED: 'rejected',
   SUSPICIOUS_ACCOUNT_DEPOSIT: 'suspicious_account_deposit',
   SUSPICIOUS_ACCOUNT_WITHDRAWAL: 'suspicious_account_withdrawal',
+  WRONG_NETWORK: 'wrong_network',
+  SWITCH_NETWORK: 'switch_network',
 };
 
 export const NETWORKS = {
-  42: {
-    name: 'Kovan',
-    tokenName: 'Ether',
-    tokenSymbol: 'ETH',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
-  },
   11155111: {
     name: 'Sepolia',
-    tokenName: 'SEP',
-    tokenSymbol: 'SEP',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
     icon: require('assets/ethereum.svg').default,
   },
   137: {
     name: 'Polygon',
-    tokenName: 'MATIC',
-    tokenSymbol: 'MATIC',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
     icon: require('assets/polygon.svg').default,
+  },
+  5: {
+    name: 'Goerli',
+    icon: require('assets/ethereum.svg').default,
   },
 };
 
@@ -47,4 +38,10 @@ export const HISTORY_ACTION_TYPES = {
   TRANSFER_OUT: 3,
   WITHDRAWAL: 4,
   TRANSFER_SELF: 5,
+  DIRECT_DEPOSIT: 6,
+};
+
+export const CONNECTORS_ICONS = {
+  'MetaMask': require('assets/metamask.svg').default,
+  'WalletConnect': require('assets/walletconnect.svg').default,
 };
