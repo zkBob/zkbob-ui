@@ -457,7 +457,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
-        verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo,
+        verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits,
       }}
     >
       {children}

@@ -16,6 +16,7 @@ import SwapModal from 'containers/SwapModal';
 import SwapOptionsModal from 'containers/SwapOptionsModal';
 import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
 import SeedPhraseModal from 'containers/SeedPhraseModal';
+import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -137,6 +138,7 @@ const Content = () => {
         <SwapOptionsModal />
         <ConfirmLogoutModal />
         <SeedPhraseModal />
+        <IncreasedLimitsModal />
       </Layout>
     </>
   );

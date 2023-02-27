@@ -52,6 +52,8 @@
   REACT_APP_BUCKET_URL = "https://r2-staging.zkbob.com"
   REACT_APP_SNARK_PARAMS_VERSION = "20022023"
   REACT_APP_RESTRICTED_COUNTRIES = "AE"
+  REACT_APP_KYC_STATUS_URL = "https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenWeek"
+  REACT_APP_KYC_HOMEPAGE_URL = "https://stage.knowyourcat.id/address/%s/BABTokenWeek"
   # REACT_APP_RESTRICTED_COUNTRIES = "BY,CU,IR,IQ,CI,LR,KP,RU,SD,SY,US,ZW"
 
 [context.goerli.environment]

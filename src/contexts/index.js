@@ -5,6 +5,7 @@ import TokenBalanceContext, { TokenBalanceContextProvider } from 'contexts/Token
 import TransactionModalContext, { TransactionModalContextProvider } from 'contexts/TransactionModalContext';
 import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
+import IncreasedLimitsContext, { IncreasedLimitsContextProvider } from 'contexts/IncreasedLimitsContext';
 
 const ContextsProvider = ({ children }) => (
   <SupportIdContextProvider>
@@ -12,7 +13,9 @@ const ContextsProvider = ({ children }) => (
       <ModalContextProvider>
         <TokenBalanceContextProvider>
           <ZkAccountContextProvider>
-                {children}
+            <IncreasedLimitsContextProvider>
+              {children}
+            </IncreasedLimitsContextProvider>
           </ZkAccountContextProvider>
         </TokenBalanceContextProvider>
       </ModalContextProvider>
@@ -23,5 +26,5 @@ const ContextsProvider = ({ children }) => (
 export default ContextsProvider;
 export {
   ZkAccountContext, TokenBalanceContext, TransactionModalContext,
-  ModalContext, SupportIdContext,
+  ModalContext, SupportIdContext, IncreasedLimitsContext,
 };
