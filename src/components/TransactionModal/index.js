@@ -19,10 +19,10 @@ const titles = {
   [TX_STATUSES.WAITING_FOR_APPROVAL]: 'Waiting for approval transaction',
   [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
-  [TX_STATUSES.DEPOSITED]: 'Deposit sent',
-  [TX_STATUSES.TRANSFERRED]: 'Transfer sent',
-  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multitransfer sent',
-  [TX_STATUSES.WITHDRAWN]: 'Withdrawal sent',
+  [TX_STATUSES.DEPOSITED]: 'Deposit is in progress',
+  [TX_STATUSES.TRANSFERRED]: 'Transfer is in progress',
+  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multitransfer is in progress',
+  [TX_STATUSES.WITHDRAWN]: 'Withdrawal is in progress',
   [TX_STATUSES.REJECTED]: 'Transaction was rejected',
   [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
   [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: 'Suspicious wallet connected',
@@ -34,23 +34,23 @@ const titles = {
 const descriptions = {
   [TX_STATUSES.DEPOSITED]: amount => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in process.<br /><br />
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in progress.<br /><br />
       To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
     </span>
   ),
   [TX_STATUSES.TRANSFERRED]: amount => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in progress.
     </span>
   ),
   [TX_STATUSES.TRANSFERRED_MULTI]: amount => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in progress.
     </span>
   ),
   [TX_STATUSES.WITHDRAWN]: amount => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in process.
+      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in progress.
     </span>
   ),
   [TX_STATUSES.SIGNATURE_EXPIRED]: () => (

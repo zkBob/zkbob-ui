@@ -58,7 +58,7 @@ export default () => {
     if (isLoadingState) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
+      button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(balance)) {
@@ -66,7 +66,7 @@ export default () => {
     } else if (amount.gt(maxTransferable)) {
       button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
     } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
+      button = <Button disabled>Enter address</Button>;
     } else if (!isAddressValid) {
       button = <Button disabled>Invalid address</Button>;
     } else {

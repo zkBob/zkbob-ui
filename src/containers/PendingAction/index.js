@@ -19,7 +19,7 @@ export default () => {
         Please wait for your transaction{multi ? 's' : ''} to finalize
       </Title>
       <Description>
-        You can deposit, transfer or withdraw funds once the<br /> transaction{multi ? 's are' : ' is'} complete.
+        You can deposit, transfer or withdraw funds once the<br /> transaction{multi ? 's are' : ' is'} completed.
       </Description>
       <ListContainer>
         {pendingActions.map((action, index) =>

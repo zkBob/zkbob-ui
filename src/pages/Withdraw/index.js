@@ -64,7 +64,7 @@ export default () => {
     if (isLoadingState || isLoadingLimits) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
+      button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(balance)) {
@@ -74,7 +74,7 @@ export default () => {
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
       button = <Button disabled>Amount exceeds daily limit</Button>;
     } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
+      button = <Button disabled>Enter address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
