@@ -4,6 +4,10 @@ import { useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
+import {
+  TxType, TxDepositDeadlineExpiredError, InitState,
+  HistoryRecordState, HistoryTransactionType,
+} from 'zkbob-client-js';
 
 import {
   TransactionModalContext, ModalContext,
@@ -13,8 +17,7 @@ import {
 import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
-import { TxType, TxDepositDeadlineExpiredError, InitState } from 'zkbob-client-js';
-import { HistoryRecordState } from 'zkbob-client-js/lib/history';
+import { aggregateFees } from './utils.js';
 
 const { parseEther } = ethers.utils;
 
@@ -120,16 +123,29 @@ export const ZkAccountContextProvider = ({ children }) => {
     let history = [];
     let isPending = false;
     let pendingActions = [];
+    let atomicTxFee = ethers.constants.Zero;
     if (zkAccount) {
       setIsLoadingHistory(true);
       try {
-        history = await zkAccount.getAllHistory(TOKEN_ADDRESS);
-        history = history.reverse().map(item => ({
+        [history, atomicTxFee] = await Promise.all([
+          zkAccount.getAllHistory(TOKEN_ADDRESS),
+          zkAccount.atomicTxFee(TOKEN_ADDRESS),
+        ]);
+        history = history.map(item => ({
           ...item,
           failed: [HistoryRecordState.RejectedByRelayer, HistoryRecordState.RejectedByPool].includes(item.state),
           actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
+          fee: fromShieldedAmount(item.fee),
         }));
-        pendingActions = history.filter(item => item.state === HistoryRecordState.Pending && item.type !== 2);
+        history = aggregateFees(history);
+        history = history.map(item => ({
+          ...item,
+          highFee: item.fee.gt(fromShieldedAmount(atomicTxFee)),
+        }));
+        history = history.reverse();
+        pendingActions = history.filter(item =>
+          item.state === HistoryRecordState.Pending && item.type !== HistoryTransactionType.TransferIn
+        );
         isPending = pendingActions.length > 0;
       } catch (error) {
         console.error(error);

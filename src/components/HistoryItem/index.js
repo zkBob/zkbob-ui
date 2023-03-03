@@ -93,12 +93,32 @@ export default ({ item, zkAccountId }) => {
                 const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
                 return (
                   <Tooltip content={formatNumber(total, 18)} placement="top">
-                    <span>{formatNumber(total, isMobile ? 4 : 18)}</span>
+                    <span>{formatNumber(total, 4)}</span>
                   </Tooltip>
                 );
               })()}
-              {' '}{tokenSymbol()}
+              {' '}{tokenSymbol()}{' '}
+              {!item.fee.isZero() && (
+                <FeeText>(fee {formatNumber(item.fee)} {tokenSymbol()})</FeeText>
+              )}
             </Text>
+            {item.highFee && (
+              <Tooltip
+                content={
+                  <span>
+                    This transaction required additional operations, resulting in higher fees.{' '}
+                    <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
+                      Learn more
+                    </Link>
+                  </span>
+                }
+                placement="right"
+                delay={0}
+                width={200}
+              >
+                <InfoIcon />
+              </Tooltip>
+            )}
           </Row>
           <Row>
             <Date>{date}</Date>
@@ -262,6 +282,8 @@ const Date = styled.span`
   opacity: 60%;
 `;
 
+const FeeText = styled(Date)``;
+
 const SpinnerSmall = styled(Spinner)`
   margin-left: 10px;
   path {
@@ -289,7 +311,6 @@ const Label = styled.div`
 `;
 
 const InfoIcon = styled(InfoIconDefault)`
-  margin-bottom: -2px;
   margin-left: 3px;
   &:hover {
     & > path {
