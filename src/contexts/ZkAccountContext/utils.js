@@ -1,6 +1,23 @@
 import { ethers } from 'ethers';
 import { HistoryTransactionType } from 'zkbob-client-js';
 
+export function splitDirectDeposits(history) {
+  const result = [];
+  history.forEach(item => {
+    if (item.type === HistoryTransactionType.DirectDeposit) {
+      item.actions.forEach(action => {
+        result.push({
+          ...item,
+          actions: [action],
+        });
+      });
+    } else {
+      result.push(item);
+    }
+  });
+  return result;
+}
+
 export function aggregateFees(history) {
   const result = [];
   let i = 0;

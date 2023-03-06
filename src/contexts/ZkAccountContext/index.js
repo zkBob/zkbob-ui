@@ -17,7 +17,7 @@ import {
 import { TX_STATUSES } from 'constants';
 
 import zp from './zp.js';
-import { aggregateFees } from './utils.js';
+import { aggregateFees, splitDirectDeposits } from './utils.js';
 
 const { parseEther } = ethers.utils;
 
@@ -137,6 +137,7 @@ export const ZkAccountContextProvider = ({ children }) => {
           actions: item.actions.map(action => ({ ...action, amount: fromShieldedAmount(action.amount) })),
           fee: fromShieldedAmount(item.fee),
         }));
+        history = splitDirectDeposits(history);
         history = aggregateFees(history);
         history = history.map(item => ({
           ...item,
