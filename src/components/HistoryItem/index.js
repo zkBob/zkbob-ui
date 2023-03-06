@@ -71,6 +71,31 @@ const AddressLink = ({ action, isMobile }) => {
   );
 };
 
+const Fee = ({ fee, highFee }) => (
+  <>
+    {!fee.isZero() && (
+      <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
+    )}
+    {highFee && (
+      <Tooltip
+        content={
+          <span>
+            This transaction required additional operations, resulting in higher fees.{' '}
+            <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
+              Learn more
+            </Link>
+          </span>
+        }
+        placement="right"
+        delay={0}
+        width={200}
+      >
+        <InfoIcon />
+      </Tooltip>
+    )}
+  </>
+);
+
 export default ({ item, zkAccountId }) => {
   const date = useDateFromNow(item.timestamp);
   const { width } = useWindowDimensions();
@@ -86,39 +111,24 @@ export default ({ item, zkAccountId }) => {
       <Column>
         <RowSpaceBetween>
           <Row>
-            <TokenIcon src={tokenIcon()} />
-            <Text $error={item.failed}>
-              {actions[item.type].sign}{' '}
-              {(() => {
-                const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
-                return (
-                  <Tooltip content={formatNumber(total, 18)} placement="top">
-                    <span>{formatNumber(total, 4)}</span>
-                  </Tooltip>
-                );
-              })()}
-              {' '}{tokenSymbol()}{' '}
-              {!item.fee.isZero() && (
-                <FeeText>(fee {formatNumber(item.fee)} {tokenSymbol()})</FeeText>
-              )}
-            </Text>
-            {item.highFee && (
-              <Tooltip
-                content={
-                  <span>
-                    This transaction required additional operations, resulting in higher fees.{' '}
-                    <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
-                      Learn more
-                    </Link>
-                  </span>
-                }
-                placement="right"
-                delay={0}
-                width={200}
-              >
-                <InfoIcon />
-              </Tooltip>
-            )}
+            <Row>
+              <TokenIcon src={tokenIcon()} />
+              <Text $error={item.failed}>
+                {actions[item.type].sign}{' '}
+                {(() => {
+                  const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+                  return (
+                    <Tooltip content={formatNumber(total, 18)} placement="top">
+                      <span>{formatNumber(total, 4)}</span>
+                    </Tooltip>
+                  );
+                })()}
+                {' '}{tokenSymbol()}
+              </Text>
+            </Row>
+            <FeeDesktop>
+              <Fee fee={item.fee} highFee={item.highFee} />
+            </FeeDesktop>
           </Row>
           <Row>
             <Date>{date}</Date>
@@ -133,6 +143,9 @@ export default ({ item, zkAccountId }) => {
             )}
           </Row>
         </RowSpaceBetween>
+        <FeeMobile>
+          <Fee fee={item.fee} highFee={item.highFee} />
+        </FeeMobile>
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
@@ -326,5 +339,19 @@ const InfoIcon = styled(InfoIconDefault)`
     & > path {
       fill: ${props => props.theme.color.purple};
     }
+  }
+`;
+
+const FeeDesktop = styled(Row)`
+  margin-left: 5px;
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+
+const FeeMobile = styled(Row)`
+  display: none;
+  @media only screen and (max-width: 500px) {
+    display: flex;
   }
 `;
