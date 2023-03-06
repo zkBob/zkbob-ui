@@ -196,10 +196,14 @@ export default ({ item, zkAccountId }) => {
           </Row>
           <Row>
             {item.actions.length > 1 && item.type === TRANSFER_OUT && (
-              <Label>{isMobile ? 'Multi' : 'Multitransfer'}</Label>
+              <MultitransferLabel>
+                {isMobile ? 'Multi' : 'Multitransfer'}
+              </MultitransferLabel>
             )}
             {item.type === DIRECT_DEPOSIT && (
-              <Label>{isMobile ? 'Direct' : 'Direct deposit'}</Label>
+              <DirectDepositLabel>
+                {isMobile ? 'Direct' : 'Direct deposit'}
+              </DirectDepositLabel>
             )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
@@ -300,7 +304,7 @@ const ZkAddress = styled(Row)`
   cursor: pointer;
 `;
 
-const Label = styled.div`
+const MultitransferLabel = styled.div`
   background: #E6FFFA;
   border-radius: 4px;
   font-size: 14px;
@@ -308,6 +312,12 @@ const Label = styled.div`
   color: #319795;
   padding: 0 8px;
   margin-right: 10px;
+  font-weight: ${props => props.theme.text.weight.bold};
+`;
+
+const DirectDepositLabel = styled(MultitransferLabel)`
+  background: #FFFAF0;
+  color: #DD6B20;
 `;
 
 const InfoIcon = styled(InfoIconDefault)`
