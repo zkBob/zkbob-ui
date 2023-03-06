@@ -15,7 +15,12 @@ const { chains, provider, webSocketProvider } = configureChains(
   [publicProvider()],
 );
 
-const injected = new InjectedConnector({ chains });
+const injected = new InjectedConnector({
+  chains,
+  options: {
+    name: 'MetaMask',
+  },
+});
 const walletConnectV1 = new WalletConnectConnector({
   chains,
   options: {
