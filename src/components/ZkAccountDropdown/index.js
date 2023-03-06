@@ -18,6 +18,7 @@ import { tokenIcon, tokenSymbol } from 'utils/token';
 const Content = ({
   balance, generateAddress, switchAccount, isDemo,
   changePassword, logout, buttonRef, showSeedPhrase,
+  isLoadingState,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -78,14 +79,16 @@ const Content = ({
         </Row>
       </RowSpaceBetween>
       {isMobile &&
-        <Button style={{ marginBottom: 10 }} onClick={generateQRCode}>
+        <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
           Generate QR code address
         </Button>
       }
       {privateAddress ? (
         <PrivateAddress>{privateAddress}</PrivateAddress>
       ) : (
-        <Button onClick={generatePrivateAddress}>Generate receiving address</Button>
+        <Button onClick={generatePrivateAddress} disabled={isLoadingState}>
+          Generate receiving address
+        </Button>
       )}
       <Description>
         Use this address to receive tokens to your zkBob account.{' '}
@@ -107,7 +110,7 @@ const Content = ({
 
 export default ({
   balance, generateAddress, switchAccount, showSeedPhrase,
-  changePassword, logout, buttonRef, children, isDemo,
+  changePassword, logout, buttonRef, children, isDemo, isLoadingState,
 }) => (
   <Dropdown
     content={() => (
@@ -120,6 +123,7 @@ export default ({
         buttonRef={buttonRef}
         showSeedPhrase={showSeedPhrase}
         isDemo={isDemo}
+        isLoadingState={isLoadingState}
       />
     )}
   >

@@ -23,7 +23,7 @@ export default ({
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
   balance, poolBalance, zkAccountId, refresh, isRefreshing,
   openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo, disconnect,
+  openSeedPhraseModal, isDemo, disconnect, isLoadingState,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
@@ -88,6 +88,7 @@ export default ({
               showSeedPhrase={openSeedPhraseModal}
               buttonRef={zkAccountButtonRef}
               isDemo={isDemo}
+              isLoadingState={isLoadingState}
             >
               <AccountLabel ref={zkAccountButtonRef} $refreshing={isRefreshing}>
                 <Row>

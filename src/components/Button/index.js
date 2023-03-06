@@ -34,7 +34,7 @@ const Button = styled.button`
   border: 0;
   border-color: ${props => props.theme.button.primary.border.color};
   border-style: solid;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   display: flex;
   align-items: center;
   justify-content: center;

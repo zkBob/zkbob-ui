@@ -11,6 +11,7 @@ export default ({ empty }) => {
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
     zkAccountId, updatePoolData, generateAddress, isDemo,
+    isLoadingState,
   } = useContext(ZkAccountContext);
   const {
     openWalletModal, openSeedPhraseModal,
@@ -40,6 +41,7 @@ export default ({ empty }) => {
         account={address}
         zkAccount={zkAccount}
         isLoadingZkAccount={isLoadingZkAccount}
+        isLoadingState={isLoadingState}
         connector={connector}
         balance={balance}
         poolBalance={poolBalance}
