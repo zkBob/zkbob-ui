@@ -71,7 +71,7 @@ const AddressLink = ({ action, isMobile }) => {
   );
 };
 
-const Fee = ({ fee, highFee }) => (
+const Fee = ({ fee, highFee, isMobile }) => (
   <>
     {!fee.isZero() && (
       <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
@@ -86,7 +86,7 @@ const Fee = ({ fee, highFee }) => (
             </Link>
           </span>
         }
-        placement="right"
+        placement={isMobile ? 'bottom' : 'right'}
         delay={0}
         width={200}
       >
@@ -144,7 +144,7 @@ export default ({ item, zkAccountId }) => {
           </Row>
         </RowSpaceBetween>
         <FeeMobile>
-          <Fee fee={item.fee} highFee={item.highFee} />
+          <Fee fee={item.fee} highFee={item.highFee} isMobile />
         </FeeMobile>
         <RowSpaceBetween>
           <Row>
