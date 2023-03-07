@@ -7,7 +7,7 @@ import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
 export default ({ empty }) => {
   const { address, connector } = useAccount();
   const { disconnect } = useDisconnect();
-  const { balance, updateBalance } = useContext(TokenBalanceContext);
+  const { balance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
     zkAccountId, updatePoolData, generateAddress, isDemo,
@@ -19,15 +19,10 @@ export default ({ empty }) => {
     openChangePasswordModal, openConfirmLogoutModal,
   } = useContext(ModalContext);
 
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const refresh = useCallback(async e => {
+  const refresh = useCallback(e => {
     e.stopPropagation();
-    setIsRefreshing(true);
-    await Promise.all([
-      updateBalance(),
-      updatePoolData(),
-    ]);
-    setIsRefreshing(false);
+    updateBalance();
+    updatePoolData();
   }, [updateBalance, updatePoolData]);
 
   return (
@@ -44,9 +39,9 @@ export default ({ empty }) => {
         isLoadingState={isLoadingState}
         connector={connector}
         balance={balance}
+        isLoadingBalance={isLoadingBalance}
         poolBalance={poolBalance}
         zkAccountId={zkAccountId}
-        isRefreshing={isRefreshing}
         refresh={refresh}
         empty={empty}
         generateAddress={generateAddress}

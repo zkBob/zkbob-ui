@@ -15,8 +15,10 @@ export const TokenBalanceContextProvider = ({ children }) => {
   const provider = useProvider();
   const token = useContract({ address: TOKEN_ADDRESS, abi: TOKEN_ABI, signerOrProvider: provider });
   const [balance, setBalance] = useState(ethers.constants.Zero);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
   const updateBalance = useCallback(async () => {
+    setIsLoadingBalance(true);
     let balance = ethers.constants.Zero;
     if (account && token) {
       try {
@@ -27,6 +29,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
       }
     }
     setBalance(balance);
+    setIsLoadingBalance(false);
   }, [token, account]);
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
   }, [updateBalance]);
 
   return (
-    <TokenBalanceContext.Provider value={{ balance, updateBalance }}>
+    <TokenBalanceContext.Provider value={{ balance, updateBalance, isLoadingBalance }}>
       {children}
     </TokenBalanceContext.Provider>
   );

@@ -69,8 +69,12 @@ const Content = ({ address, balance, connector, changeWallet, disconnect, button
   );
 };
 
-export default ({ address, balance, connector, changeWallet, disconnect, buttonRef, children }) => (
+export default ({
+  address, balance, connector, changeWallet,
+  disconnect, buttonRef, children, disabled,
+}) => (
   <Dropdown
+    disabled={disabled}
     content={() => (
       <Content
         address={address}

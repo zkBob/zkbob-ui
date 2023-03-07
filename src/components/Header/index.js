@@ -21,7 +21,7 @@ import { NETWORKS, CONNECTORS_ICONS } from 'constants';
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, poolBalance, zkAccountId, refresh, isRefreshing,
+  balance, poolBalance, zkAccountId, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState,
 }) => {
@@ -59,8 +59,9 @@ export default ({
             changeWallet={openWalletModal}
             disconnect={disconnect}
             buttonRef={walletButtonRef}
+            disabled={isLoadingBalance}
           >
-            <AccountLabel ref={walletButtonRef} $refreshing={isRefreshing}>
+            <AccountLabel ref={walletButtonRef} $refreshing={isLoadingBalance}>
               <Row>
                 {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
@@ -89,8 +90,9 @@ export default ({
               buttonRef={zkAccountButtonRef}
               isDemo={isDemo}
               isLoadingState={isLoadingState}
+              disabled={isLoadingState}
             >
-              <AccountLabel ref={zkAccountButtonRef} $refreshing={isRefreshing}>
+              <AccountLabel ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address>zkAccount</Address>
@@ -105,7 +107,7 @@ export default ({
               </AccountLabel>
             </ZkAccountDropdown>
             <RefreshButtonContainer onClick={refresh}>
-              {isRefreshing ? (
+              {(isLoadingBalance || isLoadingState) ? (
                 <Spinner size={18} />
               ) : (
                 <RefreshIcon />
@@ -177,16 +179,16 @@ const NetworkLabel = styled(Row)`
 `;
 
 const AccountLabel = styled(NetworkLabel)`
-  cursor: pointer;
+  cursor: ${props => props.$refreshing ? 'not-allowed' : 'pointer'};
   overflow: hidden;
   border: 1px solid ${props => props.theme.button.primary.text.color.contrast};
   &:hover {
-    border-color: ${props => props.theme.button.link.text.color};
+    border-color: ${props => !props.$refreshing && props.theme.button.link.text.color};
     & span {
-      color: ${props => props.theme.button.link.text.color};
+      color: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
     & path {
-      fill: ${props => props.theme.button.link.text.color};
+      fill: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
   }
 `;

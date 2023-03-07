@@ -109,10 +109,11 @@ const Content = ({
 };
 
 export default ({
-  balance, generateAddress, switchAccount, showSeedPhrase,
+  balance, generateAddress, switchAccount, showSeedPhrase, disabled,
   changePassword, logout, buttonRef, children, isDemo, isLoadingState,
 }) => (
   <Dropdown
+    disabled={disabled}
     content={() => (
       <Content
         balance={balance}
