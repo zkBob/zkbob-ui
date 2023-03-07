@@ -44,6 +44,7 @@ export const HISTORY_ACTION_TYPES = {
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,
   'WalletConnect': require('assets/walletconnect.svg').default,
+  'WalletConnectLegacy': require('assets/walletconnect.svg').default,
 };
 
 export const INCREASED_LIMITS_STATUSES = {

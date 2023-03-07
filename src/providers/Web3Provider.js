@@ -3,6 +3,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { sepolia, polygon, goerli } from 'wagmi/chains';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { WalletConnectLegacyConnector } from 'wagmi/connectors/walletConnectLegacy';
 
 const chainsMap = {
   '137': polygon,
@@ -21,7 +22,7 @@ const injected = new InjectedConnector({
     name: 'MetaMask',
   },
 });
-const walletConnectV1 = new WalletConnectConnector({
+const walletConnectV1 = new WalletConnectLegacyConnector({
   chains,
   options: {
     qrcode: true,
@@ -31,7 +32,6 @@ const walletConnectV2 = new WalletConnectConnector({
   chains,
   options: {
     qrcode: true,
-    version: '2',
     projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID,
     name: 'zkBob',
     relayUrl: 'wss://relay.walletconnect.org'

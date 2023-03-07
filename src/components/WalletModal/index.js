@@ -9,11 +9,9 @@ import { tokenSymbol } from 'utils/token';
 import { CONNECTORS_ICONS } from 'constants';
 
 const getConnectorName = connector => {
-  let version = '';
-  if (connector.name === 'WalletConnect') {
-    version = connector.options?.version === '2' ? 'v2' : 'v1';
-  }
-  return `${connector.name} ${version}`;
+  if (connector.name === 'WalletConnectLegacy') return 'WalletConnect v1';
+  if (connector.name === 'WalletConnect') return 'WalletConnect v2';
+  return connector.name;
 }
 
 export default ({ isOpen, onClose, connectors, connectWallet }) => {
