@@ -7,6 +7,8 @@ import * as Sentry from "@sentry/react";
 import {
   TxType, TxDepositDeadlineExpiredError, InitState,
   HistoryRecordState, HistoryTransactionType,
+  relayerFee, currentLimits, fetchVersion,
+  ServiceType,
 } from 'zkbob-client-js';
 
 import {
@@ -22,6 +24,7 @@ import { aggregateFees, splitDirectDeposits } from './utils.js';
 const { parseEther } = ethers.utils;
 
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
+const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
@@ -63,6 +66,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
+  const [fee, setFee] = useState(null);
 
   const updateLoadingStatus = status => {
     let loadingPercentage = null;
@@ -95,6 +99,9 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [supportId]);
 
   const fromShieldedAmount = useCallback(shieldedAmount => {
+    if (!zkAccount) {
+      return BigNumber.from(shieldedAmount).mul(1e9);
+    }
     const wei = zkAccount.shieldedAmountToWei(TOKEN_ADDRESS, shieldedAmount);
     return BigNumber.from(wei);
   }, [zkAccount]);
@@ -160,38 +167,43 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount, fromShieldedAmount]);
 
   const updateLimits = useCallback(async () => {
+    if (!supportId) return;
+    setIsLoadingLimits(true);
     let limits = defaultLimits;
-    if (zkAccount) {
-      setIsLoadingLimits(true);
-      try {
-        const data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
-        limits = {
-          singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
-          dailyDepositLimitPerAddress: {
-            total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.total)),
-            available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.available))
-          },
-          dailyDepositLimit: {
-            total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.total)),
-            available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.available))
-          },
-          dailyWithdrawalLimit: {
-            total: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.total)),
-            available: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.available))
-          },
-          poolSizeLimit: {
-            total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
-            available: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.available))
-          },
-        };
-      } catch (error) {
-        console.error(error);
-        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateLimits' } });
+    try {
+      let data;
+      if (zkAccount) {
+        data = await zkAccount.getLimits(TOKEN_ADDRESS, account);
+      } else {
+        const res = await currentLimits(RELAYER_URL, supportId, account);
+        data = { deposit: { components: { ...res.deposit } }, withdraw: { components: { ...res.withdraw } } };
       }
+      limits = {
+        singleDepositLimit: fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
+        dailyDepositLimitPerAddress: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.available))
+        },
+        dailyDepositLimit: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.available))
+        },
+        dailyWithdrawalLimit: {
+          total: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.total)),
+          available: fromShieldedAmount(BigInt(data.withdraw.components.dailyForAll.available))
+        },
+        poolSizeLimit: {
+          total: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.total)),
+          available: fromShieldedAmount(BigInt(data.deposit.components.poolLimit.available))
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateLimits' } });
     }
     setLimits(limits);
     setIsLoadingLimits(false);
-  }, [zkAccount, account, fromShieldedAmount]);
+  }, [zkAccount, account, fromShieldedAmount, supportId]);
 
   const updateMaxTransferable = useCallback(async () => {
     let maxTransferable = ethers.constants.Zero;
@@ -223,14 +235,17 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const loadRelayerVersion = useCallback(async () => {
     let version = null;
-    if (zkAccount) {
-      try {
-        const data = await zkAccount.getRelayerVersion(TOKEN_ADDRESS);
-        version = data.ref;
-      } catch (error) {
-        console.error(error);
-        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadRelayerVersion' } });
+    try {
+      let data;
+      if (zkAccount) {
+        data = await zkAccount.getRelayerVersion(TOKEN_ADDRESS);
+      } else {
+        data = await fetchVersion(RELAYER_URL, ServiceType.Relayer);
       }
+      version = data.ref;
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadRelayerVersion' } });
     }
     setRelayerVersion(version);
   }, [zkAccount]);
@@ -356,8 +371,17 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount]);
 
   const estimateFee = useCallback(async (amounts, txType) => {
-    if (!zkAccount) return null;
+    if (!supportId) return null;
     try {
+      if (!zkAccount) {
+        let atomicFee = fee;
+        if (!atomicFee) {
+          atomicFee = await relayerFee(RELAYER_URL, supportId);
+          atomicFee = fromShieldedAmount(atomicFee);
+          setFee(atomicFee);
+        }
+        return { fee: atomicFee, numberOfTxs: 1, insufficientFunds: false };
+      }
       const shieldedAmounts = amounts.map(amount => toShieldedAmount(amount));
       const { total, txCnt, insufficientFunds } = await zkAccount.feeEstimate(TOKEN_ADDRESS, shieldedAmounts, txType, false);
       return { fee: fromShieldedAmount(total), numberOfTxs: txCnt, insufficientFunds };
@@ -366,7 +390,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.estimateFee' } });
       return null;
     }
-  }, [zkAccount, toShieldedAmount, fromShieldedAmount]);
+  }, [zkAccount, toShieldedAmount, fromShieldedAmount, supportId, fee]);
 
   const decryptMnemonic = password => {
     const cipherText = window.localStorage.getItem('seed');
