@@ -8,6 +8,6 @@ export default ({ width }) => (
     width={width}
     height={6}
   >
-    <Skeleton style={{ top: -2 }} />
+    <Skeleton style={{ top: -2, zIndex: 0 }} />
   </SkeletonTheme>
 );
