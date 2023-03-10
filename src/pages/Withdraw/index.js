@@ -42,8 +42,8 @@ export default () => {
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
-  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
+  const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit?.available);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -87,13 +87,15 @@ export default () => {
     <>
       <Card title="Withdraw" note={note}>
         <TransferInput
-          balance={balance}
+          balance={zkAccount ? balance : null}
+          isLoadingBalance={isLoadingState}
           amount={displayAmount}
           onChange={setDisplayAmount}
           shielded={true}
           fee={fee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
+          isLoadingFee={isLoadingFee}
         />
         <MultilineInput
           placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
@@ -134,6 +136,7 @@ export default () => {
         />
       </Card>
       <Limits
+        loading={isLoadingLimits}
         limits={[
           { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
         ]}

@@ -15,17 +15,21 @@ export const IncreasedLimitsContextProvider = ({ children }) => {
   const [status, setStatus] = useState(null);
 
   const updateStatus = useCallback(async () => {
-    setStatus(null);
-    if (!address || !process.env.REACT_APP_KYC_STATUS_URL) return;
-    let status = null;
+    if (!process.env.REACT_APP_KYC_STATUS_URL) {
+      setStatus(null);
+      return;
+    }
+    let status = INCREASED_LIMITS_STATUSES.INACTIVE;
+    if (!address) {
+      setStatus(status);
+      return;
+    }
     try {
       const data = await (
         await fetch(process.env.REACT_APP_KYC_STATUS_URL.replace('%s', address))
       ).json();
       const provider = data.data.providers.find(p => p.symbol === 'BABT');
-      if (!provider.result) {
-        status = INCREASED_LIMITS_STATUSES.INACTIVE;
-      } else {
+      if (provider.result) {
         const syncData = provider.sync.byChainIds.find(
           c => c.chainId === Number(process.env.REACT_APP_NETWORK)
         );

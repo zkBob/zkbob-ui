@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 import Header from 'components/Header';
 

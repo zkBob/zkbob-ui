@@ -3,12 +3,17 @@ import styled from 'styled-components';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
+import Skeleton from 'components/Skeleton';
+
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
-export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExceeded }) => {
+export default ({
+  amount, onChange, balance, isLoadingBalance, fee,
+  shielded, setMax, maxAmountExceeded, isLoadingFee,
+}) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
@@ -34,28 +39,38 @@ export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExc
       <Row>
         <RowWrap style={{ marginRight: 20 }}>
           <Text style={{ marginRight: 4 }}>Relayer fee:</Text>
-          <Text>{formatNumber(fee)} {tokenSymbol(shielded)}</Text>
+          {isLoadingFee ? (
+            <Skeleton width={40} />
+          ) : (
+            <Text>{formatNumber(fee)} {tokenSymbol(shielded)}</Text>
+          )}
         </RowWrap>
-        <RowFlexEnd>
-          <Text style={{ marginRight: 4 }}>
-            {shielded ? 'Pool balance' : 'Balance'}:
-          </Text>
-          <Row>
-            <Text>{formatNumber(balance)} {tokenSymbol(shielded)}</Text>
-            <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
-            <Tooltip
-              content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
-              placement="right"
-              delay={0}
-              width={180}
-              visible={showTooltip}
-              onVisibleChange={setShowTooltip}
-              trigger="hover"
-            >
-              <InfoIcon />
-            </Tooltip>
-          </Row>
-        </RowFlexEnd>
+        {(balance || isLoadingBalance) && (
+          <RowFlexEnd>
+            <Text style={{ marginRight: 4 }}>
+              {shielded ? 'Pool balance' : 'Balance'}:
+            </Text>
+            {isLoadingBalance ? (
+              <Skeleton width={80} />
+            ) : (
+              <Row>
+                <Text>{formatNumber(balance)} {tokenSymbol(shielded)}</Text>
+                <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
+                <Tooltip
+                  content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
+                  placement="right"
+                  delay={0}
+                  width={180}
+                  visible={showTooltip}
+                  onVisibleChange={setShowTooltip}
+                  trigger="hover"
+                >
+                  <InfoIcon />
+                </Tooltip>
+              </Row>
+            )}
+          </RowFlexEnd>
+        )}
       </Row>
     </Container>
   );

@@ -7,6 +7,7 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
 import SpinnerDefault from 'components/Spinner';
+import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as LogoDefault } from 'assets/logo-beta.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
@@ -65,10 +66,16 @@ export default ({
               <Row>
                 {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
-                <Balance>
-                  {formatNumber(balance)} {tokenSymbol()}
-                </Balance>
-                <DropdownIcon />
+                {isLoadingBalance ? (
+                  <Skeleton width={80} />
+                ) : (
+                  <>
+                    <Balance>
+                      {formatNumber(balance)} {tokenSymbol()}
+                    </Balance>
+                    <DropdownIcon />
+                  </>
+                )}
               </Row>
             </AccountLabel>
           </WalletDropdown>
@@ -96,13 +103,19 @@ export default ({
                 <Row>
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address>zkAccount</Address>
-                  <Balance>
-                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                      <span>{formatNumber(poolBalance)}</span>
-                    </Tooltip>
-                    {' '}{tokenSymbol(true)}
-                  </Balance>
-                  <DropdownIcon />
+                  {isLoadingState ? (
+                    <Skeleton width={80} />
+                  ) : (
+                    <>
+                      <Balance>
+                        <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
+                          <span>{formatNumber(poolBalance)}</span>
+                        </Tooltip>
+                        {' '}{tokenSymbol(true)}
+                      </Balance>
+                      <DropdownIcon />
+                    </>
+                  )}
                 </Row>
               </AccountLabel>
             </ZkAccountDropdown>
@@ -200,13 +213,13 @@ const Icon = styled.img`
 
 const Address = styled.span`
   margin-left: 8px;
+  margin-right: 8px;
   @media only screen and (max-width: 1000px) {
     display: none;
   }
 `;
 
 const Balance = styled.span`
-  margin-left: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
   @media only screen and (max-width: 1000px) {
     display: none;

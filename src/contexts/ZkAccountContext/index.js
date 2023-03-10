@@ -21,19 +21,17 @@ import { TX_STATUSES } from 'constants';
 import zp from './zp.js';
 import { aggregateFees, splitDirectDeposits } from './utils.js';
 
-const { parseEther } = ethers.utils;
-
 const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
 const RELAYER_URL = process.env.REACT_APP_RELAYER_URL;
 
 const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
-  singleDepositLimit: parseEther('0'),
-  dailyDepositLimitPerAddress: { total: parseEther('10000'), available: parseEther('0') },
-  dailyDepositLimit: { total: parseEther('100000'), available: parseEther('0') },
-  dailyWithdrawalLimit: { total: parseEther('100000'), available: parseEther('0') },
-  poolSizeLimit: { total: parseEther('1000000'), available: parseEther('0') },
+  singleDepositLimit: null,
+  dailyDepositLimitPerAddress: null,
+  dailyDepositLimit: null,
+  dailyWithdrawalLimit: null,
+  poolSizeLimit: null,
 };
 
 export default ZkAccountContext;

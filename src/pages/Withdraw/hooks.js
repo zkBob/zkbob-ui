@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
+import { ethers } from 'ethers';
 
-export const useMaxAmountExceeded = (amount, maxTransferable, limit) => {
+export const useMaxAmountExceeded = (amount, maxTransferable, limit = ethers.constants.Zero) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
 
   useEffect(() => {

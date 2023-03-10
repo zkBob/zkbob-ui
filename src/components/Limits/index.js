@@ -2,13 +2,36 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Tooltip from 'components/Tooltip';
+import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 
-export default ({ limits }) => {
+const Limit = ({ value, loading }) => {
+  if (!value || loading) {
+    return <Skeleton width={80} />
+  }
+  return !!value.total ? (
+    <>
+      <Value>{formatNumber(value.available)} {tokenSymbol()}</Value>
+      <Tooltip
+        content={`out of ${formatNumber(value.total)} ${tokenSymbol()} total`}
+        placement="right"
+        delay={0}
+      >
+        <InfoIcon />
+      </Tooltip>
+    </>
+  ) : (
+    <Value style={{ marginRight: 23 }}>
+      {formatNumber(value)} {tokenSymbol()}
+    </Value>
+  );
+}
+
+export default ({ limits, loading }) => {
   return (
     <Container>
       {limits.map(({ prefix, suffix, value }, index) => (
@@ -17,22 +40,7 @@ export default ({ limits }) => {
             {prefix}{' '}
             <NameSuffix>{suffix}</NameSuffix>
           </Name>
-          {!!value.total ? (
-            <>
-              <Value>{formatNumber(value.available)} {tokenSymbol()}</Value>
-              <Tooltip
-                content={`out of ${formatNumber(value.total)} ${tokenSymbol()} total`}
-                placement="right"
-                delay={0}
-              >
-                <InfoIcon />
-              </Tooltip>
-            </>
-          ) : (
-            <Value style={{ marginRight: 23 }}>
-              {formatNumber(value)} {tokenSymbol()}
-            </Value>
-          )}
+          <Limit value={value} loading={loading} />
         </Row>
       ))}
     </Container>

@@ -30,7 +30,7 @@ export default () => {
   const [receiver, setReceiver] = useState('');
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
+  const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Transfer);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
   const onTransfer = useCallback(() => {
@@ -78,13 +78,15 @@ export default () => {
   return isPending ? <PendingAction /> : (
     <>
       <TransferInput
-        balance={balance}
+        balance={zkAccount ? balance : null}
+        isLoadingBalance={isLoadingState}
         amount={displayAmount}
         onChange={setDisplayAmount}
         shielded={true}
         fee={fee}
         setMax={setMax}
         maxAmountExceeded={maxAmountExceeded}
+        isLoadingFee={isLoadingFee}
       />
       <MultilineInput
         placeholder="Enter address of zkBob receiver"

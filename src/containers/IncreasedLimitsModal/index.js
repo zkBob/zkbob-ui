@@ -27,11 +27,12 @@ export default () => {
   }, [isIncreasedLimitsModalOpen, account, updateStatus]);
 
   useEffect(() => {
-    if ([INCREASED_LIMITS_STATUSES.ACTIVE, INCREASED_LIMITS_STATUSES.RESYNC].includes(status)) {
+    const activeStatuses = [INCREASED_LIMITS_STATUSES.ACTIVE, INCREASED_LIMITS_STATUSES.RESYNC];
+    if (isIncreasedLimitsModalOpen && activeStatuses.includes(status)) {
       closeIncreasedLimitsModal();
       updateLimits();
     }
-  }, [status, closeIncreasedLimitsModal, updateLimits]);
+  }, [status, closeIncreasedLimitsModal, updateLimits, isIncreasedLimitsModalOpen]);
 
   return (
     <IncreasedLimitsModal
