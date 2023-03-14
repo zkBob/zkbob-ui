@@ -12,14 +12,14 @@ export default () => {
   return (
     <Card
       note={
-      `Do not refresh the page for at least 30 seconds! Transaction status${multi ? 'es' : ''} will update automatically.`
+      `You can deposit, transfer or withdraw funds once the transaction${multi ? 's are' : ' is'} completed.`
       }
     >
       <Title>
         Please wait for your transaction{multi ? 's' : ''} to finalize
       </Title>
       <Description>
-        You can deposit, transfer or withdraw funds once the<br /> transaction{multi ? 's are' : ' is'} completed.
+        Do not refresh the page for at least 30 seconds! Transaction status{multi ? 'es' : ''} will update automatically.
       </Description>
       <ListContainer>
         {pendingActions.map((action, index) =>

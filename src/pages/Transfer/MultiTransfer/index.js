@@ -137,7 +137,11 @@ export default forwardRef((props, ref) => {
           <Error>
             {(() => {
               if (errorType === 'syntax') {
-                return `${errors.length} rows with incorrect addresses or formatting issues.`;
+                const multi = errors.length > 1;
+                return `
+                  ${errors.length} row${multi ? 's' : ''} with incorrect
+                  address${multi ? 'es' : ''} or formatting issue${multi ? 's' : ''}.
+                `;
               } else if (errorType === 'duplicates') {
                 return 'Duplicate addresses found.'
               } else if (errorType === 'insufficient_funds') {
