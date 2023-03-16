@@ -69,6 +69,7 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  line-height: 18px;
 `;
 
 const Name = styled.span`

@@ -18,6 +18,7 @@ import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
 import { NETWORKS, CONNECTORS_ICONS } from 'constants';
+import { useWindowDimensions } from 'hooks';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
@@ -28,6 +29,7 @@ export default ({
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
+  const { width } = useWindowDimensions();
 
   if (empty) {
     return (
@@ -66,7 +68,7 @@ export default ({
               <Row>
                 {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
-                {isLoadingBalance ? (
+                {(isLoadingBalance && width > 1000) ? (
                   <Skeleton width={80} />
                 ) : (
                   <>
@@ -103,7 +105,7 @@ export default ({
                 <Row>
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address>zkAccount</Address>
-                  {isLoadingState ? (
+                  {(isLoadingState && width > 1000) ? (
                     <Skeleton width={80} />
                   ) : (
                     <>

@@ -99,6 +99,7 @@ const Row = styled.div`
 
 const RowWrap = styled(Row)`
   flex-wrap: wrap;
+  line-height: 20px;
 `;
 
 const RowFlexEnd = styled(RowWrap)`
