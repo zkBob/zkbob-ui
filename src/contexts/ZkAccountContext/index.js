@@ -47,7 +47,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
-  const { supportId } = useContext(SupportIdContext);
+  const { supportId, updateSupportId } = useContext(SupportIdContext);
   const [zkAccount, setZkAccount] = useState(null);
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
@@ -428,16 +428,27 @@ export const ZkAccountContextProvider = ({ children }) => {
     loadZkAccount(mnemonic, isNewAccount ? -1 : undefined);
   }, [loadZkAccount]);
 
+  const clearState = useCallback(() => {
+    setZkAccount(null);
+    setZkAccountId(null);
+    setBalance(ethers.constants.Zero);
+    setHistory([]);
+    updateSupportId();
+  }, [updateSupportId]);
+
   const removeZkAccountMnemonic = useCallback(async () => {
     if (zkAccount) {
       await zkAccount.cleanState(TOKEN_ADDRESS);
     }
     window.localStorage.removeItem('seed');
-    setZkAccount(null);
-    setZkAccountId(null);
-    setBalance(ethers.constants.Zero);
-    setHistory([]);
-  }, [zkAccount]);
+    clearState();
+  }, [zkAccount, clearState]);
+
+  const lockAccount = useCallback(() => {
+    clearState();
+    const seed = window.localStorage.getItem('seed');
+    if (seed) openPasswordModal();
+  }, [openPasswordModal, clearState]);
 
   useEffect(() => {
     updatePoolData();
@@ -496,7 +507,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
-        verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits,
+        verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
       }}
     >
       {children}

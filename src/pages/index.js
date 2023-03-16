@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { useIdleTimer } from 'react-idle-timer';
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
@@ -91,10 +92,14 @@ const Routes = ({ showWelcome, params }) => (
 );
 
 const Content = () => {
-  const { zkAccount, isLoadingZkAccount, isDemo } = useContext(ZkAccountContext);
+  const { zkAccount, isLoadingZkAccount, isDemo, lockAccount } = useContext(ZkAccountContext);
   const location = useLocation();
   const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
   const isRestricted = useRestriction();
+  useIdleTimer({
+    timeout: Number(process.env.REACT_APP_LOCK_TIMEOUT) || (1000 * 60 * 15),
+    onIdle: () => lockAccount(),
+  });
 
   if (isRestricted) {
     return (

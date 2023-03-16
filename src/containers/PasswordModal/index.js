@@ -15,11 +15,13 @@ export default () => {
   const confirm = useCallback(async () => {
     try {
       await unlockAccount(password);
+      setPassword('');
     } catch (error) {
       setError(error);
     }
   }, [password, unlockAccount]);
   const reset = useCallback(async () => {
+    setPassword('');
     closePasswordModal();
     openAccountSetUpModal();
   }, [closePasswordModal, openAccountSetUpModal]);
