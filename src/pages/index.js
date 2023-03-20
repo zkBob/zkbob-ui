@@ -186,8 +186,9 @@ const Gradient = styled.div`
   left: calc(50% - 270px);
   top: 100px;
   background: linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
+  background: -moz-linear-gradient(231.28deg, rgba(247, 194, 59, 0.2) 19.66%, rgba(232, 110, 255, 0.2) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
   filter: blur(250px);
-  transform: rotate(27.74deg);
+  transform: rotate(27.74deg) translate3d(0,0,0);
 `;
 
 const BackgroundImages = styled.div`
