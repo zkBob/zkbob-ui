@@ -45,7 +45,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     throwForSwitchChainNotSupported: true,
   });
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
-  const { openPasswordModal, closePasswordModal } = useContext(ModalContext);
+  const { openPasswordModal, closePasswordModal, closeAllModals } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const { supportId, updateSupportId } = useContext(SupportIdContext);
   const [zkAccount, setZkAccount] = useState(null);
@@ -446,9 +446,10 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const lockAccount = useCallback(() => {
     clearState();
+    closeAllModals();
     const seed = window.localStorage.getItem('seed');
     if (seed) openPasswordModal();
-  }, [openPasswordModal, clearState]);
+  }, [openPasswordModal, clearState, closeAllModals]);
 
   useEffect(() => {
     updatePoolData();
