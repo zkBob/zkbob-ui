@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
@@ -100,7 +101,16 @@ export default ({ item, zkAccountId }) => {
   const date = useDateFromNow(item.timestamp);
   const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
+
+  const onCopy = useCallback((text, result) => {
+    if (result) {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  }, []);
+
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -165,19 +175,23 @@ export default ({ item, zkAccountId }) => {
                     textAlign: 'center',
                   }}
                 >
-                  <ZkAddress>
-                    {item.type === TRANSFER_OUT ? (
-                      <IncognitoAvatar />
-                    ) : (
-                      <ZkAvatar seed={zkAccountId} size={16} />
-                    )}
-                    <Text style={{ marginLeft: 5 }}>
-                      {shortAddress(
-                        item.actions[0].to,
-                        isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
-                      )}
-                    </Text>
-                  </ZkAddress>
+                  <Tooltip content="Copied" placement="right" visible={isCopied}>
+                    <CopyToClipboard text={item.actions[0].to} onCopy={onCopy}>
+                      <ZkAddress>
+                        {item.type === TRANSFER_OUT ? (
+                          <IncognitoAvatar />
+                        ) : (
+                          <ZkAvatar seed={zkAccountId} size={16} />
+                        )}
+                        <Text style={{ marginLeft: 5 }}>
+                          {shortAddress(
+                            item.actions[0].to,
+                            isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                          )}
+                        </Text>
+                      </ZkAddress>
+                    </CopyToClipboard>
+                  </Tooltip>
                 </Tooltip>
               ) : (
                 <ZkAddress>

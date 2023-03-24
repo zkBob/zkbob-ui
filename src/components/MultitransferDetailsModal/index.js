@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Modal from 'components/Modal';
 import Tooltip from 'components/Tooltip';
@@ -9,6 +10,45 @@ import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
+
+const ListItem = ({ index, data }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const onCopy = useCallback((text, result) => {
+    if (result) {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  }, []);
+
+  return (
+    <ItemContainer>
+      <Index>{index + 1}</Index>
+      <IncognitoAvatar />
+      <Tooltip
+          content={data.address}
+          delay={0.3}
+          placement="bottom"
+          width={300}
+          style={{
+            wordBreak: 'break-all',
+            textAlign: 'center',
+          }}
+        >
+          <Tooltip content="Copied" placement="right" visible={isCopied}>
+            <CopyToClipboard text={data.address} onCopy={onCopy}>
+              <Address>
+                {shortAddress(data.address, 22)}
+              </Address>
+            </CopyToClipboard>
+          </Tooltip>
+        </Tooltip>
+      <Amount>
+        {formatNumber(data.amount, 18)} {tokenSymbol()}
+      </Amount>
+    </ItemContainer>
+  );
+}
 
 export default ({ isOpen, onClose, onBack, transfers, isSent }) => {
   return (
@@ -33,27 +73,7 @@ export default ({ isOpen, onClose, onBack, transfers, isSent }) => {
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (
-            <ListItem key={index}>
-              <Index>{index + 1}</Index>
-              <IncognitoAvatar />
-              <Tooltip
-                  content={transfer.address}
-                  delay={0.3}
-                  placement="bottom"
-                  width={300}
-                  style={{
-                    wordBreak: 'break-all',
-                    textAlign: 'center',
-                  }}
-                >
-                  <Address>
-                    {shortAddress(transfer.address, 22)}
-                  </Address>
-                </Tooltip>
-              <Amount>
-                {formatNumber(transfer.amount, 18)} {tokenSymbol()}
-              </Amount>
-            </ListItem>
+            <ListItem key={index} index={index} data={transfer} />
           ))}
         </List>
       </Container>
@@ -118,7 +138,7 @@ const MediumText = styled.span`
   margin-bottom: 5px;
 `;
 
-const ListItem = styled.div`
+const ItemContainer = styled.div`
   display: flex;
   margin-bottom: 16px;
 `;
@@ -150,4 +170,5 @@ const Amount = styled.span`
 
 const Address = styled(Amount)`
   margin-left: 5px;
+  cursor: pointer;
 `;
