@@ -11,18 +11,16 @@ export const useDepositLimit = () => {
   const [depositLimit, setDepositLimit] = useState(ethers.constants.Zero);
 
   useEffect(() => {
+    let minLimit = ethers.constants.Zero;
     try {
-      const minLimit = minBigNumber(
+      minLimit = minBigNumber(
         limits.singleDepositLimit,
-        limits.dailyDepositLimitPerAddress.available,
-        limits.dailyDepositLimit.available,
-        limits.poolSizeLimit.available,
+        limits.dailyDepositLimitPerAddress?.available,
+        limits.dailyDepositLimit?.available,
+        limits.poolSizeLimit?.available,
       );
-      setDepositLimit(minLimit);
-    } catch (error) {
-      console.error(error);
-      Sentry.captureException(error, { tags: { method: 'Deposit.useDepositLimit' } });
-    }
+    } catch (error) {}
+    setDepositLimit(minLimit);
   }, [limits]);
 
   return depositLimit;

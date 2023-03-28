@@ -42,8 +42,8 @@ export default () => {
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
-  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
+  const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit?.available);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -64,7 +64,7 @@ export default () => {
     if (isLoadingState || isLoadingLimits) {
       button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
+      button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(balance)) {
@@ -74,7 +74,7 @@ export default () => {
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
       button = <Button disabled>Amount exceeds daily limit</Button>;
     } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
+      button = <Button disabled>Enter address</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
@@ -87,13 +87,15 @@ export default () => {
     <>
       <Card title="Withdraw" note={note}>
         <TransferInput
-          balance={balance}
+          balance={zkAccount ? balance : null}
+          isLoadingBalance={isLoadingState}
           amount={displayAmount}
           onChange={setDisplayAmount}
           shielded={true}
           fee={fee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
+          isLoadingFee={isLoadingFee}
         />
         <MultilineInput
           placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
@@ -134,6 +136,7 @@ export default () => {
         />
       </Card>
       <Limits
+        loading={isLoadingLimits}
         limits={[
           { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
         ]}

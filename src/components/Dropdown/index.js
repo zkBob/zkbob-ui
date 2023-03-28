@@ -16,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default ({ children, content, ...props }) => {
+export default ({ children, content, disabled, ...props }) => {
   const [isVisible, setIsVisible] = useState(false);
   return (
     <>
@@ -24,7 +24,7 @@ export default ({ children, content, ...props }) => {
       <Tooltip
         overlayClassName="dropdown"
         placement="bottomRight"
-        trigger={['click']}
+        trigger={disabled ? [] : ['click']}
         overlay={content}
         showArrow={false}
         onPopupAlign={() => {

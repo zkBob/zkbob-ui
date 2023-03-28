@@ -16,6 +16,7 @@ const orange = '#EF8726';
 const orangeLight = '#FAE4DA';
 const orangeExtraLight = '#FFFAEE';
 const red = '#EF102A';
+const yellow = '#FBEED0';
 
 const light = {
   color: {
@@ -32,6 +33,7 @@ const light = {
     orangeExtraLight,
     blueExtraLight,
     purpleExtraLight,
+    yellow,
   },
   text: {
     color: {

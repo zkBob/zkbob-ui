@@ -41,7 +41,7 @@ export default forwardRef((props, ref) => {
       const rows = data.split('\n');
       const parsedData = await Promise.all(rows.map(async (row, index) => {
         try {
-          const rowData = row.replace(/\s/g, '').split(',');
+          const rowData = row.replace(/\s/g, '').replace(/^,+|,+$/g, '').split(',');
           const [address, amount] = rowData;
           if (!address || !amount || rowData.length !== 2) throw Error;
 
@@ -123,7 +123,7 @@ export default forwardRef((props, ref) => {
 
   return (
     <>
-      <Text>Add zkAddress, Amount of BOB to transfer. 1 address per line.</Text>
+      <Text>Add zkAddress, the amount of BOB to transfer. 1 address per row.</Text>
       <TextEditor
         value={data}
         onChange={setData}
@@ -137,7 +137,11 @@ export default forwardRef((props, ref) => {
           <Error>
             {(() => {
               if (errorType === 'syntax') {
-                return `${errors.length} rows with incorrect addresses or formatting issues.`;
+                const multi = errors.length > 1;
+                return `
+                  ${errors.length} row${multi ? 's' : ''} with incorrect
+                  address${multi ? 'es' : ''} or formatting issue${multi ? 's' : ''}.
+                `;
               } else if (errorType === 'duplicates') {
                 return 'Duplicate addresses found.'
               } else if (errorType === 'insufficient_funds') {

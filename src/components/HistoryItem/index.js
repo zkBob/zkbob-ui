@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
@@ -71,11 +72,45 @@ const AddressLink = ({ action, isMobile }) => {
   );
 };
 
+const Fee = ({ fee, highFee, isMobile }) => (
+  <>
+    {!fee.isZero() && (
+      <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
+    )}
+    {highFee && (
+      <Tooltip
+        content={
+          <span>
+            This transaction required additional operations, resulting in higher fees.{' '}
+            <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
+              Learn more
+            </Link>
+          </span>
+        }
+        placement={isMobile ? 'bottom' : 'right'}
+        delay={0}
+        width={200}
+      >
+        <InfoIcon />
+      </Tooltip>
+    )}
+  </>
+);
+
 export default ({ item, zkAccountId }) => {
   const date = useDateFromNow(item.timestamp);
   const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
+
+  const onCopy = useCallback((text, result) => {
+    if (result) {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  }, []);
+
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -86,19 +121,24 @@ export default ({ item, zkAccountId }) => {
       <Column>
         <RowSpaceBetween>
           <Row>
-            <TokenIcon src={tokenIcon()} />
-            <Text $error={item.failed}>
-              {actions[item.type].sign}{' '}
-              {(() => {
-                const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
-                return (
-                  <Tooltip content={formatNumber(total, 18)} placement="top">
-                    <span>{formatNumber(total, isMobile ? 4 : 18)}</span>
-                  </Tooltip>
-                );
-              })()}
-              {' '}{tokenSymbol()}
-            </Text>
+            <Row>
+              <TokenIcon src={tokenIcon()} />
+              <Text $error={item.failed}>
+                {actions[item.type].sign}{' '}
+                {(() => {
+                  const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+                  return (
+                    <Tooltip content={formatNumber(total, 18)} placement="top">
+                      <span>{formatNumber(total, 4)}</span>
+                    </Tooltip>
+                  );
+                })()}
+                {' '}{tokenSymbol()}
+              </Text>
+            </Row>
+            <FeeDesktop>
+              <Fee fee={item.fee} highFee={item.highFee} />
+            </FeeDesktop>
           </Row>
           <Row>
             <Date>{date}</Date>
@@ -113,6 +153,9 @@ export default ({ item, zkAccountId }) => {
             )}
           </Row>
         </RowSpaceBetween>
+        <FeeMobile>
+          <Fee fee={item.fee} highFee={item.highFee} isMobile />
+        </FeeMobile>
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
@@ -132,19 +175,23 @@ export default ({ item, zkAccountId }) => {
                     textAlign: 'center',
                   }}
                 >
-                  <ZkAddress>
-                    {item.type === TRANSFER_OUT ? (
-                      <IncognitoAvatar />
-                    ) : (
-                      <ZkAvatar seed={zkAccountId} size={16} />
-                    )}
-                    <Text style={{ marginLeft: 5 }}>
-                      {shortAddress(
-                        item.actions[0].to,
-                        isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
-                      )}
-                    </Text>
-                  </ZkAddress>
+                  <Tooltip content="Copied" placement="right" visible={isCopied}>
+                    <CopyToClipboard text={item.actions[0].to} onCopy={onCopy}>
+                      <ZkAddress>
+                        {item.type === TRANSFER_OUT ? (
+                          <IncognitoAvatar />
+                        ) : (
+                          <ZkAvatar seed={zkAccountId} size={16} />
+                        )}
+                        <Text style={{ marginLeft: 5 }}>
+                          {shortAddress(
+                            item.actions[0].to,
+                            isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                          )}
+                        </Text>
+                      </ZkAddress>
+                    </CopyToClipboard>
+                  </Tooltip>
                 </Tooltip>
               ) : (
                 <ZkAddress>
@@ -176,10 +223,14 @@ export default ({ item, zkAccountId }) => {
           </Row>
           <Row>
             {item.actions.length > 1 && item.type === TRANSFER_OUT && (
-              <Label>{isMobile ? 'Multi' : 'Multitransfer'}</Label>
+              <MultitransferLabel>
+                {isMobile ? 'Multi' : 'Multitransfer'}
+              </MultitransferLabel>
             )}
             {item.type === DIRECT_DEPOSIT && (
-              <Label>{isMobile ? 'Direct' : 'Direct deposit'}</Label>
+              <DirectDepositLabel>
+                {isMobile ? 'Direct' : 'Direct deposit'}
+              </DirectDepositLabel>
             )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
@@ -262,6 +313,8 @@ const Date = styled.span`
   opacity: 60%;
 `;
 
+const FeeText = styled(Date)``;
+
 const SpinnerSmall = styled(Spinner)`
   margin-left: 10px;
   path {
@@ -278,7 +331,7 @@ const ZkAddress = styled(Row)`
   cursor: pointer;
 `;
 
-const Label = styled.div`
+const MultitransferLabel = styled.div`
   background: #E6FFFA;
   border-radius: 4px;
   font-size: 14px;
@@ -286,14 +339,33 @@ const Label = styled.div`
   color: #319795;
   padding: 0 8px;
   margin-right: 10px;
+  font-weight: ${props => props.theme.text.weight.bold};
+`;
+
+const DirectDepositLabel = styled(MultitransferLabel)`
+  background: #FFFAF0;
+  color: #DD6B20;
 `;
 
 const InfoIcon = styled(InfoIconDefault)`
-  margin-bottom: -2px;
   margin-left: 3px;
   &:hover {
     & > path {
       fill: ${props => props.theme.color.purple};
     }
+  }
+`;
+
+const FeeDesktop = styled(Row)`
+  margin-left: 5px;
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+
+const FeeMobile = styled(Row)`
+  display: none;
+  @media only screen and (max-width: 500px) {
+    display: flex;
   }
 `;

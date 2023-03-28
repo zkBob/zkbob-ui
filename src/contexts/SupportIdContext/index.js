@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import * as Sentry from "@sentry/react";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,9 +9,13 @@ export default SupportIdContext;
 export const SupportIdContextProvider = ({ children }) => {
   const [supportId, setSupportId] = useState(null);
 
-  useEffect(() => {
+  const updateSupportId = useCallback(() => {
     setSupportId(uuidv4());
   }, []);
+
+  useEffect(() => {
+    updateSupportId();
+  }, [updateSupportId]);
 
   useEffect(() => {
     Sentry.configureScope(scope => {
@@ -34,7 +38,7 @@ export const SupportIdContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <SupportIdContext.Provider value={{ supportId }}>
+    <SupportIdContext.Provider value={{ supportId, updateSupportId }}>
       {children}
     </SupportIdContext.Provider>
   );

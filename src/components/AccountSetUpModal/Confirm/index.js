@@ -10,41 +10,54 @@ export default ({ mnemonic, confirmMnemonic }) => {
   );
   const [repeated, setRepeated] = useState([]);
   const [match, setMatch] = useState(false);
+
   const addWord = useCallback(wordObj => {
-    const index = repeated.map(({ index }) => index).indexOf(wordObj.index);
     const newRepeated = [...repeated];
-    if (index > -1) {
-      newRepeated.splice(index, 1);
-    } else {
-      newRepeated.push(wordObj);
-    }
+    newRepeated.push(wordObj);
     setRepeated(newRepeated);
   }, [repeated]);
+
+  const removeWord = useCallback(wordObj => {
+    const index = repeated.map(({ index }) => index).indexOf(wordObj.index);
+    const newRepeated = [...repeated];
+    newRepeated.splice(index, 1);
+    setRepeated(newRepeated);
+  }, [repeated]);
+
   useEffect(() => {
     const match = mnemonic === repeated.map(({ word }) => word).join(' ');
     setMatch(match);
   }, [mnemonic, repeated]);
+
   return (
     <Container>
       <Description>
-        Please input your seed phrase to verify it
+        Please input your seed phrase to verify it.<br/> Click on a word to remove it
       </Description>
       <MnemonicInput>
         {repeated.map(wordObj =>
-          <Word key={wordObj.index}>{wordObj.word}</Word>
-        )}
-      </MnemonicInput>
-      <Words>
-        {shuffled.map(wordObj =>
           <Word
-            key={`shuffled-${wordObj.index}`}
-            active={repeated.map(({ index }) => index).includes(wordObj.index)}
+            key={wordObj.index}
             clickable
-            onClick={() => addWord(wordObj)}
+            onClick={() => removeWord(wordObj)}
           >
             {wordObj.word}
           </Word>
         )}
+      </MnemonicInput>
+      <Words>
+        {shuffled.map(wordObj => {
+          const disabled = repeated.map(({ index }) => index).includes(wordObj.index);
+          return (
+            <Word
+              key={`shuffled-${wordObj.index}`}
+              disabled={disabled}
+              onClick={disabled ? null : () => addWord(wordObj)}
+            >
+              {wordObj.word}
+            </Word>
+          );
+        })}
       </Words>
       <Button disabled={!match} onClick={confirmMnemonic}>Verify</Button>
     </Container>
@@ -75,15 +88,15 @@ const Words = styled.div`
 
 const Word = styled.div`
   padding: 8px 10px;
-  border: 1px solid ${props => props.theme.mnemonic.border[props.active ? 'active' : 'default']};
-  background: ${props => props.theme.mnemonic.background[props.active ? 'active' : 'default']};
+  border: 1px solid ${props => props.theme.mnemonic.border[props.disabled ? 'active' : 'default']};
+  background: ${props => props.theme.mnemonic.background[props.disabled ? 'active' : 'default']};
   border-radius: 10px;
   box-sizing: border-box;
   margin-bottom: 16px;
   margin-right: 8px;
-  cursor: ${props => props.clickable ? 'pointer' : 'default'};
+  cursor: ${props => props.disabled ? 'default' : 'pointer'};
   font-size: 16px;
-  color: ${props => props.theme.mnemonic.text.color[props.active ? 'active' : 'default']};
+  color: ${props => props.theme.mnemonic.text.color[props.disabled ? 'active' : 'default']};
 `;
 
 const MnemonicInput = styled(Words)`

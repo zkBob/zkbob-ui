@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { useIdleTimer } from 'react-idle-timer';
 
 import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
@@ -16,6 +17,7 @@ import SwapModal from 'containers/SwapModal';
 import SwapOptionsModal from 'containers/SwapOptionsModal';
 import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
 import SeedPhraseModal from 'containers/SeedPhraseModal';
+import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -90,10 +92,14 @@ const Routes = ({ showWelcome, params }) => (
 );
 
 const Content = () => {
-  const { zkAccount, isLoadingZkAccount, isDemo } = useContext(ZkAccountContext);
+  const { zkAccount, isLoadingZkAccount, isDemo, lockAccount } = useContext(ZkAccountContext);
   const location = useLocation();
   const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
   const isRestricted = useRestriction();
+  useIdleTimer({
+    timeout: Number(process.env.REACT_APP_LOCK_TIMEOUT) || (1000 * 60 * 15),
+    onIdle: () => lockAccount(),
+  });
 
   if (isRestricted) {
     return (
@@ -137,6 +143,7 @@ const Content = () => {
         <SwapOptionsModal />
         <ConfirmLogoutModal />
         <SeedPhraseModal />
+        <IncreasedLimitsModal />
       </Layout>
     </>
   );
@@ -179,8 +186,9 @@ const Gradient = styled.div`
   left: calc(50% - 270px);
   top: 100px;
   background: linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
+  background: -moz-linear-gradient(231.28deg, rgba(247, 194, 59, 0.2) 19.66%, rgba(232, 110, 255, 0.2) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
   filter: blur(250px);
-  transform: rotate(27.74deg);
+  transform: rotate(27.74deg) translate3d(0,0,0);
 `;
 
 const BackgroundImages = styled.div`

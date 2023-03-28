@@ -7,6 +7,7 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
 import SpinnerDefault from 'components/Spinner';
+import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as LogoDefault } from 'assets/logo-beta.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
@@ -17,16 +18,18 @@ import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
 import { NETWORKS, CONNECTORS_ICONS } from 'constants';
+import { useWindowDimensions } from 'hooks';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, poolBalance, zkAccountId, refresh, isRefreshing,
+  balance, poolBalance, zkAccountId, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo, disconnect,
+  openSeedPhraseModal, isDemo, disconnect, isLoadingState,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
+  const { width } = useWindowDimensions();
 
   if (empty) {
     return (
@@ -59,15 +62,22 @@ export default ({
             changeWallet={openWalletModal}
             disconnect={disconnect}
             buttonRef={walletButtonRef}
+            disabled={isLoadingBalance}
           >
-            <AccountLabel ref={walletButtonRef} $refreshing={isRefreshing}>
+            <AccountLabel ref={walletButtonRef} $refreshing={isLoadingBalance}>
               <Row>
                 {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
-                <Balance>
-                  {formatNumber(balance)} {tokenSymbol()}
-                </Balance>
-                <DropdownIcon />
+                {(isLoadingBalance && width > 1000) ? (
+                  <Skeleton width={80} />
+                ) : (
+                  <>
+                    <Balance>
+                      {formatNumber(balance)} {tokenSymbol()}
+                    </Balance>
+                    <DropdownIcon />
+                  </>
+                )}
               </Row>
             </AccountLabel>
           </WalletDropdown>
@@ -88,23 +98,31 @@ export default ({
               showSeedPhrase={openSeedPhraseModal}
               buttonRef={zkAccountButtonRef}
               isDemo={isDemo}
+              isLoadingState={isLoadingState}
+              disabled={isLoadingState}
             >
-              <AccountLabel ref={zkAccountButtonRef} $refreshing={isRefreshing}>
+              <AccountLabel ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address>zkAccount</Address>
-                  <Balance>
-                    <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                      <span>{formatNumber(poolBalance)}</span>
-                    </Tooltip>
-                    {' '}{tokenSymbol(true)}
-                  </Balance>
-                  <DropdownIcon />
+                  {(isLoadingState && width > 1000) ? (
+                    <Skeleton width={80} />
+                  ) : (
+                    <>
+                      <Balance>
+                        <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
+                          <span>{formatNumber(poolBalance)}</span>
+                        </Tooltip>
+                        {' '}{tokenSymbol(true)}
+                      </Balance>
+                      <DropdownIcon />
+                    </>
+                  )}
                 </Row>
               </AccountLabel>
             </ZkAccountDropdown>
             <RefreshButtonContainer onClick={refresh}>
-              {isRefreshing ? (
+              {(isLoadingBalance || isLoadingState) ? (
                 <Spinner size={18} />
               ) : (
                 <RefreshIcon />
@@ -176,16 +194,16 @@ const NetworkLabel = styled(Row)`
 `;
 
 const AccountLabel = styled(NetworkLabel)`
-  cursor: pointer;
+  cursor: ${props => props.$refreshing ? 'not-allowed' : 'pointer'};
   overflow: hidden;
   border: 1px solid ${props => props.theme.button.primary.text.color.contrast};
   &:hover {
-    border-color: ${props => props.theme.button.link.text.color};
+    border-color: ${props => !props.$refreshing && props.theme.button.link.text.color};
     & span {
-      color: ${props => props.theme.button.link.text.color};
+      color: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
     & path {
-      fill: ${props => props.theme.button.link.text.color};
+      fill: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
   }
 `;
@@ -197,13 +215,13 @@ const Icon = styled.img`
 
 const Address = styled.span`
   margin-left: 8px;
+  margin-right: 8px;
   @media only screen and (max-width: 1000px) {
     display: none;
   }
 `;
 
 const Balance = styled.span`
-  margin-left: 8px;
   font-weight: ${props => props.theme.text.weight.extraBold};
   @media only screen and (max-width: 1000px) {
     display: none;

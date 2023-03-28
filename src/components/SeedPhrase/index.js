@@ -4,7 +4,7 @@ export default ({ value }) => (
   <SeedPhrase>
     {value.split(' ').map((word, index) =>
       <WordContainer key={index}>
-        <Number>{index + 1} </Number>
+        <Number>{index + 1}</Number>
         <Word>{word}</Word>
       </WordContainer>
     )}
@@ -21,8 +21,6 @@ const SeedPhrase = styled.div`
 
 const WordContainer = styled.div`
   padding: 8px 10px;
-  border: 1px solid ${({ theme }) => theme.walletConnectorOption.border.default};
-  border-radius: 10px;
   box-sizing: border-box;
   margin-bottom: 16px;
   margin-right: 8px;
@@ -35,4 +33,5 @@ const Word = styled.span`
 
 const Number = styled(Word)`
   color: ${({ theme }) => theme.text.color.secondary};
+  margin-right: 7px;
 `;

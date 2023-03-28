@@ -41,6 +41,21 @@ export const ModalContextProvider = ({ children }) => {
   const openSeedPhraseModal = () => setIsSeedPhraseModalOpen(true);
   const closeSeedPhraseModal = () => setIsSeedPhraseModalOpen(false);
 
+  const [isIncreasedLimitsModalOpen, setIsIncreasedLimitsModalOpen] = useState(false);
+  const openIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(true);
+  const closeIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(false);
+
+  const closeAllModals = () => {
+    closeWalletModal();
+    closeAccountSetUpModal();
+    closeChangePasswordModal();
+    closeSwapModal();
+    closeSwapOptionsModal();
+    closeConfirmLogoutModal();
+    closeSeedPhraseModal();
+    closeIncreasedLimitsModal();
+  };
+
   return (
     <ModalContext.Provider
       value={{
@@ -53,6 +68,8 @@ export const ModalContextProvider = ({ children }) => {
         isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
         isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
         isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
+        isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
+        closeAllModals,
       }}
     >
       {children}

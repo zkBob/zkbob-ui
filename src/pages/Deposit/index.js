@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/react';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, TokenBalanceContext, ModalContext } from 'contexts';
+import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsContext } from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -15,6 +15,7 @@ import Button from 'components/Button';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
+import IncreasedLimitsBanner from 'components/IncreasedLimitsBanner';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { useDepositLimit, useMaxAmountExceeded } from './hooks';
@@ -33,12 +34,13 @@ export default () => {
       isLoadingState, isPending, isDemo,
       isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
-  const { balance } = useContext(TokenBalanceContext);
-  const { openWalletModal } = useContext(ModalContext);
+  const { balance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const { openWalletModal, openIncreasedLimitsModal } = useContext(ModalContext);
+  const { status: increasedLimitsStatus } = useContext(IncreasedLimitsContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const latestAction = useLatestAction(HISTORY_ACTION_TYPES.DEPOSIT);
-  const { fee } = useFee(amount, TxType.Deposit);
+  const { fee, isLoadingFee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
 
@@ -66,11 +68,13 @@ export default () => {
     <>
       <Card title="Deposit" note={note}>
         <TransferInput
-          balance={balance}
+          balance={account ? balance : null}
+          isLoadingBalance={isLoadingBalance}
           amount={displayAmount}
           onChange={setDisplayAmount}
           shielded={false}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
         />
@@ -79,7 +83,7 @@ export default () => {
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
-          else if (amount.isZero()) return <Button disabled>Enter an amount</Button>
+          else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
           else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
           else if (amount.gt(balance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
@@ -87,7 +91,15 @@ export default () => {
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
+      {(increasedLimitsStatus && process.env.REACT_APP_KYC_STATUS_URL) &&
+        <IncreasedLimitsBanner
+          status={increasedLimitsStatus}
+          openModal={openIncreasedLimitsModal}
+          account={account}
+        />
+      }
       <Limits
+        loading={isLoadingLimits}
         limits={[
           { prefix: "Deposit", suffix: "limit per transaction", value: limits.singleDepositLimit },
           { prefix: "Daily deposit", suffix: "limit per address", value: limits.dailyDepositLimitPerAddress },
