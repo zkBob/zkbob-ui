@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import Button from 'components/Button';
 import Input from 'components/Input';
 
 export default ({ confirmPassword }) => {
+  const history = useHistory();
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [lengthError, setLengthError] = useState(false);
@@ -30,7 +32,8 @@ export default ({ confirmPassword }) => {
     if (!lengthError && !matchError) {
       confirmPassword(password);
     }
-  }, [password, passwordConfirmation, confirmPassword]);
+    history.replace(history.location.pathname);
+  }, [password, passwordConfirmation, confirmPassword, history]);
 
   const handleKeyPress = useCallback(event => {
     if(event.key === 'Enter'){

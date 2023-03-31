@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useContext} from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import Button from 'components/Button';
 import Input from 'components/Input';
@@ -9,6 +10,7 @@ import { ModalContext, ZkAccountContext } from 'contexts';
 export default () => {
   const { isChangePasswordModalOpen, closeChangePasswordModal } = useContext(ModalContext);
   const { changePassword, verifyPassword } = useContext(ZkAccountContext);
+  const history = useHistory();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirmation, setNewPasswordConfirmation] = useState('');
@@ -54,9 +56,10 @@ export default () => {
       changePassword(oldPassword, newPassword);
       closeModal();
     }
+    history.replace(history.location.pathname);
   }, [
     oldPassword, newPassword, newPasswordConfirmation,
-    changePassword, verifyPassword, closeModal,
+    changePassword, verifyPassword, closeModal, history,
   ]);
 
   const handleKeyPress = useCallback(event => {

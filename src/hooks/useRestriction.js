@@ -26,6 +26,7 @@ export default () => {
   useEffect(() => {
     async function check() {
       try {
+        if (window.location.host.includes(process.env.REACT_APP_DEV_HOST)) return;
         if (!process.env.REACT_APP_RESTRICTED_COUNTRIES) return;
         const RESTRICTED_COUNTRIES = process.env.REACT_APP_RESTRICTED_COUNTRIES.split(',');
         const country = await getUserCountry();
