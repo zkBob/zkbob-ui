@@ -17,6 +17,7 @@ import {
 } from 'contexts';
 
 import { TX_STATUSES } from 'constants';
+import { showLoadingError } from 'utils';
 
 import zp from './zp.js';
 import { aggregateFees, splitDirectDeposits } from './utils.js';
@@ -87,6 +88,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
+        showLoadingError('zkAccount');
       }
       zkAccountId = ethers.utils.id(secretKey);
     }
@@ -118,6 +120,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateBalance' } });
+        showLoadingError('zkAccount balance');
       }
     }
     setBalance(balance);
@@ -156,6 +159,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateHistory' } });
+        showLoadingError('history');
       }
     }
     setHistory(history);
@@ -198,6 +202,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateLimits' } });
+      showLoadingError('limits');
     }
     setLimits(limits);
     setIsLoadingLimits(false);

@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { toast } from 'react-toastify';
 
 const { parseEther, formatEther, commify } = ethers.utils;
 
@@ -25,3 +26,12 @@ export const minBigNumber = (...numbers) =>
 
 export const maxBigNumber = (...numbers) =>
   numbers.reduce((p, v) =>  (p.gt(v) ? p : v));
+
+export const showLoadingError = cause => {
+  toast.error(
+    <span>
+      <b>Error loading {cause}.</b><br />
+      Please try again later or contact our support if the issue persists.
+    </span>
+  );
+};
