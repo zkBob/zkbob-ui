@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
@@ -13,7 +14,6 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import { formatNumber, shortAddress } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow, useWindowDimensions } from 'hooks';
-import { HISTORY_ACTION_TYPES } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
 import { ReactComponent as WithdrawIcon } from 'assets/withdraw.svg';
@@ -22,49 +22,55 @@ import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 const {
-  DEPOSIT,
-  TRANSFER_IN,
-  TRANSFER_OUT,
-  WITHDRAWAL,
-  TRANSFER_SELF,
-  DIRECT_DEPOSIT,
-} = HISTORY_ACTION_TYPES;
+  Deposit,
+  TransferIn,
+  TransferOut,
+  Withdrawal,
+  DirectDeposit,
+} = HistoryTransactionType;
 
 const actions = {
-  [DEPOSIT]: {
+  [Deposit]: {
     name: 'Deposit',
     icon: DepositIcon,
     sign: '+',
   },
-  [TRANSFER_IN]: {
+  [TransferIn]: {
     name: 'Transfer',
     icon: TransferIcon,
     sign: '+',
   },
-  [TRANSFER_OUT]: {
+  [TransferOut]: {
     name: 'Transfer',
     icon: TransferIcon,
     sign: '-',
   },
-  [WITHDRAWAL]: {
+  [Withdrawal]: {
     name: 'Withdrawal',
     icon: WithdrawIcon,
     sign: '-',
   },
-  [TRANSFER_SELF]: {
+  [DirectDeposit]: {
+    name: 'Deposit',
+    icon: DepositIcon,
+    sign: '+',
+  },
+  5: { // old transfer self
     name: 'Transfer',
     icon: TransferIcon,
     sign: '',
   },
-  [DIRECT_DEPOSIT]: {
-    name: 'Deposit',
-    icon: DepositIcon,
-    sign: '+',
-  }
 };
 
+function getSign(item) {
+  if (item.actions.length === 1 && item.actions[0].isLoopback) {
+    return '';
+  }
+  return actions[item.type].sign;
+}
+
 const AddressLink = ({ action, isMobile }) => {
-  const address = action.type === DEPOSIT ? action.actions[0].from : action.actions[0].to;
+  const address = action.type === Deposit ? action.actions[0].from : action.actions[0].to;
   return (
     <Link size={16} href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}>
       {shortAddress(address, isMobile ? 10 : 22)}
@@ -124,7 +130,7 @@ export default ({ item, zkAccountId }) => {
             <Row>
               <TokenIcon src={tokenIcon()} />
               <Text $error={item.failed}>
-                {actions[item.type].sign}{' '}
+                {getSign(item)}{' '}
                 {(() => {
                   const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
                   return (
@@ -159,9 +165,9 @@ export default ({ item, zkAccountId }) => {
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
-              {item.type === DEPOSIT ? 'From' : 'To'}
+              {item.type === Deposit ? 'From' : 'To'}
             </Text>
-            {[DEPOSIT, WITHDRAWAL].includes(item.type) ? (
+            {[Deposit, Withdrawal].includes(item.type) ? (
               <AddressLink action={item} isMobile={isMobile} />
             ) : (
               item.actions.length === 1 ? (
@@ -178,7 +184,7 @@ export default ({ item, zkAccountId }) => {
                   <Tooltip content="Copied" placement="right" visible={isCopied}>
                     <CopyToClipboard text={item.actions[0].to} onCopy={onCopy}>
                       <ZkAddress>
-                        {item.type === TRANSFER_OUT ? (
+                        {(item.type === TransferOut && !item.actions[0].isLoopback) ? (
                           <IncognitoAvatar />
                         ) : (
                           <ZkAvatar seed={zkAccountId} size={16} />
@@ -186,7 +192,7 @@ export default ({ item, zkAccountId }) => {
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
                             item.actions[0].to,
-                            isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                            isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
                           )}
                         </Text>
                       </ZkAddress>
@@ -195,7 +201,7 @@ export default ({ item, zkAccountId }) => {
                 </Tooltip>
               ) : (
                 <ZkAddress>
-                  {item.type === TRANSFER_OUT ? (
+                  {item.type === TransferOut ? (
                     <>
                       <IncognitoAvatar />
                       <Button
@@ -212,7 +218,7 @@ export default ({ item, zkAccountId }) => {
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
-                          isMobile ? 10 : (item.type === DIRECT_DEPOSIT ? 16 : 22)
+                          isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
                         )}
                       </Text>
                     </>
@@ -222,12 +228,12 @@ export default ({ item, zkAccountId }) => {
             )}
           </Row>
           <Row>
-            {item.actions.length > 1 && item.type === TRANSFER_OUT && (
+            {item.actions.length > 1 && item.type === TransferOut && (
               <MultitransferLabel>
                 {isMobile ? 'Multi' : 'Multitransfer'}
               </MultitransferLabel>
             )}
-            {item.type === DIRECT_DEPOSIT && (
+            {item.type === DirectDeposit && (
               <DirectDepositLabel>
                 {isMobile ? 'Direct' : 'Direct deposit'}
               </DirectDepositLabel>
@@ -244,9 +250,10 @@ export default ({ item, zkAccountId }) => {
       </Column>
       {item.actions.length > 1 && (
         <MultitransferDetailsModal
-          transfers={item.actions.map(action => ({ address: action.to, amount: action.amount }))}
+          transfers={item.actions.map(action => ({ address: action.to, ...action }))}
           isOpen={isDetailsModalOpen}
           onClose={() => setIsDetailsModalOpen(false)}
+          zkAccountId={zkAccountId}
           isSent={true}
         />
       )}

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -26,7 +27,7 @@ import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
 
-import { NETWORKS, HISTORY_ACTION_TYPES } from 'constants';
+import { NETWORKS } from 'constants';
 import { useMaxAmountExceeded } from './hooks';
 
 const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
@@ -41,7 +42,7 @@ export default () => {
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
+  const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit?.available);
 

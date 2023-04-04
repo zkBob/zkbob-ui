@@ -21,7 +21,7 @@ import { tokenSymbol } from 'utils/token';
 export default forwardRef((props, ref) => {
   const {
     zkAccount, isLoadingState, transferMulti,
-    estimateFee, verifyShieldedAddress,
+    estimateFee, verifyShieldedAddress, zkAccountId,
   } = useContext(ZkAccountContext);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState([]);
@@ -177,6 +177,7 @@ export default forwardRef((props, ref) => {
           isOpen={isDetailsModalOpen}
           onBack={closeDetailsModal}
           transfers={parsedData}
+          zkAccountId={zkAccountId}
         />
     </>
   );

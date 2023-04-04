@@ -5,13 +5,14 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Modal from 'components/Modal';
 import Tooltip from 'components/Tooltip';
+import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
 
-const ListItem = ({ index, data }) => {
+const ListItem = ({ index, data, zkAccountId }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -24,7 +25,11 @@ const ListItem = ({ index, data }) => {
   return (
     <ItemContainer>
       <Index>{index + 1}</Index>
-      <IncognitoAvatar />
+      {data.isLoopback ? (
+        <ZkAvatar seed={zkAccountId} size={16} />
+      ) : (
+        <IncognitoAvatar />
+      )}
       <Tooltip
           content={data.address}
           delay={0.3}
@@ -50,7 +55,7 @@ const ListItem = ({ index, data }) => {
   );
 }
 
-export default ({ isOpen, onClose, onBack, transfers, isSent }) => {
+export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccountId }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -73,7 +78,7 @@ export default ({ isOpen, onClose, onBack, transfers, isSent }) => {
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (
-            <ListItem key={index} index={index} data={transfer} />
+            <ListItem key={index} index={index} data={transfer} zkAccountId={zkAccountId} />
           ))}
         </List>
       </Container>

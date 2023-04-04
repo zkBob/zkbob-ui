@@ -1,5 +1,6 @@
 import React, { useContext, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import PendingAction from 'containers/PendingAction';
 
@@ -17,14 +18,12 @@ import { ZkAccountContext } from 'contexts';
 
 import { useLatestAction } from 'hooks';
 
-import { HISTORY_ACTION_TYPES } from 'constants';
-
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {
   const { isPending } = useContext(ZkAccountContext);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
+  const latestAction = useLatestAction(HistoryTransactionType.TransferOut);
   const [isMulti, setIsMulti] = useState(false);
   const multitransferRef = useRef(null);
   const fileInputRef = useRef(null);

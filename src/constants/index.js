@@ -32,15 +32,6 @@ export const NETWORKS = {
 
 export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
 
-export const HISTORY_ACTION_TYPES = {
-  DEPOSIT: 1,
-  TRANSFER_IN: 2,
-  TRANSFER_OUT: 3,
-  WITHDRAWAL: 4,
-  TRANSFER_SELF: 5,
-  DIRECT_DEPOSIT: 6,
-};
-
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,
   'WalletConnect': require('assets/walletconnect.svg').default,

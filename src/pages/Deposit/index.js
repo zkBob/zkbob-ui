@@ -3,6 +3,7 @@ import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -23,8 +24,6 @@ import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
 
-import { HISTORY_ACTION_TYPES } from 'constants';
-
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
 export default () => {
@@ -39,7 +38,7 @@ export default () => {
   const { status: increasedLimitsStatus } = useContext(IncreasedLimitsContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.DEPOSIT);
+  const latestAction = useLatestAction(HistoryTransactionType.Deposit);
   const { fee, isLoadingFee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
