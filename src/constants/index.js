@@ -28,6 +28,10 @@ export const NETWORKS = {
     name: 'Goerli',
     icon: require('assets/ethereum.svg').default,
   },
+  10: {
+    name: 'Optimism',
+    icon: require('assets/optimism.svg').default,
+  },
 };
 
 export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';

@@ -71,3 +71,18 @@
   REACT_APP_BUCKET_URL = "https://r2-goerli.zkbob.com"
   REACT_APP_RESTRICTED_COUNTRIES = "AE"
   REACT_APP_LOCK_TIMEOUT = "300000"
+
+[context.optimism.environment]
+  REACT_APP_EXPLORER_ADDRESS_TEMPLATE = "https://optimistic.etherscan.io/address/%s"
+  REACT_APP_EXPLORER_TX_TEMPLATE = "https://optimistic.etherscan.io/tx/%s"
+  REACT_APP_EXPLORER_URL = "https://optimistic.etherscan.io"
+  REACT_APP_NETWORK = "10"
+  REACT_APP_CONTRACT_ADDRESS = "0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C"
+  REACT_APP_TOKEN_ADDRESS = "0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B"
+  REACT_APP_RELAYER_URL = "https://relayer-optimism.zkbob.com/"
+  REACT_APP_RPC_URL = "https://mainnet.optimism.io"
+  REACT_APP_ZEROPOOL_NETWORK = "optimism"
+  REACT_APP_BUCKET_URL = "https://r2.zkbob.com"
+  REACT_APP_SNARK_PARAMS_VERSION = "22022023"
+  REACT_APP_RESTRICTED_COUNTRIES = "AE"
+  REACT_APP_LOCK_TIMEOUT = "300000"

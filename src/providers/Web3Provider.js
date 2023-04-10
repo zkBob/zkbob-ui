@@ -1,6 +1,6 @@
 import { WagmiConfig, configureChains, createClient } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { sepolia, polygon, goerli } from 'wagmi/chains';
+import { sepolia, polygon, goerli, optimism } from 'wagmi/chains';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { WalletConnectLegacyConnector } from 'wagmi/connectors/walletConnectLegacy';
@@ -9,6 +9,7 @@ const chainsMap = {
   '137': polygon,
   '11155111': sepolia,
   '5': goerli,
+  '10': optimism,
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
