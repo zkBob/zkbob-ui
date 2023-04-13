@@ -2,7 +2,10 @@ import React, { useContext, useCallback } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 import Header from 'components/Header';
 
-import { ZkAccountContext, ModalContext, TokenBalanceContext } from 'contexts';
+import {
+  ZkAccountContext, ModalContext,
+  TokenBalanceContext, PoolContext,
+} from 'contexts';
 
 export default ({ empty }) => {
   const { address, connector } = useAccount();
@@ -11,13 +14,14 @@ export default ({ empty }) => {
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
     zkAccountId, updatePoolData, generateAddress, isDemo,
-    isLoadingState,
+    isLoadingState, switchToPool,
   } = useContext(ZkAccountContext);
   const {
     openWalletModal, openSeedPhraseModal,
-    openAccountSetUpModal, openSwapOptionsModal,
+    openAccountSetUpModal, openSwapModal,
     openChangePasswordModal, openConfirmLogoutModal,
   } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
 
   const refresh = useCallback(e => {
     e.stopPropagation();
@@ -30,7 +34,7 @@ export default ({ empty }) => {
       <Header
         openWalletModal={openWalletModal}
         openAccountSetUpModal={openAccountSetUpModal}
-        openSwapModal={openSwapOptionsModal}
+        openSwapModal={openSwapModal}
         openChangePasswordModal={openChangePasswordModal}
         openConfirmLogoutModal={openConfirmLogoutModal}
         account={address}
@@ -48,6 +52,8 @@ export default ({ empty }) => {
         openSeedPhraseModal={openSeedPhraseModal}
         isDemo={isDemo}
         disconnect={disconnect}
+        switchToPool={switchToPool}
+        currentPool={currentPool}
       />
     </>
   );

@@ -1,11 +1,13 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers } from 'ethers';
 import { useContract, useAccount, useProvider } from 'wagmi';
 import * as Sentry from '@sentry/react';
 
-import { showLoadingError } from 'utils';
+import { PoolContext } from 'contexts';
 
-const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
+import { showLoadingError } from 'utils';
+import config from 'config';
+
 const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
 
 const TokenBalanceContext = createContext({ balance: null });
@@ -14,8 +16,13 @@ export default TokenBalanceContext;
 
 export const TokenBalanceContextProvider = ({ children }) => {
   const { address: account } = useAccount();
-  const provider = useProvider();
-  const token = useContract({ address: TOKEN_ADDRESS, abi: TOKEN_ABI, signerOrProvider: provider });
+  const { currentPool } = useContext(PoolContext);
+  const provider = useProvider({ chainId: config.pools[currentPool].chainId });
+  const token = useContract({
+    address: config.pools[currentPool].tokenAddress,
+    abi: TOKEN_ABI,
+    signerOrProvider: provider
+  });
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 

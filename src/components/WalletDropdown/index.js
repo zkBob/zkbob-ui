@@ -13,10 +13,13 @@ import { ReactComponent as CheckIcon } from 'assets/check.svg';
 import { formatNumber } from 'utils';
 import { tokenIcon, tokenSymbol } from 'utils/token';
 
-import { CONNECTORS_ICONS } from 'constants';
+import { CONNECTORS_ICONS, NETWORKS } from 'constants';
 
 
-const Content = ({ address, balance, connector, changeWallet, disconnect, buttonRef }) => {
+const Content = ({
+  address, balance, connector, changeWallet,
+  disconnect, buttonRef, currentChainId,
+}) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -59,7 +62,7 @@ const Content = ({ address, balance, connector, changeWallet, disconnect, button
       </CopyToClipboard>
       <OptionButton
         type="link"
-        href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}
+        href={NETWORKS[currentChainId].blockExplorerUrls.address.replace('%s', address)}
       >
         View in Explorer
       </OptionButton>
@@ -72,6 +75,7 @@ const Content = ({ address, balance, connector, changeWallet, disconnect, button
 export default ({
   address, balance, connector, changeWallet,
   disconnect, buttonRef, children, disabled,
+  currentChainId,
 }) => (
   <Dropdown
     disabled={disabled}
@@ -83,6 +87,7 @@ export default ({
         changeWallet={changeWallet}
         disconnect={disconnect}
         buttonRef={buttonRef}
+        currentChainId={currentChainId}
       />
     )}
   >

@@ -7,7 +7,7 @@ import { HistoryTransactionType } from 'zkbob-client-js';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -26,6 +26,7 @@ import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
+import config from 'config';
 
 import { NETWORKS } from 'constants';
 import { useMaxAmountExceeded } from './hooks';
@@ -38,6 +39,7 @@ export default () => {
     isPending, maxTransferable, isDemo,
     limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
@@ -45,6 +47,7 @@ export default () => {
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit?.available);
+  const currentChainId = config.pools[currentPool].chainId;
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -99,30 +102,32 @@ export default () => {
           isLoadingFee={isLoadingFee}
         />
         <MultilineInput
-          placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
+          placeholder={`Enter ${NETWORKS[currentChainId].name} address of receiver`}
           secondary
           value={receiver}
           onChange={setReceiver}
         />
         {button}
-        <MessageContainer>
-          <Row>
-            <Text>Withdraw at least</Text>
-            <BobIcon />
-            <Text style={{ marginRight: 4 }}><b>10 BOB</b></Text>
-          </Row>
-          <Row>
-            <Text>and receive an additional <b>0.1 MATIC *</b></Text>
-            <Tooltip
-              content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
-              placement="right"
-              delay={0}
-              width={180}
-            >
-              <InfoIcon />
-            </Tooltip>
-          </Row>
-        </MessageContainer>
+        {currentChainId === 137 && ( // only polygon
+          <MessageContainer>
+            <Row>
+              <Text>Withdraw at least</Text>
+              <BobIcon />
+              <Text style={{ marginRight: 4 }}><b>10 BOB</b></Text>
+            </Row>
+            <Row>
+              <Text>and receive an additional <b>0.1 MATIC *</b></Text>
+              <Tooltip
+                content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
+                placement="right"
+                delay={0}
+                width={180}
+              >
+                <InfoIcon />
+              </Tooltip>
+            </Row>
+          </MessageContainer>
+        )}
         <ConfirmTransactionModal
           title="Withdrawal confirmation"
           isOpen={isConfirmModalOpen}
@@ -148,6 +153,7 @@ export default () => {
           shielded={true}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
+          currentChainId={currentChainId}
         />
       )}
     </>

@@ -8,34 +8,25 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 export default () => {
-  const {
-    isSwapModalOpen, closeSwapModal, openSwapOptionsModal,
-  } = useContext(ModalContext);
+  const { isSwapModalOpen, closeSwapModal } = useContext(ModalContext);
   const widgetEvents = useWidgetEvents();
   const [isInProgress, setIsInProgress] = useState(false);
-  const [nextAction, setNextAction] = useState(null);
+  const [isConfirmationShown, setIsConfirmationShown] = useState(false);
 
-  const close = useCallback(nextAction => {
-    closeSwapModal();
-    if (nextAction === 'back') {
-      openSwapOptionsModal();
-    }
-  }, [closeSwapModal, openSwapOptionsModal]);
-
-  const tryToClose = useCallback(nextAction => {
+  const tryToClose = useCallback(() => {
     if (isInProgress) {
-      setNextAction(nextAction);
+      setIsConfirmationShown(true);
       return;
     }
-    close(nextAction);
-  }, [isInProgress, close]);
+    closeSwapModal();
+  }, [isInProgress, closeSwapModal]);
 
   const confirm = useCallback(() => {
-    close(nextAction);
-    setNextAction(null);
-  }, [nextAction, close]);
+    closeSwapModal();
+    setIsConfirmationShown(false);
+  }, [closeSwapModal]);
 
-  const reject = () => setNextAction(null);
+  const reject = () => setIsConfirmationShown(false);
 
   useEffect(() => {
     widgetEvents.on(WidgetEvent.RouteExecutionStarted, () => setIsInProgress(true));
@@ -47,22 +38,21 @@ export default () => {
   return (
     <Modal
       isOpen={isSwapModalOpen}
-      onClose={nextAction ? null : () => tryToClose('close')}
-      onBack={nextAction ? null : () => tryToClose('back')}
+      onClose={isConfirmationShown ? null : () => tryToClose()}
       width={480}
       style={{ padding: '26px 0 0' }}
-      title={!!nextAction ? 'The swap is in progress' : null}
+      title={isConfirmationShown ? 'The swap is in progress' : null}
     >
-      {isInProgress && nextAction && (
+      {isInProgress && isConfirmationShown && (
         <ConfirmationContainer>
           <Text>You can close this window and return later to view the results. Do you want to close the window?</Text>
           <Row>
-            <NoButton $small onClick={reject}>No</NoButton>
-            <YesButton $small onClick={confirm}>Yes</YesButton>
+            <NoButton onClick={reject}>No</NoButton>
+            <YesButton onClick={confirm}>Yes</YesButton>
           </Row>
         </ConfirmationContainer>
       )}
-      <WidgetContainer $hidden={!!nextAction}>
+      <WidgetContainer $hidden={isConfirmationShown}>
         <LiFiWidget />
       </WidgetContainer>
     </Modal>

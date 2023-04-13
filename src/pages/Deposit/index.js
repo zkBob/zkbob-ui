@@ -8,7 +8,7 @@ import { HistoryTransactionType } from 'zkbob-client-js';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsContext } from 'contexts';
+import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsContext, PoolContext } from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -23,6 +23,7 @@ import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
+import config from 'config';
 
 const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
 
@@ -42,6 +43,8 @@ export default () => {
   const { fee, isLoadingFee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
+  const { currentPool } = useContext(PoolContext);
+  const { chainId, kycUrls } = config.pools[currentPool];
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -90,11 +93,12 @@ export default () => {
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
-      {(increasedLimitsStatus && process.env.REACT_APP_KYC_STATUS_URL) &&
+      {(increasedLimitsStatus && !!kycUrls) &&
         <IncreasedLimitsBanner
           status={increasedLimitsStatus}
           openModal={openIncreasedLimitsModal}
           account={account}
+          kycUrls={kycUrls}
         />
       }
       <Limits
@@ -112,6 +116,7 @@ export default () => {
           shielded={false}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
+          currentChainId={chainId}
         />
       )}
     </>

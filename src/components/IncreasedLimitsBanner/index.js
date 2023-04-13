@@ -8,7 +8,7 @@ import { ReactComponent as WargingIcon } from 'assets/warning.svg';
 
 import { INCREASED_LIMITS_STATUSES } from 'constants';
 
-export default ({ status, account, openModal }) => {
+export default ({ status, account, openModal, kycUrls }) => {
   let component;
   switch(status) {
     default:
@@ -30,7 +30,7 @@ export default ({ status, account, openModal }) => {
       component = <>
         <WargingIcon />
         <Text>To restore increased deposit limits - </Text>
-        <Link href={process.env.REACT_APP_KYC_HOMEPAGE_URL?.replace('%s', account)}>resync your BAB token</Link>
+        <Link href={kycUrls?.homepage.replace('%s', account)}>resync your BAB token</Link>
       </>;
       break;
   }

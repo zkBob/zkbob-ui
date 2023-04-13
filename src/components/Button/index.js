@@ -12,7 +12,7 @@ export default props => {
       return (
         <Button {...props}>
           {props.$loading &&
-            <Spinner $small={props.$small} $contrast={props.$contrast} size={props.$small ? 16 : 24} />
+            <Spinner $small={props.small} $contrast={props.$contrast} size={props.small ? 16 : 24} />
           }
           {props.children}
         </Button>
@@ -25,12 +25,12 @@ const Button = styled.button`
     props.theme.button.primary.background[props.disabled ? (props.$contrast ? 'contrast' : 'disabled') : 'default']
   };
   color: ${props => props.theme.button.primary.text.color[props.disabled && props.$contrast ? 'contrast' : 'default']};
-  font-size: ${props => props.theme.button.primary.text.size[props.$small ? 'small' : 'default']};
-  font-weight: ${props => props.theme.button.primary.text.weight[props.$small ? 'small' : 'default']};
-  padding: ${props => props.$small ? '8px 16px' : '0'};
-  height: ${props => props.$small ? '30px' : '60px'};
+  font-size: ${props => props.theme.button.primary.text.size[props.small ? 'small' : 'default']};
+  font-weight: ${props => props.theme.button.primary.text.weight[props.small ? 'small' : 'default']};
+  padding: ${props => props.small ? '8px 16px' : '0'};
+  height: ${props => props.small ? '36px' : '60px'};
   box-sizing: border-box;
-  border-radius: 16px;
+  border-radius: ${props => props.small ? '18px' : '16px'};
   border: 0;
   border-color: ${props => props.theme.button.primary.border.color};
   border-style: solid;
@@ -38,6 +38,10 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media only screen and (max-width: 1000px) {
+    height: ${props => props.small ? '30px' : '60px'};
+    border-radius: 16px;
+  }
 `;
 
 const TransparentButton = styled.button`

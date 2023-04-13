@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 import { v4 as uuidv4 } from 'uuid';
 
 const SupportIdContext = createContext({ supportId: null });

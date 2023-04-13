@@ -12,6 +12,7 @@ import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
 
 import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
+import config from 'config';
 
 const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
@@ -32,23 +33,23 @@ const titles = {
 };
 
 const descriptions = {
-  [TX_STATUSES.DEPOSITED]: amount => (
+  [TX_STATUSES.DEPOSITED]: ({ amount }) => (
     <span>
       Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in progress.<br /><br />
       To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
     </span>
   ),
-  [TX_STATUSES.TRANSFERRED]: amount => (
+  [TX_STATUSES.TRANSFERRED]: ({ amount }) => (
     <span>
       Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in progress.
     </span>
   ),
-  [TX_STATUSES.TRANSFERRED_MULTI]: amount => (
+  [TX_STATUSES.TRANSFERRED_MULTI]: ({ amount }) => (
     <span>
       Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in progress.
     </span>
   ),
-  [TX_STATUSES.WITHDRAWN]: amount => (
+  [TX_STATUSES.WITHDRAWN]: ({ amount }) => (
     <span>
       Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in progress.
     </span>
@@ -70,10 +71,10 @@ const descriptions = {
       Because of this, you can't withdraw funds to this address.
     </span>
   ),
-  [TX_STATUSES.WRONG_NETWORK]: () => (
+  [TX_STATUSES.WRONG_NETWORK]: ({ currentPool }) => (
     <span>
       Failed to switch the network.{' '}
-      Please connect your wallet to {NETWORKS[process.env.REACT_APP_NETWORK].name} and try again.
+      Please connect your wallet to {NETWORKS[config.pools[currentPool].chainId].name} and try again.
     </span>
   ),
 };
@@ -94,7 +95,7 @@ const SUSPICIOUS_ACCOUNT_STATUSES = [
   TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL,
 ];
 
-export default ({ isOpen, onClose, status, amount, error, supportId }) => {
+export default ({ isOpen, onClose, status, amount, error, supportId, currentPool }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -117,7 +118,7 @@ export default ({ isOpen, onClose, status, amount, error, supportId }) => {
         else return <Spinner />;
       })()}
       {descriptions[status] && (
-        <Description>{descriptions[status](amount)}</Description>
+        <Description>{descriptions[status]({ amount, currentPool })}</Description>
       )}
       {(status === TX_STATUSES.REJECTED && error) && (
         <Description>{error}</Description>
