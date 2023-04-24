@@ -30,7 +30,7 @@ export default ({
   balance, poolBalance, zkAccountId, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState,
-  switchToPool, currentPool,
+  switchToPool, currentPool, initializeGiftCard,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
@@ -114,6 +114,7 @@ export default ({
               isDemo={isDemo}
               isLoadingState={isLoadingState}
               disabled={isLoadingState}
+              initializeGiftCard={initializeGiftCard}
             >
               <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>

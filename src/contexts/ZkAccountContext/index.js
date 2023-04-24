@@ -8,6 +8,7 @@ import {
   TxType, TxDepositDeadlineExpiredError,
   HistoryRecordState, HistoryTransactionType,
 } from 'zkbob-client-js';
+import { ProverMode } from 'zkbob-client-js/lib/config';
 
 import {
   TransactionModalContext, ModalContext, PoolContext,
@@ -66,6 +67,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
+  const [giftCard, setGiftCard] = useState(null);
 
   useEffect(() => {
     if (zkClient || !supportId || !currentPool) return;
@@ -401,6 +403,38 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [zkClient, toShieldedAmount, fromShieldedAmount, zkAccount]);
 
+  const initializeGiftCard = useCallback(async code => {
+    if (!zkClient) return false;
+    const parsed = await zkClient.giftCardFromCode(code);
+    parsed.balance = await fromShieldedAmount(parsed.balance);
+    setGiftCard(parsed);
+    return true;
+  }, [zkClient, fromShieldedAmount]);
+
+  const deleteGiftCard = () => setGiftCard(null);
+
+  const redeemGiftCard = useCallback(async () => {
+    try {
+      const targetPool = giftCard.poolAlias;
+      if (currentPool !== targetPool) {
+        await switchToPool(targetPool);
+      }
+      const proverExists = config.pools[targetPool].delegatedProverUrls.lenght > 0;
+      const jobId = await zkClient.redeemGiftCard({
+        sk: giftCard.sk,
+        pool: targetPool,
+        birthIndex: giftCard.birthIndex,
+        proverMode: proverExists ? ProverMode.Delegated : ProverMode.Local,
+      });
+      await zkClient.waitJobTxHash(jobId);
+      deleteGiftCard();
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'ZkAccountContext.redeemGiftCard' } });
+      throw error;
+    }
+  }, [zkClient, giftCard, switchToPool, currentPool]);
+
   const decryptMnemonic = password => {
     const cipherText = window.localStorage.getItem('seed');
     const mnemonic = AES.decrypt(cipherText, password).toString(Utf8);
@@ -494,10 +528,7 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   useEffect(() => {
     const seed = window.localStorage.getItem('seed');
-    const demoCode = (new URLSearchParams(window.location.search)).get('code');
-    if (demoCode) {
-      setIsDemo(true);
-    } else if (seed && !zkAccount) {
+    if (seed && !zkAccount) {
       openPasswordModal();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -520,7 +551,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
-        switchToPool,
+        switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard,
       }}
     >
       {children}

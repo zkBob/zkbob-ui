@@ -41,6 +41,10 @@ export const ModalContextProvider = ({ children }) => {
   const openIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(true);
   const closeIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(false);
 
+  const [isRedeemGiftCardModalOpen, setIsRedeemGiftCardModalOpen] = useState(false);
+  const openRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(true);
+  const closeRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
@@ -63,6 +67,7 @@ export const ModalContextProvider = ({ children }) => {
         isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
         isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
         isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
+        isRedeemGiftCardModalOpen, openRedeemGiftCardModal, closeRedeemGiftCardModal,
         closeAllModals,
       }}
     >

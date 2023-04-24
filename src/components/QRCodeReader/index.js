@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import QrReader from 'react-qr-scanner'
 
-import { ReactComponent as QrCodeIconDefault } from 'assets/qr-code.svg';
 import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
 
-export default ({ onResult }) => {
+export default ({ onResult, children }) => {
   const [showScanner, setShowScanner] = useState(false);
 
   const handleScan = data => {
@@ -16,34 +16,35 @@ export default ({ onResult }) => {
 
   return (
     <>
-      <QrCodeIcon onClick={e => { e.stopPropagation(); setShowScanner(true); }} />
-      {showScanner && (
-        <ScannerContainer onClick={e => e.stopPropagation()}>
-          <CrossIcon onClick={() => setShowScanner(false)} />
-          <QrReader
-            constraints={{
-              audio: false,
-              video: {
-                facingMode: 'environment',
-              },
-            }}
-            onScan={handleScan}
-            onError={error => console.log(error)}
-            style={{ width: 300 }}
-          />
-        </ScannerContainer>
-      )}
+      {React.cloneElement(children, {
+        onClick: e => {
+          e.stopPropagation();
+          setShowScanner(true);
+        }
+      })}
+      {createPortal((
+        <>
+          {showScanner && (
+            <ScannerContainer onClick={e => e.stopPropagation()}>
+              <CrossIcon onClick={() => setShowScanner(false)} />
+              <QrReader
+                constraints={{
+                  audio: false,
+                  video: {
+                    facingMode: 'environment',
+                  },
+                }}
+                onScan={handleScan}
+                onError={error => console.log(error)}
+                style={{ width: 300 }}
+              />
+            </ScannerContainer>
+          )}
+        </>
+      ), document.getElementById('root'))}
     </>
   );
 };
-
-const QrCodeIcon = styled(QrCodeIconDefault)`
-  position: absolute;
-  right: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-`;
 
 const CrossIcon = styled(CrossIconDefault)`
   position: absolute;

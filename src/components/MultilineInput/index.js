@@ -5,6 +5,7 @@ import Tooltip from 'components/Tooltip';
 import QRCodeReader from 'components/QRCodeReader';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
+import { ReactComponent as QrCodeIconDefault } from 'assets/qr-code.svg';
 
 import useAutosizeTextArea from './hooks/useAutosizeTextArea';
 
@@ -38,7 +39,11 @@ export default ({ value, onChange, hint, placeholder, qrCode }) => {
           <InfoIcon />
         </Tooltip>
       }
-      {qrCode && <QRCodeReader onResult={onChange} />}
+      {qrCode && (
+        <QRCodeReader onResult={onChange}>
+          <QrCodeIcon />
+        </QRCodeReader>
+      )}
     </Container>
   );
 };
@@ -101,4 +106,12 @@ const InfoIcon = styled(InfoIconDefault)`
       fill: ${props => props.theme.color.purple};
     }
   }
+`;
+
+const QrCodeIcon = styled(QrCodeIconDefault)`
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
 `;
