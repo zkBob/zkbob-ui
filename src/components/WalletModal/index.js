@@ -9,8 +9,8 @@ import { tokenSymbol } from 'utils/token';
 import { CONNECTORS_ICONS } from 'constants';
 
 const getConnectorName = connector => {
-  if (connector.name === 'WalletConnectLegacy') return 'WalletConnect v1';
-  if (connector.name === 'WalletConnect') return 'WalletConnect v2';
+  if (connector.name === 'WalletConnectLegacy') return 'WalletConnect';
+  // if (connector.name === 'WalletConnect') return 'WalletConnect v2';
   return connector.name;
 }
 
