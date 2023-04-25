@@ -21,7 +21,7 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
     ? deriveSpendingKeyZkBob(secretKey)
     : ethers.utils.arrayify(secretKey);
   const currentPool = zkClient.currentPool();
-  const proverExists = config.pools[currentPool].delegatedProverUrls.lenght > 0;
+  const proverExists = config.pools[currentPool].delegatedProverUrls.length > 0;
   return zkClient.login({
     sk,
     pool: currentPool,
