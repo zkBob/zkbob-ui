@@ -16489,10 +16489,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@3.2.0-beta:
-  version "3.2.0-beta"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-3.2.0-beta.tgz#0564e009d3ff1a51a0582b5cbe604c75095485a2"
-  integrity sha512-1W24Y+n9pEU65sTLb+itRGoUbWLBs8I1BIJlAhCrc17sK683i3UPc6TFx3M9eJUN02q69FUrUEaskar49gInvg==
+zkbob-client-js@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-3.2.0.tgz#c253abf1787ce72dcf0a01076a3900c548841a87"
+  integrity sha512-Mc4hECTHDyG7NJkPo7s/TnFkOXgWknjY2pXGvZ1Dr9R14N7rBIrYYmYaCx7ojwRxVGehQkpGUHtVMb/Qs/dq9A==
   dependencies:
     "@ethereumjs/util" "^8.0.2"
     "@metamask/eth-sig-util" "5.0.0"
