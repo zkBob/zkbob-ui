@@ -420,16 +420,10 @@ export const ZkAccountContextProvider = ({ children }) => {
         await switchToPool(targetPool);
       }
       const proverExists = config.pools[targetPool].delegatedProverUrls.length > 0;
-      console.log({
-        sk: giftCard.sk,
-        pool: targetPool,
-        birthIndex: giftCard.birthIndex,
-        proverMode: proverExists ? ProverMode.Delegated : ProverMode.Local,
-      });
       const jobId = await zkClient.redeemGiftCard({
         sk: giftCard.sk,
         pool: targetPool,
-        birthIndex: giftCard.birthIndex,
+        birthindex: giftCard.birthIndex,
         proverMode: proverExists ? ProverMode.Delegated : ProverMode.Local,
       });
       await zkClient.waitJobTxHash(jobId);

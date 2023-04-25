@@ -25,7 +25,7 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
   return zkClient.login({
     sk,
     pool: currentPool,
-    birthIndex,
+    birthindex: birthIndex,
     proverMode: (useDelegatedProver && proverExists) ? ProverMode.Delegated : ProverMode.Local,
   });
 };
