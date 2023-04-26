@@ -29,7 +29,7 @@ export default ({ isOpen, confirm, reset, password, onPasswordChange, error }) =
           error={!!error}
         />
         <Button onClick={confirm}>Sign in</Button>
-        <Button type="link" onClick={reset}>Lost password? Restore account with your seed phrase.</Button>
+        <Button type="link" onClick={reset}>Lost password? Restore account with your secret phrase.</Button>
       </Container>
     </Modal>
   );

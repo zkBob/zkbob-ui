@@ -153,7 +153,7 @@ export default ({
             onClick={openAccountSetUpModal}
           >
             <LargeButtonContent>
-              {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
+              {isLoadingZkAccount ? 'Loading zkAccount' : 'zkAccount'}
             </LargeButtonContent>
             {!isLoadingZkAccount && <AccountIcon />}
           </Button>

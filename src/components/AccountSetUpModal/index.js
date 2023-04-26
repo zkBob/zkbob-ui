@@ -67,7 +67,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, isWalletModalOpen, ope
     state = <Create mnemonic={newMnemonic} next={() => setAction('confirm')} />;
     prevAction = null;
   } else if (action === 'confirm') {
-    title = 'Confirm seed phrase';
+    title = 'Confirm secret phrase';
     state = <Confirm mnemonic={newMnemonic} confirmMnemonic={confirmMnemonic} />;
     prevAction = 'create';
   } else if (action === 'restore') {
@@ -94,14 +94,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, isWalletModalOpen, ope
           <Row>
             <Text>or</Text>
             <Button type="link" onClick={() => setNextAction('create')}>
-              secret recovery phrase
+              secret phrase
             </Button>
           </Row>
         </OptionContainer>
         <OptionContainer>
-          <Title>I already have a secret recovery phrase</Title>
+          <Title>I already have a secret phrase</Title>
           <Description>
-          Import your existing account using your 12 word secret recovery phrase.
+          Import your existing account using your 12 word secret phrase.
           </Description>
           <RestoreButton onClick={() => setNextAction('restore')}>
             Restore account

@@ -32,7 +32,7 @@ export default ({ mnemonic, confirmMnemonic }) => {
   return (
     <Container>
       <Description>
-        Please input your seed phrase to verify it.<br/> Click on a word to remove it
+        Please input your secret phrase to verify it.<br/> Click on a word to remove it
       </Description>
       <MnemonicInput>
         {repeated.map(wordObj =>

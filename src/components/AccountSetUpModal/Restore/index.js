@@ -27,7 +27,7 @@ export default ({ restore }) => {
   return (
     <Container>
       <Description>
-        Input your saved seed phrase to restore an existing account
+        Input your saved secret phrase to restore an existing account
       </Description>
       <TextArea value={mnemonic} onChange={onChange} $error={error} />
       <Button onClick={onRestore}>Restore account</Button>

@@ -25,7 +25,7 @@ import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
 import config from 'config';
 
-const note = `${tokenSymbol()} will be deposited to your account inside the zero knowledge pool.`;
+const note = `${tokenSymbol()} will be deposited to your zkAccount. Once received, you can transfer ${tokenSymbol()} privately.`;
 
 export default () => {
   const { address: account } = useAccount();
@@ -84,7 +84,7 @@ export default () => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
+          else if (isLoadingState || isLoadingLimits) return <Button $loading $contrast disabled>Loading...</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
           else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>

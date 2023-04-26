@@ -15,7 +15,7 @@ export default ({ isOpen, onClose, onConfirm }) => {
         <Description>
           When you log out your zkAccount information is erased from
           the data cache and is no longer accessible with your password.
-          Restore the account and balance using your seed phrase and a new password.
+          Restore the account and balance using your secret phrase and a new password.
         </Description>
         <Button onClick={onConfirm}>Log out</Button>
       </Container>
