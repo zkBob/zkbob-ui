@@ -40,6 +40,7 @@ const Button = styled.button`
   justify-content: center;
   @media only screen and (max-width: 1000px) {
     height: ${props => props.small ? '30px' : '60px'};
+    padding: ${props => props.small ? '8px 12px' : '0'};
     border-radius: 16px;
   }
 `;

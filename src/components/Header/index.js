@@ -194,7 +194,10 @@ const AccountSection = styled(Row)`
     &:first-child {
       margin-left: 0;
     }
-    @media only screen and (max-width: 370px) {
+    @media only screen and (max-width: 400px) {
+      margin-left: 7px;
+    }
+    @media only screen and (max-width: 380px) {
       margin-left: 5px;
     }
   }
@@ -220,6 +223,7 @@ const NetworkDropdownButton = styled(DropdownButton)`
 `;
 
 const AccountDropdownButton = styled(NetworkDropdownButton)`
+  padding: 0 12px;
   overflow: hidden;
   border: 1px solid ${props => props.theme.button.primary.text.color.contrast};
   &:hover {
