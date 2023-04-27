@@ -18,28 +18,47 @@ export const TX_STATUSES = {
 export const NETWORKS = {
   11155111: {
     name: 'Sepolia',
-    icon: require('assets/ethereum.svg').default,
+    icon: require('assets/polygon.svg').default,
+    blockExplorerUrls: {
+      address: 'https://sepolia.etherscan.io/address/%s',
+      tx: 'https://sepolia.etherscan.io/tx/%s',
+    },
   },
   137: {
     name: 'Polygon',
     icon: require('assets/polygon.svg').default,
+    blockExplorerUrls: {
+      address: 'https://polygonscan.com/address/%s',
+      tx: 'https://polygonscan.com/tx/%s',
+    },
   },
   5: {
     name: 'Goerli',
     icon: require('assets/ethereum.svg').default,
+    blockExplorerUrls: {
+      address: 'https://goerli.etherscan.io/address/%s',
+      tx: 'https://goerli.etherscan.io/tx/%s',
+    },
+  },
+  420: {
+    name: 'Goerli Optimism',
+    icon: require('assets/optimism.svg').default,
+    blockExplorerUrls: {
+      address: 'https://goerli-optimism.etherscan.io/address/%s',
+      tx: 'https://goerli-optimism.etherscan.io/tx/%s',
+    },
+  },
+  10: {
+    name: 'Optimism',
+    icon: require('assets/optimism.svg').default,
+    blockExplorerUrls: {
+      address: 'https://optimistic.etherscan.io/address/%s',
+      tx: 'https://optimistic.etherscan.io/tx/%s',
+    },
   },
 };
 
 export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
-
-export const HISTORY_ACTION_TYPES = {
-  DEPOSIT: 1,
-  TRANSFER_IN: 2,
-  TRANSFER_OUT: 3,
-  WITHDRAWAL: 4,
-  TRANSFER_SELF: 5,
-  DIRECT_DEPOSIT: 6,
-};
 
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,

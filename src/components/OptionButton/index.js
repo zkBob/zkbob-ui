@@ -33,4 +33,8 @@ const ButtonLink = styled(Link)`
   color: ${({ theme }) => theme.text.color.primary};
   font-weight: ${({ theme }) => theme.text.weight.normal};
   opacity: ${props => props.disabled ? 0.5 : 1};
+  &:disabled {
+    background: ${props => props.theme.color.white};
+    cursor: not-allowed;
+  }
 `;

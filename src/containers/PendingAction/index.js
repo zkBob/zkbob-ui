@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import Card from 'components/Card';
 import HistoryItem from 'components/HistoryItem';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
   const { pendingActions } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const multi = pendingActions.length > 1;
   return (
     <Card
@@ -24,7 +25,7 @@ export default () => {
       <ListContainer>
         {pendingActions.map((action, index) =>
           <HistoryItemContainer key={index}>
-            <HistoryItem item={action} />
+            <HistoryItem item={action} currentPool={currentPool} />
           </HistoryItemContainer>
         )}
       </ListContainer>

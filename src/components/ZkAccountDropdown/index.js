@@ -8,6 +8,7 @@ import Tooltip from 'components/Tooltip';
 import OptionButton from 'components/OptionButton';
 import Button from 'components/Button';
 import PrivateAddress from 'components/PrivateAddress';
+import QRCodeReader from 'components/QRCodeReader';
 
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
@@ -18,7 +19,7 @@ import { tokenIcon, tokenSymbol } from 'utils/token';
 const Content = ({
   balance, generateAddress, switchAccount, isDemo,
   changePassword, logout, buttonRef, showSeedPhrase,
-  isLoadingState,
+  isLoadingState, initializeGiftCard,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -36,6 +37,18 @@ const Content = ({
     setPrivateAddress(null);
     setShowQRCode(false);
   }, []);
+
+  const initGiftCard = useCallback(async result => {
+    try {
+      const paramsString = result.split('?')[1];
+      const queryParams = new URLSearchParams(paramsString);
+      const code = queryParams.get('gift-code');
+      await initializeGiftCard(code);
+      buttonRef.current.click();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [initializeGiftCard, buttonRef]);
 
   const handleOptionClick = useCallback(action => {
     buttonRef.current.click();
@@ -95,6 +108,9 @@ const Content = ({
         You create a new address each time you connect.{' '}
         Receive tokens to this address or a previously generated address.
       </Description>
+      <QRCodeReader onResult={initGiftCard}>
+        <OptionButton>Redeem gift card</OptionButton>
+      </QRCodeReader>
       {options.map((item, index) =>
         <OptionButton
           key={index}
@@ -111,6 +127,7 @@ const Content = ({
 export default ({
   balance, generateAddress, switchAccount, showSeedPhrase, disabled,
   changePassword, logout, buttonRef, children, isDemo, isLoadingState,
+  initializeGiftCard,
 }) => (
   <Dropdown
     disabled={disabled}
@@ -125,6 +142,7 @@ export default ({
         showSeedPhrase={showSeedPhrase}
         isDemo={isDemo}
         isLoadingState={isLoadingState}
+        initializeGiftCard={initializeGiftCard}
       />
     )}
   >

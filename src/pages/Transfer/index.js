@@ -1,5 +1,6 @@
 import React, { useContext, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import PendingAction from 'containers/PendingAction';
 
@@ -13,21 +14,22 @@ import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 import SingleTransfer from './SingleTransfer';
 import MultiTransfer from './MultiTransfer';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
 import { useLatestAction } from 'hooks';
-
-import { HISTORY_ACTION_TYPES } from 'constants';
+import config from 'config';
 
 const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
 const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {
   const { isPending } = useContext(ZkAccountContext);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
+  const latestAction = useLatestAction(HistoryTransactionType.TransferOut);
   const [isMulti, setIsMulti] = useState(false);
   const multitransferRef = useRef(null);
   const fileInputRef = useRef(null);
+  const { currentPool } = useContext(PoolContext);
+  const currentChainId = config.pools[currentPool].chainId;
 
   return isPending ? <PendingAction /> : (
     <>
@@ -65,6 +67,7 @@ export default () => {
           shielded={true}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
+          currentChainId={currentChainId}
         />
       )}
     </>

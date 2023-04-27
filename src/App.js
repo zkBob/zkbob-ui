@@ -12,6 +12,7 @@ import 'services';
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 import GilroyBold from 'fonts/Gilroy-Bold.woff';
+import GilroyExtraBold from 'fonts/Gilroy-ExtraBold.woff';
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -28,6 +29,11 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Gilroy';
     src: url(${GilroyBold}) format('woff');
     font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url(${GilroyExtraBold}) format('woff');
+    font-weight: 800;
   }
   body {
     margin: 0;

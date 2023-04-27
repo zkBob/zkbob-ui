@@ -6,6 +6,8 @@ import Tooltip from 'components/Tooltip';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
+import NetworkDropdown from 'components/NetworkDropdown';
+import MoreDropdown from 'components/MoreDropdown';
 import SpinnerDefault from 'components/Spinner';
 import Skeleton from 'components/Skeleton';
 
@@ -14,11 +16,13 @@ import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 import { ReactComponent as AccountIconDefault } from 'assets/account.svg';
 import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
+import { ReactComponent as DotsIcon } from 'assets/dots.svg';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
 import { NETWORKS, CONNECTORS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
+import config from 'config';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
@@ -26,9 +30,12 @@ export default ({
   balance, poolBalance, zkAccountId, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState,
+  switchToPool, currentPool, initializeGiftCard,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
+  const networkButtonRef = useRef(null);
+  const moreButtonRef = useRef(null);
   const { width } = useWindowDimensions();
 
   if (empty) {
@@ -46,14 +53,20 @@ export default ({
         <Logo />
       </LogoSection>
       <AccountSection>
-        <NetworkLabel>
-          {NETWORKS[process.env.REACT_APP_NETWORK].icon && (
-            <NetworkIcon src={NETWORKS[process.env.REACT_APP_NETWORK].icon} />
-          )}
-          <NetworkName>
-            {NETWORKS[process.env.REACT_APP_NETWORK].name}
-          </NetworkName>
-        </NetworkLabel>
+        <NetworkDropdown
+          buttonRef={networkButtonRef}
+          disabled={isLoadingState}
+          switchToPool={switchToPool}
+          currentPool={currentPool}
+        >
+          <NetworkDropdownButton ref={networkButtonRef} $refreshing={isLoadingState}>
+            <NetworkIcon src={NETWORKS[config.pools[currentPool].chainId].icon} />
+            <DropdownIcon />
+          </NetworkDropdownButton>
+        </NetworkDropdown>
+        <BridgeButton small onClick={openSwapModal}>
+          <LargeButtonContent>Bridge {tokenSymbol()}</LargeButtonContent>
+        </BridgeButton>
         {account ? (
           <WalletDropdown
             address={account}
@@ -63,8 +76,9 @@ export default ({
             disconnect={disconnect}
             buttonRef={walletButtonRef}
             disabled={isLoadingBalance}
+            currentChainId={config.pools[currentPool].chainId}
           >
-            <AccountLabel ref={walletButtonRef} $refreshing={isLoadingBalance}>
+            <AccountDropdownButton ref={walletButtonRef} $refreshing={isLoadingBalance}>
               <Row>
                 {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
                 <Address>{shortAddress(account)}</Address>
@@ -75,14 +89,14 @@ export default ({
                     <Balance>
                       {formatNumber(balance)} {tokenSymbol()}
                     </Balance>
-                    <DropdownIcon />
+                    <DropdownIcon $onlyDesktop />
                   </>
                 )}
               </Row>
-            </AccountLabel>
+            </AccountDropdownButton>
           </WalletDropdown>
         ) : (
-          <Button $small onClick={openWalletModal}>
+          <Button small onClick={openWalletModal}>
             <LargeButtonContent>Connect wallet</LargeButtonContent>
             <WalletIcon />
           </Button>
@@ -100,8 +114,9 @@ export default ({
               isDemo={isDemo}
               isLoadingState={isLoadingState}
               disabled={isLoadingState}
+              initializeGiftCard={initializeGiftCard}
             >
-              <AccountLabel ref={zkAccountButtonRef} $refreshing={isLoadingState}>
+              <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>
                   <ZkAvatar seed={zkAccountId} size={16} />
                   <Address>zkAccount</Address>
@@ -115,11 +130,11 @@ export default ({
                         </Tooltip>
                         {' '}{tokenSymbol(true)}
                       </Balance>
-                      <DropdownIcon />
+                      <DropdownIcon $onlyDesktop />
                     </>
                   )}
                 </Row>
-              </AccountLabel>
+              </AccountDropdownButton>
             </ZkAccountDropdown>
             <RefreshButtonContainer onClick={refresh}>
               {(isLoadingBalance || isLoadingState) ? (
@@ -131,7 +146,7 @@ export default ({
           </>
         ) : (
           <Button
-            $small
+            small
             $loading={isLoadingZkAccount}
             $contrast
             disabled={isLoadingZkAccount}
@@ -143,9 +158,11 @@ export default ({
             {!isLoadingZkAccount && <AccountIcon />}
           </Button>
         )}
-        <GetBobButton onClick={openSwapModal}>
-          Get {tokenSymbol()}
-        </GetBobButton>
+        <MoreDropdown buttonRef={moreButtonRef} openSwapModal={openSwapModal}>
+          <DropdownButton ref={moreButtonRef}>
+            <DotsIcon />
+          </DropdownButton>
+        </MoreDropdown>
       </AccountSection>
     </Row>
   );
@@ -177,24 +194,36 @@ const AccountSection = styled(Row)`
     &:first-child {
       margin-left: 0;
     }
-    @media only screen and (max-width: 370px) {
+    @media only screen and (max-width: 400px) {
+      margin-left: 7px;
+    }
+    @media only screen and (max-width: 380px) {
       margin-left: 5px;
     }
   }
 `;
 
-const NetworkLabel = styled(Row)`
+const DropdownButton = styled(Row)`
   background-color: ${props => props.theme.networkLabel.background};
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.normal};
-  padding: 0 12px;
-  border-radius: 16px;
-  min-height: 30px;
+  padding: 0 8px;
+  border-radius: 18px;
+  min-height: 36px;
   box-sizing: border-box;
+  cursor: ${props => props.$refreshing ? 'not-allowed' : 'pointer'};
+  @media only screen and (max-width: 1000px) {
+    min-height: 30px;
+    border-radius: 16px;
+  }
 `;
 
-const AccountLabel = styled(NetworkLabel)`
-  cursor: ${props => props.$refreshing ? 'not-allowed' : 'pointer'};
+const NetworkDropdownButton = styled(DropdownButton)`
+  padding: 0 8px 0 10px;
+`;
+
+const AccountDropdownButton = styled(NetworkDropdownButton)`
+  padding: 0 12px;
   overflow: hidden;
   border: 1px solid ${props => props.theme.button.primary.text.color.contrast};
   &:hover {
@@ -203,7 +232,7 @@ const AccountLabel = styled(NetworkLabel)`
       color: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
     & path {
-      fill: ${props => !props.$refreshing && props.theme.button.link.text.color};
+      stroke: ${props => !props.$refreshing && props.theme.button.link.text.color};
     }
   }
 `;
@@ -242,48 +271,33 @@ const Spinner = styled(SpinnerDefault)`
 const RefreshButtonContainer = styled(Row)`
   background-color: ${props => props.theme.networkLabel.background};
   padding: 8px 12px;
-  border-radius: 16px;
-  height: 30px;
+  border-radius: 18px;
+  height: 36px;
   box-sizing: border-box;
   cursor: pointer;
+  @media only screen and (max-width: 1000px) {
+    height: 30px;
+    border-radius: 16px;
+  }
 `;
 
-const GetBobButton = styled.button`
-  background: transparent;
-  border: 1px solid ${props => props.theme.button.link.text.color};
-  font-size: 16px;
-  font-weight: 400;
-  cursor: pointer;
-  color: ${props => props.theme.button.link.text.color};
-  underline: none;
-  text-decoration: none;
-  padding: 5px 12px;
-  border-radius: 16px;
-  height: 30px;
-  box-sizing: border-box;
-  white-space: nowrap;
+const BridgeButton = styled(Button)`
+  background: ${props => props.theme.button.link.text.color};
   @media only screen and (max-width: 1000px) {
     display: none;
   }
 `;
 
 const DropdownIcon = styled(DropdownIconDefault)`
-  margin-left: 8px;
+  margin-left: 7px;
+  @media only screen and (max-width: 1000px) {
+    display: ${props => props.$onlyDesktop ? 'none' : 'block'};
+  }
 `;
 
 const NetworkIcon = styled.img`
   width: 18px;
   height: 18px;
-  margin-right: 5px;
-  @media only screen and (max-width: 1000px) {
-    margin-right: 0;
-  }
-`;
-
-const NetworkName = styled.span`
-  @media only screen and (max-width: 1000px) {
-    display: none;
-  }
 `;
 
 const LargeButtonContent = styled.div`

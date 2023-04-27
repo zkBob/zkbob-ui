@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
 export default (amount, txType) => {
   const { estimateFee } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [fee, setFee] = useState(ethers.constants.Zero);
   const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -20,7 +21,7 @@ export default (amount, txType) => {
       setIsLoadingFee(false);
     }
     updateFee();
-  }, [amount, txType, estimateFee]);
+  }, [amount, txType, estimateFee, currentPool]);
 
   return { fee, numberOfTxs, isLoadingFee };
 };

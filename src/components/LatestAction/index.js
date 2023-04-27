@@ -9,8 +9,9 @@ import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
 import { tokenSymbol, tokenIcon } from 'utils/token';
+import { NETWORKS } from 'constants';
 
-export default ({ type, shielded, actions, txHash }) => {
+export default ({ type, shielded, actions, txHash, currentChainId }) => {
   const history = useHistory();
   const location = useLocation();
   return (
@@ -29,7 +30,7 @@ export default ({ type, shielded, actions, txHash }) => {
           })()}
           {' '}{tokenSymbol(shielded)}
         </Amount>
-        <TxLink size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
+        <TxLink size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', txHash)}>
           {shortAddress(txHash)}
         </TxLink>
       </InnerRow>

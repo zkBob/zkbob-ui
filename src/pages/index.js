@@ -14,10 +14,10 @@ import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
 import TermsModal from 'containers/TermsModal';
 import SwapModal from 'containers/SwapModal';
-import SwapOptionsModal from 'containers/SwapOptionsModal';
 import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
 import SeedPhraseModal from 'containers/SeedPhraseModal';
 import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
+import RedeemGiftCardModal from 'containers/RedeemGiftCardModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import ToastContainer from 'components/ToastContainer';
@@ -135,12 +135,12 @@ const Content = () => {
         <TransactionModal />
         <WalletModal />
         <AccountSetUpModal />
+        <RedeemGiftCardModal />
         <PasswordModal />
         <ChangePasswordModal />
         <TermsModal />
         <ToastContainer />
         <SwapModal />
-        <SwapOptionsModal />
         <ConfirmLogoutModal />
         <SeedPhraseModal />
         <IncreasedLimitsModal />

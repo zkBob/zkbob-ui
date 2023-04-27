@@ -2,56 +2,40 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import zkBobLibPackage from 'zkbob-client-js/package.json';
 
-import Link from 'components/Link';
-import Button from 'components/Button';
+import { SupportIdContext, ZkAccountContext } from 'contexts';
 
-import { ModalContext, SupportIdContext, ZkAccountContext } from 'contexts';
+import Link from 'components/Link';
+
+import { ReactComponent as TwitterIcon } from 'assets/twitter.svg';
+import { ReactComponent as TelegramIcon } from 'assets/telegram.svg';
+import { ReactComponent as MirrorIcon } from 'assets/mirror.svg';
+import { ReactComponent as GithubIcon } from 'assets/github.svg';
 
 
 export default () => {
-  const { openSwapOptionsModal } = useContext(ModalContext);
   const { supportId } = useContext(SupportIdContext);
   const { relayerVersion } = useContext(ZkAccountContext);
 
-  const sections = [
-    {
-      title: 'Resources',
-      links: [
-        { name: 'Documentation', href: 'https://docs.zkbob.com/' },
-        { name: 'FAQ', href: 'https://docs.zkbob.com/zkbob-overview/faq' },
-        { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
-        { name: 'Dune Analytics', href: 'https://dune.com/maxaleks/zkbob' },
-      ]
-    },
-    {
-      title: 'BOB Stable Token',
-      links: [
-        {
-          name: 'View contract',
-          href: `${process.env.REACT_APP_EXPLORER_URL}/token/${process.env.REACT_APP_TOKEN_ADDRESS}`,
-        },
-      ],
-      components: [
-        <Button key={'getbob'} type="link" onClick={openSwapOptionsModal}>Get BOB</Button>
-      ]
-    }
+  const resources = [
+    { icon: TwitterIcon, href: 'https://twitter.com/zkBob_' },
+    { icon: TelegramIcon, href: 'https://t.me/zkbob_news' },
+    { icon: MirrorIcon, href: 'https://mirror.xyz/0x6132eB883e88CD4E007552b871A6444Bfc34E837' },
+    { icon: GithubIcon, href: 'https://github.com/zkBob' },
   ];
 
   return (
     <Column>
       <Row>
-        {/* <Title>© zkBob 2022</Title> */}
-        {sections.map((column, index) => (
-          <InnerRow key={index}>
-            <Text>{column?.title}</Text>
-            {column?.links.map((link, index) => (
-              <Link key={index} href={link.href}>
-                {link.name}
-              </Link>
-            ))}
-            {column?.components?.map(component => component)}
-          </InnerRow>
-        ))}
+        <InnerRow>
+          <CustomLink href="https://bob.zkbob.com">
+            bob.zkbob.com
+          </CustomLink>
+          {resources.map((resource, index) => (
+            <CustomLink key={index} href={resource.href} target="">
+              {React.createElement(resource.icon, {})}
+            </CustomLink>
+          ))}
+        </InnerRow>
       </Row>
       <Row>
         <InnerRow>
@@ -87,16 +71,15 @@ const InnerRow = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 10px 5px 0;
   & > * {
-    margin: 4px 10px 0;
+    margin: 7px 10px 0;
   }
 `;
 
 const Text = styled.span`
   font-size: 14px;
-  color: ${props => props.theme.text.color.secondary};
-  font-weight: ${props => props.theme.text.weight.normal};
+  color: #A7A2B8;
+  font-weight: ${props => props.theme.text.weight.bold};
   line-height: 20px;
   text-align: center;
 `;
@@ -105,4 +88,10 @@ const TextRow = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+`;
+
+const CustomLink = styled(Link)`
+  color: #A7A2B8;
+  font-size: 14px;
+  font-weight: ${props => props.theme.text.weight.bold};
 `;

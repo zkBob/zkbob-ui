@@ -29,10 +29,6 @@ export const ModalContextProvider = ({ children }) => {
   const openSwapModal = () => setIsSwapModalOpen(true);
   const closeSwapModal = () => setIsSwapModalOpen(false);
 
-  const [isSwapOptionsModalOpen, setIsSwapOptionsModalOpen] = useState(false);
-  const openSwapOptionsModal = () => setIsSwapOptionsModalOpen(true);
-  const closeSwapOptionsModal = () => setIsSwapOptionsModalOpen(false);
-
   const [isConfirmLogoutModalOpen, setIsConfirmLogoutModalOpen] = useState(false);
   const openConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(true);
   const closeConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(false);
@@ -45,12 +41,15 @@ export const ModalContextProvider = ({ children }) => {
   const openIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(true);
   const closeIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(false);
 
+  const [isRedeemGiftCardModalOpen, setIsRedeemGiftCardModalOpen] = useState(false);
+  const openRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(true);
+  const closeRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
     closeChangePasswordModal();
     closeSwapModal();
-    closeSwapOptionsModal();
     closeConfirmLogoutModal();
     closeSeedPhraseModal();
     closeIncreasedLimitsModal();
@@ -65,10 +64,10 @@ export const ModalContextProvider = ({ children }) => {
         isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
         isSwapModalOpen, openSwapModal, closeSwapModal,
-        isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
         isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
         isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
         isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
+        isRedeemGiftCardModalOpen, openRedeemGiftCardModal, closeRedeemGiftCardModal,
         closeAllModals,
       }}
     >

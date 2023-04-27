@@ -8,13 +8,14 @@ import HistoryItem from 'components/HistoryItem';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
   const {
     history, zkAccount, zkAccountId,
     isLoadingZkAccount, isLoadingHistory,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
 
   const pageSize = 5;
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +44,7 @@ export default () => {
       {!isHistoryEmpty && (
         <>
           {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
-            <HistoryItem key={index} item={item} zkAccountId={zkAccountId} />
+            <HistoryItem key={index} item={item} zkAccountId={zkAccountId} currentPool={currentPool} />
           )}
           {history.length > pageSize && (
             <Pagination

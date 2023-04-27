@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi'
 
 import IncreasedLimitsModal from 'components/IncreasedLimitsModal';
 
-import { ModalContext, IncreasedLimitsContext, ZkAccountContext } from 'contexts';
+import { ModalContext, IncreasedLimitsContext, ZkAccountContext, PoolContext } from 'contexts';
 
 import { INCREASED_LIMITS_STATUSES } from 'constants';
 
@@ -15,6 +15,7 @@ export default () => {
   } = useContext(ModalContext);
   const { status, updateStatus } = useContext(IncreasedLimitsContext);
   const { updateLimits } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
 
   useEffect(() => {
     if (isIncreasedLimitsModalOpen && account) {
@@ -41,6 +42,7 @@ export default () => {
       isWalletModalOpen={isWalletModalOpen}
       openWalletModal={openWalletModal}
       account={account}
+      currentPool={currentPool}
     />
   );
 }
