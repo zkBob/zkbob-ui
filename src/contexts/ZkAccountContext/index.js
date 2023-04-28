@@ -451,14 +451,16 @@ export const ZkAccountContextProvider = ({ children }) => {
   }
 
   const unlockAccount = useCallback(password => {
+    if (!zkClient) return false;
     try {
         const mnemonic = decryptMnemonic(password);
         closePasswordModal();
         loadZkAccount(mnemonic);
+        return true;
     } catch (error) {
         throw new Error('Incorrect password');
     }
-  }, [loadZkAccount, closePasswordModal]);
+  }, [zkClient, loadZkAccount, closePasswordModal]);
 
   const verifyPassword = useCallback(password => {
     try {

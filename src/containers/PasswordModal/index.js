@@ -14,8 +14,10 @@ export default () => {
   }, []);
   const confirm = useCallback(async () => {
     try {
-      await unlockAccount(password);
-      setPassword('');
+      const success = await unlockAccount(password);
+      if (success) {
+        setPassword('');
+      }
     } catch (error) {
       setError(error);
     }
