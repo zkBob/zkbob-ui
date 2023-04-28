@@ -55,6 +55,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [zkAccountId, setZkAccountId] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [history, setHistory] = useState(null);
+  const [isPendingIncoming, setIsPendingIncoming] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [pendingActions, setPendingActions] = useState([]);
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
@@ -143,12 +144,14 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const updateHistory = useCallback(async () => {
     let history = [];
+    let isPendingIncoming = false;
     let isPending = false;
     let pendingActions = [];
     let atomicTxFee = ethers.constants.Zero;
     if (zkAccount) {
       if (currentPool !== previousPool) {
         setHistory([]);
+        setIsPendingIncoming(false);
         setIsPending(false);
         setPendingActions([]);
       }
@@ -174,6 +177,9 @@ export const ZkAccountContextProvider = ({ children }) => {
           highFee: item.fee.gt(await fromShieldedAmount(atomicTxFee)),
         })));
         history = history.reverse();
+        isPendingIncoming = !!history.find(item =>
+          item.state === HistoryRecordState.Pending && item.type === HistoryTransactionType.TransferIn
+        );
         pendingActions = history.filter(item =>
           item.state === HistoryRecordState.Pending && item.type !== HistoryTransactionType.TransferIn
         );
@@ -187,6 +193,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setHistory(history);
     setPendingActions(pendingActions);
     setIsPending(isPending);
+    setIsPendingIncoming(isPendingIncoming);
     setIsLoadingHistory(false);
   }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPool]);
 
@@ -424,16 +431,17 @@ export const ZkAccountContextProvider = ({ children }) => {
         sk: giftCard.sk,
         pool: targetPool,
         birthindex: Number(giftCard.birthIndex),
-        proverMode: proverExists ? ProverMode.Delegated : ProverMode.Local,
+        proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
       });
       await zkClient.waitJobTxHash(jobId);
       deleteGiftCard();
+      updatePoolData();
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.redeemGiftCard' } });
       throw error;
     }
-  }, [zkClient, giftCard, switchToPool, currentPool]);
+  }, [zkClient, giftCard, switchToPool, currentPool, updatePoolData]);
 
   const decryptMnemonic = password => {
     const cipherText = window.localStorage.getItem('seed');
@@ -509,7 +517,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [updateMaxTransferable, balance, currentPool]);
 
   useEffect(() => {
-    if (isPending) {
+    if (isPending || isPendingIncoming) {
       const interval = 5000; // 5 seconds
       const intervalId = setInterval(() => {
         updatePoolData();
@@ -517,7 +525,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, updatePoolData, updateTokenBalance]);
+  }, [isPending, isPendingIncoming, updatePoolData, updateTokenBalance]);
 
   useEffect(() => {
     loadRelayerVersion();
