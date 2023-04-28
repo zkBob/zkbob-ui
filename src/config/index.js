@@ -28,7 +28,7 @@ const config = {
         rpcUrls: ['https://polygon-rpc.com'],
       },
       '10': {
-        rpcUrls: ['https://opt-mainnet.g.alchemy.com/v2/demo', 'https://mainnet.optimism.io']
+        rpcUrls: ['https://optimism-mainnet.public.blastapi.io'],
       },
     },
     snarkParams: {

@@ -26,7 +26,7 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
     sk,
     pool: currentPool,
     birthindex: birthIndex,
-    proverMode: (useDelegatedProver && proverExists) ? ProverMode.Delegated : ProverMode.Local,
+    proverMode: (useDelegatedProver && proverExists) ? ProverMode.DelegatedWithFallback : ProverMode.Local,
   });
 };
 
