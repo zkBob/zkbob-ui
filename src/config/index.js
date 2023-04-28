@@ -28,7 +28,7 @@ const config = {
         rpcUrls: ['https://polygon-rpc.com'],
       },
       '10': {
-        rpcUrls: ['https://optimism-mainnet.public.blastapi.io']
+        rpcUrls: ['https://optimism-mainnet.public.blastapi.io'],
       },
     },
     snarkParams: {
