@@ -27,7 +27,7 @@ import config from 'config';
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, poolBalance, zkAccountId, refresh, isLoadingBalance,
+  balance, poolBalance, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState,
   switchToPool, currentPool, initializeGiftCard,
@@ -118,7 +118,7 @@ export default ({
             >
               <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>
-                  <ZkAvatar seed={zkAccountId} size={16} />
+                  <ZkAvatar seed={zkAccount} size={16} />
                   <Address>zkAccount</Address>
                   {(isLoadingState && width > 1000) ? (
                     <Skeleton width={80} />

@@ -13,7 +13,7 @@ export default ({ empty }) => {
   const { balance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
-    zkAccountId, updatePoolData, generateAddress, isDemo,
+    updatePoolData, generateAddress, isDemo,
     isLoadingState, switchToPool, initializeGiftCard,
   } = useContext(ZkAccountContext);
   const {
@@ -45,7 +45,6 @@ export default ({ empty }) => {
         balance={balance}
         isLoadingBalance={isLoadingBalance}
         poolBalance={poolBalance}
-        zkAccountId={zkAccountId}
         refresh={refresh}
         empty={empty}
         generateAddress={generateAddress}
