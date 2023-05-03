@@ -10,8 +10,8 @@ const config = {
         delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
         coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
         kycUrls: {
-          status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenWeek',
-          homepage: 'https://knowyourcat.id/address/%s/BABTokenWeek',
+          status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+          homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
       },
       'BOB-optimism': {
@@ -47,8 +47,8 @@ const config = {
         delegatedProverUrls: ['https://prover-staging.thgkjlr.website/'],
         coldStorageConfigPath: 'https://r2-staging.zkbob.com/coldstorage/coldstorage.cfg',
         kycUrls: {
-          status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenWeek',
-          homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenWeek',
+          status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+          homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenBOB',
         },
       },
       'BOB-goerli': {

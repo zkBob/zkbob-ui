@@ -30,7 +30,7 @@ export default ({ status, account, openModal, kycUrls }) => {
       component = <>
         <WargingIcon />
         <Row>
-          <Text>To restore increased deposit limits - </Text>
+          <Text>To restore increased deposit limits -</Text>
           <Link href={kycUrls?.homepage.replace('%s', account)}>resync your BAB token</Link>
         </Row>
       </>;
