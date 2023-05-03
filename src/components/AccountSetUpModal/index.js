@@ -1,57 +1,122 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useAccount, useSignMessage } from 'wagmi';
+import { useSignMessage } from 'wagmi';
 import md5 from 'js-md5';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+import Link from 'components/Link';
 
-import Create from 'components/AccountSetUpModal/Create';
-import Confirm from 'components/AccountSetUpModal/Confirm';
-import Restore from 'components/AccountSetUpModal/Restore';
-import Generate from 'components/AccountSetUpModal/Generate';
-import Password from 'components/AccountSetUpModal/Password';
+import Create from './Create';
+import Confirm from './Confirm';
+import Restore from './Restore';
+import Generate from './Generate';
+import Password from './Password';
+import Sign from './Sign';
 
-export default ({ isOpen, onClose, saveZkAccountMnemonic, isWalletModalOpen, openWalletModal }) => {
-  const { address: account } = useAccount();
+const STEP = {
+  START: 1,
+  CREATE_OPTIONS: 2,
+  RESTORE_OPTIONS: 3,
+  CREATE_WITH_WALLET: 4,
+  CREATE_WITH_SECRET: 5,
+  RESTORE_WITH_WALLET: 6,
+  RESTORE_WITH_SECRET: 7,
+  CONFIRM_SECRET: 8,
+  SING_MESSAGE_TO_CREATE: 9,
+  SING_MESSAGE_TO_RESTORE: 10,
+  CREATE_PASSWORD: 11,
+};
+
+const Start = ({ setStep }) => (
+  <Container>
+    <Description>
+      To start working with zkBob you need to create a zkAccount first
+    </Description>
+    <Button onClick={() => setStep(STEP.CREATE_OPTIONS)}>
+      Create new zkAccount
+    </Button>
+    <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)}>
+      I already have a zkAccount
+    </SecondButton>
+  </Container>
+);
+
+const CreateOptions = ({ setStep }) => (
+  <Container>
+    <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)}>
+      Use my Web3 wallet
+    </Button>
+    <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)}>
+      Use zkBob secret phrase
+    </SecondButton>
+    <Description>
+      By creating zkAccount, you hereby agree to and accept zkBob{' '}
+      <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security">
+        Terms of Service
+      </Link>
+    </Description>
+  </Container>
+);
+
+const RestoreOptions = ({ setStep }) => (
+  <Container>
+    <Button onClick={() => setStep(STEP.RESTORE_WITH_WALLET)}>
+      I used a Web3 wallet
+    </Button>
+    <SecondButton onClick={() => setStep(STEP.RESTORE_WITH_SECRET)}>
+      I used zkBob secret phrase
+    </SecondButton>
+  </Container>
+);
+
+export default ({ isOpen, onClose, saveZkAccountMnemonic }) => {
   const { signMessageAsync } = useSignMessage();
-  const [action, setAction] = useState();
+  const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
 
   const closeModal = useCallback(() => {
-    setAction(null);
+    setStep(STEP.START);
     setNewMnemonic(null);
     onClose();
   }, [onClose]);
 
-  const setNextAction = useCallback(nextAction => {
+  const setNextStep = useCallback(nextStep => {
     let newMnemonic = null;
-    if (nextAction === 'create') {
+    if (nextStep === STEP.CREATE_WITH_SECRET) {
       newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
     }
     setNewMnemonic(newMnemonic);
-    setAction(nextAction);
+    setStep(nextStep);
   }, []);
 
   const confirmMnemonic = useCallback(() => {
     setConfirmedMnemonic(newMnemonic);
-    setAction('password');
+    setStep(STEP.CREATE_PASSWORD);
   }, [newMnemonic]);
 
   const restore = useCallback(mnemonic => {
     setConfirmedMnemonic(mnemonic);
-    setAction('password');
+    setStep(STEP.CREATE_PASSWORD);
   }, []);
 
   const generate = useCallback(async () => {
-    const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    const signedMessage = await signMessageAsync({ message });
-    const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
-    setConfirmedMnemonic(newMnemonic);
-    setAction('password');
-  }, [signMessageAsync]);
+    const nextStep = step === STEP.CREATE_WITH_WALLET
+      ? STEP.SING_MESSAGE_TO_CREATE
+      : STEP.SING_MESSAGE_TO_RESTORE;
+    setStep(nextStep);
+    try {
+      const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
+      const signedMessage = await signMessageAsync({ message });
+      const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
+      setConfirmedMnemonic(newMnemonic);
+      setStep(STEP.CREATE_PASSWORD);
+    } catch (error) {
+      setStep(step);
+    }
+  }, [signMessageAsync, step]);
 
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
@@ -60,96 +125,93 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, isWalletModalOpen, ope
   }, [newMnemonic, confirmedMnemonic, saveZkAccountMnemonic, closeModal]);
 
   let title = null;
-  let state = null;
-  let prevAction = null;
-  if (action === 'create') {
-    title = 'Set up account';
-    state = <Create mnemonic={newMnemonic} next={() => setAction('confirm')} />;
-    prevAction = null;
-  } else if (action === 'confirm') {
-    title = 'Confirm secret phrase';
-    state = <Confirm mnemonic={newMnemonic} confirmMnemonic={confirmMnemonic} />;
-    prevAction = 'create';
-  } else if (action === 'restore') {
-    title = 'Restore account';
-    state = <Restore restore={restore} />;
-    prevAction = null;
-  } else if (action === 'generate') {
-    title = 'Create account';
-    state = <Generate generate={generate} account={account} connectWallet={openWalletModal} />;
-    prevAction = null;
-  } else if (action === 'password') {
-    title = 'Create password';
-    state = <Password confirmPassword={confirmPassword} />;
-    prevAction = null;
-  } else {
-    title = 'zkAccount';
-    state = (
-      <>
-        <OptionContainer>
-          <Title>Create a new zkBob Account with</Title>
-          <CreateButton onClick={() => setNextAction('generate')}>
-            {window?.ethereum && 'MetaMask or'} WalletConnect
-          </CreateButton>
-          <Row>
-            <Text>or</Text>
-            <Button type="link" onClick={() => setNextAction('create')}>
-              secret phrase
-            </Button>
-          </Row>
-        </OptionContainer>
-        <OptionContainer>
-          <Title>I already have a secret phrase</Title>
-          <Description>
-          Import your existing account using your 12 word secret phrase.
-          </Description>
-          <RestoreButton onClick={() => setNextAction('restore')}>
-            Restore account
-          </RestoreButton>
-        </OptionContainer>
-      </>
-    );
+  let component = null;
+  let prevStep = null;
+
+  switch(step) {
+    default:
+    case STEP.START:
+      title = 'zkAccount';
+      component = <Start setStep={setStep} />;
+      prevStep = null;
+      break;
+    case STEP.CREATE_OPTIONS:
+      title = 'Choose how you would like to create your account';
+      component = <CreateOptions setStep={setNextStep} />;
+      prevStep = STEP.START;
+      break;
+    case STEP.RESTORE_OPTIONS:
+      title = 'How did you create your account?';
+      component = <RestoreOptions setStep={setStep} />;
+      prevStep = STEP.START;
+      break;
+    case STEP.CREATE_WITH_WALLET:
+      title = 'Create account';
+      component = <Generate generate={generate} />;
+      prevStep = STEP.CREATE_OPTIONS;
+      break;
+    case STEP.CREATE_WITH_SECRET:
+      title = 'Set up account';
+      component = <Create mnemonic={newMnemonic} next={() => setStep(STEP.CONFIRM_SECRET)} />;
+      prevStep = STEP.CREATE_OPTIONS;
+      break;
+    case STEP.RESTORE_WITH_WALLET:
+      title = 'Create account';
+      component = <Generate generate={generate} />;
+      prevStep = STEP.CREATE_OPTIONS;
+      break;
+    case STEP.RESTORE_WITH_SECRET:
+      title = 'Restore account';
+      component = <Restore restore={restore} />;
+      prevStep = STEP.RESTORE_OPTIONS;
+      break;
+    case STEP.CONFIRM_SECRET:
+      title = 'Confirm secret phrase';
+      component = <Confirm mnemonic={newMnemonic} confirmMnemonic={confirmMnemonic} />;
+      prevStep = STEP.CREATE_WITH_SECRET;
+      break;
+    case STEP.SING_MESSAGE_TO_CREATE:
+      title = 'Sign the message to create your zkAccount';
+      component = <Sign isCreation />;
+      prevStep = null;
+      break;
+    case STEP.SING_MESSAGE_TO_RESTORE:
+      title = 'Sign the message to login to your zkAccount';
+      component = <Sign />;
+      prevStep = null;
+      break;
+    case STEP.CREATE_PASSWORD:
+      title = 'Create password';
+      component = <Password confirmPassword={confirmPassword} />;
+      prevStep = null;
+      break;
   }
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={closeModal}
-      onBack={action ? () => setAction(prevAction) : null}
+      onBack={prevStep ? () => setStep(prevStep) : null}
       title={title}
-      containerStyle={{ visibility: isWalletModalOpen ? 'hidden' : 'visible' }}
     >
-      {state}
+      {component}
     </Modal>
   );
 };
 
-const OptionContainer = styled.div`
+const Container = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  padding: 16px 24px;
-  border: 1px solid ${({ theme }) => theme.walletConnectorOption.border.default};
-  border-radius: 16px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
+  & > * {
+    margin-bottom: 16px;
+    &:last-child {
+      margin: 0;
+    }
   }
 `;
 
-const Title = styled.span`
-  text-align: center;
-  font-size: 16px;
-  color: ${({ theme }) => theme.text.color.primary};
-  font-weight: ${({ theme }) => theme.text.weight.bold};
-  margin-bottom: 10px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const Description = styled(Title)`
+const Description = styled.span`
   text-align: center;
   font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
@@ -157,24 +219,8 @@ const Description = styled(Title)`
   line-height: 20px;
 `;
 
-const CreateButton = styled(Button)`
-  margin-bottom: 10px;
-  position: relative;
-`;
-
-const RestoreButton = styled(Button)`
-  background: ${({ theme }) => theme.color.purpleLight};
-`;
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Text = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.text.color.primary};
-  font-weight: ${({ theme }) => theme.text.weight.normal};
-  margin-right: 5px;
+const SecondButton = styled(Button)`
+  background: transparent;
+  border: 1px solid ${props => props.theme.button.primary.background.default};
+  color: ${props => props.theme.button.primary.background.default};
 `;

@@ -6,7 +6,7 @@ import Button from 'components/Button';
 import TextAreaDefault from 'components/TextArea';
 
 export default ({ restore }) => {
-  const [mnemonic, setMnemonic] = useState();
+  const [mnemonic, setMnemonic] = useState('');
   const [error, setError] = useState(false);
 
   const onRestore = useCallback(() => {
