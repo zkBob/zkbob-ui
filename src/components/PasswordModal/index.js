@@ -5,7 +5,10 @@ import Button from 'components/Button';
 import Modal from 'components/Modal';
 import Input from 'components/Input';
 
-export default ({ isOpen, confirm, reset, password, onPasswordChange, error }) => {
+export default ({
+  isOpen, confirm, reset, password,
+  onPasswordChange, error, isAccountSetUpModalOpen
+}) => {
   const handleKeyPress = useCallback(event => {
     if(event.key === 'Enter'){
       confirm();
@@ -15,6 +18,7 @@ export default ({ isOpen, confirm, reset, password, onPasswordChange, error }) =
     <Modal
       isOpen={isOpen}
       title="Enter password"
+      containerStyle={{ visibility: isAccountSetUpModalOpen ? 'hidden' : 'visible' }}
     >
       <Container onKeyPress={handleKeyPress}>
         <Description>

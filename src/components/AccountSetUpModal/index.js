@@ -71,7 +71,7 @@ const RestoreOptions = ({ setStep }) => (
   </Container>
 );
 
-export default ({ isOpen, onClose, saveZkAccountMnemonic }) => {
+export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { signMessageAsync } = useSignMessage();
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
@@ -121,8 +121,9 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic }) => {
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
     saveZkAccountMnemonic(confirmedMnemonic, password, isNewAccount);
+    closePasswordModal();
     closeModal();
-  }, [newMnemonic, confirmedMnemonic, saveZkAccountMnemonic, closeModal]);
+  }, [newMnemonic, confirmedMnemonic, saveZkAccountMnemonic, closeModal, closePasswordModal]);
 
   let title = null;
   let component = null;
