@@ -32,7 +32,7 @@ const STEP = {
 const Start = ({ setStep }) => (
   <Container>
     <Description>
-      To start working with zkBob you need to create a zkAccount first
+      To start working with zkBob you need a zkAccount
     </Description>
     <Button onClick={() => setStep(STEP.CREATE_OPTIONS)}>
       Create new zkAccount
