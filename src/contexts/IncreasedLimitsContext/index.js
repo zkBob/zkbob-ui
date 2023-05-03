@@ -6,8 +6,6 @@ import { INCREASED_LIMITS_STATUSES } from 'constants';
 import { PoolContext } from 'contexts';
 import config from 'config';
 
-const DAY = 86400; // in seconds
-
 const IncreasedLimitsContext = createContext({});
 
 export default IncreasedLimitsContext;
@@ -37,7 +35,7 @@ export const IncreasedLimitsContextProvider = ({ children }) => {
         const syncData = provider.sync.byChainIds.find(c => c.chainId === chainId);
         if (syncData.syncTimestamp === 0) {
           status = INCREASED_LIMITS_STATUSES.INACTIVE;
-        } else if ((+new Date() / 1000) - syncData.syncTimestamp > 7 * DAY) {
+        } else if ((+new Date() / 1000) > syncData.expirationTimestamp) {
           status = INCREASED_LIMITS_STATUSES.RESYNC;
         } else {
           status = INCREASED_LIMITS_STATUSES.ACTIVE;

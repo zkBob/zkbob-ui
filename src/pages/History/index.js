@@ -12,7 +12,7 @@ import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
   const {
-    history, zkAccount, zkAccountId,
+    history, zkAccount,
     isLoadingZkAccount, isLoadingHistory,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
@@ -44,7 +44,7 @@ export default () => {
       {!isHistoryEmpty && (
         <>
           {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
-            <HistoryItem key={index} item={item} zkAccountId={zkAccountId} currentPool={currentPool} />
+            <HistoryItem key={index} item={item} zkAccount={zkAccount} currentPool={currentPool} />
           )}
           {history.length > pageSize && (
             <Pagination

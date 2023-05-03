@@ -51,8 +51,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
   const { supportId, updateSupportId } = useContext(SupportIdContext);
   const [zkClient, setZkClient] = useState(null);
-  const [zkAccount, setZkAccount] = useState(false);
-  const [zkAccountId, setZkAccountId] = useState(null);
+  const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [history, setHistory] = useState(null);
   const [isPendingIncoming, setIsPendingIncoming] = useState(false);
@@ -92,24 +91,21 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkClient, setCurrentPool]);
 
   const loadZkAccount = useCallback(async (secretKey, birthIndex, useDelegatedProver = false) => {
-    let zkAccount = false;
-    let zkAccountId = null;
+    setZkAccount(null);
     if (zkClient && secretKey) {
       setBalance(ethers.constants.Zero);
       setHistory(null);
       setIsLoadingZkAccount(true);
       try {
         await zp.createAccount(zkClient, secretKey, birthIndex, useDelegatedProver);
-        zkAccount = true;
+        const zkAccount = ethers.utils.id(secretKey);
+        setZkAccount(zkAccount);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadZkAccount' } });
         showLoadingError('zkAccount');
       }
-      zkAccountId = ethers.utils.id(secretKey);
     }
-    setZkAccount(zkAccount);
-    setZkAccountId(zkAccountId);
     setIsLoadingZkAccount(false);
     setLoadingPercentage(0);
   }, [zkClient]);
@@ -388,9 +384,9 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount, zkClient]);
 
   const verifyShieldedAddress = useCallback(address => {
-    if (!zkClient) return false;
+    if (!zkAccount) return false;
     return zkClient.verifyShieldedAddress(address);
-  }, [zkClient]);
+  }, [zkClient, zkAccount]);
 
   const estimateFee = useCallback(async (amounts, txType) => {
     if (!zkClient) return null;
@@ -485,7 +481,6 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const clearState = useCallback(() => {
     setZkAccount(null);
-    setZkAccountId(null);
     setBalance(ethers.constants.Zero);
     setHistory([]);
     updateSupportId();
@@ -555,7 +550,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   return (
     <ZkAccountContext.Provider
       value={{
-        zkAccount, zkAccountId, balance, saveZkAccountMnemonic, deposit,
+        zkAccount, balance, saveZkAccountMnemonic, deposit,
         withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,

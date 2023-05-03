@@ -12,7 +12,7 @@ import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
 
-const ListItem = ({ index, data, zkAccountId }) => {
+const ListItem = ({ index, data, zkAccount }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -26,7 +26,7 @@ const ListItem = ({ index, data, zkAccountId }) => {
     <ItemContainer>
       <Index>{index + 1}</Index>
       {data.isLoopback ? (
-        <ZkAvatar seed={zkAccountId} size={16} />
+        <ZkAvatar seed={zkAccount} size={16} />
       ) : (
         <IncognitoAvatar />
       )}
@@ -55,7 +55,7 @@ const ListItem = ({ index, data, zkAccountId }) => {
   );
 }
 
-export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccountId }) => {
+export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -78,7 +78,7 @@ export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccountId }) => 
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (
-            <ListItem key={index} index={index} data={transfer} zkAccountId={zkAccountId} />
+            <ListItem key={index} index={index} data={transfer} zkAccount={zkAccount} />
           ))}
         </List>
       </Container>

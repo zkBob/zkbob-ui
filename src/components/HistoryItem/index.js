@@ -108,7 +108,7 @@ const Fee = ({ fee, highFee, isMobile }) => (
   </>
 );
 
-export default ({ item, zkAccountId, currentPool }) => {
+export default ({ item, zkAccount, currentPool }) => {
   const date = useDateFromNow(item.timestamp);
   const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -193,7 +193,7 @@ export default ({ item, zkAccountId, currentPool }) => {
                         {(item.type === TransferOut && !item.actions[0].isLoopback) ? (
                           <IncognitoAvatar />
                         ) : (
-                          <ZkAvatar seed={zkAccountId} size={16} />
+                          <ZkAvatar seed={zkAccount} size={16} />
                         )}
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
@@ -220,7 +220,7 @@ export default ({ item, zkAccountId, currentPool }) => {
                     </>
                   ) : (
                     <>
-                      <ZkAvatar seed={zkAccountId} size={16} />
+                      <ZkAvatar seed={zkAccount} size={16} />
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
@@ -259,7 +259,7 @@ export default ({ item, zkAccountId, currentPool }) => {
           transfers={item.actions.map(action => ({ address: action.to, ...action }))}
           isOpen={isDetailsModalOpen}
           onClose={() => setIsDetailsModalOpen(false)}
-          zkAccountId={zkAccountId}
+          zkAccount={zkAccount}
           isSent={true}
         />
       )}
