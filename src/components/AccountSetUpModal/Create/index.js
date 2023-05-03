@@ -12,11 +12,11 @@ export default ({ mnemonic, next }) => {
         Write down or copy these words in the right order and save them somewhere safe
       </Description>
       <Warning>
-        Never share your recovery phrase with anyone,<br/> store it securely!
+        Never share your secret phrase with anyone,<br/> store it securely!
       </Warning>
       <SeedPhrase value={mnemonic} />
       <CopyTextButton text={mnemonic} style={{ alignSelf: 'center' }}>
-        Copy seed phrase
+        Copy secret phrase
       </CopyTextButton>
       <Button onClick={next}>Continue</Button>
     </Container>

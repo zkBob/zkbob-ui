@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import WalletConnectors from 'components/WalletConnectors';
+import Spinner from 'components/Spinner';
 
-export default ({ generate, isCreation }) => {
+export default ({ isCreation }) => {
   return (
     <Container>
-      <Description>
+      <Spinner />
+      <Note>
         {isCreation
-          ? 'Choose the wallet that will be associated with your zkAccount'
-          : 'Select the wallet you used to create your zkAccount'
+          ? 'Your zkAccount is being created based on the connected wallet.'
+          : 'Accessing your zkAccount with your connected wallet.'
         }
-      </Description>
-      <WalletConnectors callback={generate} />
+      </Note>
     </Container>
   );
 };
@@ -30,9 +30,9 @@ const Container = styled.div`
   }
 `;
 
-const Description = styled.span`
+const Note = styled.span`
   font-size: 14px;
-  color: ${({ theme }) => theme.text.color.primary};
+  color: ${({ theme }) => theme.text.color.secondary};
   line-height: 20px;
   text-align: center;
 `;

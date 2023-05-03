@@ -40,9 +40,9 @@ export default () => {
           </>
         ) : (
           <>
-            <Title>Welcome to Private zkBob Transfers!</Title>
+            <Title>Welcome to zkBob!</Title>
             <Description>
-              <Text>Create a zkAccount to deposit into a private pool, transfer, or withdraw in private mode.</Text>
+              <Text>Create a zkAccount to transfer tokens privately with your friends and colleagues.</Text>
             </Description>
             <AccountSetUpButton />
           </>

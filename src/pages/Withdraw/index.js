@@ -31,7 +31,7 @@ import config from 'config';
 import { NETWORKS } from 'constants';
 import { useMaxAmountExceeded } from './hooks';
 
-const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
+const note = `${tokenSymbol()} will be withdrawn from zkBob and deposited into the provided wallet address.`;
 
 export default () => {
   const {
@@ -66,7 +66,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
-      button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
+      button = <Button $loading $contrast disabled>Loading...</Button>;
     } else if (amount.isZero()) {
       button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {

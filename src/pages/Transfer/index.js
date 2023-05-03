@@ -19,7 +19,7 @@ import { ZkAccountContext, PoolContext } from 'contexts';
 import { useLatestAction } from 'hooks';
 import config from 'config';
 
-const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
+const note = 'The transfer will be performed privately. Sender, recipient and amount are never disclosed.';
 const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {

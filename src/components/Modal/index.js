@@ -65,6 +65,8 @@ const Title = styled.span`
   color: ${({ theme }) => theme.text.color.primary};
   font-weight: ${({ theme }) => theme.text.weight.bold};
   margin-bottom: 24px;
+  padding: 0 20px;
+  text-align: center;
 `;
 
 const CrossIcon = styled(CrossIconDefault)`
