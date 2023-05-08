@@ -6,7 +6,7 @@ import Modal from 'components/Modal';
 import Input from 'components/Input';
 
 export default ({
-  isOpen, confirm, reset, password,
+  isOpen, confirm, reset, password, isLoading,
   onPasswordChange, error, isAccountSetUpModalOpen
 }) => {
   const handleKeyPress = useCallback(event => {
@@ -31,8 +31,11 @@ export default ({
           value={password}
           onChange={onPasswordChange}
           error={!!error}
+          disabled={isLoading}
         />
-        <Button onClick={confirm}>Sign in</Button>
+        <Button onClick={confirm} disabled={isLoading}>
+          {isLoading ? 'Singing in...' : 'Sign in'}
+        </Button>
         <Button type="link" onClick={reset}>Lost password? Click here to restore access</Button>
       </Container>
     </Modal>
