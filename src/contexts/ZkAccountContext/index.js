@@ -57,6 +57,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isPendingIncoming, setIsPendingIncoming] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [pendingActions, setPendingActions] = useState([]);
+  const [isPoolSwitching, setIsPoolSwitching] = useState(false);
   const [isLoadingZkAccount, setIsLoadingZkAccount] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -86,8 +87,10 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const switchToPool = useCallback(async poolId => {
     if (!zkClient) return;
+    setIsPoolSwitching(true);
     await zkClient.switchToPool(poolId);
     setCurrentPool(poolId);
+    setIsPoolSwitching(false);
   }, [zkClient, setCurrentPool]);
 
   const loadZkAccount = useCallback(async (secretKey, birthIndex, useDelegatedProver = false) => {
@@ -550,7 +553,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   return (
     <ZkAccountContext.Provider
       value={{
-        zkAccount, balance, saveZkAccountMnemonic, deposit,
+        zkAccount, balance, saveZkAccountMnemonic, deposit, isPoolSwitching,
         withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
