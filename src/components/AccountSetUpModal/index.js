@@ -159,7 +159,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     case STEP.RESTORE_WITH_WALLET:
       title = 'Login to your zkAccount';
       component = <Generate generate={generate} />;
-      prevStep = STEP.CREATE_OPTIONS;
+      prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:
       title = 'Restore account';
