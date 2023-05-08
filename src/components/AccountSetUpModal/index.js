@@ -147,17 +147,17 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       prevStep = STEP.START;
       break;
     case STEP.CREATE_WITH_WALLET:
-      title = 'Create account';
+      title = 'Create new zkAccount';
       component = <Generate generate={generate} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
-      title = 'Set up account';
+      title = 'Setup account';
       component = <Create mnemonic={newMnemonic} next={() => setStep(STEP.CONFIRM_SECRET)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_WALLET:
-      title = 'Create account';
+      title = 'Login to your zkAccount';
       component = <Generate generate={generate} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
