@@ -152,7 +152,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
-      title = 'Setup account';
+      title = 'Create new zkAccount';
       component = <Create mnemonic={newMnemonic} next={() => setStep(STEP.CONFIRM_SECRET)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
@@ -162,7 +162,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:
-      title = 'Restore account';
+      title = 'Restore zkAccount';
       component = <Restore restore={restore} />;
       prevStep = STEP.RESTORE_OPTIONS;
       break;
