@@ -5,7 +5,7 @@ import Dropdown from 'components/Dropdown';
 import OptionButton from 'components/OptionButton';
 
 const links = [
-  { name: 'Dune Analytics', href: 'https://dune.com/maxaleks/zkbob' },
+  { name: 'Dune Analytics', href: 'https://dune.com/zkbob/zkbob' },
   { name: 'Documentation', href: 'https://docs.zkbob.com/' },
   { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
 ];
