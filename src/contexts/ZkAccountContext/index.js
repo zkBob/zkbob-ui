@@ -491,6 +491,7 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const removeZkAccountMnemonic = useCallback(async () => {
     if (zkAccount) {
+      await zkClient.cleanState();
       await zkClient.logout();
     }
     window.localStorage.removeItem('seed');
