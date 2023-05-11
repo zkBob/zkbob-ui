@@ -30,7 +30,7 @@ export default ({
   balance, poolBalance, refresh, isLoadingBalance,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState,
-  switchToPool, currentPool, initializeGiftCard,
+  switchToPool, currentPool, initializeGiftCard, isPoolSwitching,
 }) => {
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
@@ -55,13 +55,17 @@ export default ({
       <AccountSection>
         <NetworkDropdown
           buttonRef={networkButtonRef}
-          disabled={isLoadingState}
+          disabled={isPoolSwitching || isLoadingState}
           switchToPool={switchToPool}
           currentPool={currentPool}
         >
-          <NetworkDropdownButton ref={networkButtonRef} $refreshing={isLoadingState}>
+          <NetworkDropdownButton ref={networkButtonRef} $refreshing={isPoolSwitching || isLoadingState}>
             <NetworkIcon src={NETWORKS[config.pools[currentPool].chainId].icon} />
-            <DropdownIcon />
+            {isPoolSwitching ? (
+              <Spinner size={12} style={{ marginLeft: 10 }} />
+            ) : (
+              <DropdownIcon />
+            )}
           </NetworkDropdownButton>
         </NetworkDropdown>
         <BridgeButton small onClick={openSwapModal}>
@@ -153,7 +157,7 @@ export default ({
             onClick={openAccountSetUpModal}
           >
             <LargeButtonContent>
-              {isLoadingZkAccount ? 'Loading zkAccount' : 'Create zkAccount'}
+              {isLoadingZkAccount ? 'Loading zkAccount' : 'zkAccount'}
             </LargeButtonContent>
             {!isLoadingZkAccount && <AccountIcon />}
           </Button>

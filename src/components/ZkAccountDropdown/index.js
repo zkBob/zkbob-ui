@@ -57,7 +57,7 @@ const Content = ({
 
   const options = [
     { text: 'Change password', action: changePassword },
-    { text: 'Show secret recovery phrase', action: showSeedPhrase },
+    { text: 'Show secret phrase', action: showSeedPhrase },
     { text: 'Switch account', action: switchAccount },
     { text: 'Log out', action: logout },
   ];

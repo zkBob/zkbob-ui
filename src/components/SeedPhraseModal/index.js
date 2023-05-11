@@ -16,11 +16,11 @@ export default ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Show secret recovery phrase"
+      title="Show secret phrase"
     >
       <Container onKeyPress={mnemonic ? null : onKeyPress}>
         <Warning>
-          Never share your recovery phrase with anyone,<br/> store it securely!
+          Never share your secret phrase with anyone,<br/> store it securely!
         </Warning>
         <Description>
           If someone has your secret phrase they will have full control of your wallet.
@@ -29,7 +29,7 @@ export default ({
           <>
             <SeedPhrase value={mnemonic} />
             <CopyTextButton text={mnemonic} style={{ alignSelf: 'center' }}>
-              Copy seed phrase
+              Copy secret phrase
             </CopyTextButton>
             <Button onClick={onClose}>Done</Button>
           </>

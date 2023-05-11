@@ -11,11 +11,21 @@ export function tokenIcon() {
 }
 
 export async function createPermitSignature(tokenContractInstance, signer, spenderAddress, value, deadline, salt) {
-  const [ownerAddress, chainId] = await Promise.all([signer.getAddress(), signer.getChainId()]);
-  const [contractName, nonce] = await Promise.all([
-    tokenContractInstance.name(),
-    tokenContractInstance.nonces(ownerAddress),
-  ]);
+  let ownerAddress;
+  let chainId;
+  let contractName;
+  let nonce;
+
+  try {
+    [ownerAddress, chainId] = await Promise.all([signer.getAddress(), signer.getChainId()]);
+    [contractName, nonce] = await Promise.all([
+      tokenContractInstance.name(),
+      tokenContractInstance.nonces(ownerAddress),
+    ]);
+  } catch (error) {
+    console.error(error);
+    throw Error('Network request failed, please try again or setup a different rpc url in your wallet.');
+  }
 
   // The domain
   const domain = {
