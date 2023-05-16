@@ -18,8 +18,8 @@ export default () => {
 
   const resources = [
     { icon: TwitterIcon, href: 'https://twitter.com/zkBob_' },
-    { icon: TelegramIcon, href: 'https://t.me/zkbob_news' },
-    { icon: MirrorIcon, href: 'https://mirror.xyz/0x6132eB883e88CD4E007552b871A6444Bfc34E837' },
+    { icon: TelegramIcon, href: 'https://t.me/zkbobcommunity' },
+    { icon: MirrorIcon, href: 'https://blog.zkbob.com/' },
     { icon: GithubIcon, href: 'https://github.com/zkBob' },
   ];
 
