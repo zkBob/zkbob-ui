@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export default ({ tabs, activeTab, onTabClick }) => {
+export default ({ tabs, activeTab, onTabClick, showBadge }) => {
   return (
     <Tabs>
       {tabs.map((tab, index) =>
@@ -9,7 +9,8 @@ export default ({ tabs, activeTab, onTabClick }) => {
           key={index}
           active={activeTab === index}
           onClick={() => onTabClick(index)}
-        >{tab}</Tab>
+          $showBadge={showBadge && tab.badge}
+        >{tab.name}</Tab>
       )}
     </Tabs>
   );
@@ -37,6 +38,7 @@ const Tabs = styled.div`
 `;
 
 const Tab = styled.div`
+  position: relative;
   border-radius: 10px;
   padding: 8px 16px;
   background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
@@ -50,4 +52,14 @@ const Tab = styled.div`
     padding: 8px 10px;
     text-align: center;
   }
+  &::after {
+    content: '';
+    display: ${props => props.$showBadge ? 'block' : 'none'};
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #E53E3E;
 `;

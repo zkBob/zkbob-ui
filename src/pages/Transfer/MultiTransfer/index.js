@@ -156,7 +156,7 @@ export default forwardRef((props, ref) => {
       }
       {(() => {
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button $loading $contrast disabled>Loading...</Button>
+          else if (isLoadingState) return <Button loading contrast disabled>Loading...</Button>
           else if (!data) return <Button disabled>Proceed</Button>
           else return <Button onClick={validate}>Proceed</Button>;
         })()}

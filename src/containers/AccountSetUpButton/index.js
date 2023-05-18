@@ -9,8 +9,8 @@ export default () => {
   const { isLoadingZkAccount } = useContext(ZkAccountContext);
   return (
     <Button
-      $loading={isLoadingZkAccount}
-      $contrast
+      loading={isLoadingZkAccount}
+      contrast
       disabled={isLoadingZkAccount}
       onClick={openAccountSetUpModal}
     >

@@ -56,7 +56,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button $loading $contrast disabled>Loading...</Button>;
+      button = <Button loading contrast disabled>Loading...</Button>;
     } else if (amount.isZero()) {
       button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {

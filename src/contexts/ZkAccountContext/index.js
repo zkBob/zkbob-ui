@@ -9,6 +9,7 @@ import {
   HistoryRecordState, HistoryTransactionType,
 } from 'zkbob-client-js';
 import { ProverMode } from 'zkbob-client-js/lib/config';
+import { toast } from 'react-toastify';
 
 import {
   TransactionModalContext, ModalContext, PoolContext,
@@ -69,6 +70,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [relayerVersion, setRelayerVersion] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
   const [giftCard, setGiftCard] = useState(null);
+  const [giftCardTxHash, setGiftCardTxHash] = useState(null);
 
   useEffect(() => {
     if (zkClient || !supportId || !currentPool) return;
@@ -432,7 +434,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         birthindex: Number(giftCard.birthIndex),
         proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
       });
-      await zkClient.waitJobTxHash(jobId);
+      const txHash = await zkClient.waitJobTxHash(jobId);
+      setGiftCardTxHash(txHash);
       deleteGiftCard();
       updatePoolData();
     } catch (error) {
@@ -518,7 +521,19 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [updateMaxTransferable, balance, currentPool]);
 
   useEffect(() => {
-    if (isPending || isPendingIncoming) {
+    if (isPending || isPendingIncoming || giftCardTxHash) {
+      if (giftCardTxHash) {
+        const tx = history.find(item => item.txHash === giftCardTxHash);
+        if (tx && tx.state !== HistoryRecordState.Pending) {
+          setGiftCardTxHash(null);
+          toast.success(
+            <span>
+              <b>The operation has been completed.</b><br />
+              Check the history tab or your zkAccount balance to get more information.
+            </span>
+          );
+        }
+      }
       const interval = 5000; // 5 seconds
       const intervalId = setInterval(() => {
         updatePoolData();
@@ -526,7 +541,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, isPendingIncoming, updatePoolData, updateTokenBalance]);
+  }, [isPending, isPendingIncoming, updatePoolData, updateTokenBalance, giftCardTxHash, history]);
 
   useEffect(() => {
     loadRelayerVersion();
@@ -560,7 +575,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
-        switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard,
+        switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { ModalContext, PoolContext, ZkAccountContext } from 'contexts';
+import { ModalContext, PoolContext, ZkAccountContext, SupportIdContext } from 'contexts';
 import RedeemGiftCardModal from 'components/RedeemGiftCardModal';
 
 export default () => {
@@ -19,34 +19,42 @@ export default () => {
     openAccountSetUpModal,
     isTermsModalOpen,
   } = useContext(ModalContext);
+  const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const location = useLocation();
+  const [giftCode, setGiftCode] = useState(null);
   const [isNewUser, setIsNewUser] = useState(false);
 
   useEffect(() => {
-    if (giftCard && !isPasswordModalOpen && !isAccountSetUpModalOpen && !isTermsModalOpen) {
+    if ((giftCode || giftCard) && !isPasswordModalOpen && !isAccountSetUpModalOpen && !isTermsModalOpen) {
       openRedeemGiftCardModal();
     }
   }, [
-    giftCard, openRedeemGiftCardModal, isPasswordModalOpen,
+    giftCode, giftCard, openRedeemGiftCardModal, isPasswordModalOpen,
     isAccountSetUpModalOpen, isTermsModalOpen,
   ]);
 
   useEffect(() => {
-    async function init() {
+    async function init(code) {
       if (!window.localStorage.getItem('seed')) {
         setIsNewUser(true);
       }
-      const result = await initializeGiftCard(code);
-      if (result) {
-        queryParams.delete('gift-code');
-        history.replace({ search: queryParams.toString() });
-      }
+      setGiftCode(code);
+      queryParams.delete('gift-code');
+      history.replace({ search: queryParams.toString() });
     }
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('gift-code');
-    if (code) init();
+    if (code) init(code);
   }, [history, location, initializeGiftCard]);
+
+  useEffect(() => {
+    async function init() {
+      const result = await initializeGiftCard(giftCode);
+      if (result) setGiftCode(null);
+    }
+    if (giftCode) init();
+  }, [giftCode, initializeGiftCard]);
 
   const onClose = useCallback(() => {
     deleteGiftCard();
@@ -70,6 +78,7 @@ export default () => {
       switchToPool={switchToPool}
       setUpAccount={setUpAccount}
       isNewUser={isNewUser}
+      supportId={supportId}
     />
   );
 }
