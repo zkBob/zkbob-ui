@@ -103,20 +103,12 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   }, []);
 
   const generate = useCallback(async () => {
-    const nextStep = step === STEP.CREATE_WITH_WALLET
-      ? STEP.SING_MESSAGE_TO_CREATE
-      : STEP.SING_MESSAGE_TO_RESTORE;
-    setStep(nextStep);
-    try {
-      const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-      const signedMessage = await signMessageAsync({ message });
-      const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
-      setConfirmedMnemonic(newMnemonic);
-      setStep(STEP.CREATE_PASSWORD);
-    } catch (error) {
-      setStep(step);
-    }
-  }, [signMessageAsync, step]);
+    const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
+    const signedMessage = await signMessageAsync({ message });
+    const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
+    setConfirmedMnemonic(newMnemonic);
+    setStep(STEP.CREATE_PASSWORD);
+  }, [signMessageAsync]);
 
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
@@ -148,7 +140,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.CREATE_WITH_WALLET:
       title = 'Create new zkAccount';
-      component = <Generate generate={generate} />;
+      component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
@@ -158,7 +150,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.RESTORE_WITH_WALLET:
       title = 'Login to your zkAccount';
-      component = <Generate generate={generate} />;
+      component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_RESTORE)} />;
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:
@@ -173,13 +165,13 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.SING_MESSAGE_TO_CREATE:
       title = 'Sign the message to create your zkAccount';
-      component = <Sign isCreation />;
-      prevStep = null;
+      component = <Sign isCreation sign={generate} />;
+      prevStep = STEP.CREATE_WITH_WALLET;
       break;
     case STEP.SING_MESSAGE_TO_RESTORE:
       title = 'Sign the message to login to your zkAccount';
-      component = <Sign />;
-      prevStep = null;
+      component = <Sign sign={generate} />;
+      prevStep = STEP.RESTORE_WITH_WALLET;
       break;
     case STEP.CREATE_PASSWORD:
       title = 'Create password';

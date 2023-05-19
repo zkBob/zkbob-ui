@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import WalletConnectors from 'components/WalletConnectors';
 
-export default ({ generate, isCreation }) => {
+export default ({ next, isCreation }) => {
   return (
     <Container>
       <Description>
@@ -12,7 +12,7 @@ export default ({ generate, isCreation }) => {
           : 'Select the wallet you used to create your zkAccount'
         }
       </Description>
-      <WalletConnectors callback={generate} />
+      <WalletConnectors callback={next} />
     </Container>
   );
 };

@@ -86,7 +86,7 @@ const Routes = ({ showWelcome, params }) => (
     <SentryRoute exact strict path="/history">
       <History />
     </SentryRoute>
-    <Redirect to={'/deposit' + params} />
+    <Redirect to={'/transfer' + params} />
   </Switch>
 );
 
