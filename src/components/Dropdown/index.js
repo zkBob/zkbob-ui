@@ -5,6 +5,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 const GlobalStyle = createGlobalStyle`
   .dropdown {
+    top: 55px !important;
     @media only screen and (max-width: 560px) {
       left: calc(100% - 58px) !important;
       transform: translateX(-100%) !important;
