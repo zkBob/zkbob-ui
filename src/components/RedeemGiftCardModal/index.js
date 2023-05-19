@@ -153,21 +153,28 @@ const CompletedScreen = ({ close }) => (
   </>
 );
 
-const FailedScreen = ({ supportId }) => (
-  <>
-    <CrossIcon />
-    <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
-      Something went wrong
-    </StatusTitle>
-    <Description style={{ marginBottom: 16 }}>
-      Please contact our support team to resolve this problem. Use Support ID in your request.
-    </Description>
-    <SupportId supportId={supportId} />
-    <Button onClick={() => window.open('https://zkbob.canny.io/report-issue/', '_blank')}>
-      Contact support
-    </Button>
-  </>
-);
+const FailedScreen = ({ error, supportId }) => {
+  const isClaimed = error?.message?.includes('Insufficient funds');
+  return (
+    <>
+      <CrossIcon />
+      <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
+        {isClaimed ? 'This gift card has already been used' : 'Something went wrong'}
+      </StatusTitle>
+      {!isClaimed &&
+        <Description style={{ marginBottom: 16 }}>
+          Please contact our support team to resolve this problem. Use Support ID in your request.
+        </Description>
+      }
+      <SupportId supportId={supportId} />
+      {!isClaimed &&
+        <Button onClick={() => window.open('https://zkbob.canny.io/report-issue/', '_blank')}>
+          Contact support
+        </Button>
+      }
+    </>
+  );
+};
 
 export default ({
   isOpen, onClose, giftCard, redeemGiftCard,
@@ -175,6 +182,7 @@ export default ({
   setUpAccount, isNewUser, currentPool,
 }) => {
   const [step, setStep] = useState(START);
+  const [error, setError] = useState(null);
 
   const redeem = useCallback(async () => {
     setStep(IN_PROGRESS);
@@ -182,6 +190,7 @@ export default ({
       await redeemGiftCard();
       setStep(COMPLETED);
     } catch (error) {
+      setError(error);
       setStep(FAILED);
     }
   }, [redeemGiftCard]);
@@ -240,7 +249,7 @@ export default ({
           case COMPLETED:
             return <CompletedScreen close={clearStateAndClose} />;
           case FAILED:
-            return <FailedScreen supportId={supportId} />;
+            return <FailedScreen error={error} supportId={supportId} />;
         }
       })()}
     </Modal>
