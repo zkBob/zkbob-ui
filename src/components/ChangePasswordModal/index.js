@@ -9,19 +9,12 @@ import { ModalContext, ZkAccountContext } from 'contexts';
 
 export default () => {
   const { isChangePasswordModalOpen, closeChangePasswordModal } = useContext(ModalContext);
-  const { changePassword, verifyPassword } = useContext(ZkAccountContext);
+  const { setPassword } = useContext(ZkAccountContext);
   const history = useHistory();
-  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirmation, setNewPasswordConfirmation] = useState('');
   const [lengthError, setLengthError] = useState(false);
   const [matchError, setMatchError] = useState(false);
-  const [wrongPasswordError, setWrongPasswordError] = useState(false);
-
-  const handleOldPasswordChange = useCallback(e => {
-    setWrongPasswordError(false);
-    setOldPassword(e.target.value);
-  }, []);
 
   const handleNewPasswordChange = useCallback(e => {
     setLengthError(false);
@@ -36,30 +29,26 @@ export default () => {
   }, []);
 
   const closeModal = useCallback(() => {
-    setWrongPasswordError(false);
     setLengthError(false);
     setMatchError(false);
-    setOldPassword('');
     setNewPassword('');
     setNewPasswordConfirmation('');
     closeChangePasswordModal();
   }, [closeChangePasswordModal]);
 
   const confirm = useCallback(async () => {
-    const wrongPasswordError = !verifyPassword(oldPassword);
     const lengthError = !newPassword || newPassword.length < 6;
     const matchError = newPassword !== newPasswordConfirmation;
-    setWrongPasswordError(wrongPasswordError);
     setLengthError(lengthError);
     setMatchError(matchError);
-    if (!lengthError && !matchError && !wrongPasswordError) {
-      changePassword(oldPassword, newPassword);
+    if (!lengthError && !matchError) {
+      setPassword(newPassword);
       closeModal();
     }
     history.replace(history.location.pathname);
   }, [
-    oldPassword, newPassword, newPasswordConfirmation,
-    changePassword, verifyPassword, closeModal, history,
+    newPassword, newPasswordConfirmation,
+    setPassword, closeModal, history,
   ]);
 
   const handleKeyPress = useCallback(event => {
@@ -72,34 +61,26 @@ export default () => {
     <Modal
       isOpen={isChangePasswordModalOpen}
       onClose={closeModal}
-      title="Change password"
+      title="Set password"
     >
       <Container onKeyPress={handleKeyPress}>
         <Input
           type="password"
-          placeholder="Old password"
-          value={oldPassword}
-          onChange={handleOldPasswordChange}
-          error={wrongPasswordError}
-        />
-        <Input
-          type="password"
-          placeholder="New password 6+ characters"
+          placeholder="Password 6+ characters"
           value={newPassword}
           onChange={handleNewPasswordChange}
           error={lengthError || matchError}
         />
         <Input
           type="password"
-          placeholder="Verify new password"
+          placeholder="Verify password"
           value={newPasswordConfirmation}
           onChange={handleNewPasswordConfirmationChange}
           error={lengthError || matchError}
         />
         <RulesContainer>
-          <Rule $error={wrongPasswordError}>Enter the correct old password</Rule>
           <Rule $error={lengthError}>Please enter 6 or more characters</Rule>
-          <Rule $error={matchError}>New password should match</Rule>
+          <Rule $error={matchError}>Password should match</Rule>
         </RulesContainer>
         <Button onClick={confirm}>Confirm</Button>
       </Container>

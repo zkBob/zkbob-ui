@@ -445,12 +445,18 @@ export const ZkAccountContextProvider = ({ children }) => {
     }
   }, [zkClient, giftCard, switchToPool, currentPool, updatePoolData]);
 
-  const decryptMnemonic = password => {
-    const cipherText = window.localStorage.getItem('seed');
-    const mnemonic = AES.decrypt(cipherText, password).toString(Utf8);
+  const getSeed = () => {
+    const seed = window.localStorage.getItem('seed');
+    const hasPassword = !ethers.utils.isValidMnemonic(seed);
+    return { seed, hasPassword };
+  };
+
+  const decryptMnemonic = useCallback(password => {
+    const { seed } = getSeed();
+    const mnemonic = AES.decrypt(seed, password).toString(Utf8);
     if (!ethers.utils.isValidMnemonic(mnemonic)) throw new Error('invalid mnemonic');
     return mnemonic;
-  }
+  }, []);
 
   const unlockAccount = useCallback(password => {
     if (!zkClient) return false;
@@ -462,7 +468,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     } catch (error) {
         throw new Error('Incorrect password');
     }
-  }, [zkClient, loadZkAccount, closePasswordModal]);
+  }, [zkClient, loadZkAccount, closePasswordModal, decryptMnemonic]);
 
   const verifyPassword = useCallback(password => {
     try {
@@ -471,17 +477,29 @@ export const ZkAccountContextProvider = ({ children }) => {
     } catch (error) {
       return false;
     }
-  }, []);
+  }, [decryptMnemonic]);
 
-  const changePassword = useCallback(async (oldPassword, newPassword) => {
-    const mnemonic = decryptMnemonic(oldPassword);
-    const cipherText = await AES.encrypt(mnemonic, newPassword).toString();
+  const setPassword = useCallback(password => {
+    const { seed, hasPassword } = getSeed();
+    if (hasPassword) {
+      console.error('Password already set');
+      return;
+    }
+    const cipherText = AES.encrypt(seed, password).toString();
     window.localStorage.setItem('seed', cipherText);
   }, []);
 
-  const saveZkAccountMnemonic = useCallback(async (mnemonic, password, isNewAccount) => {
-    const cipherText = await AES.encrypt(mnemonic, password).toString()
-    window.localStorage.setItem('seed', cipherText);
+  const removePassword = useCallback(password => {
+    const mnemonic = decryptMnemonic(password);
+    window.localStorage.setItem('seed', mnemonic);
+  }, [decryptMnemonic]);
+
+  const saveZkAccountMnemonic = useCallback((mnemonic, password, isNewAccount) => {
+    let seed = mnemonic;
+    if (password) {
+      seed = AES.encrypt(mnemonic, password).toString();
+    }
+    window.localStorage.setItem('seed', seed);
     loadZkAccount(mnemonic, isNewAccount ? -1 : undefined);
   }, [loadZkAccount]);
 
@@ -502,11 +520,17 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [zkAccount, zkClient, clearState]);
 
   const lockAccount = useCallback(() => {
-    clearState();
-    closeAllModals();
-    const seed = window.localStorage.getItem('seed');
-    if (seed) openPasswordModal();
-  }, [openPasswordModal, clearState, closeAllModals]);
+    const { seed, hasPassword } = getSeed();
+    if (seed) {
+      closeAllModals();
+      if (hasPassword) {
+        clearState();
+        openPasswordModal();
+      } else {
+        updateSupportId();
+      }
+    }
+  }, [openPasswordModal, clearState, closeAllModals, updateSupportId]);
 
   useEffect(() => {
     updatePoolData();
@@ -551,11 +575,22 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [loadRelayerVersion]);
 
   useEffect(() => {
-    const seed = window.localStorage.getItem('seed');
-    if (seed && !zkAccount) {
+    const { seed, hasPassword } = getSeed();
+    if (seed && hasPassword && !zkAccount) {
       openPasswordModal();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const { seed, hasPassword } = getSeed();
+    if (seed && !hasPassword && !zkAccount) {
+      if (zkClient) {
+        loadZkAccount(seed);
+      } else {
+        setIsLoadingZkAccount(true);
+      }
+    }
+  }, [loadZkAccount, zkClient, zkAccount]);
 
   useEffect(() => {
     if (isDemo) {
@@ -569,11 +604,11 @@ export const ZkAccountContextProvider = ({ children }) => {
   return (
     <ZkAccountContext.Provider
       value={{
-        zkAccount, balance, saveZkAccountMnemonic, deposit, isPoolSwitching,
+        zkAccount, balance, saveZkAccountMnemonic, deposit, isPoolSwitching, getSeed,
         withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
-        estimateFee, maxTransferable, isLoadingLimits, limits, changePassword, verifyPassword,
+        estimateFee, maxTransferable, isLoadingLimits, limits, setPassword, verifyPassword, removePassword,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
         switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,
       }}
