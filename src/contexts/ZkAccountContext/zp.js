@@ -60,9 +60,9 @@ const transfer = async (zkClient, transfers, fee, setTxStatus, isMulti) => {
   setTxStatus(TX_STATUSES[isMulti ? 'TRANSFERRED_MULTI' : 'TRANSFERRED']);
 };
 
-const withdraw = async (zkClient, to, amount, fee, setTxStatus) => {
+const withdraw = async (zkClient, to, amount, amountToConvert, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const jobIds = await zkClient.withdrawMulti(to, amount, 0n, fee);
+  const jobIds = await zkClient.withdrawMulti(to, amount, amountToConvert, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await zkClient.waitJobsTxHashes(jobIds);
   setTxStatus(TX_STATUSES.WITHDRAWN);

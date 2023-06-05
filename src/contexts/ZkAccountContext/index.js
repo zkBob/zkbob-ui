@@ -358,13 +358,14 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
-  const withdraw = useCallback(async (to, amount) => {
+  const withdraw = useCallback(async (to, amount, amountToConvert) => {
     openTxModal();
     setTxAmount(amount);
     try {
       const shieldedAmount = await toShieldedAmount(amount);
+      const shieldedAmountToConvert = await toShieldedAmount(amountToConvert);
       const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Withdraw, false);
-      await zp.withdraw(zkClient, to, shieldedAmount, relayerFee, setTxStatus);
+      await zp.withdraw(zkClient, to, shieldedAmount, shieldedAmountToConvert, relayerFee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {

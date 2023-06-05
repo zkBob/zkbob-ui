@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useContext } from 'react';
-import styled from 'styled-components';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
 import { HistoryTransactionType } from 'zkbob-client-js';
+import styled from 'styled-components';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -16,11 +16,8 @@ import MultilineInput from 'components/MultilineInput';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
-import Tooltip from 'components/Tooltip';
 import DemoCard from 'components/DemoCard';
-
-import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
-import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
+import ConvertOptions from 'components/ConvertOptions';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
@@ -29,7 +26,7 @@ import { formatNumber, minBigNumber } from 'utils';
 import config from 'config';
 
 import { NETWORKS } from 'constants';
-import { useMaxAmountExceeded } from './hooks';
+import { useMaxAmountExceeded, useConvertion } from './hooks';
 
 const note = `${tokenSymbol()} will be withdrawn from zkBob and deposited into the provided wallet address.`;
 
@@ -44,22 +41,28 @@ export default () => {
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [amountToConvert, setAmountToConvert] = useState(ethers.constants.Zero);
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
+  const convertionDetails = useConvertion(currentPool);
   const currentChainId = config.pools[currentPool].chainId;
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    withdraw(receiver, amount);
-  }, [receiver, amount, withdraw]);
+    withdraw(receiver, amount, amountToConvert);
+  }, [receiver, amount, amountToConvert, withdraw]);
 
   const setMax = useCallback(async () => {
     const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
     setDisplayAmount(ethers.utils.formatEther(max));
   }, [maxWithdrawable, limits]);
+
+  useEffect(() => {
+    setAmountToConvert(ethers.constants.Zero);
+  }, [currentPool]);
 
   if (isDemo) return <DemoCard />;
 
@@ -101,33 +104,31 @@ export default () => {
           maxAmountExceeded={maxAmountExceeded}
           isLoadingFee={isLoadingFee}
         />
+        {convertionDetails.exist && (
+          <ConvertOptions
+            amountToConvert={amountToConvert}
+            setAmountToConvert={setAmountToConvert}
+            amountToWithdraw={amount}
+            maxAmountToWithdraw={maxWithdrawable}
+            details={convertionDetails}
+          />
+        )}
         <MultilineInput
           placeholder={`Enter ${NETWORKS[currentChainId].name} address of receiver`}
           secondary
           value={receiver}
           onChange={setReceiver}
         />
-        {button}
-        {currentChainId === 137 && ( // only polygon
-          <MessageContainer>
-            <Row>
-              <Text>Withdraw at least</Text>
-              <BobIcon />
-              <Text style={{ marginRight: 4 }}><b>10 BOB</b></Text>
-            </Row>
-            <Row>
-              <Text>and receive an additional <b>0.1 MATIC *</b></Text>
-              <Tooltip
-                content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
-                placement="right"
-                delay={0}
-                width={180}
-              >
-                <InfoIcon />
-              </Tooltip>
-            </Row>
-          </MessageContainer>
+        {!amountToConvert.isZero() && (
+          <Text>
+            You will get <b>{formatNumber(amount.sub(amountToConvert))} {tokenSymbol()}</b> and{' '}
+            <b>
+              ~ {formatNumber(amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)))}{' '}
+              {convertionDetails.toTokenSymbol}
+            </b>
+          </Text>
         )}
+        {button}
         <ConfirmTransactionModal
           title="Withdrawal confirmation"
           isOpen={isConfirmModalOpen}
@@ -139,6 +140,8 @@ export default () => {
           fee={fee}
           numberOfTxs={numberOfTxs}
           type="withdrawal"
+          amountToConvert={amountToConvert}
+          convertionDetails={convertionDetails}
         />
       </Card>
       <Limits
@@ -160,36 +163,12 @@ export default () => {
   );
 };
 
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const MessageContainer = styled(Row)`
-  justify-content: center;
-  flex-wrap: wrap;
-  background: #FBEED0;
-  border-radius: 10px;
-  padding: 7px 10px;
-`;
-
 const Text = styled.span`
-  font-size: 13px;
-  color: ${({ theme }) => theme.text.color.secondary};
-`;
-
-const InfoIcon = styled(InfoIconDefault)`
-  margin-left: 2px;
-  margin-right: -2px;
-  &:hover {
-    & > path {
-      fill: ${props => props.theme.color.purple};
-    }
+  font-size: 14px;
+  line-height: 20px;
+  color: ${props => props.theme.text.color.primary};
+  text-align: center;
+  & > b {
+    font-weight: 600;
   }
-`;
-
-const BobIcon = styled(BobIconDefault)`
-  width: 20px;
-  height: 20px;
-  margin: 0 5px;
 `;
