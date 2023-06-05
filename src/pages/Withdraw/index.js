@@ -36,7 +36,7 @@ const note = `${tokenSymbol()} will be withdrawn from zkBob and deposited into t
 export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    isPending, maxTransferable, isDemo,
+    isPending, maxWithdrawable, isDemo,
     limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
@@ -46,7 +46,7 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
-  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit?.available);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
   const currentChainId = config.pools[currentPool].chainId;
 
   const onWihdrawal = useCallback(() => {
@@ -57,9 +57,9 @@ export default () => {
   }, [receiver, amount, withdraw]);
 
   const setMax = useCallback(async () => {
-    const max = minBigNumber(maxTransferable, limits.dailyWithdrawalLimit.available);
+    const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
     setDisplayAmount(ethers.utils.formatEther(max));
-  }, [maxTransferable, limits]);
+  }, [maxWithdrawable, limits]);
 
   if (isDemo) return <DemoCard />;
 
@@ -73,7 +73,7 @@ export default () => {
       button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
     } else if (amount.gt(balance)) {
       button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
-    } else if (amount.gt(maxTransferable)) {
+    } else if (amount.gt(maxWithdrawable)) {
       button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
       button = <Button disabled>Amount exceeds daily limit</Button>;

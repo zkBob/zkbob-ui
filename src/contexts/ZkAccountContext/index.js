@@ -66,6 +66,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [limits, setLimits] = useState(defaultLimits);
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
   const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
+  const [maxWithdrawable, setMaxWithdrawable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
@@ -148,7 +149,6 @@ export const ZkAccountContextProvider = ({ children }) => {
     let isPendingIncoming = false;
     let isPending = false;
     let pendingActions = [];
-    let atomicTxFee = ethers.constants.Zero;
     if (zkAccount) {
       if (currentPool !== previousPool) {
         setHistory([]);
@@ -158,10 +158,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
       setIsLoadingHistory(true);
       try {
-        [history, atomicTxFee] = await Promise.all([
-          zkClient.getAllHistory(),
-          zkClient.atomicTxFee(),
-        ]);
+        history= await zkClient.getAllHistory();
         history = await Promise.all(history.map(async item => ({
           ...item,
           failed: [HistoryRecordState.RejectedByRelayer, HistoryRecordState.RejectedByPool].includes(item.state),
@@ -173,10 +170,6 @@ export const ZkAccountContextProvider = ({ children }) => {
         })));
         history = splitDirectDeposits(history);
         history = aggregateFees(history);
-        history = await Promise.all(history.map(async item => ({
-          ...item,
-          highFee: item.fee.gt(await fromShieldedAmount(atomicTxFee)),
-        })));
         history = history.reverse();
         isPendingIncoming = !!history.find(item =>
           item.state === HistoryRecordState.Pending && item.type === HistoryTransactionType.TransferIn
@@ -234,16 +227,22 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const updateMaxTransferable = useCallback(async () => {
     let maxTransferable = ethers.constants.Zero;
+    let maxWithdrawable = ethers.constants.Zero;
     if (zkAccount) {
       try {
-        const max = await zkClient.calcMaxAvailableTransfer(false);
-        maxTransferable = await fromShieldedAmount(max);
+        [maxTransferable, maxWithdrawable] = await Promise.all(
+          [TxType.Transfer, TxType.Withdraw].map(async type => {
+            const max = await zkClient.calcMaxAvailableTransfer(type, false);
+            return await fromShieldedAmount(max);
+          })
+        );
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateMaxTransferable' } });
       }
     }
     setMaxTransferable(maxTransferable);
+    setMaxWithdrawable(maxWithdrawable);
   }, [zkAccount, zkClient, fromShieldedAmount]);
 
   const loadMinTxAmount = useCallback(async () => {
@@ -295,8 +294,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         }
       }
       const shieldedAmount = await toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkClient.feeEstimate([shieldedAmount], TxType.Deposit, false);
-      await zp.deposit(signer, zkClient, shieldedAmount, fee, setTxStatus);
+      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Deposit, false);
+      await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -322,8 +321,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     try {
       setTxAmount(amount);
       const shieldedAmount = await toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkClient.feeEstimate([shieldedAmount], TxType.Transfer, false);
-      await zp.transfer(zkClient, [{ destination: to, amountGwei: shieldedAmount }], fee, setTxStatus);
+      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Transfer, false);
+      await zp.transfer(zkClient, [{ destination: to, amountGwei: shieldedAmount }], relayerFee, setTxStatus);
       updatePoolData();
     } catch (error) {
       console.error(error);
@@ -345,8 +344,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         amountGwei: await toShieldedAmount(amount)
       })));
       const shieldedAmounts = transfers.map(tr => tr.amountGwei);
-      const { totalPerTx: fee } = await zkClient.feeEstimate(shieldedAmounts, TxType.Transfer, false);
-      await zp.transfer(zkClient, transfers, fee, setTxStatus, true);
+      const { relayerFee } = await zkClient.feeEstimate(shieldedAmounts, TxType.Transfer, false);
+      await zp.transfer(zkClient, transfers, relayerFee, setTxStatus, true);
       updatePoolData();
     } catch (error) {
       console.error(error);
@@ -364,8 +363,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxAmount(amount);
     try {
       const shieldedAmount = await toShieldedAmount(amount);
-      const { totalPerTx: fee } = await zkClient.feeEstimate([shieldedAmount], TxType.Withdraw, false);
-      await zp.withdraw(zkClient, to, shieldedAmount, fee, setTxStatus);
+      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Withdraw, false);
+      await zp.withdraw(zkClient, to, shieldedAmount, relayerFee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -397,7 +396,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (!zkClient) return null;
     try {
       if (!zkAccount) {
-        let atomicTxFee = await zkClient.atomicTxFee();
+        let atomicTxFee = await zkClient.atomicTxFee(txType);
         atomicTxFee = await fromShieldedAmount(atomicTxFee);
         return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false };
       }
@@ -608,7 +607,8 @@ export const ZkAccountContextProvider = ({ children }) => {
         withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
-        estimateFee, maxTransferable, isLoadingLimits, limits, setPassword, verifyPassword, removePassword,
+        estimateFee, maxTransferable, maxWithdrawable, isLoadingLimits, limits,
+        setPassword, verifyPassword, removePassword,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
         switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,
       }}
