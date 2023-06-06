@@ -14,21 +14,21 @@ const config = {
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
       },
-      // 'BOB-optimism': {
-      //   chainId: 10,
-      //   poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
-      //   tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
-      //   relayerUrls: ['https://relayer-optimism.zkbob.com/'],
-      //   delegatedProverUrls: [],
-      //   coldStorageConfigPath: '',
-      // },
+      'BOB-optimism': {
+        chainId: 10,
+        poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
+        tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
+        relayerUrls: ['https://relayer-optimism.zkbob.com/'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+      },
     },
     chains: {
       '137': {
         rpcUrls: ['https://polygon-rpc.com'],
       },
       '10': {
-        rpcUrls: ['https://optimism-mainnet.public.blastapi.io'],
+        rpcUrls: ['https://rpc.ankr.com/optimism'],
       },
     },
     snarkParams: {
