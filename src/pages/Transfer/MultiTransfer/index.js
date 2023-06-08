@@ -13,16 +13,25 @@ import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
 import { ReactComponent as CrossIcon } from 'assets/red-cross.svg';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
 
 import { formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
+
+const prefixes = {
+  'BOB-polygon': 'zkbob_polygon',
+  'BOB-optimism': 'zkbob_optimism',
+  'BOB-sepolia': 'zkbob_sepolia',
+  'BOB-goerli': 'zkbob_goerli',
+  'BOB-op-goerli': 'zkbob_goerli_optimism',
+};
 
 export default forwardRef((props, ref) => {
   const {
     zkAccount, isLoadingState, transferMulti,
     estimateFee, verifyShieldedAddress,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -127,7 +136,7 @@ export default forwardRef((props, ref) => {
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder="M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75"
+        placeholder={`${prefixes[currentPool]}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
         errorLines={errors}
         error={errorType}
       />
