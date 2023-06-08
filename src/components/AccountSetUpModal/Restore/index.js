@@ -10,7 +10,7 @@ export default ({ restore }) => {
   const [error, setError] = useState(false);
 
   const onRestore = useCallback(() => {
-    const preparedMnemonic = mnemonic.replace(/\s+/g, ' ').trim();
+    const preparedMnemonic = mnemonic.toLowerCase().replace(/\s+/g, ' ').trim();
     const isValid = ethers.utils.isValidMnemonic(preparedMnemonic);
     if (isValid) {
       restore(preparedMnemonic);
