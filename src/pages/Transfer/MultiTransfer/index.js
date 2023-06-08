@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle, useEffect } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -17,6 +17,7 @@ import { PoolContext, ZkAccountContext } from 'contexts';
 
 import { formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
+import { useFee } from 'hooks';
 
 const prefixes = {
   'BOB-polygon': 'zkbob_polygon',
@@ -38,9 +39,10 @@ export default forwardRef((props, ref) => {
   const [errorType, setErrorType] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [fee, setFee] = useState(ethers.constants.Zero);
-  const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [totalAmount, setTotalAmount] = useState(ethers.constants.Zero);
+  const {
+    fee, relayerFee, numberOfTxs, isLoadingFee,
+  } = useFee(parsedData, TxType.Transfer);
 
   const validate = useCallback(async () => {
     try {
@@ -81,10 +83,10 @@ export default forwardRef((props, ref) => {
         return;
       }
 
-      const { fee, numberOfTxs, insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
-      setFee(fee);
-      setNumberOfTxs(numberOfTxs);
+      const { insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
+
       setTotalAmount(parsedData.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
+
       if (insufficientFunds) {
         setErrorType('insufficient_funds');
         return;
@@ -117,8 +119,8 @@ export default forwardRef((props, ref) => {
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setData('');
-    transferMulti(parsedData);
-  }, [parsedData, transferMulti]);
+    transferMulti(parsedData, relayerFee);
+  }, [parsedData, transferMulti, relayerFee]);
 
   const openDetailsModal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -178,6 +180,7 @@ export default forwardRef((props, ref) => {
           transfers={parsedData}
           openDetails={openDetailsModal}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
           type="transfer"
         />

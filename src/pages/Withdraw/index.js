@@ -43,7 +43,7 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [amountToConvert, setAmountToConvert] = useState(ethers.constants.Zero);
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
-  const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
   const convertionDetails = useConvertion(currentPool);
   const currentChainId = config.pools[currentPool].chainId;
@@ -52,8 +52,8 @@ export default () => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    withdraw(receiver, amount, amountToConvert);
-  }, [receiver, amount, amountToConvert, withdraw]);
+    withdraw(receiver, amount, amountToConvert, relayerFee);
+  }, [receiver, amount, amountToConvert, withdraw, relayerFee]);
 
   const setMax = useCallback(async () => {
     const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
@@ -138,6 +138,7 @@ export default () => {
           receiver={receiver}
           shielded={true}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
           type="withdrawal"
           amountToConvert={amountToConvert}

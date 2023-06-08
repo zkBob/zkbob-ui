@@ -7,21 +7,26 @@ export default (amount, txType) => {
   const { estimateFee } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const [fee, setFee] = useState(ethers.constants.Zero);
+  const [relayerFee, setRelayerFee] = useState(null);
   const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
   useEffect(() => {
     async function updateFee() {
-      setIsLoadingFee(true);
-      const data = await estimateFee([amount], txType);
+      const timeout = setTimeout(() => setIsLoadingFee(true), 100);
+      const data = await estimateFee(amount instanceof Array ? amount.map(item => item.amount) : [amount], txType);
       const fee = data?.fee;
       const numberOfTxs = data?.numberOfTxs;
       setFee(fee || ethers.constants.Zero);
+      setRelayerFee(data?.relayerFee);
       setNumberOfTxs(numberOfTxs || ethers.constants.Zero);
+      clearTimeout(timeout);
       setIsLoadingFee(false);
     }
     updateFee();
+    const interval = setInterval(updateFee, 5000);
+    return () => clearInterval(interval);
   }, [amount, txType, estimateFee, currentPool]);
 
-  return { fee, numberOfTxs, isLoadingFee };
+  return { fee, numberOfTxs, isLoadingFee, relayerFee };
 };

@@ -4,13 +4,14 @@ import { ethers } from 'ethers';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
+import Skeleton from 'components/Skeleton';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
-  shielded, isZkAddress, fee, numberOfTxs, type,
+  shielded, isZkAddress, fee, numberOfTxs, type, isLoadingFee,
   isMultitransfer, transfers, openDetails,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
@@ -67,7 +68,11 @@ export default ({
           )}
           <Row>
             <MediumText>Relayer fee:</MediumText>
-            <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+            {isLoadingFee ? (
+              <Skeleton width={60} />
+            ) : (
+              <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+            )}
           </Row>
         </DetailsContainer>
         <Button onClick={onConfirm}>Confirm {isMultitransfer && 'multitransfer'}</Button>

@@ -278,7 +278,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateLimits(),
   ]), [updateBalance, updateHistory, updateLimits]);
 
-  const deposit = useCallback(async (amount) => {
+  const deposit = useCallback(async (amount, relayerFee) => {
     openTxModal();
     setTxAmount(amount);
     try {
@@ -294,7 +294,6 @@ export const ZkAccountContextProvider = ({ children }) => {
         }
       }
       const shieldedAmount = await toShieldedAmount(amount);
-      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Deposit, false);
       await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -316,12 +315,11 @@ export const ZkAccountContextProvider = ({ children }) => {
     chain, switchNetworkAsync, currentChainId,
   ]);
 
-  const transfer = useCallback(async (to, amount) => {
+  const transfer = useCallback(async (to, amount, relayerFee) => {
     openTxModal();
     try {
       setTxAmount(amount);
       const shieldedAmount = await toShieldedAmount(amount);
-      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Transfer, false);
       await zp.transfer(zkClient, [{ destination: to, amountGwei: shieldedAmount }], relayerFee, setTxStatus);
       updatePoolData();
     } catch (error) {
@@ -335,7 +333,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
-  const transferMulti = useCallback(async data => {
+  const transferMulti = useCallback(async (data, relayerFee) => {
     openTxModal();
     try {
       setTxAmount(data.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
@@ -343,8 +341,6 @@ export const ZkAccountContextProvider = ({ children }) => {
         destination: address,
         amountGwei: await toShieldedAmount(amount)
       })));
-      const shieldedAmounts = transfers.map(tr => tr.amountGwei);
-      const { relayerFee } = await zkClient.feeEstimate(shieldedAmounts, TxType.Transfer, false);
       await zp.transfer(zkClient, transfers, relayerFee, setTxStatus, true);
       updatePoolData();
     } catch (error) {
@@ -358,13 +354,12 @@ export const ZkAccountContextProvider = ({ children }) => {
     setTxStatus, toShieldedAmount, setTxAmount,
   ]);
 
-  const withdraw = useCallback(async (to, amount, amountToConvert) => {
+  const withdraw = useCallback(async (to, amount, amountToConvert, relayerFee) => {
     openTxModal();
     setTxAmount(amount);
     try {
       const shieldedAmount = await toShieldedAmount(amount);
       const shieldedAmountToConvert = await toShieldedAmount(amountToConvert);
-      const { relayerFee } = await zkClient.feeEstimate([shieldedAmount], TxType.Withdraw, false);
       await zp.withdraw(zkClient, to, shieldedAmount, shieldedAmountToConvert, relayerFee, setTxStatus);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -401,15 +396,21 @@ export const ZkAccountContextProvider = ({ children }) => {
         atomicTxFee = await fromShieldedAmount(atomicTxFee);
         return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false };
       }
+      updateMaxTransferable();
       const shieldedAmounts = await Promise.all(amounts.map(async amount => await toShieldedAmount(amount)));
-      const { total, txCnt, insufficientFunds } = await zkClient.feeEstimate(shieldedAmounts, txType, false);
-      return { fee: await fromShieldedAmount(total), numberOfTxs: txCnt, insufficientFunds };
+      const { total, txCnt, insufficientFunds, relayerFee } = await zkClient.feeEstimate(shieldedAmounts, txType, false);
+      return {
+        fee: await fromShieldedAmount(total),
+        numberOfTxs: txCnt,
+        insufficientFunds,
+        relayerFee,
+      };
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.estimateFee' } });
       return null;
     }
-  }, [zkClient, toShieldedAmount, fromShieldedAmount, zkAccount]);
+  }, [zkClient, toShieldedAmount, fromShieldedAmount, zkAccount, updateMaxTransferable]);
 
   const initializeGiftCard = useCallback(async code => {
     if (!zkClient) return false;

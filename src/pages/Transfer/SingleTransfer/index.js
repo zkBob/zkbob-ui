@@ -30,15 +30,15 @@ export default () => {
   const [receiver, setReceiver] = useState('');
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const { fee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Transfer);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Transfer);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    transfer(receiver, amount);
-  }, [receiver, amount, transfer]);
+    transfer(receiver, amount, relayerFee);
+  }, [receiver, amount, transfer, relayerFee]);
 
   const setMax = useCallback(async () => {
     setDisplayAmount(ethers.utils.formatEther(maxTransferable));
@@ -106,6 +106,7 @@ export default () => {
         shielded={true}
         isZkAddress={true}
         fee={fee}
+        isLoadingFee={isLoadingFee}
         numberOfTxs={numberOfTxs}
         type="transfer"
       />
