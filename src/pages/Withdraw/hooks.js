@@ -35,7 +35,6 @@ const CONVERTION_PAIRS = {
 };
 
 CONVERTION_PAIRS['BOB-goerli'] = CONVERTION_PAIRS['BOB-optimism'];
-CONVERTION_PAIRS['BOB-op-goerli'] = CONVERTION_PAIRS['BOB-optimism'];
 
 async function getTokenPriceWithPairToBobFrom1inch(pair, amount) {
   const response = await fetch(`https://api.1inch.exchange/v3.0/${pair.chainId}/quote?fromTokenAddress=${pair.fromTokenAddress}&toTokenAddress=${pair.toTokenAddress}&amount=${amount.toString()}`);
