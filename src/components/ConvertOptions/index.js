@@ -103,4 +103,12 @@ const OptionButton = styled.button`
   &:last-child {
     margin-right: 0;
   }
+  @media only screen and (max-width: 500px) {
+    ${Text} {
+      font-size: 13px;
+    }
+    ${TextBold} {
+      font-size: 14px;
+    }
+  }
 `;
