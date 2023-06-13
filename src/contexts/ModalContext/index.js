@@ -45,6 +45,10 @@ export const ModalContextProvider = ({ children }) => {
   const openRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(true);
   const closeRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(false);
 
+  const [isDisablePasswordModalOpen, setIsDisablePasswordModalOpen] = useState(false);
+  const openDisablePasswordModal = () => setIsDisablePasswordModalOpen(true);
+  const closeDisablePasswordModal = () => setIsDisablePasswordModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
@@ -68,6 +72,7 @@ export const ModalContextProvider = ({ children }) => {
         isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
         isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
         isRedeemGiftCardModalOpen, openRedeemGiftCardModal, closeRedeemGiftCardModal,
+        isDisablePasswordModalOpen, openDisablePasswordModal, closeDisablePasswordModal,
         closeAllModals,
       }}
     >

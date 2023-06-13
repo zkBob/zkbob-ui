@@ -7,7 +7,7 @@ injectStyle();
 export default () =>
   <ToastContainerStyled
     position="bottom-right"
-    autoClose={false}
+    autoClose={10000}
     hideProgressBar
   />
 

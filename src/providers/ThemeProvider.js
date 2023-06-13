@@ -141,6 +141,7 @@ const light = {
     border: {
       default: darkGrey,
       hover: purple,
+      light: grey,
     },
   },
   warning: {

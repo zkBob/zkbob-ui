@@ -17,12 +17,15 @@ import { tokenIcon, tokenSymbol } from 'utils/token';
 
 
 const Content = ({
-  balance, generateAddress, switchAccount, isDemo,
-  changePassword, logout, buttonRef, showSeedPhrase,
+  balance, generateAddress, getSeed, setPassword,
+  removePassword, logout, buttonRef, showSeedPhrase,
   isLoadingState, initializeGiftCard,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  const { hasPassword } = getSeed();
 
   const generatePrivateAddress = useCallback(async () => {
     setPrivateAddress(await generateAddress());
@@ -55,11 +58,9 @@ const Content = ({
     action();
   }, [buttonRef]);
 
-  const options = [
-    { text: 'Change password', action: changePassword },
+  const settingsOptions = [
     { text: 'Show secret phrase', action: showSeedPhrase },
-    { text: 'Switch account', action: switchAccount },
-    { text: 'Log out', action: logout },
+    { text: `${hasPassword ? 'Disable' : 'Set'} password`, action: hasPassword ? removePassword : setPassword  },
   ];
 
   if (showQRCode) {
@@ -77,6 +78,20 @@ const Content = ({
         />
       </Container>
     );
+  }
+
+  if (showSettings) {
+    return (
+      <Container>
+        <BackIcon onClick={() => setShowSettings(false)} />
+        <Title style={{ marginBottom: 20 }}>Settings</Title>
+        {settingsOptions.map((item, index) =>
+          <OptionButton key={index} onClick={() => handleOptionClick(item.action)}>
+            {item.text}
+          </OptionButton>
+        )}
+      </Container>
+    )
   }
 
   return (
@@ -111,23 +126,20 @@ const Content = ({
       <QRCodeReader onResult={initGiftCard}>
         <OptionButton>Redeem gift card</OptionButton>
       </QRCodeReader>
-      {options.map((item, index) =>
-        <OptionButton
-          key={index}
-          onClick={() => handleOptionClick(item.action)}
-          disabled={isDemo}
-        >
-          {item.text}
-        </OptionButton>
-      )}
+      <OptionButton onClick={() => setShowSettings(true)}>
+        Settings
+      </OptionButton>
+      <OptionButton onClick={() => handleOptionClick(logout)}>
+        Log out
+      </OptionButton>
     </Container>
   );
 };
 
 export default ({
   balance, generateAddress, switchAccount, showSeedPhrase, disabled,
-  changePassword, logout, buttonRef, children, isDemo, isLoadingState,
-  initializeGiftCard,
+  logout, buttonRef, children, isDemo, isLoadingState,
+  initializeGiftCard, getSeed, setPassword, removePassword,
 }) => (
   <Dropdown
     disabled={disabled}
@@ -136,13 +148,15 @@ export default ({
         balance={balance}
         generateAddress={generateAddress}
         switchAccount={switchAccount}
-        changePassword={changePassword}
+        setPassword={setPassword}
+        removePassword={removePassword}
         logout={logout}
         buttonRef={buttonRef}
         showSeedPhrase={showSeedPhrase}
         isDemo={isDemo}
         isLoadingState={isLoadingState}
         initializeGiftCard={initializeGiftCard}
+        getSeed={getSeed}
       />
     )}
   >

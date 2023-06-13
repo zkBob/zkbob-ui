@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle, useEffect } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -13,25 +13,36 @@ import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
 import { ReactComponent as CrossIcon } from 'assets/red-cross.svg';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
 
 import { formatNumber } from 'utils';
 import { tokenSymbol } from 'utils/token';
+import { useFee } from 'hooks';
+
+const prefixes = {
+  'BOB-polygon': 'zkbob_polygon',
+  'BOB-optimism': 'zkbob_optimism',
+  'BOB-sepolia': 'zkbob_sepolia',
+  'BOB-goerli': 'zkbob_goerli',
+  'BOB-op-goerli': 'zkbob_goerli_optimism',
+};
 
 export default forwardRef((props, ref) => {
   const {
     zkAccount, isLoadingState, transferMulti,
     estimateFee, verifyShieldedAddress,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState([]);
   const [errors, setErrors] = useState([]);
   const [errorType, setErrorType] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [fee, setFee] = useState(ethers.constants.Zero);
-  const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [totalAmount, setTotalAmount] = useState(ethers.constants.Zero);
+  const {
+    fee, relayerFee, numberOfTxs, isLoadingFee,
+  } = useFee(parsedData, TxType.Transfer);
 
   const validate = useCallback(async () => {
     try {
@@ -72,10 +83,10 @@ export default forwardRef((props, ref) => {
         return;
       }
 
-      const { fee, numberOfTxs, insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
-      setFee(fee);
-      setNumberOfTxs(numberOfTxs);
+      const { insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
+
       setTotalAmount(parsedData.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
+
       if (insufficientFunds) {
         setErrorType('insufficient_funds');
         return;
@@ -108,8 +119,8 @@ export default forwardRef((props, ref) => {
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setData('');
-    transferMulti(parsedData);
-  }, [parsedData, transferMulti]);
+    transferMulti(parsedData, relayerFee);
+  }, [parsedData, transferMulti, relayerFee]);
 
   const openDetailsModal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -127,7 +138,7 @@ export default forwardRef((props, ref) => {
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder="M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75"
+        placeholder={`${prefixes[currentPool]}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
         errorLines={errors}
         error={errorType}
       />
@@ -169,6 +180,7 @@ export default forwardRef((props, ref) => {
           transfers={parsedData}
           openDetails={openDetailsModal}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
           type="transfer"
         />

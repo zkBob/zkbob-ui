@@ -26,7 +26,8 @@ const STEP = {
   CONFIRM_SECRET: 8,
   SING_MESSAGE_TO_CREATE: 9,
   SING_MESSAGE_TO_RESTORE: 10,
-  CREATE_PASSWORD: 11,
+  CREATE_PASSWORD_PROMPT: 11,
+  CREATE_PASSWORD: 12,
 };
 
 const Start = ({ setStep }) => (
@@ -71,6 +72,20 @@ const RestoreOptions = ({ setStep }) => (
   </Container>
 );
 
+const PasswordPrompt = ({ setStep, close }) => (
+  <Container>
+    <Description>
+      You can create a secure password that we'll ask you every time when you log in to zkAccount
+    </Description>
+    <Button onClick={() => setStep(STEP.CREATE_PASSWORD)}>
+      Set a password
+    </Button>
+    <SecondButton onClick={close}>
+      Skip
+    </SecondButton>
+  </Container>
+);
+
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { signMessageAsync } = useSignMessage();
   const [step, setStep] = useState(STEP.START);
@@ -94,12 +109,12 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
 
   const confirmMnemonic = useCallback(() => {
     setConfirmedMnemonic(newMnemonic);
-    setStep(STEP.CREATE_PASSWORD);
+    setStep(STEP.CREATE_PASSWORD_PROMPT);
   }, [newMnemonic]);
 
   const restore = useCallback(mnemonic => {
     setConfirmedMnemonic(mnemonic);
-    setStep(STEP.CREATE_PASSWORD);
+    setStep(STEP.CREATE_PASSWORD_PROMPT);
   }, []);
 
   const generate = useCallback(async () => {
@@ -107,7 +122,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     const signedMessage = await signMessageAsync({ message });
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
-    setStep(STEP.CREATE_PASSWORD);
+    setStep(STEP.CREATE_PASSWORD_PROMPT);
   }, [signMessageAsync]);
 
   const confirmPassword = useCallback(password => {
@@ -116,6 +131,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     closePasswordModal();
     closeModal();
   }, [newMnemonic, confirmedMnemonic, saveZkAccountMnemonic, closeModal, closePasswordModal]);
+
+  const tryToClose = useCallback(() => {
+    if ([STEP.CREATE_PASSWORD, STEP.CREATE_PASSWORD_PROMPT].includes(step)) {
+      confirmPassword(null);
+      return;
+    }
+    closeModal();
+  }, [step, closeModal, confirmPassword]);
 
   let title = null;
   let component = null;
@@ -173,6 +196,11 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       component = <Sign sign={generate} />;
       prevStep = STEP.RESTORE_WITH_WALLET;
       break;
+    case STEP.CREATE_PASSWORD_PROMPT:
+      title = 'Set up the password?';
+      component = <PasswordPrompt setStep={setStep} close={tryToClose} />;
+      prevStep = null;
+      break;
     case STEP.CREATE_PASSWORD:
       title = 'Create password';
       component = <Password confirmPassword={confirmPassword} />;
@@ -183,7 +211,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={closeModal}
+      onClose={tryToClose}
       onBack={prevStep ? () => setStep(prevStep) : null}
       title={title}
     >

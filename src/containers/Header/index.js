@@ -14,12 +14,13 @@ export default ({ empty }) => {
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
     updatePoolData, generateAddress, isDemo, isPoolSwitching,
-    isLoadingState, switchToPool, initializeGiftCard,
+    isLoadingState, switchToPool, initializeGiftCard, getSeed,
   } = useContext(ZkAccountContext);
   const {
     openWalletModal, openSeedPhraseModal,
     openAccountSetUpModal, openSwapModal,
     openChangePasswordModal, openConfirmLogoutModal,
+    openDisablePasswordModal,
   } = useContext(ModalContext);
   const { currentPool } = useContext(PoolContext);
 
@@ -55,6 +56,8 @@ export default ({ empty }) => {
         currentPool={currentPool}
         initializeGiftCard={initializeGiftCard}
         isPoolSwitching={isPoolSwitching}
+        getSeed={getSeed}
+        openDisablePasswordModal={openDisablePasswordModal}
       />
     </>
   );

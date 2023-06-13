@@ -27,9 +27,9 @@ import config from 'config';
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, poolBalance, refresh, isLoadingBalance,
+  balance, poolBalance, refresh, isLoadingBalance, getSeed,
   openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo, disconnect, isLoadingState,
+  openSeedPhraseModal, isDemo, disconnect, isLoadingState, openDisablePasswordModal,
   switchToPool, currentPool, initializeGiftCard, isPoolSwitching,
 }) => {
   const walletButtonRef = useRef(null);
@@ -111,7 +111,8 @@ export default ({
               balance={poolBalance}
               generateAddress={generateAddress}
               switchAccount={openAccountSetUpModal}
-              changePassword={openChangePasswordModal}
+              setPassword={openChangePasswordModal}
+              removePassword={openDisablePasswordModal}
               logout={openConfirmLogoutModal}
               showSeedPhrase={openSeedPhraseModal}
               buttonRef={zkAccountButtonRef}
@@ -119,6 +120,7 @@ export default ({
               isLoadingState={isLoadingState}
               disabled={isLoadingState}
               initializeGiftCard={initializeGiftCard}
+              getSeed={getSeed}
             >
               <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>

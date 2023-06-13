@@ -40,7 +40,7 @@ export default () => {
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const latestAction = useLatestAction(HistoryTransactionType.Deposit);
-  const { fee, isLoadingFee } = useFee(amount, TxType.Deposit);
+  const { fee, relayerFee, isLoadingFee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
@@ -48,8 +48,8 @@ export default () => {
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
-    deposit(amount);
-  }, [amount, deposit]);
+    deposit(amount, relayerFee);
+  }, [amount, deposit, relayerFee]);
 
   const setMax = useCallback(async () => {
     try {

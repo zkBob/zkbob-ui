@@ -7,7 +7,7 @@ import HistoryItem from 'components/HistoryItem';
 import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
-  const { pendingActions } = useContext(ZkAccountContext);
+  const { pendingActions, zkAccount } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const multi = pendingActions.length > 1;
   return (
@@ -25,7 +25,7 @@ export default () => {
       <ListContainer>
         {pendingActions.map((action, index) =>
           <HistoryItemContainer key={index}>
-            <HistoryItem item={action} currentPool={currentPool} />
+            <HistoryItem item={action} currentPool={currentPool} zkAccount={zkAccount} />
           </HistoryItemContainer>
         )}
       </ListContainer>

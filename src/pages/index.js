@@ -19,6 +19,7 @@ import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
 import RedeemGiftCardModal from 'containers/RedeemGiftCardModal';
 
 import ChangePasswordModal from 'components/ChangePasswordModal';
+import DisablePasswordModal from 'components/DisablePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
 import DemoBanner from 'components/DemoBanner';
@@ -142,6 +143,7 @@ const Content = () => {
         <ConfirmLogoutModal />
         <SeedPhraseModal />
         <IncreasedLimitsModal />
+        <DisablePasswordModal />
       </Layout>
     </>
   );

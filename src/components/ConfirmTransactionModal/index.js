@@ -4,14 +4,16 @@ import { ethers } from 'ethers';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
+import Skeleton from 'components/Skeleton';
 
 import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
-  shielded, isZkAddress, fee, numberOfTxs, type,
+  shielded, isZkAddress, fee, numberOfTxs, type, isLoadingFee,
   isMultitransfer, transfers, openDetails,
+  amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
   return (
     <Modal
@@ -27,11 +29,17 @@ export default ({
             <Amount>
               {formatNumber(isMultitransfer
                 ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
-                : amount, 18
+                : amount.sub(amountToConvert), 18
               )}{' '}
             </Amount>
             <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
           </AmountContainer>
+          {!amountToConvert.isZero() && (
+            <ConvertedAmount>
+              + {formatNumber(amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)))}{' '}
+              {convertionDetails.toTokenSymbol}
+            </ConvertedAmount>
+          )}
           {isMultitransfer ? (
             <>
               <MediumTextMulti>will be transferred to {transfers.length} zkBob addresses</MediumTextMulti>
@@ -46,13 +54,25 @@ export default ({
             </>
           )}
           <SmallText>{type} details</SmallText>
-          <Row>
-            <MediumText>Number of transactions:</MediumText>
-            <MediumText>{numberOfTxs}</MediumText>
-          </Row>
+          {!amountToConvert.isZero() && (
+            <Row>
+              <MediumText>Withdraw amount:</MediumText>
+              <MediumText>{formatNumber(amount)} {tokenSymbol()}</MediumText>
+            </Row>
+          )}
+          {numberOfTxs > 1 && (
+            <Row>
+              <MediumText>Number of transactions:</MediumText>
+              <MediumText>{numberOfTxs}</MediumText>
+            </Row>
+          )}
           <Row>
             <MediumText>Relayer fee:</MediumText>
-            <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+            {isLoadingFee ? (
+              <Skeleton width={60} />
+            ) : (
+              <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+            )}
           </Row>
         </DetailsContainer>
         <Button onClick={onConfirm}>Confirm {isMultitransfer && 'multitransfer'}</Button>
@@ -137,5 +157,10 @@ const ViewAllButton = styled(Button)`
 
 const MediumTextMulti = styled(MediumText)`
   margin-bottom: 0;
+  margin-top: 10px;
+`;
+
+const ConvertedAmount = styled(MediumText)`
+  font-weight: ${props => props.theme.text.weight.bold};
   margin-top: 10px;
 `;
