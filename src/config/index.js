@@ -13,6 +13,7 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
+        feeDecimals: 2,
       },
       'BOB-optimism': {
         chainId: 10,
@@ -21,6 +22,7 @@ const config = {
         relayerUrls: ['https://relayer-optimism.zkbob.com/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
+        feeDecimals: 2,
       },
     },
     chains: {
