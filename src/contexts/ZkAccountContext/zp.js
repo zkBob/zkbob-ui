@@ -7,24 +7,24 @@ import { TX_STATUSES } from 'constants';
 import { createPermitSignature } from 'utils/token';
 import config from 'config';
 
-const createClient = (currentPool, supportId) => {
+const createClient = (currentPoolAlias, supportId) => {
   return ZkBobClient.create({
     pools: config.pools,
     chains: config.chains,
     snarkParams: config.snarkParams,
     supportId,
-  }, currentPool);
+  }, currentPoolAlias);
 };
 
 const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver) => {
   let sk = ethers.utils.isValidMnemonic(secretKey)
     ? deriveSpendingKeyZkBob(secretKey)
     : ethers.utils.arrayify(secretKey);
-  const currentPool = zkClient.currentPool();
-  const proverExists = config.pools[currentPool].delegatedProverUrls.length > 0;
+  const currentPoolAlias = zkClient.currentPool();
+  const proverExists = config.pools[currentPoolAlias].delegatedProverUrls.length > 0;
   return zkClient.login({
     sk,
-    pool: currentPool,
+    pool: currentPoolAlias,
     birthindex: birthIndex,
     proverMode: (useDelegatedProver && proverExists) ? ProverMode.DelegatedWithFallback : ProverMode.Local,
   });
@@ -35,8 +35,8 @@ const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
     'function name() view returns (string)',
     'function nonces(address) view returns (uint256)',
   ];
-  const currentPool = zkClient.currentPool();
-  const { tokenAddress, poolAddress } = config.pools[currentPool]
+  const currentPoolAlias = zkClient.currentPool();
+  const { tokenAddress, poolAddress } = config.pools[currentPoolAlias]
   const token = new Contract(tokenAddress, tokenABI, signer);
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
   const signFunction = async (deadline, value, salt) => {

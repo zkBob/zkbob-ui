@@ -22,7 +22,7 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
         <OptionButton
           key={index}
           onClick={() => onSwitchPool(Object.keys(config.pools)[index])}
-          disabled={currentPool === Object.keys(config.pools)[index]}
+          disabled={currentPool.alias === Object.keys(config.pools)[index]}
         >
           <Row>
             <NetworkIcon src={NETWORKS[pool.chainId].icon} />

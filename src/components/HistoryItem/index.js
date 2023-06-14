@@ -12,9 +12,8 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 import { useDateFromNow, useWindowDimensions } from 'hooks';
-import config from 'config';
 import { NETWORKS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
@@ -83,10 +82,10 @@ const AddressLink = ({ action, isMobile, currentChainId }) => {
   );
 };
 
-const Fee = ({ fee, highFee, isMobile }) => (
+const Fee = ({ fee, highFee, isMobile, currentPool }) => (
   <>
     {!fee.isZero() && (
-      <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
+      <FeeText>(fee {formatNumber(fee)} {currentPool.tokenSymbol})</FeeText>
     )}
     {highFee && (
       <Tooltip
@@ -114,7 +113,7 @@ export default ({ item, zkAccount, currentPool }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
-  const currentChainId = config.pools[currentPool].chainId;
+  const currentChainId = currentPool.chainId;
 
   const onCopy = useCallback((text, result) => {
     if (result) {
@@ -145,11 +144,11 @@ export default ({ item, zkAccount, currentPool }) => {
                     </Tooltip>
                   );
                 })()}
-                {' '}{tokenSymbol()}
+                {' '}{currentPool.tokenSymbol}
               </Text>
             </Row>
             <FeeDesktop>
-              <Fee fee={item.fee} highFee={item.highFee} />
+              <Fee fee={item.fee} highFee={item.highFee} currentPool={currentPool} />
             </FeeDesktop>
           </Row>
           <Row>
@@ -166,7 +165,7 @@ export default ({ item, zkAccount, currentPool }) => {
           </Row>
         </RowSpaceBetween>
         <FeeMobile>
-          <Fee fee={item.fee} highFee={item.highFee} isMobile />
+          <Fee fee={item.fee} highFee={item.highFee} currentPool={currentPool} isMobile />
         </FeeMobile>
         <RowSpaceBetween>
           <Row>
@@ -261,6 +260,7 @@ export default ({ item, zkAccount, currentPool }) => {
           onClose={() => setIsDetailsModalOpen(false)}
           zkAccount={zkAccount}
           isSent={true}
+          currentPool={currentPool}
         />
       )}
     </Container>

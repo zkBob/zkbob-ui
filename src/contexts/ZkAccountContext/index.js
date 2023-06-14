@@ -38,13 +38,12 @@ export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
   const { currentPool, setCurrentPool } = useContext(PoolContext);
-  const previousPool = usePrevious(currentPool);
+  const previousPoolAlias = usePrevious(currentPool.alias);
   const { address: account } = useAccount();
   const { chain } = useNetwork();
-  const currentChainId = config.pools[currentPool].chainId;
-  const { data: signer } = useSigner({ chainId: currentChainId });
+  const { data: signer } = useSigner({ chainId: currentPool.chainId });
   const { switchNetworkAsync } = useSwitchNetwork({
-    chainId: currentChainId,
+    chainId: currentPool.chainId,
     throwForSwitchChainNotSupported: true,
   });
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
@@ -69,7 +68,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [maxWithdrawable, setMaxWithdrawable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
-  const [isDemo, setIsDemo] = useState(false);
+  const [isDemo] = useState(false);
   const [giftCard, setGiftCard] = useState(null);
   const [giftCardTxHash, setGiftCardTxHash] = useState(null);
 
@@ -77,7 +76,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (zkClient || !supportId || !currentPool) return;
     async function create() {
       try {
-        const zkClient = await zp.createClient(currentPool, supportId);
+        const zkClient = await zp.createClient(currentPool.alias, supportId);
         setZkClient(zkClient);
       } catch (error) {
         console.error(error);
@@ -150,7 +149,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     let isPending = false;
     let pendingActions = [];
     if (zkAccount) {
-      if (currentPool !== previousPool) {
+      if (currentPool.alias !== previousPoolAlias) {
         setHistory([]);
         setIsPendingIncoming(false);
         setIsPending(false);
@@ -189,7 +188,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsPending(isPending);
     setIsPendingIncoming(isPendingIncoming);
     setIsLoadingHistory(false);
-  }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPool]);
+  }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPoolAlias]);
 
   const updateLimits = useCallback(async () => {
     if (!zkClient) return;
@@ -282,7 +281,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     openTxModal();
     setTxAmount(amount);
     try {
-      if (chain.id !== currentChainId) {
+      if (chain.id !== currentPool.chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
           await switchNetworkAsync();
@@ -312,7 +311,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [
     zkClient, updatePoolData, signer, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
-    chain, switchNetworkAsync, currentChainId,
+    chain, switchNetworkAsync, currentPool,
   ]);
 
   const transfer = useCallback(async (to, amount, relayerFee) => {
@@ -424,14 +423,14 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const redeemGiftCard = useCallback(async () => {
     try {
-      const targetPool = giftCard.poolAlias;
-      if (currentPool !== targetPool) {
-        await switchToPool(targetPool);
+      const targetPoolAlias = giftCard.poolAlias;
+      if (currentPool.alias !== targetPoolAlias) {
+        await switchToPool(targetPoolAlias);
       }
-      const proverExists = config.pools[targetPool].delegatedProverUrls.length > 0;
+      const proverExists = config.pools[targetPoolAlias].delegatedProverUrls.length > 0;
       const jobId = await zkClient.redeemGiftCard({
         sk: giftCard.sk,
-        pool: targetPool,
+        pool: targetPoolAlias,
         birthindex: Number(giftCard.birthIndex),
         proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
       });

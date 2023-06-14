@@ -6,7 +6,6 @@ import * as Sentry from '@sentry/react';
 import { PoolContext } from 'contexts';
 
 import { showLoadingError } from 'utils';
-import config from 'config';
 
 const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
 
@@ -17,9 +16,9 @@ export default TokenBalanceContext;
 export const TokenBalanceContextProvider = ({ children }) => {
   const { address: account } = useAccount();
   const { currentPool } = useContext(PoolContext);
-  const provider = useProvider({ chainId: config.pools[currentPool].chainId });
+  const provider = useProvider({ chainId: currentPool.chainId });
   const token = useContract({
-    address: config.pools[currentPool].tokenAddress,
+    address: currentPool.tokenAddress,
     abi: TOKEN_ABI,
     signerOrProvider: provider
   });

@@ -6,13 +6,13 @@ import Button from 'components/Button';
 import Modal from 'components/Modal';
 import Skeleton from 'components/Skeleton';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
   shielded, isZkAddress, fee, numberOfTxs, type, isLoadingFee,
-  isMultitransfer, transfers, openDetails,
+  isMultitransfer, transfers, openDetails, currentPool,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
   return (
@@ -32,7 +32,7 @@ export default ({
                 : amount.sub(amountToConvert), 18
               )}{' '}
             </Amount>
-            <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
+            <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
           {!amountToConvert.isZero() && (
             <ConvertedAmount>
@@ -57,7 +57,7 @@ export default ({
           {!amountToConvert.isZero() && (
             <Row>
               <MediumText>Withdraw amount:</MediumText>
-              <MediumText>{formatNumber(amount)} {tokenSymbol()}</MediumText>
+              <MediumText>{formatNumber(amount)} {currentPool.tokenSymbol}</MediumText>
             </Row>
           )}
           {numberOfTxs > 1 && (
@@ -71,7 +71,7 @@ export default ({
             {isLoadingFee ? (
               <Skeleton width={60} />
             ) : (
-              <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+              <MediumText>{formatNumber(fee)} {currentPool.tokenSymbol}</MediumText>
             )}
           </Row>
         </DetailsContainer>

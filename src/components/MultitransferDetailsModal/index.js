@@ -9,10 +9,10 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
 
-const ListItem = ({ index, data, zkAccount }) => {
+const ListItem = ({ index, data, zkAccount, currentPool }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -49,13 +49,13 @@ const ListItem = ({ index, data, zkAccount }) => {
           </Tooltip>
         </Tooltip>
       <Amount>
-        {formatNumber(data.amount, 18)} {tokenSymbol()}
+        {formatNumber(data.amount, 18)} {currentPool.tokenSymbol}
       </Amount>
     </ItemContainer>
   );
 }
 
-export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount }) => {
+export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount, currentPool }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -72,13 +72,19 @@ export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount }) => {
               {formatNumber(transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero), 18)}
               {' '}
             </TotalAmount>
-            <TokenSymbol>{tokenSymbol()}</TokenSymbol>
+            <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
           <Text>{isSent ? 'has been' : 'will be'} transferred to {transfers.length} zkBob addresses</Text>
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (
-            <ListItem key={index} index={index} data={transfer} zkAccount={zkAccount} />
+            <ListItem
+              key={index}
+              index={index}
+              data={transfer}
+              zkAccount={zkAccount}
+              currentPool={currentPool}
+            />
           ))}
         </List>
       </Container>

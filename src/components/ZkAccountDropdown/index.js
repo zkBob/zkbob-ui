@@ -13,13 +13,13 @@ import QRCodeReader from 'components/QRCodeReader';
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
 import { formatNumber } from 'utils';
-import { tokenIcon, tokenSymbol } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 
 
 const Content = ({
   balance, generateAddress, getSeed, setPassword,
   removePassword, logout, buttonRef, showSeedPhrase,
-  isLoadingState, initializeGiftCard,
+  isLoadingState, initializeGiftCard, currentPool,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -103,7 +103,7 @@ const Content = ({
           <Tooltip content={formatNumber(balance, 18)} placement="bottom">
             <Balance>{formatNumber(balance, 6)}</Balance>
           </Tooltip>
-          <Balance style={{ marginLeft: 5 }}>{tokenSymbol()}</Balance>
+          <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>
       </RowSpaceBetween>
       {isMobile &&
@@ -138,7 +138,7 @@ const Content = ({
 
 export default ({
   balance, generateAddress, switchAccount, showSeedPhrase, disabled,
-  logout, buttonRef, children, isDemo, isLoadingState,
+  logout, buttonRef, children, isDemo, isLoadingState, currentPool,
   initializeGiftCard, getSeed, setPassword, removePassword,
 }) => (
   <Dropdown
@@ -157,6 +157,7 @@ export default ({
         isLoadingState={isLoadingState}
         initializeGiftCard={initializeGiftCard}
         getSeed={getSeed}
+        currentPool={currentPool}
       />
     )}
   >

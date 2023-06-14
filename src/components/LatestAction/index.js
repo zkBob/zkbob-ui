@@ -8,10 +8,10 @@ import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 import { NETWORKS } from 'constants';
 
-export default ({ type, shielded, actions, txHash, currentChainId }) => {
+export default ({ type, shielded, actions, txHash, currentPool }) => {
   const history = useHistory();
   const location = useLocation();
   return (
@@ -28,9 +28,9 @@ export default ({ type, shielded, actions, txHash, currentChainId }) => {
               </Tooltip>
             );
           })()}
-          {' '}{tokenSymbol(shielded)}
+          {' '}{currentPool.tokenSymbol}
         </Amount>
-        <TxLink size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', txHash)}>
+        <TxLink size={16} href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
           {shortAddress(txHash)}
         </TxLink>
       </InnerRow>

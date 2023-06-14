@@ -21,14 +21,10 @@ import ConvertOptions from 'components/ConvertOptions';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
-import config from 'config';
 
 import { NETWORKS } from 'constants';
 import { useMaxAmountExceeded, useConvertion } from './hooks';
-
-const note = `${tokenSymbol()} will be withdrawn from zkBob and deposited into the provided wallet address.`;
 
 export default () => {
   const {
@@ -45,8 +41,7 @@ export default () => {
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
-  const convertionDetails = useConvertion(currentPool);
-  const currentChainId = config.pools[currentPool].chainId;
+  const convertionDetails = useConvertion(currentPool.alias);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -73,9 +68,9 @@ export default () => {
     } else if (amount.isZero()) {
       button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
+      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+      button = <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>;
     } else if (amount.gt(maxWithdrawable)) {
       button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
@@ -92,7 +87,10 @@ export default () => {
   }
   return isPending ? <PendingAction /> : (
     <>
-      <Card title="Withdraw" note={note}>
+      <Card
+        title="Withdraw"
+        note={`${currentPool.tokenSymbol} will be withdrawn from zkBob and deposited into the provided wallet address.`}
+      >
         <TransferInput
           balance={zkAccount ? balance : null}
           isLoadingBalance={isLoadingState}
@@ -103,6 +101,7 @@ export default () => {
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
           isLoadingFee={isLoadingFee}
+          currentPool={currentPool}
         />
         {convertionDetails.exist && (
           <ConvertOptions
@@ -111,17 +110,18 @@ export default () => {
             amountToWithdraw={amount}
             maxAmountToWithdraw={maxWithdrawable}
             details={convertionDetails}
+            currentPool={currentPool}
           />
         )}
         <MultilineInput
-          placeholder={`Enter ${NETWORKS[currentChainId].name} address of receiver`}
+          placeholder={`Enter ${NETWORKS[currentPool.chainId].name} address of receiver`}
           secondary
           value={receiver}
           onChange={setReceiver}
         />
         {!amountToConvert.isZero() && (
           <Text>
-            You will get <b>{formatNumber(amount.sub(amountToConvert))} {tokenSymbol()}</b> and{' '}
+            You will get <b>{formatNumber(amount.sub(amountToConvert))} {currentPool.tokenSymbol}</b> and{' '}
             <b>
               ~ {formatNumber(amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)))}{' '}
               {convertionDetails.toTokenSymbol}
@@ -143,6 +143,7 @@ export default () => {
           type="withdrawal"
           amountToConvert={amountToConvert}
           convertionDetails={convertionDetails}
+          currentPool={currentPool}
         />
       </Card>
       <Limits
@@ -150,6 +151,7 @@ export default () => {
         limits={[
           { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
         ]}
+        currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
@@ -157,7 +159,7 @@ export default () => {
           shielded={true}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
-          currentChainId={currentChainId}
+          currentPool={currentPool}
         />
       )}
     </>

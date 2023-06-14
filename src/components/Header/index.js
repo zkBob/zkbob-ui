@@ -19,10 +19,8 @@ import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 import { ReactComponent as DotsIcon } from 'assets/dots.svg';
 
 import { shortAddress, formatNumber } from 'utils';
-import { tokenSymbol } from 'utils/token';
 import { NETWORKS, CONNECTORS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
-import config from 'config';
 
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
@@ -60,7 +58,7 @@ export default ({
           currentPool={currentPool}
         >
           <NetworkDropdownButton ref={networkButtonRef} $refreshing={isPoolSwitching || isLoadingState}>
-            <NetworkIcon src={NETWORKS[config.pools[currentPool].chainId].icon} />
+            <NetworkIcon src={NETWORKS[currentPool.chainId].icon} />
             {isPoolSwitching ? (
               <Spinner size={12} style={{ marginLeft: 10 }} />
             ) : (
@@ -69,7 +67,7 @@ export default ({
           </NetworkDropdownButton>
         </NetworkDropdown>
         <BridgeButton small onClick={openSwapModal}>
-          <LargeButtonContent>Bridge {tokenSymbol()}</LargeButtonContent>
+          <LargeButtonContent>Get {currentPool.tokenSymbol}</LargeButtonContent>
         </BridgeButton>
         {account ? (
           <WalletDropdown
@@ -80,7 +78,7 @@ export default ({
             disconnect={disconnect}
             buttonRef={walletButtonRef}
             disabled={isLoadingBalance}
-            currentChainId={config.pools[currentPool].chainId}
+            currentPool={currentPool}
           >
             <AccountDropdownButton ref={walletButtonRef} $refreshing={isLoadingBalance}>
               <Row>
@@ -91,7 +89,7 @@ export default ({
                 ) : (
                   <>
                     <Balance>
-                      {formatNumber(balance)} {tokenSymbol()}
+                      {formatNumber(balance)} {currentPool.tokenSymbol}
                     </Balance>
                     <DropdownIcon $onlyDesktop />
                   </>
@@ -121,6 +119,7 @@ export default ({
               disabled={isLoadingState}
               initializeGiftCard={initializeGiftCard}
               getSeed={getSeed}
+              currentPool={currentPool}
             >
               <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
                 <Row>
@@ -134,7 +133,7 @@ export default ({
                         <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
                           <span>{formatNumber(poolBalance)}</span>
                         </Tooltip>
-                        {' '}{tokenSymbol(true)}
+                        {' '}{currentPool.tokenSymbol}
                       </Balance>
                       <DropdownIcon $onlyDesktop />
                     </>
@@ -164,7 +163,7 @@ export default ({
             {!isLoadingZkAccount && <AccountIcon />}
           </Button>
         )}
-        <MoreDropdown buttonRef={moreButtonRef} openSwapModal={openSwapModal}>
+        <MoreDropdown buttonRef={moreButtonRef} openSwapModal={openSwapModal} currentPool={currentPool}>
           <DropdownButton ref={moreButtonRef}>
             <DotsIcon />
           </DropdownButton>

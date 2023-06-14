@@ -58,8 +58,6 @@ export const NETWORKS = {
   },
 };
 
-export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
-
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,
   'WalletConnect': require('assets/walletconnect.svg').default,

@@ -45,7 +45,7 @@ async function getTokenPriceWithPairToBobFrom1inch(pair, amount) {
   };
 }
 
-export const useConvertion = (currentPool) => {
+export const useConvertion = (currentPoolAlias) => {
   const [price, setPrice] = useState(ethers.constants.Zero);
   const [decimals, setDecimals] = useState(18);
   const [exist, setExist] = useState(false);
@@ -54,7 +54,7 @@ export const useConvertion = (currentPool) => {
     async function getPrice() {
       try {
         const { price, decimals } = await getTokenPriceWithPairToBobFrom1inch(
-          CONVERTION_PAIRS[currentPool],
+          CONVERTION_PAIRS[currentPoolAlias],
           ethers.utils.parseEther('1'),
         );
         setPrice(price);
@@ -66,12 +66,12 @@ export const useConvertion = (currentPool) => {
     }
     setPrice(ethers.constants.Zero);
     setDecimals(18);
-    setExist(!!CONVERTION_PAIRS[currentPool]);
-    if (!CONVERTION_PAIRS[currentPool]) return;
+    setExist(!!CONVERTION_PAIRS[currentPoolAlias]);
+    if (!CONVERTION_PAIRS[currentPoolAlias]) return;
     getPrice();
     const interval = setInterval(getPrice, 1000 * 60 * 5);
     return () => clearInterval(interval);
-  }, [currentPool]);
+  }, [currentPoolAlias]);
 
-  return { exist, price, decimals, ...CONVERTION_PAIRS[currentPool] };
+  return { exist, price, decimals, ...CONVERTION_PAIRS[currentPoolAlias] };
 };

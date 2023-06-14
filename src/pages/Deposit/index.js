@@ -21,11 +21,7 @@ import IncreasedLimitsBanner from 'components/IncreasedLimitsBanner';
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
-import config from 'config';
-
-const note = `${tokenSymbol()} will be deposited to your zkAccount. Once received, you can transfer ${tokenSymbol()} privately.`;
 
 export default () => {
   const { address: account } = useAccount();
@@ -44,7 +40,6 @@ export default () => {
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
-  const { chainId, kycUrls } = config.pools[currentPool];
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -68,7 +63,10 @@ export default () => {
 
   return isPending ? <PendingAction /> : (
     <>
-      <Card title="Deposit" note={note}>
+      <Card
+        title="Deposit"
+        note={`${currentPool.tokenSymbol} will be deposited to your zkAccount. Once received, you can transfer ${currentPool.tokenSymbol} privately.`}
+      >
         <TransferInput
           balance={account ? balance : null}
           isLoadingBalance={isLoadingBalance}
@@ -79,6 +77,7 @@ export default () => {
           isLoadingFee={isLoadingFee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
+          currentPool={currentPool}
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
@@ -86,19 +85,19 @@ export default () => {
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
-          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-          else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
+          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
+          else if (amount.gt(balance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
           else if (amount.gt(balance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
-      {(increasedLimitsStatus && !!kycUrls) &&
+      {(increasedLimitsStatus && !!currentPool.kycUrls) &&
         <IncreasedLimitsBanner
           status={increasedLimitsStatus}
           openModal={openIncreasedLimitsModal}
           account={account}
-          kycUrls={kycUrls}
+          kycUrls={currentPool.kycUrls}
         />
       }
       <Limits
@@ -109,6 +108,7 @@ export default () => {
           { prefix: "Daily deposit", suffix: "limit", value: limits.dailyDepositLimit },
           { prefix: "Pool size", suffix: "limit", value: limits.poolSizeLimit },
         ]}
+        currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
@@ -116,7 +116,7 @@ export default () => {
           shielded={false}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
-          currentChainId={chainId}
+          currentPool={currentPool}
         />
       )}
     </>

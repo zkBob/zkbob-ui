@@ -11,14 +11,14 @@ import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
 
 import { formatNumber } from 'utils';
-import { tokenIcon, tokenSymbol } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 
 import { CONNECTORS_ICONS, NETWORKS } from 'constants';
 
 
 const Content = ({
   address, balance, connector, changeWallet,
-  disconnect, buttonRef, currentChainId,
+  disconnect, buttonRef, currentPool,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
@@ -48,7 +48,7 @@ const Content = ({
           <Tooltip content={formatNumber(balance, 18)} placement="bottom">
             <Balance>{formatNumber(balance, 6)}</Balance>
           </Tooltip>
-          <Balance style={{ marginLeft: 5 }}>{tokenSymbol()}</Balance>
+          <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>
@@ -62,7 +62,7 @@ const Content = ({
       </CopyToClipboard>
       <OptionButton
         type="link"
-        href={NETWORKS[currentChainId].blockExplorerUrls.address.replace('%s', address)}
+        href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
       >
         View in Explorer
       </OptionButton>
@@ -75,7 +75,7 @@ const Content = ({
 export default ({
   address, balance, connector, changeWallet,
   disconnect, buttonRef, children, disabled,
-  currentChainId,
+  currentPool,
 }) => (
   <Dropdown
     disabled={disabled}
@@ -87,7 +87,7 @@ export default ({
         changeWallet={changeWallet}
         disconnect={disconnect}
         buttonRef={buttonRef}
-        currentChainId={currentChainId}
+        currentPool={currentPool}
       />
     )}
   >

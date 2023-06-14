@@ -4,8 +4,6 @@ import { LiFiWidget } from '@lifi/widget';
 import { PoolContext } from 'contexts';
 import { useWindowDimensions } from 'hooks';
 
-import config from 'config';
-
 export default () => {
   const { currentPool } = useContext(PoolContext);
   const { width } = useWindowDimensions();
@@ -38,8 +36,8 @@ export default () => {
     },
     fromChain: 1,
     fromToken: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    toChain: config.pools[currentPool].chainId,
-    toToken: config.pools[currentPool].tokenAddress,
+    toChain: currentPool.chainId,
+    toToken: currentPool.tokenAddress,
     disableTelemetry: true,
   };
 

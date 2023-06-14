@@ -1,10 +1,4 @@
-import { TOKEN_SYMBOL } from 'constants';
-
 import icon from 'assets/bob.svg';
-
-export function tokenSymbol() {
-  return TOKEN_SYMBOL;
-}
 
 export function tokenIcon() {
   return icon;

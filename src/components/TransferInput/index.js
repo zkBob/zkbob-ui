@@ -7,12 +7,13 @@ import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
 export default ({
   amount, onChange, balance, isLoadingBalance, fee,
   shielded, setMax, maxAmountExceeded, isLoadingFee,
+  currentPool,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const handleAmountChange = useCallback(value => {
@@ -33,7 +34,7 @@ export default ({
         />
         <TokenContainer>
           <TokenIcon src={tokenIcon(shielded)} />
-          {tokenSymbol(shielded)}
+          {currentPool.tokenSymbol}
         </TokenContainer>
       </Row>
       <Row>
@@ -42,7 +43,7 @@ export default ({
           {isLoadingFee ? (
             <Skeleton width={40} />
           ) : (
-            <Text>{formatNumber(fee)} {tokenSymbol(shielded)}</Text>
+            <Text>{formatNumber(fee)} {currentPool.tokenSymbol}</Text>
           )}
         </RowWrap>
         {(balance || isLoadingBalance) && (
@@ -54,10 +55,10 @@ export default ({
               <Skeleton width={80} />
             ) : (
               <Row>
-                <Text>{formatNumber(balance)} {tokenSymbol(shielded)}</Text>
+                <Text>{formatNumber(balance)} {currentPool.tokenSymbol}</Text>
                 <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
                 <Tooltip
-                  content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
+                  content={`Click Max to set the maximum amount of ${currentPool.tokenSymbol} you can send including all fees and limits`}
                   placement="right"
                   delay={0}
                   width={180}

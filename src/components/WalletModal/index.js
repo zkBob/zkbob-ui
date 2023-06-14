@@ -5,13 +5,11 @@ import Modal from 'components/Modal';
 import Link from 'components/Link';
 import WalletConnectors from 'components/WalletConnectors';
 
-import { tokenSymbol } from 'utils/token';
-
-export default ({ isOpen, close }) => {
+export default ({ isOpen, close, currentPool }) => {
   return (
     <Modal isOpen={isOpen} onClose={close} title="Connect web3 wallet">
       <Text>
-        Connect your wallet to deposit {tokenSymbol()} into your zkAccount.{' '}
+        Connect your wallet to deposit {currentPool.tokenSymbol} into your zkAccount.{' '}
         If you are creating a new zkAccount, your wallet is used{' '}
         to derive a private encryption key for the zkBob application.
       </Text>

@@ -13,6 +13,8 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
         feeDecimals: 2,
       },
       'BOB-optimism': {
@@ -22,6 +24,8 @@ const config = {
         relayerUrls: ['https://relayer-optimism.zkbob.com/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
         feeDecimals: 2,
       },
     },
@@ -52,6 +56,9 @@ const config = {
           status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenBOB',
         },
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
       },
       'BOB-goerli': {
         chainId: 5,
@@ -59,7 +66,10 @@ const config = {
         tokenAddress: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
         relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
         delegatedProverUrls: [],
-        coldStorageConfigPath: ''
+        coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
       },
       'BOB-op-goerli': {
         chainId: 420,
@@ -67,8 +77,11 @@ const config = {
         tokenAddress:'0x0fA7E69b9344D6434Bd6b79c5950bb5234245a5F',
         relayerUrls:['https://gop-relayer.thgkjlr.website'],
         delegatedProverUrls: [],
-        coldStorageConfigPath: ''
-      }
+        coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
+      },
     },
     chains: {
       '11155111': {
