@@ -11,7 +11,7 @@ export default class MetamaskNotification extends BasePage implements MetamaskNo
   async grantAccess(): Promise<void> {
     await this.page.locator(notificationPageElements.nextButton).click({ timeout: TIMEOUTS.big });
     await this.page.locator(notificationPageElements.connectButton).click({ timeout: TIMEOUTS.big });
-    await this.page.locator(notificationPageElements.allowToSwitchNetwork).click({ timeout: TIMEOUTS.big });
+    // await this.page.locator(notificationPageElements.allowToSwitchNetwork).click({ timeout: TIMEOUTS.big });
   }
 
   async allowToSwitchNetwork(): Promise<void> {

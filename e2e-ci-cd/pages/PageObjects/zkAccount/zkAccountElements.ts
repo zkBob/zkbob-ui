@@ -19,14 +19,49 @@ export default class zkAccountPage extends BasePage{
     this.ZKACCOUNT_SEED_PHRASE = process.env.ZKACCOUNT_SEED_PHRASE as string;
   }
 
-    async button_zkAccount(): Promise<void> {
+    async button_GetStarted(): Promise<void> {
       await this.focus();
-      await this.locator(zkAccountElementsLocators.button_zkAccount).click();
+      await this.locator(zkAccountElementsLocators.button_GetStarted).click();
+    }
+
+    // async button_zkAccount(): Promise<void> {
+    //   await this.locator(zkAccountElementsLocators.button_zkAccount).click();
+    // }
+
+    async button_CreateNewZkAccount(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_CreateNewZkAccount).click();
     }
     
-    async button_Agree(): Promise<void> {
-      await this.locator(zkAccountElementsLocators.button_Agree).click();
+    async button_UseWeb3wallet(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_UseWeb3wallet).click();
     }
+
+    async button_IAlreadyHaveZkAccount(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_IAlreadyHaveZkAccount).click();
+    }
+
+    async button_UseSecretPhrase(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_UseSecretPhrase).click();
+    }
+
+    async button_IUsedSeedPhrase(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_IUsedSeedPhrase).click();
+    }
+
+    async UseMetaMask(): Promise<void> {
+      await this.locator(`//div//span[text()="MetaMask"]`).click();
+    }
+
+    async button_SignMessage(): Promise<void> {
+      await this.sleep();
+      const [popup] = await Promise.all([this.waitForPage(), this.locator(zkAccountElementsLocators.button_SignMessage).click()]);
+      await popup.locator('//button[text()="Sign"]').click();
+  
+    }
+
+    // async button_Agree(): Promise<void> {
+    //   await this.locator(zkAccountElementsLocators.button_Agree).click();
+    // }
 
     async CreatePasswordForzkAccount(): Promise<void> {
       await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
@@ -36,7 +71,7 @@ export default class zkAccountPage extends BasePage{
     }
     
     async CreateWithSecretRecoveryPhrase(): Promise<void> {
-      await this.locator(zkAccountElementsLocators.button_CreateWithSecretRecoveryPhrase).click();
+      // await this.locator(zkAccountElementsLocators.button_CreateWithSecretRecoveryPhrase).click();
       
       // Copy seed phrase
       for (let num = 1; num < 13; num++){
@@ -53,16 +88,12 @@ export default class zkAccountPage extends BasePage{
       }
 
       await this.locator(zkAccountElementsLocators.button_Verify).click();
-
-      await this.CreatePasswordForzkAccount();
-
     }
 
     async ConnectMetaMaskWallet(): Promise<void> {
-      await this.locator(zkAccountElementsLocators.button_CreateWithWeb3Wallet).click();
+      // await this.locator(zkAccountElementsLocators.button_CreateWithWeb3Wallet).click();
 
-      await this.locator(zkAccountElementsLocators.button_ConnectWallet).click();
-      
+      // await this.locator(zkAccountElementsLocators.button_ConnectWallet).click();
       const [popup] = await Promise.all([this.waitForPage(), this.locator(zkAccountElementsLocators.button_MetaMaskWallet).click()]);
       const metamaskNotification = new MetamaskNotification(popup);
       await metamaskNotification.grantAccess();
@@ -71,13 +102,16 @@ export default class zkAccountPage extends BasePage{
     }
 
     async GenerateKey(): Promise<void> {
-      await this.button_zkAccount()
-      await this.locator(zkAccountElementsLocators.button_CreateWithWeb3Wallet).click();
+      // await this.button_zkAccount()
 
-      const [popup] = await Promise.all([this.waitForPage(), this.locator(zkAccountElementsLocators.button_GenerateKey).click()]);
+      const [popup] = await Promise.all([this.waitForPage(), this.locator(`//div[text()="Signature request"]`)]);
       // await popup.locator('//button[text()="Got it"]').click();
       await popup.locator('//button[text()="Sign"]').click();
       // await popup.locator('//button[text()="Switch network"]').click();
+    }
+
+    async button_SetPassword(): Promise<void> {
+      await this.locator(zkAccountElementsLocators.button_SetPassword).click();
     }
 
     async CreatePassword(): Promise<void> {
@@ -87,12 +121,11 @@ export default class zkAccountPage extends BasePage{
     }
     
     async CheckAccount(): Promise<void> {
-      await expect(this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
+      await expect(this.locator('//span[text()="zkAccount"]/following-sibling::span[text()="BOB"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
 
     }
 
     async RestoreAccount(): Promise<void> {
-      await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
       await this.locator("//textarea").type(this.ZKACCOUNT_SEED_PHRASE);
       await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
     }
