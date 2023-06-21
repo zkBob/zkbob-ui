@@ -34,7 +34,7 @@ export const NETWORKS = {
   },
   5: {
     name: 'Goerli',
-    icon: require('assets/ethereum.svg').default,
+    icon: require('assets/eth.svg').default,
     blockExplorerUrls: {
       address: 'https://goerli.etherscan.io/address/%s',
       tx: 'https://goerli.etherscan.io/tx/%s',
@@ -59,7 +59,8 @@ export const NETWORKS = {
 };
 
 export const TOKENS_ICONS = {
-  'ETH': require('assets/ethereum.svg').default,
+  'ETH': require('assets/eth.svg').default,
+  'WETH': require('assets/weth.png'),
   'BOB': require('assets/bob.svg').default,
 };
 

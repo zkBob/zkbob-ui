@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import Skeleton from 'components/Skeleton';
+import Select from './Select';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
@@ -16,14 +17,18 @@ export default ({
   currentPool,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isNativeSelected, setIsNativeSelected] = useState(true);
+
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       onChange(value);
     }
   }, [onChange]);
+
   useEffect(() => {
     setShowTooltip(maxAmountExceeded);
   }, [maxAmountExceeded]);
+
   return (
     <Container>
       <Row>
@@ -32,10 +37,18 @@ export default ({
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        <TokenContainer>
-          <TokenIcon src={tokenIcon(shielded)} />
-          {currentPool.tokenSymbol}
-        </TokenContainer>
+        {currentPool.isNativeToken ? (
+          <Select
+            tokenSymbol={currentPool.tokenSymbol}
+            isNativeSelected={isNativeSelected}
+            onTokenSelect={setIsNativeSelected}
+          />
+        ) : (
+          <TokenContainer>
+            <TokenIcon src={tokenIcon(shielded)} />
+            {currentPool.tokenSymbol}
+          </TokenContainer>
+        )}
       </Row>
       <Row>
         <RowWrap style={{ marginRight: 20 }}>

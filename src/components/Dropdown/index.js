@@ -5,7 +5,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 const GlobalStyle = createGlobalStyle`
   .dropdown {
-    top: 55px !important;
+    // top: 55px !important;
     @media only screen and (max-width: 560px) {
       left: calc(100% - 58px) !important;
       transform: translateX(-100%) !important;
@@ -17,7 +17,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default ({ children, content, disabled, width, placement, ...props }) => {
+export default ({ children, content, disabled, width, placement, style = {}, ...props }) => {
   const [isVisible, setIsVisible] = useState(false);
   return (
     <>
@@ -40,6 +40,7 @@ export default ({ children, content, disabled, width, placement, ...props }) => 
           maxWidth: 'calc(100vw - 10px)',
           boxSizing: 'border-box',
           boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.1)',
+          ...style,
         }}
         overlayStyle={{
           opacity: isVisible ? 1 : 0,
