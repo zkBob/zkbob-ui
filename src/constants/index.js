@@ -58,6 +58,11 @@ export const NETWORKS = {
   },
 };
 
+export const TOKENS_ICONS = {
+  'ETH': require('assets/ethereum.svg').default,
+  'BOB': require('assets/bob.svg').default,
+};
+
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,
   'WalletConnect': require('assets/walletconnect.svg').default,

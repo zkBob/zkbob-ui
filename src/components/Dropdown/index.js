@@ -17,14 +17,14 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default ({ children, content, disabled, ...props }) => {
+export default ({ children, content, disabled, width, placement, ...props }) => {
   const [isVisible, setIsVisible] = useState(false);
   return (
     <>
       <GlobalStyle />
       <Tooltip
         overlayClassName="dropdown"
-        placement="bottomRight"
+        placement={placement || "bottomRight"}
         trigger={disabled ? [] : ['click']}
         overlay={content}
         showArrow={false}
@@ -36,7 +36,7 @@ export default ({ children, content, disabled, ...props }) => {
           padding: '26px 24px',
           borderRadius: '16px',
           backgroundColor: '#FFFFFF',
-          width: 370,
+          width: width || 370,
           maxWidth: 'calc(100vw - 10px)',
           boxSizing: 'border-box',
           boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.1)',

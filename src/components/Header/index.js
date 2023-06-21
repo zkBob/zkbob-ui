@@ -19,7 +19,7 @@ import { ReactComponent as WalletIconDefault } from 'assets/wallet.svg';
 import { ReactComponent as DotsIcon } from 'assets/dots.svg';
 
 import { shortAddress, formatNumber } from 'utils';
-import { NETWORKS, CONNECTORS_ICONS } from 'constants';
+import { NETWORKS, CONNECTORS_ICONS, TOKENS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
 
 export default ({
@@ -59,6 +59,8 @@ export default ({
         >
           <NetworkDropdownButton ref={networkButtonRef} $refreshing={isPoolSwitching || isLoadingState}>
             <NetworkIcon src={NETWORKS[currentPool.chainId].icon} />
+            <Divider />
+            <NetworkIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             {isPoolSwitching ? (
               <Spinner size={12} style={{ marginLeft: 10 }} />
             ) : (
@@ -301,8 +303,8 @@ const DropdownIcon = styled(DropdownIconDefault)`
 `;
 
 const NetworkIcon = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 `;
 
 const LargeButtonContent = styled.div`
@@ -322,5 +324,14 @@ const WalletIcon = styled(WalletIconDefault)`
   display: none;
   @media only screen and (max-width: 1000px) {
     display: block;
+  }
+`;
+
+const Divider = styled.span`
+  ::before {
+    content: '/';
+    font-size: 16px;
+    color: ${props => props.theme.text.color.primary};
+    margin: 0 4px;
   }
 `;

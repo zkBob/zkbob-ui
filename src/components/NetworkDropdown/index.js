@@ -1,15 +1,39 @@
-import { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import Dropdown from 'components/Dropdown';
-import OptionButton from 'components/OptionButton';
+import OptionButtonDefault from 'components/OptionButton';
 
-import { NETWORKS } from 'constants';
+import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
+import { ReactComponent as CheckIcon } from 'assets/check-stroke.svg';
+
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import config from 'config';
 
+const chainIds = Object.keys(config.chains).map(chainId => Number(chainId));
+const poolsWithAliases = Object.values(config.pools).map((pool, index) => ({
+  ...pool,
+  alias: Object.keys(config.pools)[index],
+}));
+const poolsByChainId = chainIds.map(chainId => {
+  return {
+    chainId,
+    pools: Object.values(poolsWithAliases).filter(pool => pool.chainId === chainId),
+  };
+});
 
 const Content = ({ switchToPool, currentPool, buttonRef }) => {
+  const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
+
+  const showPools = useCallback(chainId => {
+    if (openedChainId === chainId) {
+      setOpenedChainId(null);
+    } else {
+      setOpenedChainId(chainId);
+    }
+  }, [openedChainId]);
+
   const onSwitchPool = useCallback(poolId => {
     buttonRef.current.click();
     switchToPool(poolId);
@@ -18,17 +42,47 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
   return (
     <Container>
       <Title>Networks</Title>
-      {Object.values(config.pools).map((pool, index) =>
-        <OptionButton
-          key={index}
-          onClick={() => onSwitchPool(Object.keys(config.pools)[index])}
-          disabled={currentPool.alias === Object.keys(config.pools)[index]}
-        >
-          <Row>
-            <NetworkIcon src={NETWORKS[pool.chainId].icon} />
-            {NETWORKS[pool.chainId].name}
-          </Row>
-        </OptionButton>
+      {poolsByChainId.map(({ chainId, pools }, index) =>
+        <React.Fragment key={index}>
+          <OptionButton
+            onClick={() => showPools(chainId)}
+            className={openedChainId === chainId ? 'active' : ''}
+          >
+            <RowSpaceBetween>
+              <Row>
+                <NetworkIcon src={NETWORKS[chainId].icon} />
+                {NETWORKS[chainId].name}
+              </Row>
+              <Row>
+                {pools.length}
+                {openedChainId === chainId ? (
+                  <DropdownIcon />
+                ) : (
+                  <DropdownIcon style={{ transform: 'rotate(270deg)' }} />
+                )}
+              </Row>
+            </RowSpaceBetween>
+          </OptionButton>
+          {openedChainId === chainId && (
+            <TokensContainer>
+              {pools.map((pool, index) =>
+                <OptionButtonSmall
+                  key={index}
+                  onClick={() => onSwitchPool(pool.alias)}
+                  className={currentPool.alias === pool.alias ? 'active' : ''}
+                >
+                  <RowSpaceBetween>
+                    <Row>
+                      <TokenIcon src={TOKENS_ICONS[pool.tokenSymbol]} />
+                      {pool.tokenSymbol}
+                    </Row>
+                    {currentPool.alias === pool.alias && <CheckIcon />}
+                  </RowSpaceBetween>
+                </OptionButtonSmall>
+              )}
+            </TokensContainer>
+          )}
+        </React.Fragment>
       )}
     </Container>
   );
@@ -36,6 +90,8 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
 
 export default ({ disabled, switchToPool, currentPool, buttonRef, children }) => (
   <Dropdown
+    width={288}
+    placement="bottomLeft"
     disabled={disabled}
     content={() => (
       <Content switchToPool={switchToPool} currentPool={currentPool} buttonRef={buttonRef} />
@@ -58,6 +114,11 @@ const Row = styled.div`
   align-items: center;
 `;
 
+const RowSpaceBetween = styled(Row)`
+  justify-content: space-between;
+  width: 100%;
+`;
+
 const Title = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.text.color.secondary};
@@ -65,7 +126,53 @@ const Title = styled.span`
 `;
 
 const NetworkIcon = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   margin-right: 10px;
+`;
+
+const TokenIcon = styled(NetworkIcon)`
+  margin-right: 4px;
+`;
+
+const TokensContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: -10px;
+  &:last-child > :last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const OptionButton = styled(OptionButtonDefault)`
+  padding: 0 12px;
+  font-weight: ${props => props.theme.text.weight.bold};
+  &.active {
+    background-color: ${props => props.theme.walletConnectorOption.background[props.disabled ? 'default' : 'hover']};
+    border: 1px solid ${props => props.theme.walletConnectorOption.border[props.disabled ? 'default' : 'hover']};
+  }
+`;
+
+const OptionButtonSmall = styled(OptionButton)`
+  flex: 0 0 calc(50% - 2px);
+  height: 40px;
+  border: 0;
+  &:hover {
+    border: 0;
+  }
+  &.active {
+    background-color: ${props => props.theme.walletConnectorOption.background[props.disabled ? 'default' : 'hover']};
+    border: 0;
+  }
+  &:nth-child(odd) {
+    margin-right: 2px;
+  }
+  &:nth-child(even) {
+    margin-left: 2px;
+  }
+`;
+
+const DropdownIcon = styled(DropdownIconDefault)`
+  margin-left: 10px;
 `;
