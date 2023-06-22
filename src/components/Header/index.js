@@ -25,7 +25,7 @@ import { useWindowDimensions } from 'hooks';
 export default ({
   openWalletModal, connector, isLoadingZkAccount, empty,
   openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, poolBalance, refresh, isLoadingBalance, getSeed,
+  balance, nativeBalance, poolBalance, refresh, isLoadingBalance, getSeed,
   openSwapModal, generateAddress, openChangePasswordModal,
   openSeedPhraseModal, isDemo, disconnect, isLoadingState, openDisablePasswordModal,
   switchToPool, currentPool, initializeGiftCard, isPoolSwitching,
@@ -75,6 +75,7 @@ export default ({
           <WalletDropdown
             address={account}
             balance={balance}
+            nativeBalance={nativeBalance}
             connector={connector}
             changeWallet={openWalletModal}
             disconnect={disconnect}
@@ -91,7 +92,8 @@ export default ({
                 ) : (
                   <>
                     <Balance>
-                      {formatNumber(balance)} {currentPool.tokenSymbol}
+                      {formatNumber(currentPool.isNativeToken ? nativeBalance.add(balance) : balance)}{' '}
+                      {currentPool.tokenSymbol}{currentPool.isNativeToken && '*'}
                     </Balance>
                     <DropdownIcon $onlyDesktop />
                   </>
@@ -132,10 +134,7 @@ export default ({
                   ) : (
                     <>
                       <Balance>
-                        <Tooltip content={formatNumber(poolBalance, 18)} placement="bottom">
-                          <span>{formatNumber(poolBalance)}</span>
-                        </Tooltip>
-                        {' '}{currentPool.tokenSymbol}
+                        {formatNumber(poolBalance)} {currentPool.tokenSymbol}
                       </Balance>
                       <DropdownIcon $onlyDesktop />
                     </>

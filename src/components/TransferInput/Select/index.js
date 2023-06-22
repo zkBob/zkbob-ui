@@ -85,6 +85,7 @@ const SelectedItemContainer = styled.div`
   align-items: center;
   cursor: pointer;
   position: relative;
+  margin-left: 15px;
 `;
 
 const DropdownIcon = styled(DropdownIconDefault)`

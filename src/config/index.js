@@ -16,6 +16,7 @@ const config = {
         tokenSymbol: 'BOB',
         tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-optimism': {
         chainId: 10,
@@ -27,6 +28,7 @@ const config = {
         tokenSymbol: 'BOB',
         tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
       },
     },
     chains: {
@@ -59,6 +61,7 @@ const config = {
         tokenSymbol: 'BOB',
         tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-goerli': {
         chainId: 5,
@@ -70,6 +73,7 @@ const config = {
         tokenSymbol: 'BOB',
         tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-op-goerli': {
         chainId: 420,
@@ -81,6 +85,20 @@ const config = {
         tokenSymbol: 'BOB',
         tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
+      },
+      'WETH-goerli': {
+        chainId: 5,
+        poolAddress:'0xf9dbCF4005497e042838dE9082C817fCa790e945',
+        tokenAddress:'0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+        relayerUrls:['https://goerli-weth-relayer.thgkjlr.website/'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'ETH',
+        tokenDecimals: 18,
+        isNativeToken: true,
+        depositScheme: 'permit2',
+        minTxAmount: 1000000n, // 0.001 ETH
       },
     },
     chains: {

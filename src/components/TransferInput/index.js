@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
@@ -8,16 +8,16 @@ import Select from './Select';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
 
+import { TOKENS_ICONS } from 'constants';
+
 export default ({
-  amount, onChange, balance, isLoadingBalance, fee,
-  shielded, setMax, maxAmountExceeded, isLoadingFee,
-  currentPool,
+  amount, onChange, balance, nativeBalance, isLoadingBalance, fee,
+  shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
+  isNativeSelected, setIsNativeSelected, isNativeBalanceUsed,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [isNativeSelected, setIsNativeSelected] = useState(true);
 
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
@@ -37,7 +37,7 @@ export default ({
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        {currentPool.isNativeToken ? (
+        {(!shielded && currentPool.isNativeToken) ? (
           <Select
             tokenSymbol={currentPool.tokenSymbol}
             isNativeSelected={isNativeSelected}
@@ -45,7 +45,7 @@ export default ({
           />
         ) : (
           <TokenContainer>
-            <TokenIcon src={tokenIcon(shielded)} />
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             {currentPool.tokenSymbol}
           </TokenContainer>
         )}
@@ -68,7 +68,10 @@ export default ({
               <Skeleton width={80} />
             ) : (
               <Row>
-                <Text>{formatNumber(balance)} {currentPool.tokenSymbol}</Text>
+                <Text>
+                  {formatNumber(isNativeBalanceUsed ? nativeBalance : balance)}{' '}
+                  {currentPool.tokenSymbol}
+                </Text>
                 <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
                 <Tooltip
                   content={`Click Max to set the maximum amount of ${currentPool.tokenSymbol} you can send including all fees and limits`}

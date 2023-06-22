@@ -13,7 +13,8 @@ import QRCodeReader from 'components/QRCodeReader';
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
 import { formatNumber } from 'utils';
-import { tokenIcon } from 'utils/token';
+
+import { TOKENS_ICONS } from 'constants';
 
 
 const Content = ({
@@ -99,7 +100,7 @@ const Content = ({
       <RowSpaceBetween>
         <SmallText>zkAccount</SmallText>
         <Row>
-          <TokenIcon src={tokenIcon()} />
+          <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
           <Tooltip content={formatNumber(balance, 18)} placement="bottom">
             <Balance>{formatNumber(balance, 6)}</Balance>
           </Tooltip>

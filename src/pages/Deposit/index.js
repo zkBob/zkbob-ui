@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -30,7 +30,7 @@ export default () => {
       isLoadingState, isPending, isDemo,
       isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
-  const { balance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const { balance, nativeBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const { openWalletModal, openIncreasedLimitsModal } = useContext(ModalContext);
   const { status: increasedLimitsStatus } = useContext(IncreasedLimitsContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -40,6 +40,15 @@ export default () => {
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
+  const [isNativeSelected, setIsNativeSelected] = useState(true);
+  const isNativeBalanceUsed = useMemo(
+    () => isNativeSelected && currentPool.isNativeToken,
+    [isNativeSelected, currentPool],
+  );
+  const usedBalance = useMemo(
+    () => isNativeBalanceUsed ? nativeBalance : balance,
+    [isNativeBalanceUsed, nativeBalance, balance],
+  );
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -49,15 +58,15 @@ export default () => {
   const setMax = useCallback(async () => {
     try {
       let max = ethers.constants.Zero;
-      if (balance.gt(fee)) {
-        max = minBigNumber(balance.sub(fee), depositLimit);
+      if (usedBalance.gt(fee)) {
+        max = minBigNumber(usedBalance.sub(fee), depositLimit);
       }
       setDisplayAmount(ethers.utils.formatEther(max));
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
-  }, [balance, fee, depositLimit]);
+  }, [fee, depositLimit, usedBalance]);
 
   if (isDemo) return <DemoCard />;
 
@@ -69,6 +78,7 @@ export default () => {
       >
         <TransferInput
           balance={account ? balance : null}
+          nativeBalance={account ? nativeBalance : null}
           isLoadingBalance={isLoadingBalance}
           amount={displayAmount}
           onChange={setDisplayAmount}
@@ -78,6 +88,9 @@ export default () => {
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
           currentPool={currentPool}
+          isNativeSelected={isNativeSelected}
+          setIsNativeSelected={setIsNativeSelected}
+          isNativeBalanceUsed={isNativeBalanceUsed}
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
@@ -86,8 +99,8 @@ export default () => {
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
-          else if (amount.gt(balance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
-          else if (amount.gt(balance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
+          else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
+          else if (amount.gt(usedBalance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}

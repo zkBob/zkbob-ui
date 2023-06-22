@@ -46,7 +46,7 @@ const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
     return signature;
   };
   const myAddress = await signer.getAddress();
-  const jobId = await zkClient.depositPermittable(amount, signFunction, myAddress, fee);
+  const jobId = await zkClient.deposit(amount, signFunction, myAddress, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await zkClient.waitJobTxHash(jobId);
   setTxStatus(TX_STATUSES.DEPOSITED);
