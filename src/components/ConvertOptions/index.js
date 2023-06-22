@@ -34,21 +34,23 @@ export default ({ amountToConvert, setAmountToConvert, amountToWithdraw, maxAmou
       </Row>
       {isConverting && (
         <Row>
-          {options.map((option, index) => (
-            <OptionButton
-              key={index}
-              onClick={() => setAmountToConvert(option)}
-              active={amountToConvert.eq(option)}
-              disabled={option.gt(amountToWithdraw) || option.gt(maxAmountToWithdraw)}
-            >
-              <TextBold>{formatNumber(option)} {tokenSymbol()}</TextBold>
-              <Text>
-                ~{' '}
-                {formatNumber(option.mul(details.price).div(ethers.utils.parseUnits('1', details.decimals)))}{' '}
-                {details.toTokenSymbol}
-              </Text>
-            </OptionButton>
-          ))}
+          {options.map((option, index) => {
+            let nativeAmount = formatNumber(option.mul(details.price).div(ethers.utils.parseUnits('1', details.decimals)));
+            if (nativeAmount === '≈ 0') nativeAmount = '0';
+            return (
+              <OptionButton
+                key={index}
+                onClick={() => setAmountToConvert(option)}
+                active={amountToConvert.eq(option)}
+                disabled={option.gt(amountToWithdraw) || option.gt(maxAmountToWithdraw)}
+              >
+                <TextBold>{formatNumber(option)} {tokenSymbol()}</TextBold>
+                <Text>
+                  ~ {nativeAmount} {details.toTokenSymbol}
+                </Text>
+              </OptionButton>
+            );
+          })}
         </Row>
       )}
     </Column>
