@@ -1,10 +1,9 @@
-import { Contract, ethers } from 'ethers';
-import { ZkBobClient } from 'zkbob-client-js';
+import { ethers } from 'ethers';
+import { ZkBobClient, SignatureType } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
 import { ProverMode } from 'zkbob-client-js/lib/config';
 
 import { TX_STATUSES } from 'constants';
-import { createPermitSignature } from 'utils/token';
 import config from 'config';
 
 const createClient = (currentPoolAlias, supportId) => {
@@ -31,17 +30,15 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
 };
 
 const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
-  const tokenABI = [
-    'function name() view returns (string)',
-    'function nonces(address) view returns (uint256)',
-  ];
-  const currentPoolAlias = zkClient.currentPool();
-  const { tokenAddress, poolAddress } = config.pools[currentPoolAlias]
-  const token = new Contract(tokenAddress, tokenABI, signer);
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = async (deadline, value, salt) => {
+  const signFunction = async ({ type, data }) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
-    const signature = await createPermitSignature(token, signer, poolAddress, value, deadline, salt);
+    let signature;
+    if (type === SignatureType.TypedDataV4) {
+      const { domain, types, message } = data;
+      delete types.EIP712Domain;
+      signature = await signer._signTypedData(domain, types, message);
+    }
     setTxStatus(TX_STATUSES.GENERATING_PROOF);
     return signature;
   };

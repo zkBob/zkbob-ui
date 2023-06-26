@@ -19,7 +19,7 @@ import DemoCard from 'components/DemoCard';
 import IncreasedLimitsBanner from 'components/IncreasedLimitsBanner';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
-import { useDepositLimit, useMaxAmountExceeded } from './hooks';
+import { useDepositLimit, useMaxAmountExceeded, useApproval } from './hooks';
 
 import { formatNumber, minBigNumber } from 'utils';
 
@@ -41,19 +41,20 @@ export default () => {
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
   const [isNativeSelected, setIsNativeSelected] = useState(true);
-  const isNativeBalanceUsed = useMemo(
+  const isNativeTokenUsed = useMemo(
     () => isNativeSelected && currentPool.isNativeToken,
     [isNativeSelected, currentPool],
   );
   const usedBalance = useMemo(
-    () => isNativeBalanceUsed ? nativeBalance : balance,
-    [isNativeBalanceUsed, nativeBalance, balance],
+    () => isNativeTokenUsed ? nativeBalance : balance,
+    [isNativeTokenUsed, nativeBalance, balance],
   );
+  const { isApproved, approve } = useApproval();
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
-    deposit(amount, relayerFee);
-  }, [amount, deposit, relayerFee]);
+    deposit(amount, relayerFee, isNativeTokenUsed);
+  }, [amount, deposit, relayerFee, isNativeTokenUsed]);
 
   const setMax = useCallback(async () => {
     try {
@@ -90,13 +91,15 @@ export default () => {
           currentPool={currentPool}
           isNativeSelected={isNativeSelected}
           setIsNativeSelected={setIsNativeSelected}
-          isNativeBalanceUsed={isNativeBalanceUsed}
+          isNativeTokenUsed={isNativeTokenUsed}
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
+          else if (isNativeTokenUsed) return <Button disabled>{currentPool.tokenSymbol} deposit not available</Button>
+          else if (currentPool.isNativeToken && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
           else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>

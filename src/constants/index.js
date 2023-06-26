@@ -1,7 +1,8 @@
 export const TX_STATUSES = {
   APPROVE_TOKENS: 'approve_tokens',
+  APPROVED: 'approved',
   SIGN_MESSAGE: 'sign_message',
-  WAITING_FOR_APPROVAL: 'waiting_for_approval',
+  WAITING_FOR_TRANSACTION: 'waiting_for_transaction',
   GENERATING_PROOF: 'generating_proof',
   WAITING_FOR_RELAYER: 'waiting_for_relayer',
   DEPOSITED: 'deposited',

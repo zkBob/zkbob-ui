@@ -15,7 +15,7 @@ import { TOKENS_ICONS } from 'constants';
 export default ({
   amount, onChange, balance, nativeBalance, isLoadingBalance, fee,
   shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
-  isNativeSelected, setIsNativeSelected, isNativeBalanceUsed,
+  isNativeSelected, setIsNativeSelected, isNativeTokenUsed,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -69,7 +69,7 @@ export default ({
             ) : (
               <Row>
                 <Text>
-                  {formatNumber(isNativeBalanceUsed ? nativeBalance : balance)}{' '}
+                  {formatNumber(isNativeTokenUsed ? nativeBalance : balance)}{' '}
                   {currentPool.tokenSymbol}
                 </Text>
                 <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>

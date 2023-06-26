@@ -277,7 +277,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateLimits(),
   ]), [updateBalance, updateHistory, updateLimits]);
 
-  const deposit = useCallback(async (amount, relayerFee) => {
+  const deposit = useCallback(async (amount, relayerFee, isNativeToken) => {
+    if (isNativeToken) return;
     openTxModal();
     setTxAmount(amount);
     try {

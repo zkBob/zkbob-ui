@@ -14,8 +14,9 @@ import { formatNumber } from 'utils';
 
 const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
+  [TX_STATUSES.APPROVED]: 'Tokens approved',
   [TX_STATUSES.SIGN_MESSAGE]: 'Please sign a message',
-  [TX_STATUSES.WAITING_FOR_APPROVAL]: 'Waiting for approval transaction',
+  [TX_STATUSES.WAITING_FOR_TRANSACTION]: 'Waiting for transaction',
   [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
   [TX_STATUSES.DEPOSITED]: 'Deposit is in progress',
@@ -75,6 +76,11 @@ const descriptions = {
       Please connect your wallet to {NETWORKS[currentPool.chainId].name} and try again.
     </span>
   ),
+  [TX_STATUSES.APPROVED]: () => (
+    <span>
+      Your approval was successful. Now you can deposit your tokens.
+    </span>
+  ),
 };
 
 const SUCCESS_STATUSES = [
@@ -82,6 +88,7 @@ const SUCCESS_STATUSES = [
   TX_STATUSES.TRANSFERRED,
   TX_STATUSES.TRANSFERRED_MULTI,
   TX_STATUSES.WITHDRAWN,
+  TX_STATUSES.APPROVED,
 ];
 const FAILURE_STATUSES = [
   TX_STATUSES.REJECTED,

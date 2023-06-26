@@ -22,7 +22,10 @@ export const TokenBalanceContextProvider = ({ children }) => {
     abi: TOKEN_ABI,
     signerOrProvider: provider
   });
-  const { refetch: getNativeBalance } = useBalance({ address: account });
+  const { refetch: getNativeBalance } = useBalance({
+    address: account,
+    chainId: currentPool.chainId,
+  });
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
