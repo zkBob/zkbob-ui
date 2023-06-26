@@ -24,6 +24,7 @@ const prefixes = {
   'BOB-sepolia': 'zkbob_sepolia',
   'BOB-goerli': 'zkbob_goerli',
   'BOB-op-goerli': 'zkbob_goerli_optimism',
+  'WETH-goerli': 'zkbob_goerli_eth',
 };
 
 export default forwardRef((props, ref) => {

@@ -6,12 +6,12 @@ import Button from 'components/Button';
 import Modal from 'components/Modal';
 import Skeleton from 'components/Skeleton';
 
-import { tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
+import { TOKENS_ICONS } from 'constants';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
-  shielded, isZkAddress, fee, numberOfTxs, type, isLoadingFee,
+  isZkAddress, fee, numberOfTxs, type, isLoadingFee,
   isMultitransfer, transfers, openDetails, currentPool,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
@@ -25,7 +25,7 @@ export default ({
       <Container>
         <DetailsContainer>
           <AmountContainer>
-            <TokenIcon src={tokenIcon(shielded)} />
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <Amount>
               {formatNumber(isMultitransfer
                 ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)

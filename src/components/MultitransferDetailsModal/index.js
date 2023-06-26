@@ -9,8 +9,8 @@ import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 
-import { tokenIcon } from 'utils/token';
 import { formatNumber, shortAddress } from 'utils';
+import { TOKENS_ICONS } from 'constants';
 
 const ListItem = ({ index, data, zkAccount, currentPool }) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -67,7 +67,7 @@ export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount, current
       <Container>
         <DetailsContainer>
           <AmountContainer>
-            <TokenIcon src={tokenIcon()} />
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <TotalAmount>
               {formatNumber(transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero), 18)}
               {' '}

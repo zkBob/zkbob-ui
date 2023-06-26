@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 import WalletDropdown from 'components/WalletDropdown';
 import ZkAccountDropdown from 'components/ZkAccountDropdown';
