@@ -41,7 +41,7 @@ export default () => {
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
   const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
-  const convertionDetails = useConvertion(currentPool.alias);
+  const convertionDetails = useConvertion(currentPool);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);

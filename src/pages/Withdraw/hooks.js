@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
-
-const { BigNumber } = ethers;
+import { useContract, useProvider } from 'wagmi';
 
 export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.constants.Zero) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
@@ -19,59 +18,46 @@ export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.con
   return maxAmountExceeded;
 };
 
-const CONVERTION_PAIRS = {
-  'BOB-optimism': {
-    chainId: 10,
-    toTokenSymbol: 'ETH',
-    fromTokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
-    toTokenAddress: '0x4200000000000000000000000000000000000006',
-  },
-  'BOB-polygon': {
-    chainId: 137,
-    toTokenSymbol: 'MATIC',
-    fromTokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
-    toTokenAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-  },
+const NATIVE_TOKENS = {
+  'BOB-optimism': 'ETH',
+  'BOB-goerli': 'ETH',
+  'BOB-polygon': 'MATIC',
 };
 
-CONVERTION_PAIRS['BOB-goerli'] = CONVERTION_PAIRS['BOB-optimism'];
+const POOL_CONTRACT_ABI = ['function tokenSeller() pure returns (address)'];
+const SWAP_CONTRACT_ABI = ['function quoteSellForETH(uint256) pure returns (uint256)'];
 
-async function getTokenPriceWithPairToBobFrom1inch(pair, amount) {
-  const response = await fetch(`https://api.1inch.exchange/v3.0/${pair.chainId}/quote?fromTokenAddress=${pair.fromTokenAddress}&toTokenAddress=${pair.toTokenAddress}&amount=${amount.toString()}`);
-  const json = await response.json();
-  return {
-    price: BigNumber.from(json.toTokenAmount),
-    decimals: json.toToken.decimals,
-  };
-}
-
-export const useConvertion = (currentPoolAlias) => {
+export const useConvertion = (currentPool) => {
+  const provider = useProvider({ chainId: currentPool.chainId });
+  const poolContract = useContract({
+    address: currentPool.poolAddress,
+    abi: POOL_CONTRACT_ABI,
+    signerOrProvider: provider
+  });
   const [price, setPrice] = useState(ethers.constants.Zero);
-  const [decimals, setDecimals] = useState(18);
   const [exist, setExist] = useState(false);
 
   useEffect(() => {
     async function getPrice() {
       try {
-        const { price, decimals } = await getTokenPriceWithPairToBobFrom1inch(
-          CONVERTION_PAIRS[currentPoolAlias],
-          ethers.utils.parseEther('1'),
-        );
+        const swapContractAddress = await poolContract.tokenSeller();
+        const exist = swapContractAddress !== ethers.constants.AddressZero;
+        setExist(exist);
+        if (!exist) return;
+        const swapContract = new ethers.Contract(swapContractAddress, SWAP_CONTRACT_ABI, provider);
+        const price = await swapContract.quoteSellForETH(ethers.constants.WeiPerEther);
         setPrice(price);
-        setDecimals(decimals);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Withdraw.useConvertion' } });
       }
     }
     setPrice(ethers.constants.Zero);
-    setDecimals(18);
-    setExist(!!CONVERTION_PAIRS[currentPoolAlias]);
-    if (!CONVERTION_PAIRS[currentPoolAlias]) return;
+    setExist(false);
     getPrice();
     const interval = setInterval(getPrice, 1000 * 60 * 5);
     return () => clearInterval(interval);
-  }, [currentPoolAlias]);
+  }, [poolContract, provider]);
 
-  return { exist, price, decimals, ...CONVERTION_PAIRS[currentPoolAlias] };
+  return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
 };
