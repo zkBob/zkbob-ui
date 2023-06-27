@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
@@ -43,6 +43,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const { chain } = useNetwork();
   const currentChainId = config.pools[currentPool].chainId;
   const { data: signer } = useSigner({ chainId: currentChainId });
+  const provider = useProvider({ chainId: currentChainId });
   const { switchNetworkAsync } = useSwitchNetwork({
     chainId: currentChainId,
     throwForSwitchChainNotSupported: true,
@@ -294,7 +295,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         }
       }
       const shieldedAmount = await toShieldedAmount(amount);
-      await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+      await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus, provider);
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
@@ -312,7 +313,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [
     zkClient, updatePoolData, signer, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
-    chain, switchNetworkAsync, currentChainId,
+    chain, switchNetworkAsync, currentChainId, provider,
   ]);
 
   const transfer = useCallback(async (to, amount, relayerFee) => {

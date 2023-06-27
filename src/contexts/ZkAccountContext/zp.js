@@ -30,14 +30,14 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
   });
 };
 
-const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
+const deposit = async (signer, zkClient, amount, fee, setTxStatus, provider) => {
   const tokenABI = [
     'function name() view returns (string)',
     'function nonces(address) view returns (uint256)',
   ];
   const currentPool = zkClient.currentPool();
   const { tokenAddress, poolAddress } = config.pools[currentPool]
-  const token = new Contract(tokenAddress, tokenABI, signer);
+  const token = new Contract(tokenAddress, tokenABI, provider);
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
   const signFunction = async (deadline, value, salt) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
