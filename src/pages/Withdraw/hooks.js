@@ -40,7 +40,10 @@ export const useConvertion = (currentPool) => {
   useEffect(() => {
     async function getPrice() {
       try {
-        const swapContractAddress = await poolContract.tokenSeller();
+        let swapContractAddress = ethers.constants.AddressZero;
+        try {
+          swapContractAddress = await poolContract.tokenSeller();
+        } catch (error) {}
         const exist = swapContractAddress !== ethers.constants.AddressZero;
         setExist(exist);
         if (!exist) return;
