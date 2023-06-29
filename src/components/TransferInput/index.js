@@ -9,6 +9,7 @@ import Select from './Select';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
 
 import { TOKENS_ICONS } from 'constants';
 
@@ -17,6 +18,7 @@ export default ({
   shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
   isNativeSelected, setIsNativeSelected, isNativeTokenUsed,
 }) => {
+  const displayedFee = useDisplayedFee(currentPool, fee);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleAmountChange = useCallback(value => {
@@ -56,7 +58,7 @@ export default ({
           {isLoadingFee ? (
             <Skeleton width={40} />
           ) : (
-            <Text>{formatNumber(fee)} {currentPool.tokenSymbol}</Text>
+            <Text>{displayedFee}</Text>
           )}
         </RowWrap>
         {(balance || isLoadingBalance) && (

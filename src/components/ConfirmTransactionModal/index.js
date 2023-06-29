@@ -7,6 +7,7 @@ import Modal from 'components/Modal';
 import Skeleton from 'components/Skeleton';
 
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
 import { TOKENS_ICONS } from 'constants';
 
 export default ({
@@ -15,6 +16,8 @@ export default ({
   isMultitransfer, transfers, openDetails, currentPool,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
+  const displayedFee = useDisplayedFee(currentPool, fee);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -71,7 +74,7 @@ export default ({
             {isLoadingFee ? (
               <Skeleton width={60} />
             ) : (
-              <MediumText>{formatNumber(fee)} {currentPool.tokenSymbol}</MediumText>
+              <MediumText>{displayedFee}</MediumText>
             )}
           </Row>
         </DetailsContainer>
