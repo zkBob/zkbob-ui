@@ -40,7 +40,7 @@ export default () => {
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
-  const [isNativeSelected, setIsNativeSelected] = useState(true);
+  const [isNativeSelected, setIsNativeSelected] = useState(false);
   const isNativeTokenUsed = useMemo(
     () => isNativeSelected && currentPool.isNativeToken,
     [isNativeSelected, currentPool],
