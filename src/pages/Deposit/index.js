@@ -49,7 +49,7 @@ export default () => {
     () => isNativeTokenUsed ? nativeBalance : balance,
     [isNativeTokenUsed, nativeBalance, balance],
   );
-  const { isApproved, approve } = useApproval();
+  const { isApproved, approve } = useApproval(amount.add(fee), balance);
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -99,12 +99,12 @@ export default () => {
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
           else if (isNativeTokenUsed) return <Button disabled>{currentPool.tokenSymbol} deposit not available</Button>
-          else if (currentPool.isNativeToken && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
           else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
           else if (amount.gt(usedBalance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
+          else if (currentPool.isNativeToken && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>

@@ -7,6 +7,7 @@ import { ZkAccountContext, PoolContext, TransactionModalContext } from 'contexts
 
 import { minBigNumber } from 'utils';
 import { TX_STATUSES } from 'constants';
+import { useMemo } from 'react';
 
 export const useDepositLimit = () => {
   const { limits } = useContext(ZkAccountContext);
@@ -50,7 +51,7 @@ const TOKEN_ABI = [
 ];
 const PERMIT2_CONTRACT_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
 
-export const useApproval = () => {
+export const useApproval = (amount, balance) => {
   const { openTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
   const { currentPool } = useContext(PoolContext);
   const { address: account } = useAccount();
@@ -61,16 +62,21 @@ export const useApproval = () => {
     chainId: currentPool.chainId,
     throwForSwitchChainNotSupported: true,
   });
-  const [isApproved, setIsApproved] = useState(false);
+  const [allowance, setAllowance] = useState(ethers.constants.Zero);
 
-  useEffect(() => {
+  const isApproved = useMemo(() => allowance.gte(amount), [allowance, amount]);
+
+  const updateAllowance = useCallback(async () => {
     if (!account) return;
     const token = new ethers.Contract(currentPool.tokenAddress, TOKEN_ABI, provider);
     token.allowance(account, PERMIT2_CONTRACT_ADDRESS).then(allowance => {
-      console.log(allowance);
-      setIsApproved(allowance.eq(ethers.constants.MaxUint256));
+      setAllowance(allowance);
     });
   }, [account, provider, currentPool.tokenAddress]);
+
+  useEffect(() => {
+    updateAllowance();
+  }, [updateAllowance, balance]);
 
   const approve = useCallback(async () => {
     try {
@@ -91,8 +97,8 @@ export const useApproval = () => {
       const tx = await token.approve(PERMIT2_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await tx.wait();
-      setIsApproved(true);
       setTxStatus(TX_STATUSES.APPROVED);
+      updateAllowance();
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'Deposit.useApproval.approve' } });
@@ -102,7 +108,7 @@ export const useApproval = () => {
       setTxError(message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain, currentPool, signer]);
+  }, [openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain, currentPool, signer, updateAllowance]);
 
-  return { isApproved, approve };
+  return { isApproved, approve, updateAllowance };
 }
