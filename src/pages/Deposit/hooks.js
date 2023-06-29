@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
-import { useContract, useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
+import { useContract, useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 
 import { ZkAccountContext, PoolContext, TransactionModalContext } from 'contexts';
 
@@ -56,11 +56,7 @@ export const useApproval = () => {
   const { address: account } = useAccount();
   const { chain } = useNetwork();
   const { data: signer } = useSigner({ chainId: currentPool.chainId });
-  const token = useContract({
-    address: currentPool.tokenAddress,
-    abi: TOKEN_ABI,
-    signerOrProvider: signer,
-  });
+  const provider = useProvider({ chainId: currentPool.chainId });
   const { switchNetworkAsync } = useSwitchNetwork({
     chainId: currentPool.chainId,
     throwForSwitchChainNotSupported: true,
@@ -68,11 +64,13 @@ export const useApproval = () => {
   const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
-    if (!token || !account) return;
+    if (!account) return;
+    const token = new ethers.Contract(currentPool.tokenAddress, TOKEN_ABI, provider);
     token.allowance(account, PERMIT2_CONTRACT_ADDRESS).then(allowance => {
+      console.log(allowance);
       setIsApproved(allowance.eq(ethers.constants.MaxUint256));
     });
-  }, [token, account]);
+  }, [account, provider, currentPool.tokenAddress]);
 
   const approve = useCallback(async () => {
     try {
@@ -89,6 +87,7 @@ export const useApproval = () => {
         }
       }
       setTxStatus(TX_STATUSES.APPROVE_TOKENS);
+      const token = new ethers.Contract(currentPool.tokenAddress, TOKEN_ABI, signer);
       const tx = await token.approve(PERMIT2_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await tx.wait();
@@ -103,7 +102,7 @@ export const useApproval = () => {
       setTxError(message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [token, openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain, currentPool.chainId]);
+  }, [openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain, currentPool, signer]);
 
   return { isApproved, approve };
 }
