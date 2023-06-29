@@ -10,7 +10,7 @@ const links = [
   { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
 ];
 
-const Content = ({ buttonRef, openSwapModal }) => {
+const Content = ({ buttonRef, openSwapModal, currentPool }) => {
   const onClick = useCallback(() => {
     openSwapModal();
     buttonRef.current.click();
@@ -20,7 +20,7 @@ const Content = ({ buttonRef, openSwapModal }) => {
     <Container>
       <Title>More about zkBob</Title>
       <SwapButton onClick={onClick}>
-        Bridge BOB
+        Get {currentPool.tokenSymbol}
       </SwapButton>
       {links.map((link, index) =>
         <OptionButton
@@ -36,8 +36,12 @@ const Content = ({ buttonRef, openSwapModal }) => {
   );
 }
 
-export default ({ buttonRef, openSwapModal, children }) => (
-  <Dropdown content={() => <Content buttonRef={buttonRef} openSwapModal={openSwapModal} />}>
+export default ({ buttonRef, openSwapModal, children, currentPool }) => (
+  <Dropdown
+    content={() =>
+      <Content buttonRef={buttonRef} openSwapModal={openSwapModal} currentPool={currentPool} />
+    }
+  >
     {children}
   </Dropdown>
 );

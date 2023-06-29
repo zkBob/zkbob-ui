@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
@@ -8,17 +8,21 @@ import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
-import { NETWORKS } from 'constants';
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
-export default ({ type, shielded, actions, txHash, currentChainId }) => {
+export default ({ type, actions, txHash, currentPool }) => {
   const history = useHistory();
   const location = useLocation();
+  const tokenSymbol = useMemo(
+    () => (currentPool.isNativeToken ? 'W' : '') + currentPool.tokenSymbol,
+    [currentPool]
+  );
+
   return (
     <Row>
       <InnerRow>
         <Action>Latest {type}:</Action>
-        <TokenIcon src={tokenIcon(shielded)} />
+        <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
         <Amount>
           {(() => {
             const total = actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
@@ -28,9 +32,9 @@ export default ({ type, shielded, actions, txHash, currentChainId }) => {
               </Tooltip>
             );
           })()}
-          {' '}{tokenSymbol(shielded)}
+          {' '}{tokenSymbol}
         </Amount>
-        <TxLink size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', txHash)}>
+        <TxLink size={16} href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
           {shortAddress(txHash)}
         </TxLink>
       </InnerRow>

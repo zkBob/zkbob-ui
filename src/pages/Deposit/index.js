@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -19,13 +19,9 @@ import DemoCard from 'components/DemoCard';
 import IncreasedLimitsBanner from 'components/IncreasedLimitsBanner';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
-import { useDepositLimit, useMaxAmountExceeded } from './hooks';
+import { useDepositLimit, useMaxAmountExceeded, useApproval } from './hooks';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
-import config from 'config';
-
-const note = `${tokenSymbol()} will be deposited to your zkAccount. Once received, you can transfer ${tokenSymbol()} privately.`;
 
 export default () => {
   const { address: account } = useAccount();
@@ -34,7 +30,7 @@ export default () => {
       isLoadingState, isPending, isDemo,
       isLoadingLimits, limits, minTxAmount,
     } = useContext(ZkAccountContext);
-  const { balance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const { balance, nativeBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const { openWalletModal, openIncreasedLimitsModal } = useContext(ModalContext);
   const { status: increasedLimitsStatus } = useContext(IncreasedLimitsContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -44,33 +40,46 @@ export default () => {
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
-  const { chainId, kycUrls } = config.pools[currentPool];
+  const [isNativeSelected, setIsNativeSelected] = useState(true);
+  const isNativeTokenUsed = useMemo(
+    () => isNativeSelected && currentPool.isNativeToken,
+    [isNativeSelected, currentPool],
+  );
+  const usedBalance = useMemo(
+    () => isNativeTokenUsed ? nativeBalance : balance,
+    [isNativeTokenUsed, nativeBalance, balance],
+  );
+  const { isApproved, approve } = useApproval();
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
-    deposit(amount, relayerFee);
-  }, [amount, deposit, relayerFee]);
+    deposit(amount, relayerFee, isNativeTokenUsed);
+  }, [amount, deposit, relayerFee, isNativeTokenUsed]);
 
   const setMax = useCallback(async () => {
     try {
       let max = ethers.constants.Zero;
-      if (balance.gt(fee)) {
-        max = minBigNumber(balance.sub(fee), depositLimit);
+      if (usedBalance.gt(fee)) {
+        max = minBigNumber(usedBalance.sub(fee), depositLimit);
       }
       setDisplayAmount(ethers.utils.formatEther(max));
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
-  }, [balance, fee, depositLimit]);
+  }, [fee, depositLimit, usedBalance]);
 
   if (isDemo) return <DemoCard />;
 
   return isPending ? <PendingAction /> : (
     <>
-      <Card title="Deposit" note={note}>
+      <Card
+        title="Deposit"
+        note={`${currentPool.tokenSymbol} will be deposited to your zkAccount. Once received, you can transfer ${currentPool.tokenSymbol} privately.`}
+      >
         <TransferInput
           balance={account ? balance : null}
+          nativeBalance={account ? nativeBalance : null}
           isLoadingBalance={isLoadingBalance}
           amount={displayAmount}
           onChange={setDisplayAmount}
@@ -79,26 +88,32 @@ export default () => {
           isLoadingFee={isLoadingFee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
+          currentPool={currentPool}
+          isNativeSelected={isNativeSelected}
+          setIsNativeSelected={setIsNativeSelected}
+          isNativeTokenUsed={isNativeTokenUsed}
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
+          else if (isNativeTokenUsed) return <Button disabled>{currentPool.tokenSymbol} deposit not available</Button>
+          else if (currentPool.isNativeToken && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
-          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
-          else if (amount.gt(balance)) return <Button disabled>Insufficient {tokenSymbol()} balance</Button>
-          else if (amount.gt(balance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
+          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
+          else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
+          else if (amount.gt(usedBalance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
       </Card>
-      {(increasedLimitsStatus && !!kycUrls) &&
+      {(increasedLimitsStatus && !!currentPool.kycUrls) &&
         <IncreasedLimitsBanner
           status={increasedLimitsStatus}
           openModal={openIncreasedLimitsModal}
           account={account}
-          kycUrls={kycUrls}
+          kycUrls={currentPool.kycUrls}
         />
       }
       <Limits
@@ -109,6 +124,7 @@ export default () => {
           { prefix: "Daily deposit", suffix: "limit", value: limits.dailyDepositLimit },
           { prefix: "Pool size", suffix: "limit", value: limits.poolSizeLimit },
         ]}
+        currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
@@ -116,7 +132,7 @@ export default () => {
           shielded={false}
           actions={latestAction.actions}
           txHash={latestAction.txHash}
-          currentChainId={chainId}
+          currentPool={currentPool}
         />
       )}
     </>

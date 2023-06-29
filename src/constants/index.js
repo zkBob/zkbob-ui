@@ -1,7 +1,8 @@
 export const TX_STATUSES = {
   APPROVE_TOKENS: 'approve_tokens',
+  APPROVED: 'approved',
   SIGN_MESSAGE: 'sign_message',
-  WAITING_FOR_APPROVAL: 'waiting_for_approval',
+  WAITING_FOR_TRANSACTION: 'waiting_for_transaction',
   GENERATING_PROOF: 'generating_proof',
   WAITING_FOR_RELAYER: 'waiting_for_relayer',
   DEPOSITED: 'deposited',
@@ -34,7 +35,7 @@ export const NETWORKS = {
   },
   5: {
     name: 'Goerli',
-    icon: require('assets/ethereum.svg').default,
+    icon: require('assets/eth.svg').default,
     blockExplorerUrls: {
       address: 'https://goerli.etherscan.io/address/%s',
       tx: 'https://goerli.etherscan.io/tx/%s',
@@ -58,7 +59,11 @@ export const NETWORKS = {
   },
 };
 
-export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
+export const TOKENS_ICONS = {
+  'ETH': require('assets/eth.svg').default,
+  'WETH': require('assets/weth.png'),
+  'BOB': require('assets/bob.svg').default,
+};
 
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,

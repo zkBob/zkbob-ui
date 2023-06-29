@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -12,10 +12,8 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow, useWindowDimensions } from 'hooks';
-import config from 'config';
-import { NETWORKS } from 'constants';
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
 import { ReactComponent as WithdrawIcon } from 'assets/withdraw.svg';
@@ -83,10 +81,10 @@ const AddressLink = ({ action, isMobile, currentChainId }) => {
   );
 };
 
-const Fee = ({ fee, highFee, isMobile }) => (
+const Fee = ({ fee, highFee, isMobile, tokenSymbol }) => (
   <>
     {!fee.isZero() && (
-      <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
+      <FeeText>(fee {formatNumber(fee)} {tokenSymbol})</FeeText>
     )}
     {highFee && (
       <Tooltip
@@ -114,7 +112,11 @@ export default ({ item, zkAccount, currentPool }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
-  const currentChainId = config.pools[currentPool].chainId;
+  const currentChainId = currentPool.chainId;
+  const tokenSymbol = useMemo(
+    () => (currentPool.isNativeToken ? 'W' : '') + currentPool.tokenSymbol,
+    [currentPool]
+  );
 
   const onCopy = useCallback((text, result) => {
     if (result) {
@@ -134,7 +136,7 @@ export default ({ item, zkAccount, currentPool }) => {
         <RowSpaceBetween>
           <Row>
             <Row>
-              <TokenIcon src={tokenIcon()} />
+              <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
               <Text $error={item.failed}>
                 {getSign(item)}{' '}
                 {(() => {
@@ -145,11 +147,11 @@ export default ({ item, zkAccount, currentPool }) => {
                     </Tooltip>
                   );
                 })()}
-                {' '}{tokenSymbol()}
+                {' '}{tokenSymbol}
               </Text>
             </Row>
             <FeeDesktop>
-              <Fee fee={item.fee} highFee={item.highFee} />
+              <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} />
             </FeeDesktop>
           </Row>
           <Row>
@@ -166,7 +168,7 @@ export default ({ item, zkAccount, currentPool }) => {
           </Row>
         </RowSpaceBetween>
         <FeeMobile>
-          <Fee fee={item.fee} highFee={item.highFee} isMobile />
+          <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} isMobile />
         </FeeMobile>
         <RowSpaceBetween>
           <Row>
@@ -261,6 +263,7 @@ export default ({ item, zkAccount, currentPool }) => {
           onClose={() => setIsDetailsModalOpen(false)}
           zkAccount={zkAccount}
           isSent={true}
+          currentPool={currentPool}
         />
       )}
     </Container>

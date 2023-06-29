@@ -4,25 +4,33 @@ import styled from 'styled-components';
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import Skeleton from 'components/Skeleton';
+import Select from './Select';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
+
+import { TOKENS_ICONS } from 'constants';
 
 export default ({
-  amount, onChange, balance, isLoadingBalance, fee,
-  shielded, setMax, maxAmountExceeded, isLoadingFee,
+  amount, onChange, balance, nativeBalance, isLoadingBalance, fee,
+  shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
+  isNativeSelected, setIsNativeSelected, isNativeTokenUsed,
 }) => {
+  const displayedFee = useDisplayedFee(currentPool, fee);
   const [showTooltip, setShowTooltip] = useState(false);
+
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       onChange(value);
     }
   }, [onChange]);
+
   useEffect(() => {
     setShowTooltip(maxAmountExceeded);
   }, [maxAmountExceeded]);
+
   return (
     <Container>
       <Row>
@@ -31,10 +39,18 @@ export default ({
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        <TokenContainer>
-          <TokenIcon src={tokenIcon(shielded)} />
-          {tokenSymbol(shielded)}
-        </TokenContainer>
+        {(!shielded && currentPool.isNativeToken) ? (
+          <Select
+            tokenSymbol={currentPool.tokenSymbol}
+            isNativeSelected={isNativeSelected}
+            onTokenSelect={setIsNativeSelected}
+          />
+        ) : (
+          <TokenContainer>
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
+            {currentPool.tokenSymbol}
+          </TokenContainer>
+        )}
       </Row>
       <Row>
         <RowWrap style={{ marginRight: 20 }}>
@@ -42,7 +58,7 @@ export default ({
           {isLoadingFee ? (
             <Skeleton width={40} />
           ) : (
-            <Text>{formatNumber(fee)} {tokenSymbol(shielded)}</Text>
+            <Text>{displayedFee}</Text>
           )}
         </RowWrap>
         {(balance || isLoadingBalance) && (
@@ -54,10 +70,13 @@ export default ({
               <Skeleton width={80} />
             ) : (
               <Row>
-                <Text>{formatNumber(balance)} {tokenSymbol(shielded)}</Text>
+                <Text>
+                  {formatNumber(isNativeTokenUsed ? nativeBalance : balance)}{' '}
+                  {currentPool.tokenSymbol}
+                </Text>
                 <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
                 <Tooltip
-                  content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
+                  content={`Click Max to set the maximum amount of ${currentPool.tokenSymbol} you can send including all fees and limits`}
                   placement="right"
                   delay={0}
                   width={180}

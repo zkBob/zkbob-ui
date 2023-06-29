@@ -5,6 +5,7 @@ import useParsedAmount from 'hooks/useParsedAmount';
 import useLatestAction from 'hooks/useLatestAction';
 import useWindowDimensions from 'hooks/useWindowDimensions';
 import usePrevious from 'hooks/usePrevious';
+import useDisplayedFee from 'hooks/useDisplayedFee';
 
 export {
   useDateFromNow,
@@ -14,4 +15,5 @@ export {
   useLatestAction,
   useWindowDimensions,
   usePrevious,
+  useDisplayedFee,
 };

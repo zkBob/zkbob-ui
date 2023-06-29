@@ -5,8 +5,6 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import Modal from 'components/Modal';
 
-import config from 'config';
-
 const DOCS_URL = 'https://www.binance.com/en/support/faq/how-to-mint-binance-account-bound-bab-token-bacaf9595b52440ea2b023195ba4a09c';
 
 export default ({ isOpen, onClose, account, isWalletModalOpen, openWalletModal, currentPool }) => {
@@ -35,7 +33,7 @@ export default ({ isOpen, onClose, account, isWalletModalOpen, openWalletModal, 
           That's it. Your deposit limits will automatically increase if your connected wallet contains a BAB token.
         </Text>
         {account ? (
-          <LinkButton href={config.pools[currentPool].kycUrls?.homepage.replace('%s', account)}>
+          <LinkButton href={currentPool.kycUrls?.homepage.replace('%s', account)}>
             Verify my BAB token
           </LinkButton>
         ) : (
