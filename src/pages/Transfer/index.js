@@ -63,8 +63,7 @@ export default () => {
         <LatestAction
           type="Transfer"
           shielded={true}
-          actions={latestAction.actions}
-          txHash={latestAction.txHash}
+          data={latestAction}
           currentPool={currentPool}
         />
       )}

@@ -47,8 +47,9 @@ export default () => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    withdraw(receiver, amount, amountToConvert, relayerFee);
-  }, [receiver, amount, amountToConvert, withdraw, relayerFee]);
+    const _amountToConvert = currentPool.isNativeToken ? amount : amountToConvert;
+    withdraw(receiver, amount, _amountToConvert, relayerFee);
+  }, [receiver, amount, amountToConvert, withdraw, relayerFee, currentPool]);
 
   const setMax = useCallback(async () => {
     const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
@@ -157,8 +158,7 @@ export default () => {
         <LatestAction
           type="Withdrawal"
           shielded={true}
-          actions={latestAction.actions}
-          txHash={latestAction.txHash}
+          data={latestAction}
           currentPool={currentPool}
         />
       )}

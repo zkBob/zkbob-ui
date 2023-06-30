@@ -113,10 +113,10 @@ export default ({ item, zkAccount, currentPool }) => {
   const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
   const currentChainId = currentPool.chainId;
-  const tokenSymbol = useMemo(
-    () => (currentPool.isNativeToken ? 'W' : '') + currentPool.tokenSymbol,
-    [currentPool]
-  );
+  const tokenSymbol = useMemo(() => {
+    const isWrapped = currentPool.isNativeToken && item.type === HistoryTransactionType.Deposit;
+    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
+  }, [currentPool, item.type]);
 
   const onCopy = useCallback((text, result) => {
     if (result) {

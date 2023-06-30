@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
+import { HistoryTransactionType } from 'zkbob-client-js';
 
 import Link from 'components/Link';
 import Button from 'components/Button';
@@ -10,13 +11,13 @@ import Tooltip from 'components/Tooltip';
 import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
-export default ({ type, actions, txHash, currentPool }) => {
+export default ({ type, data, currentPool }) => {
   const history = useHistory();
   const location = useLocation();
-  const tokenSymbol = useMemo(
-    () => (currentPool.isNativeToken ? 'W' : '') + currentPool.tokenSymbol,
-    [currentPool]
-  );
+  const tokenSymbol = useMemo(() => {
+    const isWrapped = currentPool.isNativeToken && data.type === HistoryTransactionType.Deposit;
+    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
+  }, [currentPool, data.type]);
 
   return (
     <Row>
@@ -25,7 +26,7 @@ export default ({ type, actions, txHash, currentPool }) => {
         <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
         <Amount>
           {(() => {
-            const total = actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+            const total = data.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
             return (
               <Tooltip content={formatNumber(total, 18)} placement="top">
                 <span>{formatNumber(total, 2)}</span>
@@ -34,8 +35,8 @@ export default ({ type, actions, txHash, currentPool }) => {
           })()}
           {' '}{tokenSymbol}
         </Amount>
-        <TxLink size={16} href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
-          {shortAddress(txHash)}
+        <TxLink size={16} href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', data.txHash)}>
+          {shortAddress(data.txHash)}
         </TxLink>
       </InnerRow>
       <HistoryButton
