@@ -10,10 +10,10 @@ export const formatNumber = (wei, customDecimals) => {
   if (wei.isZero()) return '0';
   if (wei.lte(parseEther('0.0001'))) return '≈ 0';
 
-  const decimals = customDecimals || (wei.gt(parseEther('1')) ? 2 : 4);
+  const decimals = typeof customDecimals === 'number' ? customDecimals : (wei.gt(parseEther('1')) ? 2 : 4);
   const formatted = commify(formatEther(wei));
   let [prefix, suffix] = formatted.split('.');
-  if (suffix === '0') {
+  if (suffix === '0' || decimals === 0) {
     suffix = '';
   } else {
     suffix = '.' + suffix.slice(0, decimals);

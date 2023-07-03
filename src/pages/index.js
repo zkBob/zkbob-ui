@@ -165,6 +165,8 @@ const Layout = styled.div`
   @media only screen and (max-width: 560px) {
     padding: 21px 7px 28px;
   }
+  @media only screen and (max-width: 800px) {
+    padding-bottom: 80px;
 `;
 
 const PageContainer = styled.div`
