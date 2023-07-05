@@ -7,10 +7,11 @@ import { formatNumber } from 'utils';
 export default (currentPool, fee) => {
   const { price } = useContext(TokenPriceContext);
 
-  return useMemo(() =>
-    currentPool.isNative && price
-      ? '$' + formatNumber(fee.mul(price).div(ethers.constants.WeiPerEther))
-      : `${formatNumber(fee)} ${currentPool.tokenSymbol}`,
-    [fee, price, currentPool]
-  );
+  return useMemo(() => {
+    let displayedFee = `${formatNumber(fee)} ${currentPool.tokenSymbol}`;
+    if (currentPool.isNative && price) {
+      displayedFee += ` ($${formatNumber(fee.mul(price).div(ethers.constants.WeiPerEther))})`;
+    }
+    return displayedFee;
+  }, [fee, price, currentPool]);
 };
