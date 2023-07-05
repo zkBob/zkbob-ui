@@ -4,6 +4,7 @@ import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 import { HistoryTransactionType } from 'zkbob-client-js';
+import styled from 'styled-components';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -17,6 +18,9 @@ import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
 import IncreasedLimitsBanner from 'components/IncreasedLimitsBanner';
+import DefaultLink from 'components/Link';
+
+import { ReactComponent as WargingIcon } from 'assets/warning.svg';
 
 import { useFee, useParsedAmount, useLatestAction } from 'hooks';
 import { useDepositLimit, useMaxAmountExceeded, useApproval } from './hooks';
@@ -40,9 +44,9 @@ export default () => {
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
-  const [isNativeSelected, setIsNativeSelected] = useState(false);
+  const [isNativeSelected, setIsNativeSelected] = useState(true);
   const isNativeTokenUsed = useMemo(
-    () => isNativeSelected && currentPool.isNativeToken,
+    () => isNativeSelected && currentPool.isNative,
     [isNativeSelected, currentPool],
   );
   const usedBalance = useMemo(
@@ -98,15 +102,23 @@ export default () => {
           else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
-          else if (isNativeTokenUsed) return <Button disabled>{currentPool.tokenSymbol} deposit not available</Button>
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
           else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
           else if (amount.gt(usedBalance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
-          else if (currentPool.isNativeToken && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
+          else if (currentPool.isNative && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
         })()}
+        {isNativeTokenUsed && (
+          <MessageContainer>
+            <WargingIcon/>
+            <span style={{ margin: '0 4px 0 8px' }}>
+              {currentPool.tokenSymbol} depositing can take up to 10 minutes.
+            </span>
+            <Link href="https://docs.zkbob.com/">Learn more</Link>
+          </MessageContainer>
+        )}
       </Card>
       {(increasedLimitsStatus && !!currentPool.kycUrls) &&
         <IncreasedLimitsBanner
@@ -137,3 +149,23 @@ export default () => {
     </>
   );
 };
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const MessageContainer = styled(Row)`
+  justify-content: center;
+  flex-wrap: wrap;
+  background: #FBEED0;
+  border-radius: 10px;
+  padding: 7px 10px;
+  font-size: 14px;
+  font-weight: ${props => props.theme.text.weight.bold};
+  color: ${props => props.theme.text.color.secondary};
+`;
+
+const Link = styled(DefaultLink)`
+  font-weight: ${props => props.theme.text.weight.bold};
+`;

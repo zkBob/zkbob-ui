@@ -96,7 +96,7 @@ const config = {
         coldStorageConfigPath: '',
         tokenSymbol: 'ETH',
         tokenDecimals: 18,
-        isNativeToken: true,
+        isNative: true,
         depositScheme: 'permit2',
         minTxAmount: 1000000n, // 0.001 ETH
       },

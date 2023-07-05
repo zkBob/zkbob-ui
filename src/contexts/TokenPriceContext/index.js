@@ -15,7 +15,7 @@ export const TokenPriceContextProvider = ({ children }) => {
   const [price, setPrice] = useState(null);
 
   useEffect(() => {
-    if (!currentPool.isNativeToken) return;
+    if (!currentPool.isNative) return;
     setPrice(null);
     async function getTokenPrice() {
       try {

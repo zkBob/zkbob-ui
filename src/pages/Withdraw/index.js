@@ -47,7 +47,7 @@ export default () => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    const _amountToConvert = currentPool.isNativeToken ? amount : amountToConvert;
+    const _amountToConvert = currentPool.isNative ? amount : amountToConvert;
     withdraw(receiver, amount, _amountToConvert, relayerFee);
   }, [receiver, amount, amountToConvert, withdraw, relayerFee, currentPool]);
 

@@ -277,8 +277,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateLimits(),
   ]), [updateBalance, updateHistory, updateLimits]);
 
-  const deposit = useCallback(async (amount, relayerFee, isNativeToken) => {
-    if (isNativeToken) return;
+  const deposit = useCallback(async (amount, relayerFee, isNative) => {
     openTxModal();
     setTxAmount(amount);
     try {
@@ -294,18 +293,28 @@ export const ZkAccountContextProvider = ({ children }) => {
         }
       }
       const shieldedAmount = await toShieldedAmount(amount);
-      await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+      if (isNative) {
+        await zp.directDeposit(signer, zkClient, shieldedAmount, setTxStatus);
+      } else {
+        await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+      }
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit' } });
+      let message = error?.message;
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
-      } if (error?.message?.includes('Internal account validation failed')) {
+      } else if (message?.includes('Internal account validation failed')) {
         setTxStatus(TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT);
       } else {
-        setTxError(error.message);
+        if (message?.includes('user rejected transaction')) {
+          message = 'User rejected transaction.';
+        } else if (message?.includes('user rejected signing')) {
+          message = 'User rejected message signing.';
+        }
+        setTxError(message);
         setTxStatus(TX_STATUSES.REJECTED);
       }
     }

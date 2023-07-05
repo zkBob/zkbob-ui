@@ -101,8 +101,8 @@ export default ({
           ) : (
             <>
               <Balance>
-                {formatBalance(currentPool.isNativeToken ? nativeBalance.add(balance) : balance, isMobile)}{' '}
-                {currentPool.tokenSymbol}{currentPool.isNativeToken && '*'}
+                {formatBalance(currentPool.isNative ? nativeBalance.add(balance) : balance, isMobile)}{' '}
+                {currentPool.tokenSymbol}{currentPool.isNative && '*'}
               </Balance>
               <DropdownIcon />
             </>

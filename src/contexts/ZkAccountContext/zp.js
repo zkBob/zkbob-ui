@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { ZkBobClient, SignatureType } from 'zkbob-client-js';
+import { ZkBobClient, SignatureType, DirectDepositType } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
 import { ProverMode } from 'zkbob-client-js/lib/config';
 
@@ -49,6 +49,19 @@ const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 
+const directDeposit = async (signer, zkClient, amount, setTxStatus) => {
+  setTxStatus(TX_STATUSES.CONFIRM_TRANSACTION);
+  const sendFunction = async ({ to, amount, data }) => {
+    const tx = await signer.sendTransaction({ to, value: amount, data });
+    setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  };
+  const myAddress = await signer.getAddress();
+  await zkClient.directDeposit(DirectDepositType.Native, myAddress, amount, sendFunction);
+  setTxStatus(TX_STATUSES.DEPOSITED);
+};
+
 const transfer = async (zkClient, transfers, fee, setTxStatus, isMulti) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
   const jobIds = await zkClient.transferMulti(transfers, fee);
@@ -65,5 +78,5 @@ const withdraw = async (zkClient, to, amount, amountToConvert, fee, setTxStatus)
   setTxStatus(TX_STATUSES.WITHDRAWN);
 };
 
-const zp = { createClient, createAccount, deposit, transfer, withdraw };
+const zp = { createClient, createAccount, deposit, directDeposit, transfer, withdraw };
 export default zp;

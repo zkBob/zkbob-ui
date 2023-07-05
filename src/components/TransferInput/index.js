@@ -39,7 +39,7 @@ export default ({
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        {(!shielded && currentPool.isNativeToken) ? (
+        {(!shielded && currentPool.isNative) ? (
           <Select
             tokenSymbol={currentPool.tokenSymbol}
             isNativeSelected={isNativeSelected}

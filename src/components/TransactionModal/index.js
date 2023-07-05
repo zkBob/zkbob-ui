@@ -16,6 +16,7 @@ const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
   [TX_STATUSES.APPROVED]: 'Tokens approved',
   [TX_STATUSES.SIGN_MESSAGE]: 'Please sign a message',
+  [TX_STATUSES.CONFIRM_TRANSACTION]: 'Please confirm transaction',
   [TX_STATUSES.WAITING_FOR_TRANSACTION]: 'Waiting for transaction',
   [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',

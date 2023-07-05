@@ -57,13 +57,13 @@ const Content = ({
       <RowSpaceBetween>
         <SmallText>Wallet</SmallText>
         <Row>
-          {currentPool.isNativeToken && (
+          {currentPool.isNative && (
             <>
               <Balance tokenSymbol={currentPool.tokenSymbol} balance={nativeBalance} isNative />
               <Text style={{ margin: '0 4px' }}>+</Text>
             </>
           )}
-          <Balance tokenSymbol={currentPool.tokenSymbol} balance={balance} isWrapped={currentPool.isNativeToken} />
+          <Balance tokenSymbol={currentPool.tokenSymbol} balance={balance} isWrapped={currentPool.isNative} />
         </Row>
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>

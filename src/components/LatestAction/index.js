@@ -15,7 +15,7 @@ export default ({ type, data, currentPool }) => {
   const history = useHistory();
   const location = useLocation();
   const tokenSymbol = useMemo(() => {
-    const isWrapped = currentPool.isNativeToken && data.type === HistoryTransactionType.Deposit;
+    const isWrapped = currentPool.isNative && data.type === HistoryTransactionType.Deposit;
     return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
   }, [currentPool, data.type]);
 
