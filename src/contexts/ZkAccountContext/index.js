@@ -400,10 +400,16 @@ export const ZkAccountContextProvider = ({ children }) => {
   const estimateFee = useCallback(async (amounts, txType) => {
     if (!zkClient) return null;
     try {
+      let directDepositFee = ethers.constants.Zero;
+      try {
+        directDepositFee = await fromShieldedAmount(await zkClient.directDepositFee());
+      } catch (error) {
+        if (!error.message.includes('No direct deposit processer initialized')) throw error;
+      }
       if (!zkAccount) {
         let atomicTxFee = await zkClient.atomicTxFee(txType);
         atomicTxFee = await fromShieldedAmount(atomicTxFee);
-        return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false };
+        return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false, directDepositFee };
       }
       updateMaxTransferable();
       const shieldedAmounts = await Promise.all(amounts.map(async amount => await toShieldedAmount(amount)));
@@ -413,6 +419,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         numberOfTxs: txCnt,
         insufficientFunds,
         relayerFee,
+        directDepositFee,
       };
     } catch (error) {
       console.error(error);

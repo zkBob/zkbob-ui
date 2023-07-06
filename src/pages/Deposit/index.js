@@ -40,7 +40,7 @@ export default () => {
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const latestAction = useLatestAction(HistoryTransactionType.Deposit);
-  const { fee, relayerFee, isLoadingFee } = useFee(amount, TxType.Deposit);
+  const { fee, relayerFee, isLoadingFee, directDepositFee } = useFee(amount, TxType.Deposit);
   const depositLimit = useDepositLimit();
   const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
@@ -53,6 +53,10 @@ export default () => {
     () => isNativeTokenUsed ? nativeBalance : balance,
     [isNativeTokenUsed, nativeBalance, balance],
   );
+  const usedFee = useMemo(
+    () => isNativeTokenUsed ? directDepositFee : fee,
+    [isNativeTokenUsed, directDepositFee, fee],
+  );
   const { isApproved, approve } = useApproval(amount.add(fee), balance);
 
   const onDeposit = useCallback(() => {
@@ -63,15 +67,15 @@ export default () => {
   const setMax = useCallback(async () => {
     try {
       let max = ethers.constants.Zero;
-      if (usedBalance.gt(fee)) {
-        max = minBigNumber(usedBalance.sub(fee), depositLimit);
+      if (usedBalance.gt(usedFee)) {
+        max = minBigNumber(usedBalance.sub(usedFee), depositLimit);
       }
       setDisplayAmount(ethers.utils.formatEther(max));
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
-  }, [fee, depositLimit, usedBalance]);
+  }, [usedFee, depositLimit, usedBalance]);
 
   if (isDemo) return <DemoCard />;
 
@@ -88,7 +92,7 @@ export default () => {
           amount={displayAmount}
           onChange={setDisplayAmount}
           shielded={false}
-          fee={fee}
+          fee={usedFee}
           isLoadingFee={isLoadingFee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
@@ -105,7 +109,7 @@ export default () => {
           else if (amount.isZero()) return <Button disabled>Enter amount</Button>
           else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
           else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
-          else if (amount.gt(usedBalance.sub(fee))) return <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
+          else if (amount.gt(usedBalance.sub(usedFee))) return <Button disabled>Reduce amount to include {formatNumber(usedFee)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else if (currentPool.isNative && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
           else return <Button onClick={onDeposit}>Deposit</Button>;
