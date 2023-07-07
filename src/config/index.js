@@ -99,6 +99,7 @@ const config = {
         isNative: true,
         depositScheme: 'permit2',
         minTxAmount: 1000000n, // 0.001 ETH
+        ddSubgraph: 'zkbob-eth-goerli',
       },
     },
     chains: {

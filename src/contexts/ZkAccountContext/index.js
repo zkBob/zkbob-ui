@@ -53,7 +53,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [zkClient, setZkClient] = useState(null);
   const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
-  const [history, setHistory] = useState(null);
+  const [history, setHistory] = useState([]);
   const [isPendingIncoming, setIsPendingIncoming] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [pendingActions, setPendingActions] = useState([]);
@@ -71,6 +71,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isDemo] = useState(false);
   const [giftCard, setGiftCard] = useState(null);
   const [giftCardTxHash, setGiftCardTxHash] = useState(null);
+  const [pendingDirectDeposits, setPendingDirectDeposits] = useState([]);
 
   useEffect(() => {
     if (zkClient || !supportId || !currentPool) return;
@@ -99,7 +100,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setZkAccount(null);
     if (zkClient && secretKey) {
       setBalance(ethers.constants.Zero);
-      setHistory(null);
+      setHistory([]);
       setIsLoadingZkAccount(true);
       try {
         await zp.createAccount(zkClient, secretKey, birthIndex, useDelegatedProver);
@@ -190,6 +191,28 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsLoadingHistory(false);
   }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPoolAlias]);
 
+  const updatePendingDirectDeposits = useCallback(async () => {
+    let pendingDirectDeposits = [];
+    if (zkAccount) {
+      try {
+        pendingDirectDeposits = await zkClient.getPendingDDs();
+        pendingDirectDeposits = await Promise.all(pendingDirectDeposits.map(async item => ({
+          ...item,
+          type: HistoryTransactionType.DirectDeposit,
+          actions: [{
+            to: item.destination,
+            amount: await fromShieldedAmount(item.amount),
+          }],
+        })));
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updatePendingDirectDeposits' } });
+      }
+    }
+    setPendingDirectDeposits(pendingDirectDeposits);
+  }, [zkAccount, zkClient, fromShieldedAmount]);
+
+
   const updateLimits = useCallback(async () => {
     if (!zkClient) return;
     setIsLoadingLimits(true);
@@ -275,7 +298,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateBalance(),
     updateHistory(),
     updateLimits(),
-  ]), [updateBalance, updateHistory, updateLimits]);
+    updatePendingDirectDeposits(),
+  ]), [updateBalance, updateHistory, updateLimits, updatePendingDirectDeposits]);
 
   const deposit = useCallback(async (amount, relayerFee, isNative) => {
     openTxModal();
@@ -562,7 +586,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [updateMaxTransferable, balance, currentPool]);
 
   useEffect(() => {
-    if (isPending || isPendingIncoming || giftCardTxHash) {
+    if (isPending || isPendingIncoming || giftCardTxHash || pendingDirectDeposits.length > 0) {
       if (giftCardTxHash) {
         const tx = history.find(item => item.txHash === giftCardTxHash);
         if (tx && tx.state !== HistoryRecordState.Pending) {
@@ -575,14 +599,17 @@ export const ZkAccountContextProvider = ({ children }) => {
           );
         }
       }
-      const interval = 5000; // 5 seconds
+      const interval = (isPending || isPendingIncoming || giftCardTxHash) ? 5000 : 30000; // 5 seconds or 30 seconds
       const intervalId = setInterval(() => {
         updatePoolData();
         updateTokenBalance();
       }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, isPendingIncoming, updatePoolData, updateTokenBalance, giftCardTxHash, history]);
+  }, [
+    isPending, isPendingIncoming, updatePoolData, updateTokenBalance,
+    giftCardTxHash, history, pendingDirectDeposits,
+  ]);
 
   useEffect(() => {
     loadRelayerVersion();
@@ -626,7 +653,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, maxWithdrawable, isLoadingLimits, limits,
-        setPassword, verifyPassword, removePassword,
+        setPassword, verifyPassword, removePassword, pendingDirectDeposits,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
         switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,
       }}

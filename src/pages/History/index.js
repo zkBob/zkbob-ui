@@ -12,7 +12,7 @@ import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
   const {
-    history, zkAccount,
+    history, zkAccount, pendingDirectDeposits,
     isLoadingZkAccount, isLoadingHistory,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
@@ -21,8 +21,10 @@ export default () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const isLoading = isLoadingZkAccount || isLoadingHistory;
-  const isHistoryEmpty = !(history?.length > 0);
   const title = 'History';
+
+  const items = pendingDirectDeposits.concat(history);
+  const isHistoryEmpty = items.length === 0;
 
   return (
     <Card title={!isHistoryEmpty ? title : null} titleStyle={{ marginBottom: 22 }}>
@@ -43,13 +45,13 @@ export default () => {
       )}
       {!isHistoryEmpty && (
         <>
-          {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
+          {items.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
             <HistoryItem key={index} item={item} zkAccount={zkAccount} currentPool={currentPool} />
           )}
-          {history.length > pageSize && (
+          {items.length > pageSize && (
             <Pagination
               currentPage={currentPage}
-              numberOfPages={Math.ceil(history.length / pageSize)}
+              numberOfPages={Math.ceil(items.length / pageSize)}
               setCurrentPage={setCurrentPage}
             />
           )}

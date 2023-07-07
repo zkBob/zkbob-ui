@@ -125,6 +125,8 @@ export default ({ item, zkAccount, currentPool }) => {
     }
   }, []);
 
+  const isPending = [0, 1].includes(item.state);
+
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -150,13 +152,15 @@ export default ({ item, zkAccount, currentPool }) => {
                 {' '}{tokenSymbol}
               </Text>
             </Row>
-            <FeeDesktop>
-              <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} />
-            </FeeDesktop>
+            {item.fee && (
+              <FeeDesktop>
+                <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} />
+              </FeeDesktop>
+            )}
           </Row>
           <Row>
             <Date>{date}</Date>
-            {item.state === 1 && <SpinnerSmall size={22} />}
+            {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
                 <Text $error style={{ marginLeft: 10 }}>failed</Text>
@@ -167,9 +171,11 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
         </RowSpaceBetween>
-        <FeeMobile>
-          <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} isMobile />
-        </FeeMobile>
+        {item.fee && (
+          <FeeMobile>
+            <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} isMobile />
+          </FeeMobile>
+        )}
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
@@ -244,6 +250,24 @@ export default ({ item, zkAccount, currentPool }) => {
             {item.type === DirectDeposit && (
               <DirectDepositLabel>
                 {isMobile ? 'Direct' : 'Direct deposit'}
+                {isPending && (
+                  <Tooltip
+                    content={
+                      <span>
+                        Either a deposit sent via a 3rd party platform or a native token (ETH) deposit.{' '}
+                        Direct deposits can take up to 10 minutes.{' '}
+                        <Link href="https://docs.zkbob.com">
+                          Learn more
+                        </Link>
+                      </span>
+                    }
+                    placement={isMobile ? 'bottom' : 'right'}
+                    delay={0}
+                    width={200}
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                )}
               </DirectDepositLabel>
             )}
             {(item.txHash && item.txHash !== '0') ? (
@@ -356,6 +380,8 @@ const MultitransferLabel = styled.div`
   padding: 0 8px;
   margin-right: 10px;
   font-weight: ${props => props.theme.text.weight.bold};
+  display: flex;
+  align-items: center;
 `;
 
 const DirectDepositLabel = styled(MultitransferLabel)`
