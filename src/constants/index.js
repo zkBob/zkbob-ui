@@ -20,7 +20,7 @@ export const TX_STATUSES = {
 export const NETWORKS = {
   11155111: {
     name: 'Sepolia',
-    icon: require('assets/polygon.svg').default,
+    icon: require('assets/sepolia.svg').default,
     blockExplorerUrls: {
       address: 'https://sepolia.etherscan.io/address/%s',
       tx: 'https://sepolia.etherscan.io/tx/%s',
@@ -36,7 +36,7 @@ export const NETWORKS = {
   },
   5: {
     name: 'Goerli',
-    icon: require('assets/eth.svg').default,
+    icon: require('assets/goerli.svg').default,
     blockExplorerUrls: {
       address: 'https://goerli.etherscan.io/address/%s',
       tx: 'https://goerli.etherscan.io/tx/%s',
