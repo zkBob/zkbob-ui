@@ -30,6 +30,19 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
       },
+      'WETH-optimism': {
+        chainId: 10,
+        poolAddress:'0x58320A55bbc5F89E5D0c92108F762Ac0172C5992',
+        tokenAddress:'0x4200000000000000000000000000000000000006',
+        relayerUrls:['https://relayer-eth-opt-mvp.zkbob.com/'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'ETH',
+        tokenDecimals: 18,
+        isNative: true,
+        depositScheme: 'permit2',
+        minTxAmount: 1000000n, // 0.001 ETH
+      },
     },
     chains: {
       '137': {
