@@ -126,6 +126,7 @@ export default ({ item, zkAccount, currentPool }) => {
   }, []);
 
   const isPending = [0, 1].includes(item.state);
+  const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
 
   return (
     <Container>
@@ -206,7 +207,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
                             item.actions[0].to,
-                            isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
+                            isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
                           )}
                         </Text>
                       </ZkAddress>
@@ -232,7 +233,7 @@ export default ({ item, zkAccount, currentPool }) => {
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
-                          isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
+                          isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
                         )}
                       </Text>
                     </>
@@ -247,7 +248,7 @@ export default ({ item, zkAccount, currentPool }) => {
                 {isMobile ? 'Multi' : 'Multitransfer'}
               </MultitransferLabel>
             )}
-            {item.type === DirectDeposit && (
+            {isDirectDepositLabelShown && (
               <DirectDepositLabel>
                 {isMobile ? 'Direct' : 'Direct deposit'}
                 {isPending && (

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Card from 'components/Card';
@@ -25,6 +25,10 @@ export default () => {
 
   const items = pendingDirectDeposits.concat(history);
   const isHistoryEmpty = items.length === 0;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [zkAccount, currentPool]);
 
   return (
     <Card title={!isHistoryEmpty ? title : null} titleStyle={{ marginBottom: 22 }}>
