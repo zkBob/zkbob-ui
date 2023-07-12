@@ -120,7 +120,7 @@ export default () => {
             <span style={{ margin: '0 4px 0 8px' }}>
               {currentPool.tokenSymbol} depositing can take up to 10 minutes.
             </span>
-            <Link href="https://docs.zkbob.com/">Learn more</Link>
+            <Link href="https://docs.zkbob.com/zkbob-overview/zkbob-pools/eth-pool-on-optimism">Learn more</Link>
           </MessageContainer>
         )}
       </Card>
