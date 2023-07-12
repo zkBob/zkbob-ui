@@ -462,7 +462,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const initializeGiftCard = useCallback(async code => {
     if (!zkClient) return false;
     const parsed = await zkClient.giftCardFromCode(code);
-    parsed.balance = await fromShieldedAmount(parsed.balance);
+    parsed.parsedBalance = await fromShieldedAmount(parsed.balance);
     setGiftCard(parsed);
     return true;
   }, [zkClient, fromShieldedAmount]);
@@ -471,18 +471,14 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const redeemGiftCard = useCallback(async () => {
     try {
-      const targetPoolAlias = giftCard.poolAlias;
-      if (currentPool.alias !== targetPoolAlias) {
-        await switchToPool(targetPoolAlias);
+      if (currentPool.alias !== giftCard.poolAlias) {
+        await switchToPool(giftCard.poolAlias);
       }
-      const proverExists = config.pools[targetPoolAlias].delegatedProverUrls.length > 0;
-      const jobId = await zkClient.redeemGiftCard({
-        sk: giftCard.sk,
-        pool: targetPoolAlias,
-        balance: giftCard.balance,
-        birthindex: Number(giftCard.birthIndex),
-        proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
-      });
+      const proverExists = config.pools[giftCard.poolAlias].delegatedProverUrls.length > 0;
+      const jobId = await zkClient.redeemGiftCard(
+        giftCard,
+        proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
+      );
       const txHash = await zkClient.waitJobTxHash(jobId);
       setGiftCardTxHash(txHash);
       deleteGiftCard();
