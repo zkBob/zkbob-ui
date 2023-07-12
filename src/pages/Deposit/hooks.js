@@ -1,30 +1,29 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
-import { useContract, useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 
-import { ZkAccountContext, PoolContext, TransactionModalContext } from 'contexts';
+import { PoolContext, TransactionModalContext } from 'contexts';
 
 import { minBigNumber } from 'utils';
 import { TX_STATUSES } from 'constants';
 import { useMemo } from 'react';
 
-export const useDepositLimit = () => {
-  const { limits } = useContext(ZkAccountContext);
+export const useDepositLimit = (limits, isNative) => {
   const [depositLimit, setDepositLimit] = useState(ethers.constants.Zero);
 
   useEffect(() => {
     let minLimit = ethers.constants.Zero;
     try {
       minLimit = minBigNumber(
-        limits.singleDepositLimit,
-        limits.dailyDepositLimitPerAddress?.available,
+        limits[isNative ? 'singleDirectDepositLimit': 'singleDepositLimit'],
+        limits[isNative ? 'dailyDirectDepositLimitPerAddress' : 'dailyDepositLimitPerAddress']?.available,
         limits.dailyDepositLimit?.available,
         limits.poolSizeLimit?.available,
       );
     } catch (error) {}
     setDepositLimit(minLimit);
-  }, [limits]);
+  }, [limits, isNative]);
 
   return depositLimit;
 };

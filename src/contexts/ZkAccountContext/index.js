@@ -28,7 +28,9 @@ const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
   singleDepositLimit: null,
+  singleDirectDepositLimit: null,
   dailyDepositLimitPerAddress: null,
+  dailyDirectDepositLimitPerAddress: null,
   dailyDepositLimit: null,
   dailyWithdrawalLimit: null,
   poolSizeLimit: null,
@@ -221,9 +223,14 @@ export const ZkAccountContextProvider = ({ children }) => {
       const data = await zkClient.getLimits(account);
       limits = {
         singleDepositLimit: await fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
+        singleDirectDepositLimit: await fromShieldedAmount(BigInt(data.dd.components.singleOperation)),
         dailyDepositLimitPerAddress: {
           total: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.total)),
           available: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.available))
+        },
+        dailyDirectDepositLimitPerAddress: {
+          total: await fromShieldedAmount(BigInt(data.dd.components.dailyForAddress.total)),
+          available: await fromShieldedAmount(BigInt(data.dd.components.dailyForAddress.available))
         },
         dailyDepositLimit: {
           total: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.total)),
