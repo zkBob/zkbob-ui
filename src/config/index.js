@@ -17,6 +17,7 @@ const config = {
         tokenDecimals: 18,
         feeDecimals: 2,
         depositScheme: 'permit',
+        ddSubgraph: 'zkbob-usdc-polygon',
       },
       'BOB-optimism': {
         chainId: 10,
@@ -29,6 +30,7 @@ const config = {
         tokenDecimals: 18,
         feeDecimals: 2,
         depositScheme: 'permit',
+        ddSubgraph: 'zkbob-bob-optimism',
       },
       'WETH-optimism': {
         chainId: 10,
@@ -42,6 +44,7 @@ const config = {
         isNative: true,
         depositScheme: 'permit2',
         minTxAmount: 1000000n, // 0.001 ETH
+        ddSubgraph: 'zkbob-eth-optimism',
       },
     },
     chains: {
