@@ -472,6 +472,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       const jobId = await zkClient.redeemGiftCard({
         sk: giftCard.sk,
         pool: targetPoolAlias,
+        balance: giftCard.balance,
         birthindex: Number(giftCard.birthIndex),
         proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
       });
