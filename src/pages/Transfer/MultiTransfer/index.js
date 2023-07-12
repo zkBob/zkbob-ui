@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle, useEffect } from 'react';
+import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -16,7 +16,6 @@ import { ReactComponent as CrossIcon } from 'assets/red-cross.svg';
 import { PoolContext, ZkAccountContext } from 'contexts';
 
 import { formatNumber } from 'utils';
-import { tokenSymbol } from 'utils/token';
 import { useFee } from 'hooks';
 
 const prefixes = {
@@ -25,6 +24,7 @@ const prefixes = {
   'BOB-sepolia': 'zkbob_sepolia',
   'BOB-goerli': 'zkbob_goerli',
   'BOB-op-goerli': 'zkbob_goerli_optimism',
+  'WETH-goerli': 'zkbob_goerli_eth',
 };
 
 export default forwardRef((props, ref) => {
@@ -138,7 +138,7 @@ export default forwardRef((props, ref) => {
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder={`${prefixes[currentPool]}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
+        placeholder={`${prefixes[currentPool.alias]}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
         errorLines={errors}
         error={errorType}
       />
@@ -157,7 +157,7 @@ export default forwardRef((props, ref) => {
                 return 'Duplicate addresses found.'
               } else if (errorType === 'insufficient_funds') {
                 return `
-                  Insufficient balance: ${formatNumber(totalAmount.add(fee), 9)} ${tokenSymbol()}
+                  Insufficient balance: ${formatNumber(totalAmount.add(fee), 9)} ${currentPool.tokenSymbol}
                   (${formatNumber(fee)} fee) is required.
                 `;
               }
@@ -183,6 +183,7 @@ export default forwardRef((props, ref) => {
           isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
           type="transfer"
+          currentPool={currentPool}
         />
         <MultitransferDetailsModal
           title="Multitransfer"
@@ -190,6 +191,7 @@ export default forwardRef((props, ref) => {
           onBack={closeDetailsModal}
           transfers={parsedData}
           zkAccount={zkAccount}
+          currentPool={currentPool}
         />
     </>
   );

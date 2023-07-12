@@ -9,15 +9,16 @@ export default PoolContext;
 
 export const PoolContextProvider = ({ children }) => {
   const [currentPool, setPool] = useState(() => {
-    const poolId = window.localStorage.getItem('pool');
-    return !!config.pools[poolId] ? poolId : config.defaultPool;
+    const savedPoolAlias = window.localStorage.getItem('pool');
+    const alias = config.pools[savedPoolAlias] ? savedPoolAlias : config.defaultPool;
+    return { ...config.pools[alias], alias };
   });
 
-  const setCurrentPool = useCallback(poolId => {
-    setPool(poolId);
-    localStorage.setItem('pool', poolId);
+  const setCurrentPool = useCallback(alias => {
+    setPool({ ...config.pools[alias], alias });
+    localStorage.setItem('pool', alias);
     Sentry.configureScope(scope => {
-      scope.setTag('pool_id', poolId);
+      scope.setTag('pool_id', alias);
     });
   }, []);
 

@@ -8,6 +8,7 @@ export default (amount, txType) => {
   const { currentPool } = useContext(PoolContext);
   const [fee, setFee] = useState(ethers.constants.Zero);
   const [relayerFee, setRelayerFee] = useState(null);
+  const [directDepositFee, setDirectDepositFee] = useState(ethers.constants.Zero);
   const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
@@ -19,6 +20,7 @@ export default (amount, txType) => {
       const numberOfTxs = data?.numberOfTxs;
       setFee(fee || ethers.constants.Zero);
       setRelayerFee(data?.relayerFee);
+      setDirectDepositFee(data?.directDepositFee || ethers.constants.Zero);
       setNumberOfTxs(numberOfTxs || ethers.constants.Zero);
       clearTimeout(timeout);
       setIsLoadingFee(false);
@@ -28,5 +30,5 @@ export default (amount, txType) => {
     return () => clearInterval(interval);
   }, [amount, txType, estimateFee, currentPool]);
 
-  return { fee, numberOfTxs, isLoadingFee, relayerFee };
+  return { fee, numberOfTxs, isLoadingFee, relayerFee, directDepositFee };
 };

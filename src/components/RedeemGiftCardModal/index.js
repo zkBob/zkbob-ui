@@ -196,7 +196,7 @@ export default ({
   }, [redeemGiftCard]);
 
   const checkNetworkAndRedeem = useCallback(() => {
-    if (!isNewUser && currentPool !== giftCard?.poolAlias) {
+    if (!isNewUser && currentPool.alias !== giftCard?.poolAlias) {
       setStep(SWITCH_NETWORK);
     } else {
       redeem();

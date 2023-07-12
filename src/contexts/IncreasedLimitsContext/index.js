@@ -4,7 +4,6 @@ import * as Sentry from '@sentry/react';
 
 import { INCREASED_LIMITS_STATUSES } from 'constants';
 import { PoolContext } from 'contexts';
-import config from 'config';
 
 const IncreasedLimitsContext = createContext({});
 
@@ -16,8 +15,7 @@ export const IncreasedLimitsContextProvider = ({ children }) => {
   const [status, setStatus] = useState(null);
 
   const updateStatus = useCallback(async () => {
-    const { chainId, kycUrls } = config.pools[currentPool];
-    if (!kycUrls) {
+    if (!currentPool.kycUrls) {
       setStatus(null);
       return;
     }
@@ -28,11 +26,11 @@ export const IncreasedLimitsContextProvider = ({ children }) => {
     }
     try {
       const data = await (
-        await fetch(kycUrls.status.replace('%s', address))
+        await fetch(currentPool.kycUrls.status.replace('%s', address))
       ).json();
       const provider = data.data.providers.find(p => p.symbol === 'BABT');
       if (provider.result) {
-        const syncData = provider.sync.byChainIds.find(c => c.chainId === chainId);
+        const syncData = provider.sync.byChainIds.find(c => c.chainId === currentPool.chainId);
         if (syncData.syncTimestamp === 0) {
           status = INCREASED_LIMITS_STATUSES.INACTIVE;
         } else if ((+new Date() / 1000) > syncData.expirationTimestamp) {

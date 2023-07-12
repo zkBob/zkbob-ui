@@ -25,6 +25,7 @@ export default ({ children, isOpen, onClose, title, onBack, width, style, contai
     },
     overlay: {
       background: theme.modal.overlay,
+      zIndex: '1',
       ...containerStyle,
     },
   };

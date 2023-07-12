@@ -1,12 +1,11 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers } from 'ethers';
-import { useContract, useAccount, useProvider } from 'wagmi';
+import { useContract, useAccount, useProvider, useBalance } from 'wagmi';
 import * as Sentry from '@sentry/react';
 
 import { PoolContext } from 'contexts';
 
 import { showLoadingError } from 'utils';
-import config from 'config';
 
 const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
 
@@ -17,21 +16,30 @@ export default TokenBalanceContext;
 export const TokenBalanceContextProvider = ({ children }) => {
   const { address: account } = useAccount();
   const { currentPool } = useContext(PoolContext);
-  const provider = useProvider({ chainId: config.pools[currentPool].chainId });
+  const provider = useProvider({ chainId: currentPool.chainId });
   const token = useContract({
-    address: config.pools[currentPool].tokenAddress,
+    address: currentPool.tokenAddress,
     abi: TOKEN_ABI,
     signerOrProvider: provider
   });
+  const { refetch: getNativeBalance } = useBalance({
+    address: account,
+    chainId: currentPool.chainId,
+  });
   const [balance, setBalance] = useState(ethers.constants.Zero);
+  const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
   const updateBalance = useCallback(async () => {
     setIsLoadingBalance(true);
     let balance = ethers.constants.Zero;
+    let nativeBalance = ethers.constants.Zero;
     if (account && token) {
       try {
-        balance = await token.balanceOf(account);
+        [balance, nativeBalance] = await Promise.all([
+          token.balanceOf(account),
+          getNativeBalance().then(({ data: { value } }) => value),
+        ]);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'TokenBalanceContext.updateBalance' } });
@@ -39,15 +47,22 @@ export const TokenBalanceContextProvider = ({ children }) => {
       }
     }
     setBalance(balance);
+    setNativeBalance(nativeBalance);
     setIsLoadingBalance(false);
-  }, [token, account]);
+  }, [token, account, getNativeBalance]);
 
   useEffect(() => {
     updateBalance();
   }, [updateBalance]);
 
   return (
-    <TokenBalanceContext.Provider value={{ balance, updateBalance, isLoadingBalance }}>
+    <TokenBalanceContext.Provider
+      value={{
+        balance,
+        nativeBalance,
+        updateBalance,
+        isLoadingBalance: isLoadingBalance,
+      }}>
       {children}
     </TokenBalanceContext.Provider>
   );

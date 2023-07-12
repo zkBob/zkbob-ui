@@ -13,7 +13,10 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-optimism': {
         chainId: 10,
@@ -22,7 +25,23 @@ const config = {
         relayerUrls: ['https://relayer-optimism.zkbob.com/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
         feeDecimals: 2,
+        depositScheme: 'permit',
+      },
+      'WETH-optimism': {
+        chainId: 10,
+        poolAddress:'0x58320A55bbc5F89E5D0c92108F762Ac0172C5992',
+        tokenAddress:'0x4200000000000000000000000000000000000006',
+        relayerUrls:['https://relayer-eth-opt-mvp.zkbob.com/'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'ETH',
+        tokenDecimals: 18,
+        isNative: true,
+        depositScheme: 'permit2',
+        minTxAmount: 1000000n, // 0.001 ETH
       },
     },
     chains: {
@@ -52,6 +71,10 @@ const config = {
           status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenBOB',
         },
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-goerli': {
         chainId: 5,
@@ -59,7 +82,11 @@ const config = {
         tokenAddress: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
         relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
         delegatedProverUrls: [],
-        coldStorageConfigPath: ''
+        coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
+        depositScheme: 'permit',
       },
       'BOB-op-goerli': {
         chainId: 420,
@@ -67,8 +94,26 @@ const config = {
         tokenAddress:'0x0fA7E69b9344D6434Bd6b79c5950bb5234245a5F',
         relayerUrls:['https://gop-relayer.thgkjlr.website'],
         delegatedProverUrls: [],
-        coldStorageConfigPath: ''
-      }
+        coldStorageConfigPath: '',
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
+        depositScheme: 'permit',
+      },
+      'WETH-goerli': {
+        chainId: 5,
+        poolAddress:'0xf9dbCF4005497e042838dE9082C817fCa790e945',
+        tokenAddress:'0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+        relayerUrls:['https://goerli-weth-relayer.thgkjlr.website/'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'ETH',
+        tokenDecimals: 18,
+        isNative: true,
+        depositScheme: 'permit2',
+        minTxAmount: 1000000n, // 0.001 ETH
+        ddSubgraph: 'zkbob-eth-goerli',
+      },
     },
     chains: {
       '11155111': {

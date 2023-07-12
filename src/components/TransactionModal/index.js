@@ -10,14 +10,14 @@ import { TX_STATUSES, NETWORKS } from 'constants';
 import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
 import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
-import config from 'config';
 
 const titles = {
   [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
+  [TX_STATUSES.APPROVED]: 'Tokens approved',
   [TX_STATUSES.SIGN_MESSAGE]: 'Please sign a message',
-  [TX_STATUSES.WAITING_FOR_APPROVAL]: 'Waiting for approval transaction',
+  [TX_STATUSES.CONFIRM_TRANSACTION]: 'Please confirm transaction',
+  [TX_STATUSES.WAITING_FOR_TRANSACTION]: 'Waiting for transaction',
   [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
   [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
   [TX_STATUSES.DEPOSITED]: 'Deposit is in progress',
@@ -33,25 +33,25 @@ const titles = {
 };
 
 const descriptions = {
-  [TX_STATUSES.DEPOSITED]: ({ amount }) => (
+  [TX_STATUSES.DEPOSITED]: ({ amount, currentPool }) => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> deposit to the zero knowledge pool is in progress.<br /><br />
+      Your <b>{formatNumber(amount, 18)} {currentPool.tokenSymbol}</b> deposit to the zero knowledge pool is in progress.<br /><br />
       To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
     </span>
   ),
-  [TX_STATUSES.TRANSFERRED]: ({ amount }) => (
+  [TX_STATUSES.TRANSFERRED]: ({ amount, currentPool }) => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> transfer within the zero knowledge pool is in progress.
+      Your <b>{formatNumber(amount, 18)} {currentPool.tokenSymbol}</b> transfer within the zero knowledge pool is in progress.
     </span>
   ),
-  [TX_STATUSES.TRANSFERRED_MULTI]: ({ amount }) => (
+  [TX_STATUSES.TRANSFERRED_MULTI]: ({ amount, currentPool }) => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> multitransfer within the zero knowledge pool is in progress.
+      Your <b>{formatNumber(amount, 18)} {currentPool.tokenSymbol}</b> multitransfer within the zero knowledge pool is in progress.
     </span>
   ),
-  [TX_STATUSES.WITHDRAWN]: ({ amount }) => (
+  [TX_STATUSES.WITHDRAWN]: ({ amount, currentPool }) => (
     <span>
-      Your <b>{formatNumber(amount, 18)} {tokenSymbol()}</b> withdrawal from the zero knowledge pool is in progress.
+      Your <b>{formatNumber(amount, 18)} {currentPool.tokenSymbol}</b> withdrawal from the zero knowledge pool is in progress.
     </span>
   ),
   [TX_STATUSES.SIGNATURE_EXPIRED]: () => (
@@ -74,7 +74,12 @@ const descriptions = {
   [TX_STATUSES.WRONG_NETWORK]: ({ currentPool }) => (
     <span>
       Failed to switch the network.{' '}
-      Please connect your wallet to {NETWORKS[config.pools[currentPool].chainId].name} and try again.
+      Please connect your wallet to {NETWORKS[currentPool.chainId].name} and try again.
+    </span>
+  ),
+  [TX_STATUSES.APPROVED]: () => (
+    <span>
+      Your approval was successful. Now you can deposit your tokens.
     </span>
   ),
 };
@@ -84,6 +89,7 @@ const SUCCESS_STATUSES = [
   TX_STATUSES.TRANSFERRED,
   TX_STATUSES.TRANSFERRED_MULTI,
   TX_STATUSES.WITHDRAWN,
+  TX_STATUSES.APPROVED,
 ];
 const FAILURE_STATUSES = [
   TX_STATUSES.REJECTED,

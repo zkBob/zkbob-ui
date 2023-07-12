@@ -7,19 +7,22 @@ import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
 import IncreasedLimitsContext, { IncreasedLimitsContextProvider } from 'contexts/IncreasedLimitsContext';
 import PoolContext, { PoolContextProvider } from 'contexts/PoolContext';
+import TokenPriceContext, { TokenPriceContextProvider } from 'contexts/TokenPriceContext';
 
 const ContextsProvider = ({ children }) => (
   <SupportIdContextProvider>
     <TransactionModalContextProvider>
       <ModalContextProvider>
         <PoolContextProvider>
-          <TokenBalanceContextProvider>
-            <ZkAccountContextProvider>
-              <IncreasedLimitsContextProvider>
-                {children}
-              </IncreasedLimitsContextProvider>
-            </ZkAccountContextProvider>
-          </TokenBalanceContextProvider>
+          <TokenPriceContextProvider>
+            <TokenBalanceContextProvider>
+              <ZkAccountContextProvider>
+                <IncreasedLimitsContextProvider>
+                  {children}
+                </IncreasedLimitsContextProvider>
+              </ZkAccountContextProvider>
+            </TokenBalanceContextProvider>
+          </TokenPriceContextProvider>
         </PoolContextProvider>
       </ModalContextProvider>
     </TransactionModalContextProvider>
@@ -30,4 +33,5 @@ export default ContextsProvider;
 export {
   ZkAccountContext, TokenBalanceContext, TransactionModalContext,
   ModalContext, SupportIdContext, IncreasedLimitsContext, PoolContext,
+  TokenPriceContext,
 };

@@ -4,12 +4,14 @@ import { ethers } from 'ethers';
 
 import Switch from 'components/Switch';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 
 const options = ['1', '5', '10'].map(ethers.utils.parseEther);
 
-export default ({ amountToConvert, setAmountToConvert, amountToWithdraw, maxAmountToWithdraw, details }) => {
+export default ({
+  amountToConvert, setAmountToConvert, amountToWithdraw,
+  maxAmountToWithdraw, details, currentPool,
+}) => {
   const [isConverting, setIsConverting] = useState(false);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export default ({ amountToConvert, setAmountToConvert, amountToWithdraw, maxAmou
     <Column>
       <Row>
         <Text style={{ marginRight: 8 }}>
-          Convert some BOB to {details.toTokenSymbol} on withdrawal
+          Convert some {currentPool.tokenSymbol} to {details.toTokenSymbol} on withdrawal
         </Text>
         <Switch checked={isConverting} onChange={setIsConverting} />
       </Row>
@@ -44,7 +46,7 @@ export default ({ amountToConvert, setAmountToConvert, amountToWithdraw, maxAmou
                 active={amountToConvert.eq(option)}
                 disabled={option.gt(amountToWithdraw) || option.gt(maxAmountToWithdraw)}
               >
-                <TextBold>{formatNumber(option)} {tokenSymbol()}</TextBold>
+                <TextBold>{formatNumber(option)} {currentPool.tokenSymbol}</TextBold>
                 <Text>
                   ~ {nativeAmount} {details.toTokenSymbol}
                 </Text>
