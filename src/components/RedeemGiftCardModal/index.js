@@ -97,7 +97,7 @@ const StartScreen = ({ giftCard, redeem, isLoadingZkAccount }) => (
     </Description>
     <BalanceContainer>
       <BobToken />
-      <Amount>{formatNumber(giftCard?.balance || BigNumber.from('0'))}</Amount>
+      <Amount>{formatNumber(giftCard?.parsedBalance || BigNumber.from('0'))}</Amount>
     </BalanceContainer>
     {isLoadingZkAccount ? (
       <Button loading contrast disabled>Loading...</Button>
