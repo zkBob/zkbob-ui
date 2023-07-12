@@ -39,6 +39,10 @@ const config = {
         relayerUrls:['https://relayer-eth-opt-mvp.zkbob.com/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
+        kycUrls: {
+          status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+          homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB/10',
+        },
         tokenSymbol: 'ETH',
         tokenDecimals: 18,
         isNative: true,
