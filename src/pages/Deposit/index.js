@@ -41,8 +41,6 @@ export default () => {
   const amount = useParsedAmount(displayAmount);
   const latestAction = useLatestAction(HistoryTransactionType.Deposit);
   const { fee, relayerFee, isLoadingFee, directDepositFee } = useFee(amount, TxType.BridgeDeposit);
-  const depositLimit = useDepositLimit();
-  const maxAmountExceeded = useMaxAmountExceeded(amount, balance, fee, depositLimit);
   const { currentPool } = useContext(PoolContext);
   const [isNativeSelected, setIsNativeSelected] = useState(true);
   const isNativeTokenUsed = useMemo(
@@ -58,6 +56,8 @@ export default () => {
     [isNativeTokenUsed, directDepositFee, fee],
   );
   const { isApproved, approve } = useApproval(amount.add(fee), balance);
+  const depositLimit = useDepositLimit(limits, isNativeTokenUsed);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, usedBalance, usedFee, depositLimit);
 
   const onDeposit = useCallback(() => {
     setDisplayAmount('');
@@ -135,8 +135,16 @@ export default () => {
       <Limits
         loading={isLoadingLimits}
         limits={[
-          { prefix: "Deposit", suffix: "limit per transaction", value: limits.singleDepositLimit },
-          { prefix: "Daily deposit", suffix: "limit per address", value: limits.dailyDepositLimitPerAddress },
+          {
+            prefix: "Deposit",
+            suffix: "limit per transaction",
+            value: limits[isNativeTokenUsed ? 'singleDirectDepositLimit' : 'singleDepositLimit'],
+          },
+          {
+            prefix: "Daily deposit",
+            suffix: "limit per address",
+            value: limits[isNativeTokenUsed ? 'dailyDirectDepositLimitPerAddress' : 'dailyDepositLimitPerAddress'],
+          },
           { prefix: "Daily deposit", suffix: "limit", value: limits.dailyDepositLimit },
           { prefix: "Pool size", suffix: "limit", value: limits.poolSizeLimit },
         ]}
