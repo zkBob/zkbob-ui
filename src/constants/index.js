@@ -38,24 +38,24 @@ export const NETWORKS = {
     name: 'Goerli',
     icon: require('assets/goerli.svg').default,
     blockExplorerUrls: {
-      address: 'https://goerli.etherscan.io/address/%s',
-      tx: 'https://goerli.etherscan.io/tx/%s',
+      address: 'https://eth-goerli.blockscout.com/address/%s',
+      tx: 'https://eth-goerli.blockscout.com/tx/%s',
     },
   },
   420: {
     name: 'Goerli Optimism',
     icon: require('assets/optimism.svg').default,
     blockExplorerUrls: {
-      address: 'https://goerli-optimism.etherscan.io/address/%s',
-      tx: 'https://goerli-optimism.etherscan.io/tx/%s',
+      address: 'https://optimism-goerli.blockscout.com/address/%s',
+      tx: 'https://optimism-goerli.blockscout.com/tx/%s',
     },
   },
   10: {
     name: 'Optimism',
     icon: require('assets/optimism.svg').default,
     blockExplorerUrls: {
-      address: 'https://optimistic.etherscan.io/address/%s',
-      tx: 'https://optimistic.etherscan.io/tx/%s',
+      address: 'https://optimism.blockscout.com/address/%s',
+      tx: 'https://optimism.blockscout.com/tx/%s',
     },
   },
 };
