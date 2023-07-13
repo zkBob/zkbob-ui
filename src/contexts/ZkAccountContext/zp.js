@@ -1,54 +1,64 @@
-import { Contract, ethers } from 'ethers';
-import { ZkBobClient } from 'zkbob-client-js';
+import { ethers } from 'ethers';
+import { ZkBobClient, SignatureType, DirectDepositType } from 'zkbob-client-js';
 import { deriveSpendingKeyZkBob } from 'zkbob-client-js/lib/utils';
 import { ProverMode } from 'zkbob-client-js/lib/config';
 
 import { TX_STATUSES } from 'constants';
-import { createPermitSignature } from 'utils/token';
 import config from 'config';
 
-const createClient = (currentPool, supportId) => {
+const createClient = (currentPoolAlias, supportId) => {
   return ZkBobClient.create({
     pools: config.pools,
     chains: config.chains,
     snarkParams: config.snarkParams,
     supportId,
-  }, currentPool);
+  }, currentPoolAlias);
 };
 
 const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver) => {
   let sk = ethers.utils.isValidMnemonic(secretKey)
     ? deriveSpendingKeyZkBob(secretKey)
     : ethers.utils.arrayify(secretKey);
-  const currentPool = zkClient.currentPool();
-  const proverExists = config.pools[currentPool].delegatedProverUrls.length > 0;
+  const currentPoolAlias = zkClient.currentPool();
+  const proverExists = config.pools[currentPoolAlias].delegatedProverUrls.length > 0;
   return zkClient.login({
     sk,
-    pool: currentPool,
+    pool: currentPoolAlias,
     birthindex: birthIndex,
     proverMode: (useDelegatedProver && proverExists) ? ProverMode.DelegatedWithFallback : ProverMode.Local,
   });
 };
 
-const deposit = async (signer, zkClient, amount, fee, setTxStatus, provider) => {
-  const tokenABI = [
-    'function name() view returns (string)',
-    'function nonces(address) view returns (uint256)',
-  ];
-  const currentPool = zkClient.currentPool();
-  const { tokenAddress, poolAddress } = config.pools[currentPool]
-  const token = new Contract(tokenAddress, tokenABI, provider);
+const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
-  const signFunction = async (deadline, value, salt) => {
+  const signFunction = async ({ type, data }) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
-    const signature = await createPermitSignature(token, signer, poolAddress, value, deadline, salt);
+    let signature;
+    if (type === SignatureType.TypedDataV4) {
+      const { domain, types, message } = data;
+      delete types.EIP712Domain;
+      signature = await signer._signTypedData(domain, types, message);
+    }
     setTxStatus(TX_STATUSES.GENERATING_PROOF);
     return signature;
   };
   const myAddress = await signer.getAddress();
-  const jobId = await zkClient.depositPermittable(amount, signFunction, myAddress, fee);
+  const jobId = await zkClient.deposit(amount, signFunction, myAddress, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await zkClient.waitJobTxHash(jobId);
+  setTxStatus(TX_STATUSES.DEPOSITED);
+};
+
+const directDeposit = async (signer, zkClient, amount, setTxStatus) => {
+  setTxStatus(TX_STATUSES.CONFIRM_TRANSACTION);
+  const sendFunction = async ({ to, amount, data }) => {
+    const tx = await signer.sendTransaction({ to, value: amount, data });
+    setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  };
+  const myAddress = await signer.getAddress();
+  await zkClient.directDeposit(DirectDepositType.Native, myAddress, amount, sendFunction);
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 
@@ -68,5 +78,5 @@ const withdraw = async (zkClient, to, amount, amountToConvert, fee, setTxStatus)
   setTxStatus(TX_STATUSES.WITHDRAWN);
 };
 
-const zp = { createClient, createAccount, deposit, transfer, withdraw };
+const zp = { createClient, createAccount, deposit, directDeposit, transfer, withdraw };
 export default zp;

@@ -66,6 +66,18 @@ Sentry.init({
     }),
   ],
   tracesSampleRate: 1.0,
+  beforeBreadcrumb: breadcrumb => {
+    if (breadcrumb.category === 'navigation' && breadcrumb.data) {
+      try {
+        ['from', 'to'].forEach(param => {
+          if (breadcrumb.data[param].includes('?gift-code')) {
+            breadcrumb.data[param] = breadcrumb.data[param].split('?')[0] + '?gift-code=XXX';
+          }
+        });
+      } catch (error) {}
+    }
+    return breadcrumb;
+  }
 });
 
 const Routes = ({ showWelcome, params }) => (
@@ -165,6 +177,8 @@ const Layout = styled.div`
   @media only screen and (max-width: 560px) {
     padding: 21px 7px 28px;
   }
+  @media only screen and (max-width: 800px) {
+    padding-bottom: 80px;
 `;
 
 const PageContainer = styled.div`

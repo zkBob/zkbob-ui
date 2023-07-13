@@ -11,14 +11,27 @@ import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
 
 import { formatNumber } from 'utils';
-import { tokenIcon, tokenSymbol } from 'utils/token';
 
-import { CONNECTORS_ICONS, NETWORKS } from 'constants';
+import { CONNECTORS_ICONS, NETWORKS, TOKENS_ICONS } from 'constants';
+
+
+const Balance = ({ tokenSymbol, balance, isWrapped, isNative }) => (
+  <Row>
+    <TokenIcon
+      src={TOKENS_ICONS[(isWrapped ? 'W' : '') + tokenSymbol]}
+      style={{ marginRight: isWrapped || isNative ? 4 : 8 }}
+    />
+    <Tooltip content={formatNumber(balance, 18)} placement="bottom">
+      <Text>{formatNumber(balance, isWrapped || isNative ? 4 : 6)}</Text>
+    </Tooltip>
+    <Text style={{ marginLeft: 5 }}>{isWrapped ? 'W' : ''}{tokenSymbol}</Text>
+  </Row>
+);
 
 
 const Content = ({
-  address, balance, connector, changeWallet,
-  disconnect, buttonRef, currentChainId,
+  address, balance, nativeBalance, connector, changeWallet,
+  disconnect, buttonRef, currentPool,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
@@ -44,11 +57,13 @@ const Content = ({
       <RowSpaceBetween>
         <SmallText>Wallet</SmallText>
         <Row>
-          <TokenIcon src={tokenIcon()} />
-          <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-            <Balance>{formatNumber(balance, 6)}</Balance>
-          </Tooltip>
-          <Balance style={{ marginLeft: 5 }}>{tokenSymbol()}</Balance>
+          {currentPool.isNative && (
+            <>
+              <Balance tokenSymbol={currentPool.tokenSymbol} balance={nativeBalance} isNative />
+              <Text style={{ margin: '0 4px' }}>+</Text>
+            </>
+          )}
+          <Balance tokenSymbol={currentPool.tokenSymbol} balance={balance} isWrapped={currentPool.isNative} />
         </Row>
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>
@@ -62,7 +77,7 @@ const Content = ({
       </CopyToClipboard>
       <OptionButton
         type="link"
-        href={NETWORKS[currentChainId].blockExplorerUrls.address.replace('%s', address)}
+        href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
       >
         View in Explorer
       </OptionButton>
@@ -73,9 +88,9 @@ const Content = ({
 };
 
 export default ({
-  address, balance, connector, changeWallet,
+  address, balance, nativeBalance, connector, changeWallet,
   disconnect, buttonRef, children, disabled,
-  currentChainId,
+  currentPool,
 }) => (
   <Dropdown
     disabled={disabled}
@@ -83,11 +98,12 @@ export default ({
       <Content
         address={address}
         balance={balance}
+        nativeBalance={nativeBalance}
         connector={connector}
         changeWallet={changeWallet}
         disconnect={disconnect}
         buttonRef={buttonRef}
-        currentChainId={currentChainId}
+        currentPool={currentPool}
       />
     )}
   >
@@ -113,7 +129,7 @@ const SmallText = styled.span`
   color: ${({ theme }) => theme.text.color.secondary};
 `;
 
-const Balance = styled.span`
+const Text = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.primary};
 `;
@@ -125,7 +141,6 @@ const RowSpaceBetween = styled(Row)`
 const TokenIcon = styled.img`
   width: 24px;
   height: 24px;
-  margin-right: 8px;
 `;
 
 const Icon = styled.img`

@@ -6,18 +6,17 @@ import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 
-const Limit = ({ value, loading }) => {
+const Limit = ({ value, loading, currentPool }) => {
   if (!value || loading) {
     return <Skeleton width={80} />
   }
   return !!value.total ? (
     <>
-      <Value>{formatNumber(value.available)} {tokenSymbol()}</Value>
+      <Value>{formatNumber(value.available)} {currentPool.tokenSymbol}</Value>
       <Tooltip
-        content={`out of ${formatNumber(value.total)} ${tokenSymbol()} total`}
+        content={`out of ${formatNumber(value.total)} ${currentPool.tokenSymbol} total`}
         placement="right"
         delay={0}
       >
@@ -26,12 +25,12 @@ const Limit = ({ value, loading }) => {
     </>
   ) : (
     <Value style={{ marginRight: 23 }}>
-      {formatNumber(value)} {tokenSymbol()}
+      {formatNumber(value)} {currentPool.tokenSymbol}
     </Value>
   );
 }
 
-export default ({ limits, loading }) => {
+export default ({ limits, loading, currentPool }) => {
   return (
     <Container>
       {limits.map(({ prefix, suffix, value }, index) => (
@@ -40,7 +39,7 @@ export default ({ limits, loading }) => {
             {prefix}{' '}
             <NameSuffix>{suffix}</NameSuffix>
           </Name>
-          <Limit value={value} loading={loading} />
+          <Limit value={value} loading={loading} currentPool={currentPool} />
         </Row>
       ))}
     </Container>

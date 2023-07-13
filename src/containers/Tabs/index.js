@@ -13,7 +13,7 @@ const tabs = [
 ]
 
 export default () => {
-  const { isPendingIncoming } = useContext(ZkAccountContext);
+  const { isPendingIncoming, pendingDirectDeposits } = useContext(ZkAccountContext);
   const history = useHistory();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
@@ -32,7 +32,7 @@ export default () => {
         tabs={tabs}
         activeTab={activeTab}
         onTabClick={handleTabClick}
-        showBadge={isPendingIncoming}
+        showBadge={isPendingIncoming || pendingDirectDeposits.length > 0}
       />
     </>
   );

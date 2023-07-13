@@ -3,8 +3,6 @@ import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
 import { useContract, useProvider } from 'wagmi';
 
-import config from 'config';
-
 export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.constants.Zero) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
 
@@ -30,9 +28,9 @@ const POOL_CONTRACT_ABI = ['function tokenSeller() pure returns (address)'];
 const SWAP_CONTRACT_ABI = ['function quoteSellForETH(uint256) pure returns (uint256)'];
 
 export const useConvertion = (currentPool) => {
-  const provider = useProvider({ chainId: config.pools[currentPool].chainId });
+  const provider = useProvider({ chainId: currentPool.chainId });
   const poolContract = useContract({
-    address: config.pools[currentPool].poolAddress,
+    address: currentPool.poolAddress,
     abi: POOL_CONTRACT_ABI,
     signerOrProvider: provider
   });
@@ -42,7 +40,10 @@ export const useConvertion = (currentPool) => {
   useEffect(() => {
     async function getPrice() {
       try {
-        const swapContractAddress = await poolContract.tokenSeller();
+        let swapContractAddress = ethers.constants.AddressZero;
+        try {
+          swapContractAddress = await poolContract.tokenSeller();
+        } catch (error) {}
         const exist = swapContractAddress !== ethers.constants.AddressZero;
         setExist(exist);
         if (!exist) return;
@@ -61,5 +62,5 @@ export const useConvertion = (currentPool) => {
     return () => clearInterval(interval);
   }, [poolContract, provider]);
 
-  return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool] };
+  return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
 };

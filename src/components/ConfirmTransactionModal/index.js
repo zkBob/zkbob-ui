@@ -6,15 +6,18 @@ import Button from 'components/Button';
 import Modal from 'components/Modal';
 import Skeleton from 'components/Skeleton';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
+import { TOKENS_ICONS } from 'constants';
 
 export default ({
   isOpen, onClose, onConfirm, title, amount, receiver,
-  shielded, isZkAddress, fee, numberOfTxs, type, isLoadingFee,
-  isMultitransfer, transfers, openDetails,
+  isZkAddress, fee, numberOfTxs, type, isLoadingFee,
+  isMultitransfer, transfers, openDetails, currentPool,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
+  const displayedFee = useDisplayedFee(currentPool, fee);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -25,14 +28,14 @@ export default ({
       <Container>
         <DetailsContainer>
           <AmountContainer>
-            <TokenIcon src={tokenIcon(shielded)} />
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <Amount>
               {formatNumber(isMultitransfer
                 ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
                 : amount.sub(amountToConvert), 18
               )}{' '}
             </Amount>
-            <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
+            <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
           {!amountToConvert.isZero() && (
             <ConvertedAmount>
@@ -57,7 +60,7 @@ export default ({
           {!amountToConvert.isZero() && (
             <Row>
               <MediumText>Withdraw amount:</MediumText>
-              <MediumText>{formatNumber(amount)} {tokenSymbol()}</MediumText>
+              <MediumText>{formatNumber(amount)} {currentPool.tokenSymbol}</MediumText>
             </Row>
           )}
           {numberOfTxs > 1 && (
@@ -71,7 +74,7 @@ export default ({
             {isLoadingFee ? (
               <Skeleton width={60} />
             ) : (
-              <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+              <MediumText>{displayedFee}</MediumText>
             )}
           </Row>
         </DetailsContainer>

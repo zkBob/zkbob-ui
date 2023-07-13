@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -12,10 +12,8 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow, useWindowDimensions } from 'hooks';
-import config from 'config';
-import { NETWORKS } from 'constants';
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
 import { ReactComponent as WithdrawIcon } from 'assets/withdraw.svg';
@@ -83,10 +81,10 @@ const AddressLink = ({ action, isMobile, currentChainId }) => {
   );
 };
 
-const Fee = ({ fee, highFee, isMobile }) => (
+const Fee = ({ fee, highFee, isMobile, tokenSymbol }) => (
   <>
     {!fee.isZero() && (
-      <FeeText>(fee {formatNumber(fee)} {tokenSymbol()})</FeeText>
+      <FeeText>(fee {formatNumber(fee)} {tokenSymbol})</FeeText>
     )}
     {highFee && (
       <Tooltip
@@ -114,7 +112,11 @@ export default ({ item, zkAccount, currentPool }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const isMobile = width <= 500;
-  const currentChainId = config.pools[currentPool].chainId;
+  const currentChainId = currentPool.chainId;
+  const tokenSymbol = useMemo(() => {
+    const isWrapped = currentPool.isNative && item.type === HistoryTransactionType.Deposit;
+    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
+  }, [currentPool, item.type]);
 
   const onCopy = useCallback((text, result) => {
     if (result) {
@@ -122,6 +124,9 @@ export default ({ item, zkAccount, currentPool }) => {
       setTimeout(() => setIsCopied(false), 2000);
     }
   }, []);
+
+  const isPending = [0, 1].includes(item.state);
+  const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
 
   return (
     <Container>
@@ -134,7 +139,7 @@ export default ({ item, zkAccount, currentPool }) => {
         <RowSpaceBetween>
           <Row>
             <Row>
-              <TokenIcon src={tokenIcon()} />
+              <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
               <Text $error={item.failed}>
                 {getSign(item)}{' '}
                 {(() => {
@@ -145,16 +150,18 @@ export default ({ item, zkAccount, currentPool }) => {
                     </Tooltip>
                   );
                 })()}
-                {' '}{tokenSymbol()}
+                {' '}{tokenSymbol}
               </Text>
             </Row>
-            <FeeDesktop>
-              <Fee fee={item.fee} highFee={item.highFee} />
-            </FeeDesktop>
+            {item.fee && (
+              <FeeDesktop>
+                <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} />
+              </FeeDesktop>
+            )}
           </Row>
           <Row>
             <Date>{date}</Date>
-            {item.state === 1 && <SpinnerSmall size={22} />}
+            {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
                 <Text $error style={{ marginLeft: 10 }}>failed</Text>
@@ -165,9 +172,11 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
         </RowSpaceBetween>
-        <FeeMobile>
-          <Fee fee={item.fee} highFee={item.highFee} isMobile />
-        </FeeMobile>
+        {item.fee && (
+          <FeeMobile>
+            <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} isMobile />
+          </FeeMobile>
+        )}
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
@@ -198,7 +207,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
                             item.actions[0].to,
-                            isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
+                            isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
                           )}
                         </Text>
                       </ZkAddress>
@@ -224,7 +233,7 @@ export default ({ item, zkAccount, currentPool }) => {
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
-                          isMobile ? 10 : (item.type === DirectDeposit ? 16 : 22)
+                          isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
                         )}
                       </Text>
                     </>
@@ -239,9 +248,27 @@ export default ({ item, zkAccount, currentPool }) => {
                 {isMobile ? 'Multi' : 'Multitransfer'}
               </MultitransferLabel>
             )}
-            {item.type === DirectDeposit && (
+            {isDirectDepositLabelShown && (
               <DirectDepositLabel>
                 {isMobile ? 'Direct' : 'Direct deposit'}
+                {isPending && (
+                  <Tooltip
+                    content={
+                      <span>
+                        Either a deposit sent via a 3rd party platform or a native token (ETH) deposit.{' '}
+                        Direct deposits can take up to 10 minutes.{' '}
+                        <Link href="https://docs.zkbob.com">
+                          Learn more
+                        </Link>
+                      </span>
+                    }
+                    placement={isMobile ? 'bottom' : 'right'}
+                    delay={0}
+                    width={200}
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                )}
               </DirectDepositLabel>
             )}
             {(item.txHash && item.txHash !== '0') ? (
@@ -261,6 +288,7 @@ export default ({ item, zkAccount, currentPool }) => {
           onClose={() => setIsDetailsModalOpen(false)}
           zkAccount={zkAccount}
           isSent={true}
+          currentPool={currentPool}
         />
       )}
     </Container>
@@ -353,6 +381,8 @@ const MultitransferLabel = styled.div`
   padding: 0 8px;
   margin-right: 10px;
   font-weight: ${props => props.theme.text.weight.bold};
+  display: flex;
+  align-items: center;
 `;
 
 const DirectDepositLabel = styled(MultitransferLabel)`

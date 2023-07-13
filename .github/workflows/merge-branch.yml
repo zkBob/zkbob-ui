@@ -1,0 +1,18 @@
+name: Sync pre-prod branch
+on:
+  push:
+    branches:
+      - 'staging'
+jobs:
+  sync-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge staging -> pre-prod
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: staging
+          target_branch: pre-prod
+          github_token: ${{ secrets.GITHUB_TOKEN }}

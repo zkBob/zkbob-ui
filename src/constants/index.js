@@ -1,7 +1,9 @@
 export const TX_STATUSES = {
   APPROVE_TOKENS: 'approve_tokens',
+  APPROVED: 'approved',
   SIGN_MESSAGE: 'sign_message',
-  WAITING_FOR_APPROVAL: 'waiting_for_approval',
+  CONFIRM_TRANSACTION: 'confirm_transaction',
+  WAITING_FOR_TRANSACTION: 'waiting_for_transaction',
   GENERATING_PROOF: 'generating_proof',
   WAITING_FOR_RELAYER: 'waiting_for_relayer',
   DEPOSITED: 'deposited',
@@ -18,7 +20,7 @@ export const TX_STATUSES = {
 export const NETWORKS = {
   11155111: {
     name: 'Sepolia',
-    icon: require('assets/polygon.svg').default,
+    icon: require('assets/sepolia.svg').default,
     blockExplorerUrls: {
       address: 'https://sepolia.etherscan.io/address/%s',
       tx: 'https://sepolia.etherscan.io/tx/%s',
@@ -34,31 +36,35 @@ export const NETWORKS = {
   },
   5: {
     name: 'Goerli',
-    icon: require('assets/ethereum.svg').default,
+    icon: require('assets/goerli.svg').default,
     blockExplorerUrls: {
-      address: 'https://goerli.etherscan.io/address/%s',
-      tx: 'https://goerli.etherscan.io/tx/%s',
+      address: 'https://eth-goerli.blockscout.com/address/%s',
+      tx: 'https://eth-goerli.blockscout.com/tx/%s',
     },
   },
   420: {
     name: 'Goerli Optimism',
     icon: require('assets/optimism.svg').default,
     blockExplorerUrls: {
-      address: 'https://goerli-optimism.etherscan.io/address/%s',
-      tx: 'https://goerli-optimism.etherscan.io/tx/%s',
+      address: 'https://optimism-goerli.blockscout.com/address/%s',
+      tx: 'https://optimism-goerli.blockscout.com/tx/%s',
     },
   },
   10: {
     name: 'Optimism',
     icon: require('assets/optimism.svg').default,
     blockExplorerUrls: {
-      address: 'https://optimistic.etherscan.io/address/%s',
-      tx: 'https://optimistic.etherscan.io/tx/%s',
+      address: 'https://optimism.blockscout.com/address/%s',
+      tx: 'https://optimism.blockscout.com/tx/%s',
     },
   },
 };
 
-export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
+export const TOKENS_ICONS = {
+  'ETH': require('assets/eth.svg').default,
+  'WETH': require('assets/weth.png'),
+  'BOB': require('assets/bob.svg').default,
+};
 
 export const CONNECTORS_ICONS = {
   'MetaMask': require('assets/metamask.svg').default,

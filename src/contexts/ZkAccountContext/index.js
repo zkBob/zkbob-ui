@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
@@ -28,7 +28,9 @@ const ZkAccountContext = createContext({ zkAccount: null });
 
 const defaultLimits = {
   singleDepositLimit: null,
+  singleDirectDepositLimit: null,
   dailyDepositLimitPerAddress: null,
+  dailyDirectDepositLimitPerAddress: null,
   dailyDepositLimit: null,
   dailyWithdrawalLimit: null,
   poolSizeLimit: null,
@@ -38,14 +40,12 @@ export default ZkAccountContext;
 
 export const ZkAccountContextProvider = ({ children }) => {
   const { currentPool, setCurrentPool } = useContext(PoolContext);
-  const previousPool = usePrevious(currentPool);
+  const previousPoolAlias = usePrevious(currentPool.alias);
   const { address: account } = useAccount();
   const { chain } = useNetwork();
-  const currentChainId = config.pools[currentPool].chainId;
-  const { data: signer } = useSigner({ chainId: currentChainId });
-  const provider = useProvider({ chainId: currentChainId });
+  const { data: signer } = useSigner({ chainId: currentPool.chainId });
   const { switchNetworkAsync } = useSwitchNetwork({
-    chainId: currentChainId,
+    chainId: currentPool.chainId,
     throwForSwitchChainNotSupported: true,
   });
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
@@ -55,7 +55,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [zkClient, setZkClient] = useState(null);
   const [zkAccount, setZkAccount] = useState(null);
   const [balance, setBalance] = useState(ethers.constants.Zero);
-  const [history, setHistory] = useState(null);
+  const [history, setHistory] = useState([]);
   const [isPendingIncoming, setIsPendingIncoming] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [pendingActions, setPendingActions] = useState([]);
@@ -70,15 +70,16 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [maxWithdrawable, setMaxWithdrawable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
-  const [isDemo, setIsDemo] = useState(false);
+  const [isDemo] = useState(false);
   const [giftCard, setGiftCard] = useState(null);
   const [giftCardTxHash, setGiftCardTxHash] = useState(null);
+  const [pendingDirectDeposits, setPendingDirectDeposits] = useState([]);
 
   useEffect(() => {
     if (zkClient || !supportId || !currentPool) return;
     async function create() {
       try {
-        const zkClient = await zp.createClient(currentPool, supportId);
+        const zkClient = await zp.createClient(currentPool.alias, supportId);
         setZkClient(zkClient);
       } catch (error) {
         console.error(error);
@@ -101,7 +102,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     setZkAccount(null);
     if (zkClient && secretKey) {
       setBalance(ethers.constants.Zero);
-      setHistory(null);
+      setHistory([]);
       setIsLoadingZkAccount(true);
       try {
         await zp.createAccount(zkClient, secretKey, birthIndex, useDelegatedProver);
@@ -151,7 +152,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     let isPending = false;
     let pendingActions = [];
     if (zkAccount) {
-      if (currentPool !== previousPool) {
+      if (currentPool.alias !== previousPoolAlias) {
         setHistory([]);
         setIsPendingIncoming(false);
         setIsPending(false);
@@ -190,7 +191,29 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsPending(isPending);
     setIsPendingIncoming(isPendingIncoming);
     setIsLoadingHistory(false);
-  }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPool]);
+  }, [zkAccount, zkClient, fromShieldedAmount, currentPool, previousPoolAlias]);
+
+  const updatePendingDirectDeposits = useCallback(async () => {
+    let pendingDirectDeposits = [];
+    if (zkAccount) {
+      try {
+        pendingDirectDeposits = await zkClient.getPendingDDs();
+        pendingDirectDeposits = await Promise.all(pendingDirectDeposits.map(async item => ({
+          ...item,
+          type: HistoryTransactionType.DirectDeposit,
+          actions: [{
+            to: item.destination,
+            amount: await fromShieldedAmount(item.amount),
+          }],
+        })));
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updatePendingDirectDeposits' } });
+      }
+    }
+    setPendingDirectDeposits(pendingDirectDeposits);
+  }, [zkAccount, zkClient, fromShieldedAmount]);
+
 
   const updateLimits = useCallback(async () => {
     if (!zkClient) return;
@@ -200,9 +223,14 @@ export const ZkAccountContextProvider = ({ children }) => {
       const data = await zkClient.getLimits(account);
       limits = {
         singleDepositLimit: await fromShieldedAmount(BigInt(data.deposit.components.singleOperation)),
+        singleDirectDepositLimit: await fromShieldedAmount(BigInt(data.dd.components.singleOperation)),
         dailyDepositLimitPerAddress: {
           total: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.total)),
           available: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAddress.available))
+        },
+        dailyDirectDepositLimitPerAddress: {
+          total: await fromShieldedAmount(BigInt(data.dd.components.dailyForAddress.total)),
+          available: await fromShieldedAmount(BigInt(data.dd.components.dailyForAddress.available))
         },
         dailyDepositLimit: {
           total: await fromShieldedAmount(BigInt(data.deposit.components.dailyForAll.total)),
@@ -277,13 +305,14 @@ export const ZkAccountContextProvider = ({ children }) => {
     updateBalance(),
     updateHistory(),
     updateLimits(),
-  ]), [updateBalance, updateHistory, updateLimits]);
+    updatePendingDirectDeposits(),
+  ]), [updateBalance, updateHistory, updateLimits, updatePendingDirectDeposits]);
 
-  const deposit = useCallback(async (amount, relayerFee) => {
+  const deposit = useCallback(async (amount, relayerFee, isNative) => {
     openTxModal();
     setTxAmount(amount);
     try {
-      if (chain.id !== currentChainId) {
+      if (chain.id !== currentPool.chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
           await switchNetworkAsync();
@@ -295,25 +324,35 @@ export const ZkAccountContextProvider = ({ children }) => {
         }
       }
       const shieldedAmount = await toShieldedAmount(amount);
-      await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus, provider);
+      if (isNative) {
+        await zp.directDeposit(signer, zkClient, shieldedAmount, setTxStatus);
+      } else {
+        await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+      }
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit' } });
+      let message = error?.message;
       if (error instanceof TxDepositDeadlineExpiredError) {
         setTxStatus(TX_STATUSES.SIGNATURE_EXPIRED);
-      } if (error?.message?.includes('Internal account validation failed')) {
+      } else if (message?.includes('Internal account validation failed')) {
         setTxStatus(TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT);
       } else {
-        setTxError(error.message);
+        if (message?.includes('user rejected transaction')) {
+          message = 'User rejected transaction.';
+        } else if (message?.includes('user rejected signing')) {
+          message = 'User rejected message signing.';
+        }
+        setTxError(message);
         setTxStatus(TX_STATUSES.REJECTED);
       }
     }
   }, [
     zkClient, updatePoolData, signer, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
-    chain, switchNetworkAsync, currentChainId, provider,
+    chain, switchNetworkAsync, currentPool,
   ]);
 
   const transfer = useCallback(async (to, amount, relayerFee) => {
@@ -392,10 +431,16 @@ export const ZkAccountContextProvider = ({ children }) => {
   const estimateFee = useCallback(async (amounts, txType) => {
     if (!zkClient) return null;
     try {
+      let directDepositFee = ethers.constants.Zero;
+      try {
+        directDepositFee = await fromShieldedAmount(await zkClient.directDepositFee());
+      } catch (error) {
+        if (!error.message.includes('No direct deposit processer initialized')) throw error;
+      }
       if (!zkAccount) {
         let atomicTxFee = await zkClient.atomicTxFee(txType);
         atomicTxFee = await fromShieldedAmount(atomicTxFee);
-        return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false };
+        return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false, directDepositFee };
       }
       updateMaxTransferable();
       const shieldedAmounts = await Promise.all(amounts.map(async amount => await toShieldedAmount(amount)));
@@ -405,6 +450,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         numberOfTxs: txCnt,
         insufficientFunds,
         relayerFee,
+        directDepositFee,
       };
     } catch (error) {
       console.error(error);
@@ -416,7 +462,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   const initializeGiftCard = useCallback(async code => {
     if (!zkClient) return false;
     const parsed = await zkClient.giftCardFromCode(code);
-    parsed.balance = await fromShieldedAmount(parsed.balance);
+    parsed.parsedBalance = await fromShieldedAmount(parsed.balance);
     setGiftCard(parsed);
     return true;
   }, [zkClient, fromShieldedAmount]);
@@ -425,17 +471,14 @@ export const ZkAccountContextProvider = ({ children }) => {
 
   const redeemGiftCard = useCallback(async () => {
     try {
-      const targetPool = giftCard.poolAlias;
-      if (currentPool !== targetPool) {
-        await switchToPool(targetPool);
+      if (currentPool.alias !== giftCard.poolAlias) {
+        await switchToPool(giftCard.poolAlias);
       }
-      const proverExists = config.pools[targetPool].delegatedProverUrls.length > 0;
-      const jobId = await zkClient.redeemGiftCard({
-        sk: giftCard.sk,
-        pool: targetPool,
-        birthindex: Number(giftCard.birthIndex),
-        proverMode: proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
-      });
+      const proverExists = config.pools[giftCard.poolAlias].delegatedProverUrls.length > 0;
+      const jobId = await zkClient.redeemGiftCard(
+        giftCard,
+        proverExists ? ProverMode.DelegatedWithFallback : ProverMode.Local,
+      );
       const txHash = await zkClient.waitJobTxHash(jobId);
       setGiftCardTxHash(txHash);
       deleteGiftCard();
@@ -547,7 +590,7 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [updateMaxTransferable, balance, currentPool]);
 
   useEffect(() => {
-    if (isPending || isPendingIncoming || giftCardTxHash) {
+    if (isPending || isPendingIncoming || giftCardTxHash || pendingDirectDeposits.length > 0) {
       if (giftCardTxHash) {
         const tx = history.find(item => item.txHash === giftCardTxHash);
         if (tx && tx.state !== HistoryRecordState.Pending) {
@@ -560,14 +603,17 @@ export const ZkAccountContextProvider = ({ children }) => {
           );
         }
       }
-      const interval = 5000; // 5 seconds
+      const interval = (isPending || isPendingIncoming || giftCardTxHash) ? 5000 : 30000; // 5 seconds or 30 seconds
       const intervalId = setInterval(() => {
         updatePoolData();
         updateTokenBalance();
       }, interval);
       return () => clearInterval(intervalId);
     }
-  }, [isPending, isPendingIncoming, updatePoolData, updateTokenBalance, giftCardTxHash, history]);
+  }, [
+    isPending, isPendingIncoming, updatePoolData, updateTokenBalance,
+    giftCardTxHash, history, pendingDirectDeposits,
+  ]);
 
   useEffect(() => {
     loadRelayerVersion();
@@ -611,7 +657,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
         estimateFee, maxTransferable, maxWithdrawable, isLoadingLimits, limits,
-        setPassword, verifyPassword, removePassword,
+        setPassword, verifyPassword, removePassword, pendingDirectDeposits,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
         switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,
       }}

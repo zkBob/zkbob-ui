@@ -11,11 +11,10 @@ import Button from 'components/Button';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import MultilineInput from 'components/MultilineInput';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
 import { useFee, useParsedAmount } from 'hooks';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 import { useMaxAmountExceeded } from './hooks';
 
@@ -25,6 +24,7 @@ export default () => {
     isPending, maxTransferable, minTxAmount,
     verifyShieldedAddress,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount);
   const [receiver, setReceiver] = useState('');
@@ -60,9 +60,9 @@ export default () => {
     } else if (amount.isZero()) {
       button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
+      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+      button = <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>;
     } else if (amount.gt(maxTransferable)) {
       button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
     } else if (!receiver) {
@@ -87,6 +87,7 @@ export default () => {
         setMax={setMax}
         maxAmountExceeded={maxAmountExceeded}
         isLoadingFee={isLoadingFee}
+        currentPool={currentPool}
       />
       <MultilineInput
         placeholder="Enter address of zkBob receiver"
@@ -109,6 +110,7 @@ export default () => {
         isLoadingFee={isLoadingFee}
         numberOfTxs={numberOfTxs}
         type="transfer"
+        currentPool={currentPool}
       />
     </>
   );

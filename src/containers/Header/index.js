@@ -10,7 +10,7 @@ import {
 export default ({ empty }) => {
   const { address, connector } = useAccount();
   const { disconnect } = useDisconnect();
-  const { balance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
     updatePoolData, generateAddress, isDemo, isPoolSwitching,
@@ -44,6 +44,7 @@ export default ({ empty }) => {
         isLoadingState={isLoadingState}
         connector={connector}
         balance={balance}
+        nativeBalance={nativeBalance}
         isLoadingBalance={isLoadingBalance}
         poolBalance={poolBalance}
         refresh={refresh}
