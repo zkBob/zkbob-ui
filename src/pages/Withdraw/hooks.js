@@ -48,7 +48,7 @@ export const useConvertion = (currentPool) => {
         setExist(exist);
         if (!exist) return;
         const swapContract = new ethers.Contract(swapContractAddress, SWAP_CONTRACT_ABI, provider);
-        const price = await swapContract.quoteSellForETH(ethers.constants.WeiPerEther);
+        const price = await swapContract.quoteSellForETH(ethers.utils.parseUnits('1', currentPool.tokenDecimals));
         setPrice(price);
       } catch (error) {
         console.error(error);
@@ -60,7 +60,7 @@ export const useConvertion = (currentPool) => {
     getPrice();
     const interval = setInterval(getPrice, 1000 * 60 * 5);
     return () => clearInterval(interval);
-  }, [poolContract, provider]);
+  }, [poolContract, provider, currentPool]);
 
   return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
 };

@@ -94,6 +94,7 @@ const config = {
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
+        ddSubgraph: 'zkbob-bob-goerli',
         migration: {
           timestamp: 1688651376,
           prevTokenSymbol: 'BOB',
