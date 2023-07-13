@@ -81,10 +81,10 @@ const AddressLink = ({ action, isMobile, currentChainId }) => {
   );
 };
 
-const Fee = ({ fee, highFee, isMobile, tokenSymbol }) => (
+const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => (
   <>
     {!fee.isZero() && (
-      <FeeText>(fee {formatNumber(fee)} {tokenSymbol})</FeeText>
+      <FeeText>(fee {formatNumber(fee, tokenDecimals)} {tokenSymbol})</FeeText>
     )}
     {highFee && (
       <Tooltip
@@ -114,9 +114,12 @@ export default ({ item, zkAccount, currentPool }) => {
   const isMobile = width <= 500;
   const currentChainId = currentPool.chainId;
   const tokenSymbol = useMemo(() => {
+    if (item.timestamp <= currentPool.migration?.timestamp) {
+      return currentPool.migration?.prevTokenSymbol;
+    }
     const isWrapped = currentPool.isNative && item.type === HistoryTransactionType.Deposit;
     return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
-  }, [currentPool, item.type]);
+  }, [currentPool, item.type, item.timestamp]);
 
   const onCopy = useCallback((text, result) => {
     if (result) {
@@ -145,8 +148,8 @@ export default ({ item, zkAccount, currentPool }) => {
                 {(() => {
                   const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
                   return (
-                    <Tooltip content={formatNumber(total, 18)} placement="top">
-                      <span>{formatNumber(total, 4)}</span>
+                    <Tooltip content={formatNumber(total, currentPool.tokenDecimals, 18)} placement="top">
+                      <span>{formatNumber(total, currentPool.tokenDecimals, 4)}</span>
                     </Tooltip>
                   );
                 })()}
@@ -155,7 +158,12 @@ export default ({ item, zkAccount, currentPool }) => {
             </Row>
             {item.fee && (
               <FeeDesktop>
-                <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} />
+                <Fee
+                  fee={item.fee}
+                  highFee={item.highFee}
+                  tokenSymbol={tokenSymbol}
+                  tokenDecimals={currentPool.tokenDecimals}
+                />
               </FeeDesktop>
             )}
           </Row>
@@ -174,7 +182,13 @@ export default ({ item, zkAccount, currentPool }) => {
         </RowSpaceBetween>
         {item.fee && (
           <FeeMobile>
-            <Fee fee={item.fee} highFee={item.highFee} tokenSymbol={tokenSymbol} isMobile />
+            <Fee
+              fee={item.fee}
+              highFee={item.highFee}
+              tokenSymbol={tokenSymbol}
+              tokenDecimals={currentPool.tokenDecimals}
+              isMobile
+            />
           </FeeMobile>
         )}
         <RowSpaceBetween>

@@ -14,9 +14,9 @@ const Limit = ({ value, loading, currentPool }) => {
   }
   return !!value.total ? (
     <>
-      <Value>{formatNumber(value.available)} {currentPool.tokenSymbol}</Value>
+      <Value>{formatNumber(value.available, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Value>
       <Tooltip
-        content={`out of ${formatNumber(value.total)} ${currentPool.tokenSymbol} total`}
+        content={`out of ${formatNumber(value.total, currentPool.tokenDecimals)} ${currentPool.tokenSymbol} total`}
         placement="right"
         delay={0}
       >
@@ -25,7 +25,7 @@ const Limit = ({ value, loading, currentPool }) => {
     </>
   ) : (
     <Value style={{ marginRight: 23 }}>
-      {formatNumber(value)} {currentPool.tokenSymbol}
+      {formatNumber(value, currentPool.tokenDecimals)} {currentPool.tokenSymbol}
     </Value>
   );
 }

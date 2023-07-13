@@ -49,7 +49,7 @@ const ListItem = ({ index, data, zkAccount, currentPool }) => {
           </Tooltip>
         </Tooltip>
       <Amount>
-        {formatNumber(data.amount, 18)} {currentPool.tokenSymbol}
+        {formatNumber(data.amount, currentPool.tokenDecimals, 18)} {currentPool.tokenSymbol}
       </Amount>
     </ItemContainer>
   );
@@ -69,7 +69,11 @@ export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount, current
           <AmountContainer>
             <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <TotalAmount>
-              {formatNumber(transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero), 18)}
+              {formatNumber(
+                transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero),
+                currentPool.tokenDecimals,
+                18
+              )}
               {' '}
             </TotalAmount>
             <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
