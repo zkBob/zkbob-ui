@@ -89,7 +89,7 @@ const SwitchNetworkScreen = ({ giftCard, redeem }) => (
   </>
 );
 
-const StartScreen = ({ giftCard, redeem, isLoadingZkAccount }) => (
+const StartScreen = ({ giftCard, redeem, isLoadingZkAccount, tokenDecimals }) => (
   <>
     <Title>You're Lucky!</Title>
     <Description>
@@ -97,7 +97,7 @@ const StartScreen = ({ giftCard, redeem, isLoadingZkAccount }) => (
     </Description>
     <BalanceContainer>
       <BobToken />
-      <Amount>{formatNumber(giftCard?.parsedBalance || BigNumber.from('0'))}</Amount>
+      <Amount>{formatNumber(giftCard?.parsedBalance || BigNumber.from('0'), tokenDecimals)}</Amount>
     </BalanceContainer>
     {isLoadingZkAccount ? (
       <Button loading contrast disabled>Loading...</Button>
@@ -243,6 +243,7 @@ export default ({
               giftCard={giftCard}
               redeem={checkNetworkAndRedeem}
               isLoadingZkAccount={isLoadingZkAccount}
+              tokenDecimals={currentPool.tokenDecimals}
             />;
           case IN_PROGRESS:
             return <InProgressScreen supportId={supportId} />;

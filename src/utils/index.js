@@ -1,22 +1,24 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 
-const { parseEther, formatEther, commify } = ethers.utils;
+const { parseUnits, formatUnits, commify } = ethers.utils;
 
 export const shortAddress = (string, length = 10) =>
   string.substring(0, length - 4) + '...' + string.substring(string.length - 4);
 
-export const formatNumber = (wei, customDecimals) => {
+export const formatNumber = (wei, tokenDecimals, customNumberDecimals) => {
   if (wei.isZero()) return '0';
-  if (wei.lte(parseEther('0.0001'))) return '≈ 0';
+  if (wei.lte(parseUnits('0.0001', tokenDecimals))) return '≈ 0';
 
-  const decimals = typeof customDecimals === 'number' ? customDecimals : (wei.gt(parseEther('1')) ? 2 : 4);
-  const formatted = commify(formatEther(wei));
+  const numberDecimals = typeof customNumberDecimals === 'number'
+    ? customNumberDecimals
+    : (wei.gt(parseUnits('1', tokenDecimals)) ? 2 : 4);
+  const formatted = commify(formatUnits(wei, tokenDecimals));
   let [prefix, suffix] = formatted.split('.');
-  if (suffix === '0' || decimals === 0) {
+  if (suffix === '0' || numberDecimals === 0) {
     suffix = '';
   } else {
-    suffix = '.' + suffix.slice(0, decimals);
+    suffix = '.' + suffix.slice(0, numberDecimals);
   }
   return prefix + suffix;
 };

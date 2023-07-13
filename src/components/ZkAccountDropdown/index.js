@@ -101,8 +101,8 @@ const Content = ({
         <SmallText>zkAccount</SmallText>
         <Row>
           <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
-          <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-            <Balance>{formatNumber(balance, 6)}</Balance>
+          <Tooltip content={formatNumber(balance, currentPool.tokenDecimals, 18)} placement="bottom">
+            <Balance>{formatNumber(balance, currentPool.tokenDecimals, 6)}</Balance>
           </Tooltip>
           <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>

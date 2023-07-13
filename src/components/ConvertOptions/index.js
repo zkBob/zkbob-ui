@@ -6,12 +6,11 @@ import Switch from 'components/Switch';
 
 import { formatNumber } from 'utils';
 
-const options = ['1', '5', '10'].map(ethers.utils.parseEther);
-
 export default ({
   amountToConvert, setAmountToConvert, amountToWithdraw,
   maxAmountToWithdraw, details, currentPool,
 }) => {
+  const options = ['1', '5', '10'].map(opt => ethers.utils.parseUnits(opt, currentPool.tokenDecimals));
   const [isConverting, setIsConverting] = useState(false);
 
   useEffect(() => {
@@ -37,7 +36,8 @@ export default ({
       {isConverting && (
         <Row>
           {options.map((option, index) => {
-            let nativeAmount = formatNumber(option.mul(details.price).div(ethers.utils.parseUnits('1', details.decimals)));
+            const nativeAmountWei = option.mul(details.price).div(ethers.utils.parseUnits('1', details.decimals));
+            let nativeAmount = formatNumber(nativeAmountWei, currentPool.tokenDecimals);
             if (nativeAmount === '≈ 0') nativeAmount = '0';
             return (
               <OptionButton
@@ -46,7 +46,7 @@ export default ({
                 active={amountToConvert.eq(option)}
                 disabled={option.gt(amountToWithdraw) || option.gt(maxAmountToWithdraw)}
               >
-                <TextBold>{formatNumber(option)} {currentPool.tokenSymbol}</TextBold>
+                <TextBold>{formatNumber(option, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</TextBold>
                 <Text>
                   ~ {nativeAmount} {details.toTokenSymbol}
                 </Text>

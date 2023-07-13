@@ -71,7 +71,7 @@ export default ({
             ) : (
               <Row>
                 <Text>
-                  {formatNumber(isNativeTokenUsed ? nativeBalance : balance)}{' '}
+                  {formatNumber(isNativeTokenUsed ? nativeBalance : balance, currentPool.tokenDecimals)}{' '}
                   {currentPool.tokenSymbol}
                 </Text>
                 <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
