@@ -83,14 +83,14 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
       },
-      'USDC-goerli': {
+      'UBOB2USDC-goerli': {
         chainId: 5,
         poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
         tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
         relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
-        tokenSymbol: 'USDC',
+        tokenSymbol: 'USDM',
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
@@ -99,6 +99,19 @@ const config = {
           timestamp: 1688651376,
           prevTokenSymbol: 'BOB',
         },
+      },
+      'USDC-goerli': {
+        chainId: 5,
+        poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
+        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
+        relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'usdc-polygon',
+        minTxAmount: 50000n, // 0.05 USDC
       },
       'BOB-op-goerli': {
         chainId: 420,
