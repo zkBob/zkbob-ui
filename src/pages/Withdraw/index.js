@@ -19,7 +19,7 @@ import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
 import ConvertOptions from 'components/ConvertOptions';
 
-import { useFee, useParsedAmount, useLatestAction } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction, useMaxTransferable } from 'hooks';
 
 import { formatNumber, minBigNumber } from 'utils';
 
@@ -29,8 +29,7 @@ import { useMaxAmountExceeded, useConvertion } from './hooks';
 export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    isPending, maxWithdrawable, isDemo,
-    limits, isLoadingLimits, minTxAmount,
+    isPending, isDemo, limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -39,7 +38,8 @@ export default () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [amountToConvert, setAmountToConvert] = useState(ethers.constants.Zero);
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
-  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw, amountToConvert);
+  const maxWithdrawable = useMaxTransferable(TxType.Withdraw, relayerFee, amountToConvert);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
   const convertionDetails = useConvertion(currentPool);
 

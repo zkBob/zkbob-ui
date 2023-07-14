@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 
 import { ZkAccountContext, PoolContext } from 'contexts';
 
-export default (amount, txType) => {
+export default (amount, txType, amountToConvert) => {
   const { estimateFee } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const [fee, setFee] = useState(ethers.constants.Zero);
@@ -15,7 +15,11 @@ export default (amount, txType) => {
   useEffect(() => {
     async function updateFee() {
       const timeout = setTimeout(() => setIsLoadingFee(true), 100);
-      const data = await estimateFee(amount instanceof Array ? amount.map(item => item.amount) : [amount], txType);
+      const data = await estimateFee(
+        amount instanceof Array ? amount.map(item => item.amount) : [amount],
+        txType,
+        amountToConvert,
+      );
       const fee = data?.fee;
       const numberOfTxs = data?.numberOfTxs;
       setFee(fee || ethers.constants.Zero);
@@ -28,7 +32,7 @@ export default (amount, txType) => {
     updateFee();
     const interval = setInterval(updateFee, 5000);
     return () => clearInterval(interval);
-  }, [amount, txType, estimateFee, currentPool]);
+  }, [amount, txType, estimateFee, currentPool, amountToConvert]);
 
   return { fee, numberOfTxs, isLoadingFee, relayerFee, directDepositFee };
 };
