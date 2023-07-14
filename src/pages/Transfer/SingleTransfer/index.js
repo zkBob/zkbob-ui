@@ -13,7 +13,7 @@ import MultilineInput from 'components/MultilineInput';
 
 import { ZkAccountContext, PoolContext } from 'contexts';
 
-import { useFee, useParsedAmount } from 'hooks';
+import { useFee, useParsedAmount, useMaxTransferable } from 'hooks';
 
 import { formatNumber } from 'utils';
 import { useMaxAmountExceeded } from './hooks';
@@ -21,8 +21,7 @@ import { useMaxAmountExceeded } from './hooks';
 export default () => {
   const {
     zkAccount, balance, transfer, isLoadingState,
-    isPending, maxTransferable, minTxAmount,
-    verifyShieldedAddress,
+    isPending, minTxAmount, verifyShieldedAddress,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -31,6 +30,7 @@ export default () => {
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Transfer);
+  const maxTransferable = useMaxTransferable(TxType.Transfer, relayerFee, amount);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
 
   const onTransfer = useCallback(() => {
