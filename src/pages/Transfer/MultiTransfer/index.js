@@ -22,7 +22,8 @@ const prefixes = {
   'BOB-polygon': 'zkbob_polygon',
   'BOB-optimism': 'zkbob_optimism',
   'BOB-sepolia': 'zkbob_sepolia',
-  'USDC-goerli': 'zkbob_goerli',
+  'BOB2USDC-goerli': 'zkbob_goerli',
+  'USDC-goerli': 'zkbob_goerli_usdc',
   'BOB-op-goerli': 'zkbob_goerli_optimism',
   'WETH-goerli': 'zkbob_goerli_eth',
 };
