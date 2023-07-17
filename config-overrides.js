@@ -1,9 +1,9 @@
 const webpack = require('webpack');
-const CopyPlugin = require('copy-webpack-plugin');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = {
   webpack: function(config, env) {
+    config.devtool = 'source-map';
     config.experiments = {
       asyncWebAssembly: true,
       topLevelAwait: true,
