@@ -1,8 +1,8 @@
 const config = {
   prod: {
-    defaultPool: 'BOB-polygon',
+    defaultPool: 'BOB2USDC-polygon',
     pools: {
-      'BOB-polygon': {
+      'BOB2USDC-polygon': {
         chainId: 137,
         poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
         tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
@@ -13,11 +13,16 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
-        tokenSymbol: 'BOB',
-        tokenDecimals: 18,
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'permit',
+        depositScheme: 'usdc-polygon',
+        minTxAmount: 50000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
+        migration: {
+          timestamp: 1689689468,
+          prevTokenSymbol: 'BOB',
+        },
       },
       'BOB-optimism': {
         chainId: 10,
@@ -83,7 +88,7 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
       },
-      'UBOB2USDC-goerli': {
+      'BOB2USDC-goerli': {
         chainId: 5,
         poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
         tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
