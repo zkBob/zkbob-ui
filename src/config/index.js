@@ -5,7 +5,7 @@ const config = {
       'BOB2USDC-polygon': {
         chainId: 137,
         poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
-        tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
+        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         relayerUrls: ['https://relayer-mvp.zkbob.com'],
         delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
         coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
