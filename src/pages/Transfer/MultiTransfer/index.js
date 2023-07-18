@@ -19,7 +19,7 @@ import { formatNumber } from 'utils';
 import { useFee } from 'hooks';
 
 const prefixes = {
-  'BOB-polygon': 'zkbob_polygon',
+  'BOB2USDC-polygon': 'zkbob_polygon',
   'BOB-optimism': 'zkbob_optimism',
   'BOB-sepolia': 'zkbob_sepolia',
   'BOB2USDC-goerli': 'zkbob_goerli',
