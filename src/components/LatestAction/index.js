@@ -15,9 +15,12 @@ export default ({ type, data, currentPool }) => {
   const history = useHistory();
   const location = useLocation();
   const tokenSymbol = useMemo(() => {
+    if (data.timestamp <= currentPool.migration?.timestamp) {
+      return currentPool.migration?.prevTokenSymbol;
+    }
     const isWrapped = currentPool.isNative && data.type === HistoryTransactionType.Deposit;
     return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
-  }, [currentPool, data.type]);
+  }, [currentPool, data.type, data.timestamp]);
 
   return (
     <Row>
@@ -28,8 +31,8 @@ export default ({ type, data, currentPool }) => {
           {(() => {
             const total = data.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
             return (
-              <Tooltip content={formatNumber(total, 18)} placement="top">
-                <span>{formatNumber(total, 2)}</span>
+              <Tooltip content={formatNumber(total, currentPool.tokenDecimals, 18)} placement="top">
+                <span>{formatNumber(total, currentPool.tokenDecimals, 2)}</span>
               </Tooltip>
             );
           })()}

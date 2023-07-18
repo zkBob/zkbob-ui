@@ -1,11 +1,11 @@
 const config = {
   prod: {
-    defaultPool: 'BOB-polygon',
+    defaultPool: 'BOB2USDC-polygon',
     pools: {
-      'BOB-polygon': {
+      'BOB2USDC-polygon': {
         chainId: 137,
         poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
-        tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
+        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         relayerUrls: ['https://relayer-mvp.zkbob.com'],
         delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
         coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
@@ -13,11 +13,16 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
-        tokenSymbol: 'BOB',
-        tokenDecimals: 18,
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'permit',
+        depositScheme: 'usdc-polygon',
+        minTxAmount: 50000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
+        migration: {
+          timestamp: 1689689468,
+          prevTokenSymbol: 'BOB',
+        },
       },
       'BOB-optimism': {
         chainId: 10,
@@ -83,17 +88,35 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
       },
-      'BOB-goerli': {
+      'BOB2USDC-goerli': {
         chainId: 5,
         poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
-        tokenAddress: '0x97a4ab97028466FE67F18A6cd67559BAABE391b8',
+        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
         relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
-        tokenSymbol: 'BOB',
-        tokenDecimals: 18,
+        tokenSymbol: 'USDM',
+        tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'permit',
+        depositScheme: 'usdc-polygon',
+        ddSubgraph: 'zkbob-bob-goerli',
+        migration: {
+          timestamp: 1688651376,
+          prevTokenSymbol: 'BOB',
+        },
+      },
+      'USDC-goerli': {
+        chainId: 5,
+        poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
+        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
+        relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'usdc-polygon',
+        minTxAmount: 50000n, // 0.05 USDC
       },
       'BOB-op-goerli': {
         chainId: 420,

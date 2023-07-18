@@ -5,7 +5,7 @@ import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
 import {
-  TxType, TxDepositDeadlineExpiredError,
+  TxDepositDeadlineExpiredError,
   HistoryRecordState, HistoryTransactionType,
 } from 'zkbob-client-js';
 import { ProverMode } from 'zkbob-client-js/lib/config';
@@ -66,8 +66,6 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [isLoadingLimits, setIsLoadingLimits] = useState(false);
   const [limits, setLimits] = useState(defaultLimits);
   const [minTxAmount, setMinTxAmount] = useState(ethers.constants.Zero);
-  const [maxTransferable, setMaxTransferable] = useState(ethers.constants.Zero);
-  const [maxWithdrawable, setMaxWithdrawable] = useState(ethers.constants.Zero);
   const [loadingPercentage, setLoadingPercentage] = useState(null);
   const [relayerVersion, setRelayerVersion] = useState(null);
   const [isDemo] = useState(false);
@@ -254,25 +252,20 @@ export const ZkAccountContextProvider = ({ children }) => {
     setIsLoadingLimits(false);
   }, [zkClient, account, fromShieldedAmount]);
 
-  const updateMaxTransferable = useCallback(async () => {
-    let maxTransferable = ethers.constants.Zero;
-    let maxWithdrawable = ethers.constants.Zero;
+  const calcMaxTransferable = useCallback(async (type, relayerFee, amountToConvert = ethers.constants.Zero) => {
+    let max = ethers.constants.Zero;
     if (zkAccount) {
       try {
-        [maxTransferable, maxWithdrawable] = await Promise.all(
-          [TxType.Transfer, TxType.Withdraw].map(async type => {
-            const max = await zkClient.calcMaxAvailableTransfer(type, false);
-            return await fromShieldedAmount(max);
-          })
-        );
+        const amountToConvertShielded = await toShieldedAmount(amountToConvert);
+        max = await zkClient.calcMaxAvailableTransfer(type, relayerFee, amountToConvertShielded, false);
+        max = await fromShieldedAmount(max);
       } catch (error) {
         console.error(error);
-        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateMaxTransferable' } });
+        Sentry.captureException(error, { tags: { method: 'ZkAccountContext.calcMaxTransferable' } });
       }
     }
-    setMaxTransferable(maxTransferable);
-    setMaxWithdrawable(maxWithdrawable);
-  }, [zkAccount, zkClient, fromShieldedAmount]);
+    return max;
+  }, [zkAccount, zkClient, fromShieldedAmount, toShieldedAmount]);
 
   const loadMinTxAmount = useCallback(async () => {
     let minTxAmount = ethers.constants.Zero;
@@ -428,7 +421,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     return zkClient.verifyShieldedAddress(address);
   }, [zkClient, zkAccount]);
 
-  const estimateFee = useCallback(async (amounts, txType) => {
+  const estimateFee = useCallback(async (amounts, txType, amountToConvert = ethers.constants.Zero) => {
     if (!zkClient) return null;
     try {
       let directDepositFee = ethers.constants.Zero;
@@ -442,9 +435,14 @@ export const ZkAccountContextProvider = ({ children }) => {
         atomicTxFee = await fromShieldedAmount(atomicTxFee);
         return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false, directDepositFee };
       }
-      updateMaxTransferable();
       const shieldedAmounts = await Promise.all(amounts.map(async amount => await toShieldedAmount(amount)));
-      const { total, txCnt, insufficientFunds, relayerFee } = await zkClient.feeEstimate(shieldedAmounts, txType, false);
+      const shieldedAmountToConvert = await toShieldedAmount(amountToConvert);
+      const {
+        total,
+        txCnt,
+        insufficientFunds,
+        relayerFee,
+      } = await zkClient.feeEstimate(shieldedAmounts, txType, shieldedAmountToConvert, false);
       return {
         fee: await fromShieldedAmount(total),
         numberOfTxs: txCnt,
@@ -457,7 +455,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.estimateFee' } });
       return null;
     }
-  }, [zkClient, toShieldedAmount, fromShieldedAmount, zkAccount, updateMaxTransferable]);
+  }, [zkClient, toShieldedAmount, fromShieldedAmount, zkAccount]);
 
   const initializeGiftCard = useCallback(async code => {
     if (!zkClient) return false;
@@ -586,10 +584,6 @@ export const ZkAccountContextProvider = ({ children }) => {
   }, [loadMinTxAmount, currentPool]);
 
   useEffect(() => {
-    updateMaxTransferable();
-  }, [updateMaxTransferable, balance, currentPool]);
-
-  useEffect(() => {
     if (isPending || isPendingIncoming || giftCardTxHash || pendingDirectDeposits.length > 0) {
       if (giftCardTxHash) {
         const tx = history.find(item => item.txHash === giftCardTxHash);
@@ -656,7 +650,7 @@ export const ZkAccountContextProvider = ({ children }) => {
         withdraw, transfer, generateAddress, history, unlockAccount, transferMulti,
         isLoadingZkAccount, isLoadingState, isLoadingHistory, isPending, pendingActions,
         removeZkAccountMnemonic, updatePoolData, minTxAmount, loadingPercentage,
-        estimateFee, maxTransferable, maxWithdrawable, isLoadingLimits, limits,
+        estimateFee, isLoadingLimits, limits, calcMaxTransferable,
         setPassword, verifyPassword, removePassword, pendingDirectDeposits,
         verifyShieldedAddress, decryptMnemonic, relayerVersion, isDemo, updateLimits, lockAccount,
         switchToPool, giftCard, initializeGiftCard, deleteGiftCard, redeemGiftCard, isPendingIncoming,

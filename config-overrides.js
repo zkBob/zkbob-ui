@@ -1,9 +1,9 @@
 const webpack = require('webpack');
-const CopyPlugin = require('copy-webpack-plugin');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = {
   webpack: function(config, env) {
+    config.devtool = 'source-map';
     config.experiments = {
       asyncWebAssembly: true,
       topLevelAwait: true,
@@ -49,7 +49,7 @@ module.exports = {
           Buffer: ['buffer', 'Buffer'],
       }),
     ];
-    if (process.env.SENTRY_ORG) {
+    if (process.env.SENTRY_ORG && process.env.SENTRY_PROJECT && process.env.SENTRY_AUTH_TOKEN) {
       config.plugins.push(
         new SentryWebpackPlugin({
           org: process.env.SENTRY_ORG,

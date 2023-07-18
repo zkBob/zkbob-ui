@@ -15,14 +15,14 @@ import { formatNumber } from 'utils';
 import { CONNECTORS_ICONS, NETWORKS, TOKENS_ICONS } from 'constants';
 
 
-const Balance = ({ tokenSymbol, balance, isWrapped, isNative }) => (
+const Balance = ({ tokenSymbol, balance, isWrapped, isNative, tokenDecimals }) => (
   <Row>
     <TokenIcon
       src={TOKENS_ICONS[(isWrapped ? 'W' : '') + tokenSymbol]}
       style={{ marginRight: isWrapped || isNative ? 4 : 8 }}
     />
-    <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-      <Text>{formatNumber(balance, isWrapped || isNative ? 4 : 6)}</Text>
+    <Tooltip content={formatNumber(balance, tokenDecimals, 18)} placement="bottom">
+      <Text>{formatNumber(balance, tokenDecimals, isWrapped || isNative ? 4 : 6)}</Text>
     </Tooltip>
     <Text style={{ marginLeft: 5 }}>{isWrapped ? 'W' : ''}{tokenSymbol}</Text>
   </Row>
@@ -59,11 +59,21 @@ const Content = ({
         <Row>
           {currentPool.isNative && (
             <>
-              <Balance tokenSymbol={currentPool.tokenSymbol} balance={nativeBalance} isNative />
+              <Balance
+                tokenSymbol={currentPool.tokenSymbol}
+                tokenDecimals={currentPool.tokenDecimals}
+                balance={nativeBalance}
+                isNative
+              />
               <Text style={{ margin: '0 4px' }}>+</Text>
             </>
           )}
-          <Balance tokenSymbol={currentPool.tokenSymbol} balance={balance} isWrapped={currentPool.isNative} />
+          <Balance
+            tokenSymbol={currentPool.tokenSymbol}
+            tokenDecimals={currentPool.tokenDecimals}
+            balance={balance}
+            isWrapped={currentPool.isNative}
+          />
         </Row>
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>

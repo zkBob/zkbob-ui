@@ -6,6 +6,7 @@ import useLatestAction from 'hooks/useLatestAction';
 import useWindowDimensions from 'hooks/useWindowDimensions';
 import usePrevious from 'hooks/usePrevious';
 import useDisplayedFee from 'hooks/useDisplayedFee';
+import useMaxTransferable from './useMaxTransferable';
 
 export {
   useDateFromNow,
@@ -16,4 +17,5 @@ export {
   useWindowDimensions,
   usePrevious,
   useDisplayedFee,
+  useMaxTransferable,
 };

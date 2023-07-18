@@ -30,16 +30,22 @@ export default ({
           <AmountContainer>
             <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <Amount>
-              {formatNumber(isMultitransfer
-                ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
-                : amount.sub(amountToConvert), 18
+              {formatNumber(
+                isMultitransfer
+                  ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
+                  : amount.sub(amountToConvert),
+                currentPool.tokenDecimals,
+                18
               )}{' '}
             </Amount>
             <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
           {!amountToConvert.isZero() && (
             <ConvertedAmount>
-              + {formatNumber(amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)))}{' '}
+              + {formatNumber(
+                  amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)),
+                  currentPool.tokenDecimals
+                )}{' '}
               {convertionDetails.toTokenSymbol}
             </ConvertedAmount>
           )}
@@ -60,7 +66,7 @@ export default ({
           {!amountToConvert.isZero() && (
             <Row>
               <MediumText>Withdraw amount:</MediumText>
-              <MediumText>{formatNumber(amount)} {currentPool.tokenSymbol}</MediumText>
+              <MediumText>{formatNumber(amount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</MediumText>
             </Row>
           )}
           {numberOfTxs > 1 && (

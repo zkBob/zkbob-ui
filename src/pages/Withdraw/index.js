@@ -19,7 +19,7 @@ import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
 import ConvertOptions from 'components/ConvertOptions';
 
-import { useFee, useParsedAmount, useLatestAction } from 'hooks';
+import { useFee, useParsedAmount, useLatestAction, useMaxTransferable } from 'hooks';
 
 import { formatNumber, minBigNumber } from 'utils';
 
@@ -29,17 +29,17 @@ import { useMaxAmountExceeded, useConvertion } from './hooks';
 export default () => {
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    isPending, maxWithdrawable, isDemo,
-    limits, isLoadingLimits, minTxAmount,
+    isPending, isDemo, limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
-  const amount = useParsedAmount(displayAmount);
+  const amount = useParsedAmount(displayAmount, currentPool.tokenDecimals);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [amountToConvert, setAmountToConvert] = useState(ethers.constants.Zero);
   const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
-  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw, amountToConvert);
+  const maxWithdrawable = useMaxTransferable(TxType.Withdraw, relayerFee, amountToConvert);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
   const convertionDetails = useConvertion(currentPool);
 
@@ -53,8 +53,8 @@ export default () => {
 
   const setMax = useCallback(async () => {
     const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
-    setDisplayAmount(ethers.utils.formatEther(max));
-  }, [maxWithdrawable, limits]);
+    setDisplayAmount(ethers.utils.formatUnits(max, currentPool.tokenDecimals));
+  }, [maxWithdrawable, limits, currentPool.tokenDecimals]);
 
   useEffect(() => {
     setAmountToConvert(ethers.constants.Zero);
@@ -69,11 +69,11 @@ export default () => {
     } else if (amount.isZero()) {
       button = <Button disabled>Enter amount</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {currentPool.tokenSymbol}</Button>
+      button = <Button disabled>Min amount is {formatNumber(minTxAmount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Button>
     } else if (amount.gt(balance)) {
       button = <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>;
     } else if (amount.gt(maxWithdrawable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>;
+      button = <Button disabled>Reduce amount to include {formatNumber(fee, currentPool.tokenDecimals)} fee</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
       button = <Button disabled>Amount exceeds daily limit</Button>;
     } else if (!receiver) {
@@ -122,9 +122,12 @@ export default () => {
         />
         {!amountToConvert.isZero() && (
           <Text>
-            You will get <b>{formatNumber(amount.sub(amountToConvert))} {currentPool.tokenSymbol}</b> and{' '}
+            You will get <b>{formatNumber(amount.sub(amountToConvert), currentPool.tokenDecimals)} {currentPool.tokenSymbol}</b> and{' '}
             <b>
-              ~ {formatNumber(amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)))}{' '}
+              ~ {formatNumber(
+                  amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)),
+                  currentPool.tokenDecimals
+                )}{' '}
               {convertionDetails.toTokenSymbol}
             </b>
           </Text>

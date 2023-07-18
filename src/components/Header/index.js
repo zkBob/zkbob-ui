@@ -20,11 +20,11 @@ import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, CONNECTORS_ICONS, TOKENS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
 
-const { parseEther } = ethers.utils;
+const { parseUnits } = ethers.utils;
 
-const formatBalance = (balance, isMobile) => {
-  const decimals = (isMobile && balance.gte(parseEther('1000'))) ? 0 : null;
-  return formatNumber(balance, decimals);
+const formatBalance = (balance, tokenDecimals, isMobile) => {
+  const decimals = (isMobile && balance.gte(parseUnits('1000', tokenDecimals))) ? 0 : null;
+  return formatNumber(balance, tokenDecimals, decimals);
 };
 
 const BalanceSkeleton = isMobile => (
@@ -101,7 +101,11 @@ export default ({
           ) : (
             <>
               <Balance>
-                {formatBalance(currentPool.isNative ? nativeBalance.add(balance) : balance, isMobile)}{' '}
+                {formatBalance(
+                  currentPool.isNative ? nativeBalance.add(balance) : balance,
+                  currentPool.tokenDecimals,
+                  isMobile
+                )}{' '}
                 {currentPool.tokenSymbol}{currentPool.isNative && '*'}
               </Balance>
               <DropdownIcon />
@@ -142,7 +146,7 @@ export default ({
           ) : (
             <>
               <Balance>
-                {formatBalance(poolBalance, isMobile)} {currentPool.tokenSymbol}
+                {formatBalance(poolBalance, currentPool.tokenDecimals, isMobile)} {currentPool.tokenSymbol}
               </Balance>
               <DropdownIcon />
             </>

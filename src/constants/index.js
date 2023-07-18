@@ -64,6 +64,8 @@ export const TOKENS_ICONS = {
   'ETH': require('assets/eth.svg').default,
   'WETH': require('assets/weth.png'),
   'BOB': require('assets/bob.svg').default,
+  'USDM': require('assets/usdc.svg').default,
+  'USDC': require('assets/usdc.svg').default,
 };
 
 export const CONNECTORS_ICONS = {

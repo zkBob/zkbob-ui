@@ -19,10 +19,11 @@ import { formatNumber } from 'utils';
 import { useFee } from 'hooks';
 
 const prefixes = {
-  'BOB-polygon': 'zkbob_polygon',
+  'BOB2USDC-polygon': 'zkbob_polygon',
   'BOB-optimism': 'zkbob_optimism',
   'BOB-sepolia': 'zkbob_sepolia',
-  'BOB-goerli': 'zkbob_goerli',
+  'BOB2USDC-goerli': 'zkbob_goerli',
+  'USDC-goerli': 'zkbob_goerli_usdc',
   'BOB-op-goerli': 'zkbob_goerli_optimism',
   'WETH-goerli': 'zkbob_goerli_eth',
 };
@@ -59,7 +60,7 @@ export default forwardRef((props, ref) => {
           const isValidAddress = await verifyShieldedAddress(address);
           if (!isValidAddress || !(Number(amount) > 0)) throw Error;
 
-          return { address, amount: ethers.utils.parseEther(amount) };
+          return { address, amount: ethers.utils.parseUnits(amount, currentPool.tokenDecimals) };
         } catch (err) {
           errors.push(index);
           return null;
@@ -98,7 +99,7 @@ export default forwardRef((props, ref) => {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'MultiTransfer.validate' } });
     }
-  }, [data, estimateFee, verifyShieldedAddress]);
+  }, [data, estimateFee, verifyShieldedAddress, currentPool.tokenDecimals]);
 
   useImperativeHandle(ref, () => ({
     handleFileUpload(event) {
@@ -157,8 +158,8 @@ export default forwardRef((props, ref) => {
                 return 'Duplicate addresses found.'
               } else if (errorType === 'insufficient_funds') {
                 return `
-                  Insufficient balance: ${formatNumber(totalAmount.add(fee), 9)} ${currentPool.tokenSymbol}
-                  (${formatNumber(fee)} fee) is required.
+                  Insufficient balance: ${formatNumber(totalAmount.add(fee), currentPool.tokenDecimals, 9)} ${currentPool.tokenSymbol}
+                  (${formatNumber(fee, currentPool.tokenDecimals)} fee) is required.
                 `;
               }
             })()}
