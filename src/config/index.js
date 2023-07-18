@@ -83,7 +83,7 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
       },
-      'UBOB2USDC-goerli': {
+      'BOB2USDC-goerli': {
         chainId: 5,
         poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
         tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
