@@ -26,6 +26,7 @@ const prefixes = {
   'USDC-goerli': 'zkbob_goerli_usdc',
   'BOB-op-goerli': 'zkbob_goerli_optimism',
   'WETH-goerli': 'zkbob_goerli_eth',
+  'WETH-optimism': 'zkbob_optimism_eth',
 };
 
 export default forwardRef((props, ref) => {
@@ -135,7 +136,7 @@ export default forwardRef((props, ref) => {
 
   return (
     <>
-      <Text>Add zkAddress, the amount of BOB to transfer. 1 address per row.</Text>
+      <Text>Add zkAddress, the amount of {currentPool.tokenSymbol} to transfer. 1 address per row.</Text>
       <TextEditor
         value={data}
         onChange={setData}
