@@ -6,7 +6,6 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { useIdleTimer } from 'react-idle-timer';
 
-import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
 import TransactionModal from 'containers/TransactionModal';
 import WalletModal from 'containers/WalletModal';
@@ -18,6 +17,7 @@ import SeedPhraseModal from 'containers/SeedPhraseModal';
 import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
 import RedeemGiftCardModal from 'containers/RedeemGiftCardModal';
 
+import Header from 'components/Header';
 import ChangePasswordModal from 'components/ChangePasswordModal';
 import DisablePasswordModal from 'components/DisablePasswordModal';
 import ToastContainer from 'components/ToastContainer';

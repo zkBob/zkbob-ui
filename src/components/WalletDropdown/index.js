@@ -31,7 +31,7 @@ const Balance = ({ tokenSymbol, balance, isWrapped, isNative, tokenDecimals }) =
 
 const Content = ({
   address, balance, nativeBalance, connector, changeWallet,
-  disconnect, buttonRef, currentPool,
+  disconnect, close, currentPool,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
@@ -43,14 +43,14 @@ const Content = ({
   }, []);
 
   const onChangeWallet = useCallback(() => {
-    buttonRef.current.click();
+    close();
     changeWallet();
-  }, [changeWallet, buttonRef]);
+  }, [changeWallet, close]);
 
   const onDisconnect = useCallback(() => {
-    buttonRef.current.click();
+    close();
     disconnect();
-  }, [disconnect, buttonRef]);
+  }, [disconnect, close]);
 
   return (
     <Container>
@@ -99,11 +99,13 @@ const Content = ({
 
 export default ({
   address, balance, nativeBalance, connector, changeWallet,
-  disconnect, buttonRef, children, disabled,
-  currentPool,
+  disconnect, children, disabled, currentPool, isOpen, open, close,
 }) => (
   <Dropdown
     disabled={disabled}
+    isOpen={isOpen}
+    open={open}
+    close={close}
     content={() => (
       <Content
         address={address}
@@ -112,8 +114,8 @@ export default ({
         connector={connector}
         changeWallet={changeWallet}
         disconnect={disconnect}
-        buttonRef={buttonRef}
         currentPool={currentPool}
+        close={close}
       />
     )}
   >

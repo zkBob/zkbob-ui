@@ -23,7 +23,7 @@ const poolsByChainId = chainIds.map(chainId => {
   };
 });
 
-const Content = ({ switchToPool, currentPool, buttonRef }) => {
+const Content = ({ switchToPool, currentPool, close }) => {
   const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
 
   const showPools = useCallback(chainId => {
@@ -35,9 +35,9 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
   }, [openedChainId]);
 
   const onSwitchPool = useCallback(poolId => {
-    buttonRef.current.click();
+    close();
     switchToPool(poolId);
-  }, [switchToPool, buttonRef]);
+  }, [switchToPool, close]);
 
   return (
     <Container>
@@ -88,13 +88,16 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
   );
 };
 
-export default ({ disabled, switchToPool, currentPool, buttonRef, children }) => (
+export default ({ disabled, switchToPool, currentPool, isOpen, open, close, children }) => (
   <Dropdown
     width={288}
     placement="bottomLeft"
     disabled={disabled}
+    isOpen={isOpen}
+    open={open}
+    close={close}
     content={() => (
-      <Content switchToPool={switchToPool} currentPool={currentPool} buttonRef={buttonRef} />
+      <Content switchToPool={switchToPool} currentPool={currentPool} close={close} />
     )}
   >
     {children}
