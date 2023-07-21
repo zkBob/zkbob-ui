@@ -173,28 +173,20 @@ export default ({
           <Logo />
         </LogoSection>
         <AccountSection>
-          <OnlyDesktop>
-            {networkDropdown}
-          </OnlyDesktop>
+          {!isMobile && networkDropdown}
           <BridgeButton small onClick={openSwapModal}>
             Get {currentPool.tokenSymbol}
           </BridgeButton>
-          <OnlyDesktop>
-            {walletDropdown}
-          </OnlyDesktop>
-          <OnlyDesktop>
-            {zkAccountDropdown}
-          </OnlyDesktop>
-          {zkAccount && (
-            <OnlyDesktop>
-              <RefreshButtonContainer onClick={refresh}>
-                {(isLoadingBalance || isLoadingState) ? (
-                  <Spinner size={18} />
-                ) : (
-                  <RefreshIcon />
-                )}
-              </RefreshButtonContainer>
-            </OnlyDesktop>
+          {!isMobile && walletDropdown}
+          {!isMobile && zkAccountDropdown}
+          {(zkAccount && !isMobile) && (
+            <RefreshButtonContainer onClick={refresh}>
+              {(isLoadingBalance || isLoadingState) ? (
+                <Spinner size={18} />
+              ) : (
+                <RefreshIcon />
+              )}
+            </RefreshButtonContainer>
           )}
           <MoreDropdown buttonRef={moreButtonRef}>
             <DropdownButton ref={moreButtonRef}>
@@ -203,11 +195,13 @@ export default ({
           </MoreDropdown>
         </AccountSection>
       </Row>
-      <OnlyMobile>
-        {networkDropdown}
-        {walletDropdown}
-        {zkAccountDropdown}
-      </OnlyMobile>
+      {isMobile && (
+        <OnlyMobile>
+          {networkDropdown}
+          {walletDropdown}
+          {zkAccountDropdown}
+        </OnlyMobile>
+      )}
     </>
   );
 }
@@ -217,12 +211,6 @@ const Row = styled.div`
   align-items: center;
   justify-content: space-between;
   position: relative;
-`;
-
-const OnlyDesktop = styled.div`
-  @media only screen and (max-width: 800px) {
-    display: none;
-  }
 `;
 
 const OnlyMobile = styled.div`
@@ -235,19 +223,17 @@ const OnlyMobile = styled.div`
   padding: 0 7px;
   background: #fff;
   z-index: 1;
-  @media only screen and (max-width: 800px) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    & > * {
-      margin-right: 2px;
-      margin-left: 2px;
-      &:last-child {
-        margin-right: 0;
-      }
-      &:first-child {
-        margin-left: 0;
-      }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  & > * {
+    margin-right: 2px;
+    margin-left: 2px;
+    &:last-child {
+      margin-right: 0;
+    }
+    &:first-child {
+      margin-left: 0;
     }
   }
 `;
