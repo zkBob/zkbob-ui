@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import QRCode from 'react-qr-code';
 import { isMobile } from 'react-device-detect';
@@ -16,6 +16,7 @@ import { formatNumber } from 'utils';
 
 import { TOKENS_ICONS } from 'constants';
 
+import { ZkAccountContext, ModalContext, PoolContext } from 'contexts';
 
 const Content = ({
   balance, generateAddress, getSeed, setPassword,
@@ -137,38 +138,45 @@ const Content = ({
   );
 };
 
-export default ({
-  balance, generateAddress, switchAccount, showSeedPhrase, disabled,
-  logout, children, isDemo, isLoadingState, currentPool,
-  initializeGiftCard, getSeed, setPassword, removePassword,
-  isOpen, open, close,
-}) => (
-  <Dropdown
-    disabled={disabled}
-    isOpen={isOpen}
-    open={open}
-    close={close}
-    content={() => (
-      <Content
-        balance={balance}
-        generateAddress={generateAddress}
-        switchAccount={switchAccount}
-        setPassword={setPassword}
-        removePassword={removePassword}
-        logout={logout}
-        showSeedPhrase={showSeedPhrase}
-        isDemo={isDemo}
-        isLoadingState={isLoadingState}
-        initializeGiftCard={initializeGiftCard}
-        getSeed={getSeed}
-        currentPool={currentPool}
-        close={close}
-      />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const {
+    balance: poolBalance, generateAddress, isDemo,
+    isLoadingState, initializeGiftCard, getSeed,
+  } = useContext(ZkAccountContext);
+  const {
+    openSeedPhraseModal, openAccountSetUpModal, openChangePasswordModal,
+    openConfirmLogoutModal, openDisablePasswordModal,
+    isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
+  } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      disabled={isLoadingState}
+      isOpen={isZkAccountDropdownOpen}
+      open={openZkAccountDropdown}
+      close={closeZkAccountDropdown}
+      content={() => (
+        <Content
+          balance={poolBalance}
+          generateAddress={generateAddress}
+          switchAccount={openAccountSetUpModal}
+          setPassword={openChangePasswordModal}
+          removePassword={openDisablePasswordModal}
+          logout={openConfirmLogoutModal}
+          showSeedPhrase={openSeedPhraseModal}
+          isDemo={isDemo}
+          isLoadingState={isLoadingState}
+          initializeGiftCard={initializeGiftCard}
+          getSeed={getSeed}
+          currentPool={currentPool}
+          close={closeZkAccountDropdown}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;

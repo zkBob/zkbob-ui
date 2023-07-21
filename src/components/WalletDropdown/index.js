@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useAccount, useDisconnect } from 'wagmi';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -13,6 +14,8 @@ import { ReactComponent as CheckIcon } from 'assets/check.svg';
 import { formatNumber } from 'utils';
 
 import { CONNECTORS_ICONS, NETWORKS, TOKENS_ICONS } from 'constants';
+
+import { ModalContext, TokenBalanceContext, PoolContext } from 'contexts';
 
 
 const Balance = ({ tokenSymbol, balance, isWrapped, isNative, tokenDecimals }) => (
@@ -97,31 +100,38 @@ const Content = ({
   );
 };
 
-export default ({
-  address, balance, nativeBalance, connector, changeWallet,
-  disconnect, children, disabled, currentPool, isOpen, open, close,
-}) => (
-  <Dropdown
-    disabled={disabled}
-    isOpen={isOpen}
-    open={open}
-    close={close}
-    content={() => (
-      <Content
-        address={address}
-        balance={balance}
-        nativeBalance={nativeBalance}
-        connector={connector}
-        changeWallet={changeWallet}
-        disconnect={disconnect}
-        currentPool={currentPool}
-        close={close}
-      />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const { address, connector } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { balance, nativeBalance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const {
+    openWalletModal, isWalletDropdownOpen,
+    openWalletDropdown, closeWalletDropdown,
+  } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      disabled={isLoadingBalance}
+      isOpen={isWalletDropdownOpen}
+      open={openWalletDropdown}
+      close={closeWalletDropdown}
+      content={() => (
+        <Content
+          address={address}
+          balance={balance}
+          nativeBalance={nativeBalance}
+          connector={connector}
+          changeWallet={openWalletModal}
+          disconnect={disconnect}
+          currentPool={currentPool}
+          close={closeWalletDropdown}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;
