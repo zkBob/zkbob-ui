@@ -9,7 +9,7 @@ const links = [
   { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
 ];
 
-const Content = ({ buttonRef }) => (
+const Content = ({ close }) => (
   <Container>
     <Title>More about zkBob</Title>
     {links.map((link, index) =>
@@ -17,7 +17,7 @@ const Content = ({ buttonRef }) => (
         key={index}
         type="link"
         href={link.href}
-        onClick={() => buttonRef.current.click()}
+        onClick={close}
       >
         {link.name}
       </OptionButton>
@@ -25,11 +25,12 @@ const Content = ({ buttonRef }) => (
   </Container>
 );
 
-export default ({ buttonRef, openSwapModal, children, currentPool }) => (
+export default ({ children, isOpen, open, close }) => (
   <Dropdown
-    content={() =>
-      <Content buttonRef={buttonRef} openSwapModal={openSwapModal} currentPool={currentPool} />
-    }
+    isOpen={isOpen}
+    open={open}
+    close={close}
+    content={() => <Content close={close} />}
   >
     {children}
   </Dropdown>

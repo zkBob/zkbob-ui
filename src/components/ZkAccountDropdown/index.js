@@ -19,7 +19,7 @@ import { TOKENS_ICONS } from 'constants';
 
 const Content = ({
   balance, generateAddress, getSeed, setPassword,
-  removePassword, logout, buttonRef, showSeedPhrase,
+  removePassword, logout, close, showSeedPhrase,
   isLoadingState, initializeGiftCard, currentPool,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
@@ -48,16 +48,16 @@ const Content = ({
       const queryParams = new URLSearchParams(paramsString);
       const code = queryParams.get('gift-code');
       await initializeGiftCard(code);
-      buttonRef.current.click();
+      close();
     } catch (error) {
       console.log(error);
     }
-  }, [initializeGiftCard, buttonRef]);
+  }, [initializeGiftCard, close]);
 
   const handleOptionClick = useCallback(action => {
-    buttonRef.current.click();
+    close();
     action();
-  }, [buttonRef]);
+  }, [close]);
 
   const settingsOptions = [
     { text: 'Show secret phrase', action: showSeedPhrase },
@@ -139,11 +139,15 @@ const Content = ({
 
 export default ({
   balance, generateAddress, switchAccount, showSeedPhrase, disabled,
-  logout, buttonRef, children, isDemo, isLoadingState, currentPool,
+  logout, children, isDemo, isLoadingState, currentPool,
   initializeGiftCard, getSeed, setPassword, removePassword,
+  isOpen, open, close,
 }) => (
   <Dropdown
     disabled={disabled}
+    isOpen={isOpen}
+    open={open}
+    close={close}
     content={() => (
       <Content
         balance={balance}
@@ -152,13 +156,13 @@ export default ({
         setPassword={setPassword}
         removePassword={removePassword}
         logout={logout}
-        buttonRef={buttonRef}
         showSeedPhrase={showSeedPhrase}
         isDemo={isDemo}
         isLoadingState={isLoadingState}
         initializeGiftCard={initializeGiftCard}
         getSeed={getSeed}
         currentPool={currentPool}
+        close={close}
       />
     )}
   >

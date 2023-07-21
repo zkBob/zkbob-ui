@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useCallback } from 'react';
+import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { useAccount, useDisconnect } from 'wagmi';
@@ -54,6 +54,10 @@ export default ({ empty }) => {
     openAccountSetUpModal, openSwapModal,
     openChangePasswordModal, openConfirmLogoutModal,
     openDisablePasswordModal,
+    isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown,
+    isWalletDropdownOpen, openWalletDropdown, closeWalletDropdown,
+    isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
+    isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown,
   } = useContext(ModalContext);
   const { currentPool } = useContext(PoolContext);
 
@@ -63,10 +67,6 @@ export default ({ empty }) => {
     updatePoolData();
   }, [updateBalance, updatePoolData]);
 
-  const walletButtonRef = useRef(null);
-  const zkAccountButtonRef = useRef(null);
-  const networkButtonRef = useRef(null);
-  const moreButtonRef = useRef(null);
   const { width } = useWindowDimensions();
 
   const isMobile = width <= 800;
@@ -83,12 +83,14 @@ export default ({ empty }) => {
 
   const networkDropdown = (
     <NetworkDropdown
-      buttonRef={networkButtonRef}
       disabled={isPoolSwitching || isLoadingState}
       switchToPool={switchToPool}
       currentPool={currentPool}
+      isOpen={isNetworkDropdownOpen}
+      open={openNetworkDropdown}
+      close={closeNetworkDropdown}
     >
-      <NetworkDropdownButton ref={networkButtonRef} $refreshing={isPoolSwitching || isLoadingState}>
+      <NetworkDropdownButton $refreshing={isPoolSwitching || isLoadingState}>
         <NetworkIcon src={NETWORKS[currentPool.chainId].icon} />
         <Divider />
         <NetworkIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
@@ -109,11 +111,13 @@ export default ({ empty }) => {
       connector={connector}
       changeWallet={openWalletModal}
       disconnect={disconnect}
-      buttonRef={walletButtonRef}
       disabled={isLoadingBalance}
       currentPool={currentPool}
+      isOpen={isWalletDropdownOpen}
+      open={openWalletDropdown}
+      close={closeWalletDropdown}
     >
-      <AccountDropdownButton ref={walletButtonRef} $refreshing={isLoadingBalance}>
+      <AccountDropdownButton $refreshing={isLoadingBalance}>
         <Row>
           {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
           <Address>{shortAddress(account)}</Address>
@@ -150,15 +154,17 @@ export default ({ empty }) => {
       removePassword={openDisablePasswordModal}
       logout={openConfirmLogoutModal}
       showSeedPhrase={openSeedPhraseModal}
-      buttonRef={zkAccountButtonRef}
       isDemo={isDemo}
       isLoadingState={isLoadingState}
       disabled={isLoadingState}
       initializeGiftCard={initializeGiftCard}
       getSeed={getSeed}
       currentPool={currentPool}
+      isOpen={isZkAccountDropdownOpen}
+      open={openZkAccountDropdown}
+      close={closeZkAccountDropdown}
     >
-      <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
+      <AccountDropdownButton $refreshing={isLoadingState}>
         <Row>
           <ZkAvatar seed={zkAccount} size={16} />
           <Address>zkAccount</Address>
@@ -209,8 +215,12 @@ export default ({ empty }) => {
               )}
             </RefreshButtonContainer>
           )}
-          <MoreDropdown buttonRef={moreButtonRef}>
-            <DropdownButton ref={moreButtonRef}>
+          <MoreDropdown
+            isOpen={isMoreDropdownOpen}
+            open={openMoreDropdown}
+            close={closeMoreDropdown}
+          >
+            <DropdownButton>
               <DotsIcon />
             </DropdownButton>
           </MoreDropdown>
