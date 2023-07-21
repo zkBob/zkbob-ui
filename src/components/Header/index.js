@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useAccount, useDisconnect } from 'wagmi';
 
 import ButtonDefault from 'components/Button';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
@@ -20,6 +21,11 @@ import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, CONNECTORS_ICONS, TOKENS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
 
+import {
+  ZkAccountContext, ModalContext,
+  TokenBalanceContext, PoolContext,
+} from 'contexts';
+
 const { parseUnits } = ethers.utils;
 
 const formatBalance = (balance, tokenDecimals, isMobile) => {
@@ -34,14 +40,29 @@ const BalanceSkeleton = isMobile => (
   />
 );
 
-export default ({
-  openWalletModal, connector, isLoadingZkAccount, empty,
-  openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, nativeBalance, poolBalance, refresh, isLoadingBalance, getSeed,
-  openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo, disconnect, isLoadingState, openDisablePasswordModal,
-  switchToPool, currentPool, initializeGiftCard, isPoolSwitching,
-}) => {
+export default ({ empty }) => {
+  const { address: account, connector } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const {
+    zkAccount, isLoadingZkAccount, balance: poolBalance,
+    updatePoolData, generateAddress, isDemo, isPoolSwitching,
+    isLoadingState, switchToPool, initializeGiftCard, getSeed,
+  } = useContext(ZkAccountContext);
+  const {
+    openWalletModal, openSeedPhraseModal,
+    openAccountSetUpModal, openSwapModal,
+    openChangePasswordModal, openConfirmLogoutModal,
+    openDisablePasswordModal,
+  } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+
+  const refresh = useCallback(e => {
+    e.stopPropagation();
+    updateBalance();
+    updatePoolData();
+  }, [updateBalance, updatePoolData]);
+
   const walletButtonRef = useRef(null);
   const zkAccountButtonRef = useRef(null);
   const networkButtonRef = useRef(null);
