@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 import Dropdown from 'components/Dropdown';
@@ -10,6 +10,8 @@ import { ReactComponent as CheckIcon } from 'assets/check-stroke.svg';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import config from 'config';
+
+import { ZkAccountContext, ModalContext, PoolContext } from 'contexts';
 
 const chainIds = Object.keys(config.chains).map(chainId => Number(chainId));
 const poolsWithAliases = Object.values(config.pools).map((pool, index) => ({
@@ -88,21 +90,30 @@ const Content = ({ switchToPool, currentPool, close }) => {
   );
 };
 
-export default ({ disabled, switchToPool, currentPool, isOpen, open, close, children }) => (
-  <Dropdown
-    width={288}
-    placement="bottomLeft"
-    disabled={disabled}
-    isOpen={isOpen}
-    open={open}
-    close={close}
-    content={() => (
-      <Content switchToPool={switchToPool} currentPool={currentPool} close={close} />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const { isPoolSwitching, isLoadingState, switchToPool } = useContext(ZkAccountContext);
+  const { isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      width={288}
+      placement="bottomLeft"
+      disabled={isPoolSwitching || isLoadingState}
+      isOpen={isNetworkDropdownOpen}
+      open={openNetworkDropdown}
+      close={closeNetworkDropdown}
+      content={() => (
+        <Content
+          switchToPool={switchToPool}
+          currentPool={currentPool}
+          close={closeNetworkDropdown}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;

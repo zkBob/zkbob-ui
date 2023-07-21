@@ -1,7 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 import ButtonDefault from 'components/Button';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
@@ -42,23 +42,12 @@ const BalanceSkeleton = isMobile => (
 
 export default ({ empty }) => {
   const { address: account, connector } = useAccount();
-  const { disconnect } = useDisconnect();
   const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
-    updatePoolData, generateAddress, isDemo, isPoolSwitching,
-    isLoadingState, switchToPool, initializeGiftCard, getSeed,
+    updatePoolData, isPoolSwitching, isLoadingState,
   } = useContext(ZkAccountContext);
-  const {
-    openWalletModal, openSeedPhraseModal,
-    openAccountSetUpModal, openSwapModal,
-    openChangePasswordModal, openConfirmLogoutModal,
-    openDisablePasswordModal,
-    isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown,
-    isWalletDropdownOpen, openWalletDropdown, closeWalletDropdown,
-    isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
-    isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown,
-  } = useContext(ModalContext);
+  const { openWalletModal, openAccountSetUpModal, openSwapModal } = useContext(ModalContext);
   const { currentPool } = useContext(PoolContext);
 
   const refresh = useCallback(e => {
@@ -82,14 +71,7 @@ export default ({ empty }) => {
   }
 
   const networkDropdown = (
-    <NetworkDropdown
-      disabled={isPoolSwitching || isLoadingState}
-      switchToPool={switchToPool}
-      currentPool={currentPool}
-      isOpen={isNetworkDropdownOpen}
-      open={openNetworkDropdown}
-      close={closeNetworkDropdown}
-    >
+    <NetworkDropdown>
       <NetworkDropdownButton $refreshing={isPoolSwitching || isLoadingState}>
         <NetworkIcon src={NETWORKS[currentPool.chainId].icon} />
         <Divider />
@@ -104,19 +86,7 @@ export default ({ empty }) => {
   );
 
   const walletDropdown = account ? (
-    <WalletDropdown
-      address={account}
-      balance={balance}
-      nativeBalance={nativeBalance}
-      connector={connector}
-      changeWallet={openWalletModal}
-      disconnect={disconnect}
-      disabled={isLoadingBalance}
-      currentPool={currentPool}
-      isOpen={isWalletDropdownOpen}
-      open={openWalletDropdown}
-      close={closeWalletDropdown}
-    >
+    <WalletDropdown>
       <AccountDropdownButton $refreshing={isLoadingBalance}>
         <Row>
           {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
@@ -146,24 +116,7 @@ export default ({ empty }) => {
   );
 
   const zkAccountDropdown = zkAccount ? (
-    <ZkAccountDropdown
-      balance={poolBalance}
-      generateAddress={generateAddress}
-      switchAccount={openAccountSetUpModal}
-      setPassword={openChangePasswordModal}
-      removePassword={openDisablePasswordModal}
-      logout={openConfirmLogoutModal}
-      showSeedPhrase={openSeedPhraseModal}
-      isDemo={isDemo}
-      isLoadingState={isLoadingState}
-      disabled={isLoadingState}
-      initializeGiftCard={initializeGiftCard}
-      getSeed={getSeed}
-      currentPool={currentPool}
-      isOpen={isZkAccountDropdownOpen}
-      open={openZkAccountDropdown}
-      close={closeZkAccountDropdown}
-    >
+    <ZkAccountDropdown>
       <AccountDropdownButton $refreshing={isLoadingState}>
         <Row>
           <ZkAvatar seed={zkAccount} size={16} />
@@ -215,11 +168,7 @@ export default ({ empty }) => {
               )}
             </RefreshButtonContainer>
           )}
-          <MoreDropdown
-            isOpen={isMoreDropdownOpen}
-            open={openMoreDropdown}
-            close={closeMoreDropdown}
-          >
+          <MoreDropdown>
             <DropdownButton>
               <DotsIcon />
             </DropdownButton>
