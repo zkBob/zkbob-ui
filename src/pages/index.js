@@ -41,6 +41,7 @@ import robot3Image from 'assets/robot-3.webp';
 
 import ContextsProvider, { ZkAccountContext } from 'contexts';
 import { ModalContextProvider } from 'contexts/ModalContext';
+import { SupportIdContextProvider } from 'contexts/SupportIdContext';
 
 import { useRestriction } from 'hooks';
 
@@ -138,6 +139,7 @@ const MainApp = () => {
         <Routes showWelcome={showWelcome} params={location.search} />
       </Layout>
       <TransactionModal />
+      <WalletModal />
       <AccountSetUpModal />
       <RedeemGiftCardModal />
       <PasswordModal />
@@ -155,10 +157,12 @@ const MainApp = () => {
 export default () => (
   <Router history={history}>
     <Switch>
-      <SentryRoute exact strict path="/payment">
-        <ModalContextProvider>
-          <Payment />
-        </ModalContextProvider>
+      <SentryRoute exact strict path="/payment/:address">
+        <SupportIdContextProvider>
+          <ModalContextProvider>
+            <Payment />
+          </ModalContextProvider>
+        </SupportIdContextProvider>
       </SentryRoute>
       <SentryRoute>
         <ContextsProvider>
@@ -166,7 +170,6 @@ export default () => (
         </ContextsProvider>
       </SentryRoute>
     </Switch>
-    <WalletModal />
   </Router>
 );
 

@@ -63,8 +63,11 @@ const NetworkLabel = styled(Row)`
   border-radius: 18px;
   min-height: 36px;
   box-sizing: border-box;
-  margin-left: 10px;
+  margin-right: 10px;
   cursor: default;
+  &:last-child {
+    margin-right: 0;
+  }
 `;
 
 const DropdownIcon = styled(DropdownIconDefault)`

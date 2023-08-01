@@ -23,6 +23,8 @@ const config = {
           timestamp: 1689689468,
           prevTokenSymbol: 'BOB',
         },
+        addressPrefix: 'zkbob_polygon',
+        paymentContractAddress: '0x88d1b47eb3C46C232a10D04618276eE4371c7408',
       },
       'BOB-optimism': {
         chainId: 10,
@@ -36,6 +38,7 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
         ddSubgraph: 'zkbob-bob-optimism',
+        addressPrefix: 'zkbob_optimism',
       },
       'WETH-optimism': {
         chainId: 10,
@@ -54,6 +57,7 @@ const config = {
         depositScheme: 'permit2',
         minTxAmount: 1000000n, // 0.001 ETH
         ddSubgraph: 'zkbob-eth-optimism',
+        addressPrefix: 'zkbob_optimism_eth',
       },
     },
     chains: {
@@ -87,6 +91,7 @@ const config = {
         tokenDecimals: 18,
         feeDecimals: 2,
         depositScheme: 'permit',
+        addressPrefix: 'zkbob_sepolia',
       },
       'BOB2USDC-goerli': {
         chainId: 5,
@@ -104,6 +109,7 @@ const config = {
           timestamp: 1688651376,
           prevTokenSymbol: 'BOB',
         },
+        addressPrefix: 'zkbob_goerli',
       },
       'USDC-goerli': {
         chainId: 5,
@@ -117,6 +123,7 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
         minTxAmount: 50000n, // 0.05 USDC
+        addressPrefix: 'zkbob_goerli_usdc',
       },
       'BOB-op-goerli': {
         chainId: 420,
@@ -129,6 +136,7 @@ const config = {
         tokenDecimals: 18,
         feeDecimals: 2,
         depositScheme: 'permit',
+        addressPrefix: 'zkbob_goerli_optimism',
       },
       'WETH-goerli': {
         chainId: 5,
@@ -143,6 +151,7 @@ const config = {
         depositScheme: 'permit2',
         minTxAmount: 1000000n, // 0.001 ETH
         ddSubgraph: 'zkbob-eth-goerli',
+        addressPrefix: 'zkbob_goerli_eth',
       },
     },
     chains: {

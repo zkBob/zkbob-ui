@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Layout from 'components/Layout';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Limits from 'components/Limits';
 import Tooltip from 'components/Tooltip';
+import TokenListModal from 'components/TokenListModal';
+import Skeleton from 'components/Skeleton';
 
 import WalletModal from 'containers/WalletModal';
 
@@ -18,9 +19,44 @@ import PseudoInput from './PseudoInput';
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
+import ModalContext from 'contexts/ModalContext';
+
+import config from 'config';
+
+import { formatNumber } from 'utils';
+
+import { useTokenList, useTokenAmount, useLimitsAndFees } from './hooks';
+
+const pools = Object.values(config.pools).map((pool, index) =>
+  ({ ...pool, alias: Object.keys(config.pools)[index] })
+);
+
 export default () => {
   const history = useHistory();
+  const params = useParams();
   const [amount, setAmount] = useState('');
+  const [selectedToken, setSelectedToken] = useState(null);
+
+  const addressPrefix = params.address.split(':')[0];
+  const pool = Object.values(pools).find(pool => pool.addressPrefix === addressPrefix);
+  if (!pool.paymentContractAddress) {
+    history.push('/');
+  }
+
+  const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
+
+  const tokenAmount = useTokenAmount(pool, selectedToken?.address, amount);
+
+  const { isTokenListModalOpen, openTokenListModal, closeTokenListModal } = useContext(ModalContext);
+  const tokenList = useTokenList(pool.chainId);
+
+  useEffect(() => {
+    if (tokenList.length) {
+      const defaultToken = tokenList.find(token => token.tags.includes('native'));
+      setSelectedToken(defaultToken);
+    }
+  }, [tokenList]);
+
   return (
     <>
       <Layout header={<Header />}>
@@ -29,12 +65,20 @@ export default () => {
           <InputLabel>The amount you'd like to send</InputLabel>
           <Input placeholder={0} value={amount} onChange={setAmount} />
           <InputLabel>Transfer amount</InputLabel>
-          <PseudoInput value={amount * 0.0005} tokenSymbol="ETH" />
+          <PseudoInput
+            value={tokenAmount}
+            token={selectedToken}
+            onSelect={openTokenListModal}
+          />
           <RowSpaceBetween>
-            <Text>The recipient will get payment in ETH</Text>
+            <Text>The recipient will get payment in {pool.tokenSymbol}</Text>
             <Row>
-              <Text>Fees: 1.4 USD</Text>
-              <Tooltip
+              <Text style={{ marginRight: 4 }}>Fee:</Text>
+              {isLoadingFee
+                ? <Skeleton width={40} />
+                : <Text>{formatNumber(fee, pool.tokenDecimals)} USD</Text>
+              }
+              {/* <Tooltip
                 content={
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span>Deposit fee: 0.2 USD</span>
@@ -46,23 +90,32 @@ export default () => {
                 delay={0}
               >
                 <InfoIcon />
-              </Tooltip>
+              </Tooltip> */}
             </Row>
           </RowSpaceBetween>
           <Button>Send</Button>
         </Card>
         <Limits
-          loading={false}
+          loading={isLoadingLimit}
           limits={[{
             prefix: 'The maximum amount',
             suffix: 'to be paid from one address',
-            value: ethers.utils.parseUnits('10000', 18),
+            value: limit,
           }]}
-          currentPool={{ tokenSymbol: 'USD', tokenDecimals: 18 }}
+          currentPool={{ ...pool, tokenSymbol: 'USD' }}
         />
         <TryZkBobBannerImage onClick={() => history.push('/')} />
       </Layout>
       <WalletModal />
+      <TokenListModal
+        isOpen={isTokenListModalOpen}
+        onClose={closeTokenListModal}
+        tokens={tokenList}
+        onSelect={token => {
+          setSelectedToken(token);
+          closeTokenListModal();
+        }}
+      />
     </>
   );
 }

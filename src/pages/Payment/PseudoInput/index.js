@@ -1,19 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 
-import { TOKENS_ICONS } from 'constants';
-
-export default ({ value, tokenSymbol }) => {
+export default ({ value, token, onSelect }) => {
   return (
     <Container>
       <Row>
-        <Value>{value || 0}</Value>
-        <TokenSymbol>{tokenSymbol}</TokenSymbol>
+        <Value>
+          {value.isZero()
+            ? 0
+            : ethers.utils.formatUnits(value, token?.decimals || 18)}
+        </Value>
+        <TokenSymbol>{token?.symbol}</TokenSymbol>
       </Row>
-      <Select>
-        <ItemIcon src={TOKENS_ICONS[tokenSymbol]} />
+      <Select onClick={onSelect}>
+        <ItemIcon src={token?.logoURI} />
         <DropdownIcon />
       </Select>
     </Container>
@@ -25,6 +28,7 @@ const Row = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  overflow: hidden;
 `;
 
 const Container = styled(Row)`
@@ -45,6 +49,7 @@ const TokenSymbol = styled.span`
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.transferInput.text.weight.default};
   margin-left: 8px;
+  white-space: nowrap;
 `;
 
 const Value = styled(TokenSymbol)`
@@ -52,6 +57,9 @@ const Value = styled(TokenSymbol)`
   font-size: 24px;
   color: ${props => props.theme.transferInput.text.color[!!props.children ? 'default' : 'placeholder']};
   min-width: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const ItemIcon = styled.img`
