@@ -6,6 +6,8 @@ import SupportIdContext from 'contexts/SupportIdContext';
 
 import zp from 'contexts/ZkAccountContext/zp';
 
+const MULTIPLIER = BigNumber.from('1000000'); // 100%
+const MAX_DIFF = BigNumber.from('1015000'); // 101.5%
 
 export function useTokenList(chainId) {
   const [tokenList, setTokenList] = useState([]);
@@ -27,36 +29,59 @@ export function useTokenList(chainId) {
   return tokenList;
 }
 
-export function useTokenAmount(pool, toToken, rawAmount) {
+export function useTokenAmount(pool, toToken, rawAmount, fee) {
+  const [amount, setAmount] = useState(ethers.constants.Zero);
   const [tokenAmount, setTokenAmount] = useState(ethers.constants.Zero);
-  const [amount, setAmount] = useState(null);
+  const [isTokenAmountLoading, setIsTokenAmountLoading] = useState(false);
 
   useEffect(() => {
-    if (!rawAmount || !pool) return;
+    if (!rawAmount || !pool) {
+      setAmount(ethers.constants.Zero);
+      return;
+    }
     const amount = ethers.utils.parseUnits(rawAmount, pool.tokenDecimals);
     const handler = setTimeout(() => setAmount(amount), 500);
     return () => clearTimeout(handler);
   }, [rawAmount, pool]);
 
   useEffect(() => {
-    if (!pool || !toToken || !amount) return;
+    if (!pool || !toToken) return;
+    if (amount.isZero()) {
+      setTokenAmount(ethers.constants.Zero);
+      return;
+    }
     async function getSwapDetails() {
+      setIsTokenAmountLoading(true);
       try {
         const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/quote`;
-        let params = `?src=${pool.tokenAddress}&dst=${toToken}&amount=${amount.toString()}`;
-        const reverseSwapData = await (await fetch(`${apiUrl}${params}`)).json();
-        params = `?src=${toToken}&dst=${pool.tokenAddress}&amount=${reverseSwapData.toAmount}`;
-        const swapData = await (await fetch(`${apiUrl}${params}`)).json();
-        setTokenAmount(BigNumber.from(reverseSwapData.toAmount));
+        const params = `?src=${pool.tokenAddress}&dst=${toToken}&amount=${amount.add(fee).toString()}`;
+        const data = await (await fetch(`${apiUrl}${params}`)).json();
+        const estimatedTokenAmount = BigNumber.from(data.toAmount);
+
+        async function matchTokenAmount(tokenAmount) {
+          const params = `?src=${toToken}&dst=${pool.tokenAddress}&amount=${tokenAmount}`;
+          const data = await (await fetch(`${apiUrl}${params}`)).json();
+          const receivedAmount = BigNumber.from(data.toAmount);
+          const diff = receivedAmount.mul(MULTIPLIER).div(amount.add(fee));
+          if (diff.gte(MULTIPLIER) && diff.lte(MAX_DIFF)) {
+            return tokenAmount;
+          }
+          return matchTokenAmount(tokenAmount.div(diff).mul(MULTIPLIER));
+        }
+        const tokenAmount = await matchTokenAmount(estimatedTokenAmount);
+        setTokenAmount(tokenAmount);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Payment.useSwapDetails' } });
       }
+      setIsTokenAmountLoading(false);
     }
     getSwapDetails();
-  }, [pool, toToken, amount]);
+    const intervalId = setInterval(getSwapDetails, 10000); // 10 seconds
+    return () => clearInterval(intervalId);
+  }, [pool, toToken, amount, fee]);
 
-  return tokenAmount;
+  return { tokenAmount, isTokenAmountLoading };
 }
 
 export function useLimitsAndFees(pool) {

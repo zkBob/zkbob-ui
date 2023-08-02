@@ -2,17 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 
+import Skeleton from 'components/Skeleton';
+
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 
-export default ({ value, token, onSelect }) => {
+export default ({ value, token, onSelect, isLoading }) => {
   return (
     <Container>
       <Row>
-        <Value>
-          {value.isZero()
-            ? 0
-            : ethers.utils.formatUnits(value, token?.decimals || 18)}
-        </Value>
+        {isLoading ? (
+          <Skeleton width={40} />
+        ) : (
+          <Value>
+            {value.isZero()
+              ? 0
+              : ethers.utils.formatUnits(value, token?.decimals || 18)}
+          </Value>
+        )}
         <TokenSymbol>{token?.symbol}</TokenSymbol>
       </Row>
       <Select onClick={onSelect}>

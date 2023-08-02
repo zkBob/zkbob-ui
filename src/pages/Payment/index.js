@@ -45,7 +45,7 @@ export default () => {
 
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
 
-  const tokenAmount = useTokenAmount(pool, selectedToken?.address, amount);
+  const { tokenAmount, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
 
   const { isTokenListModalOpen, openTokenListModal, closeTokenListModal } = useContext(ModalContext);
   const tokenList = useTokenList(pool.chainId);
@@ -69,6 +69,7 @@ export default () => {
             value={tokenAmount}
             token={selectedToken}
             onSelect={openTokenListModal}
+            isLoading={isTokenAmountLoading}
           />
           <RowSpaceBetween>
             <Text>The recipient will get payment in {pool.tokenSymbol}</Text>
