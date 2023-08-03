@@ -1,30 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 
 import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
+import { formatNumber } from 'utils';
 
-export default ({ value, token, onSelect, isLoading }) => {
+export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }) => {
   return (
     <Container>
+      <RowSpaceBetween>
+        <Row>
+          {isLoading ? (
+            <Skeleton width={40} />
+          ) : (
+            <Value>
+              {formatNumber(value, token?.decimals || 18, 6)}
+            </Value>
+          )}
+          <TokenSymbol>{token?.symbol}</TokenSymbol>
+        </Row>
+        <Select onClick={onSelect}>
+          <ItemIcon src={token?.logoURI} />
+          <DropdownIcon />
+        </Select>
+      </RowSpaceBetween>
       <Row>
-        {isLoading ? (
+        <Balance style={{ marginRight: 5 }}>Balance:</Balance>
+        {isLoadingBalance ? (
           <Skeleton width={40} />
         ) : (
-          <Value>
-            {value.isZero()
-              ? 0
-              : ethers.utils.formatUnits(value, token?.decimals || 18)}
-          </Value>
+          <Balance>{formatNumber(balance, token?.decimals || 18)} {token?.symbol}</Balance>
         )}
-        <TokenSymbol>{token?.symbol}</TokenSymbol>
       </Row>
-      <Select onClick={onSelect}>
-        <ItemIcon src={token?.logoURI} />
-        <DropdownIcon />
-      </Select>
     </Container>
   );
 };
@@ -37,12 +45,20 @@ const Row = styled.div`
   overflow: hidden;
 `;
 
-const Container = styled(Row)`
+const RowSpaceBetween = styled(Row)`
   justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   height: 60px;
   background: ${props => props.theme.input.background.primary};
   border-radius: 16px;
-  padding: 0px 24px;
+  padding: 10px 24px;
   transition : border-color 100ms ease-out;
   &:focus-within {
     border-color: ${props => props.theme.input.border.color.focus};
@@ -61,7 +77,7 @@ const TokenSymbol = styled.span`
 const Value = styled(TokenSymbol)`
   margin: 0;
   font-size: 24px;
-  color: ${props => props.theme.transferInput.text.color[!!props.children ? 'default' : 'placeholder']};
+  color: ${props => props.theme.transferInput.text.color[props.children !== '0' ? 'default' : 'placeholder']};
   min-width: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,4 +100,9 @@ const Select = styled.div`
 const DropdownIcon = styled(DropdownIconDefault)`
   margin-left: 4px;
   margin-top: 1px;
+`;
+
+const Balance = styled.span`
+  font-size: 14px;
+  color: ${props => props.theme.text.color.secondary};
 `;

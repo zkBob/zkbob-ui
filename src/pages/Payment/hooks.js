@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers, BigNumber } from 'ethers';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider, useContract } from 'wagmi';
 
 import SupportIdContext from 'contexts/SupportIdContext';
 
@@ -139,4 +140,39 @@ export function useLimitsAndFees(pool) {
   }, [zkClient, updateLimit, updateFee]);
 
   return { limit, isLoadingLimit, fee, isLoadingFee };
+}
+const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
+
+export function useTokenBalance(chainId, selectedToken) {
+  const { address: account } = useAccount();
+  const provider = useProvider({ chainId });
+  const [balance, setBalance] = useState(ethers.constants.Zero);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(true);
+
+  const updateBalance = useCallback(async () => {
+    setIsLoadingBalance(true);
+    let balance = ethers.constants.Zero;
+    if (account && selectedToken) {
+      try {
+        if (selectedToken.tags.includes('native')) {
+          balance = await provider.getBalance(account);
+        } else {
+          const token = new ethers.Contract(selectedToken.address, TOKEN_ABI, provider);
+          balance = await token.balanceOf(account);
+        }
+        console.log('balance', balance.toString());
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'Payment.useTokenBalace' } });
+      }
+    }
+    setBalance(balance);
+    setIsLoadingBalance(false);
+  }, [selectedToken, account, provider]);
+
+  useEffect(() => {
+    updateBalance();
+  }, [updateBalance]);
+
+  return { balance, isLoadingBalance };
 }

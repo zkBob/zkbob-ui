@@ -25,7 +25,7 @@ import config from 'config';
 
 import { formatNumber } from 'utils';
 
-import { useTokenList, useTokenAmount, useLimitsAndFees } from './hooks';
+import { useTokenList, useTokenAmount, useLimitsAndFees, useTokenBalance } from './hooks';
 
 const pools = Object.values(config.pools).map((pool, index) =>
   ({ ...pool, alias: Object.keys(config.pools)[index] })
@@ -44,7 +44,7 @@ export default () => {
   }
 
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
-
+  const { balance, isLoadingBalance } = useTokenBalance(pool?.chainId, selectedToken);
   const { tokenAmount, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
 
   const { isTokenListModalOpen, openTokenListModal, closeTokenListModal } = useContext(ModalContext);
@@ -70,6 +70,8 @@ export default () => {
             token={selectedToken}
             onSelect={openTokenListModal}
             isLoading={isTokenAmountLoading}
+            balance={balance}
+            isLoadingBalance={isLoadingBalance}
           />
           <RowSpaceBetween>
             <Text>The recipient will get payment in {pool.tokenSymbol}</Text>
