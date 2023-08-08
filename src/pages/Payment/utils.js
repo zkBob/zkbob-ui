@@ -155,7 +155,6 @@ export async function createPermitSignature(
   try {
     const values = { tokenAddress, chainId, ownerAddress, spenderAddress, value, deadline, provider, nullifier };
     const { domain, types, message } = await permits[type](values);
-    console.log({ domain, types, message })
     signature = await signer._signTypedData(domain, types, message);
   } catch (error) {
     console.error(error);

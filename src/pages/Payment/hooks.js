@@ -140,7 +140,7 @@ export function useLimitsAndFees(pool) {
     }
     setFee(fee);
     setIsLoadingFee(false);
-  }, [zkClient]);
+  }, [/*zkClient*/]);
 
   useEffect(() => {
     if (!zkClient) return;
@@ -198,7 +198,6 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress) {
         );
         const compactSignature = ethers.utils.splitSignature(rawSignature).compact;
         permitSignature = ethers.utils.solidityPack(['uint256','uint256','bytes'], [nullifier, deadline, compactSignature]);
-        console.log(permitSignature)
       }
 
       setTxStatus(TX_STATUSES.PREPARING_TRANSACTION);
@@ -274,7 +273,6 @@ export function useTokenBalance(chainId, selectedToken) {
           const token = new ethers.Contract(selectedToken.address, TOKEN_ABI, provider);
           balance = await token.balanceOf(account);
         }
-        console.log('balance', balance.toString());
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Payment.useTokenBalace' } });

@@ -20,7 +20,7 @@ import Input from './Input';
 import PseudoInput from './PseudoInput';
 
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
-import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
+// import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
@@ -218,11 +218,11 @@ const TryZkBobBannerImage = styled(TryZkBobBannerImageDefault)`
   cursor: pointer;
 `;
 
-const InfoIcon = styled(InfoIconDefault)`
-  margin-left: 5px;
-  &:hover {
-    & > path {
-      fill: ${props => props.theme.color.purple};
-    }
-  }
-`;
+// const InfoIcon = styled(InfoIconDefault)`
+//   margin-left: 5px;
+//   &:hover {
+//     & > path {
+//       fill: ${props => props.theme.color.purple};
+//     }
+//   }
+// `;
