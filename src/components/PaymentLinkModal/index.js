@@ -126,6 +126,7 @@ const LinkText = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
+  white-space: nowrap;
 `;
 
 const InputLabel = styled.span`

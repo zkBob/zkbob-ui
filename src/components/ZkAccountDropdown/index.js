@@ -126,9 +126,11 @@ const Content = ({
         You create a new address each time you connect.{' '}
         Receive tokens to this address or a previously generated address.
       </Description>
-      <OptionButton onClick={() => handleOptionClick(generatePaymentLink)}>
-        Get payment link
-      </OptionButton>
+      {currentPool.paymentContractAddress && (
+        <OptionButton onClick={() => handleOptionClick(generatePaymentLink)}>
+          Get payment link
+        </OptionButton>
+      )}
       <QRCodeReader onResult={initGiftCard}>
         <OptionButton>Redeem gift card</OptionButton>
       </QRCodeReader>
