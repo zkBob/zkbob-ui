@@ -9,9 +9,10 @@ import Link from 'components/Link';
 import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
 
-import { ModalContext, ZkAccountContext } from 'contexts';
+import { ModalContext, ZkAccountContext, PoolContext } from 'contexts';
 
 export default () => {
+  const { currentPool } = useContext(PoolContext);
   const { isPaymentLinkModalOpen, closePaymentLinkModal } = useContext(ModalContext);
   const { generateAddress } = useContext(ZkAccountContext);
 
@@ -25,7 +26,7 @@ export default () => {
       setAddress(address);
     }
     updateAddress();
-  }, [generateAddress]);
+  }, [generateAddress, currentPool]);
 
   const onCopy = useCallback((text, result) => {
     if (result) {
