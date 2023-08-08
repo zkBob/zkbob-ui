@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
 import Button from 'components/Button';
+import Link from 'components/Link';
 
 import { TX_STATUSES, NETWORKS } from 'constants';
 
@@ -30,6 +31,8 @@ const titles = {
   [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: 'Suspicious recipient address',
   [TX_STATUSES.WRONG_NETWORK]: 'Wrong network',
   [TX_STATUSES.SWITCH_NETWORK]: 'Please switch the network',
+  [TX_STATUSES.SENT]: 'Your payment was sent',
+  [TX_STATUSES.PREPARING_TRANSACTION]: 'Preparing transaction',
 };
 
 const descriptions = {
@@ -82,6 +85,14 @@ const descriptions = {
       Your approval was successful. Now you can deposit your tokens.
     </span>
   ),
+  [TX_STATUSES.SENT]: ({ currentPool, txHash }) => (
+    <span>
+      Your payment will be proceed during 10 minutes.<br />
+      <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
+        View the transaction
+      </Link>
+    </span>
+  ),
 };
 
 const SUCCESS_STATUSES = [
@@ -90,6 +101,7 @@ const SUCCESS_STATUSES = [
   TX_STATUSES.TRANSFERRED_MULTI,
   TX_STATUSES.WITHDRAWN,
   TX_STATUSES.APPROVED,
+  TX_STATUSES.SENT,
 ];
 const FAILURE_STATUSES = [
   TX_STATUSES.REJECTED,
@@ -101,7 +113,7 @@ const SUSPICIOUS_ACCOUNT_STATUSES = [
   TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL,
 ];
 
-export default ({ isOpen, onClose, status, amount, error, supportId, currentPool }) => {
+export default ({ isOpen, onClose, status, amount, error, supportId, currentPool, txHash }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -124,7 +136,7 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
         else return <Spinner />;
       })()}
       {descriptions[status] && (
-        <Description>{descriptions[status]({ amount, currentPool })}</Description>
+        <Description>{descriptions[status]({ amount, currentPool, txHash })}</Description>
       )}
       {(status === TX_STATUSES.REJECTED && error) && (
         <Description>{error}</Description>

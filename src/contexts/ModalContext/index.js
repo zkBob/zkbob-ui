@@ -69,6 +69,14 @@ export const ModalContextProvider = ({ children }) => {
   const openTokenSelector = () => setIsTokenSelectorOpen(true);
   const closeTokenSelector = () => setIsTokenSelectorOpen(false);
 
+  const [isTokenListModalOpen, setIsTokenListModalOpen] = useState(false);
+  const openTokenListModal = () => setIsTokenListModalOpen(true);
+  const closeTokenListModal = () => setIsTokenListModalOpen(false);
+
+  const [isPaymentLinkModalOpen, setIsPaymentLinkModalOpen] = useState(false);
+  const openPaymentLinkModal = () => setIsPaymentLinkModalOpen(true);
+  const closePaymentLinkModal = () => setIsPaymentLinkModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
@@ -82,6 +90,7 @@ export const ModalContextProvider = ({ children }) => {
     closeZkAccountDropdown();
     closeMoreDropdown();
     closeTokenSelector();
+    closePaymentLinkModal();
   };
 
   return (
@@ -103,6 +112,8 @@ export const ModalContextProvider = ({ children }) => {
         isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
         isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown,
         isTokenSelectorOpen, openTokenSelector, closeTokenSelector,
+        isTokenListModalOpen, openTokenListModal, closeTokenListModal,
+        isPaymentLinkModalOpen, openPaymentLinkModal, closePaymentLinkModal,
         closeAllModals,
       }}
     >

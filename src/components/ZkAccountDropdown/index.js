@@ -22,6 +22,7 @@ const Content = ({
   balance, generateAddress, getSeed, setPassword,
   removePassword, logout, close, showSeedPhrase,
   isLoadingState, initializeGiftCard, currentPool,
+  generatePaymentLink,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -125,6 +126,9 @@ const Content = ({
         You create a new address each time you connect.{' '}
         Receive tokens to this address or a previously generated address.
       </Description>
+      <OptionButton onClick={() => handleOptionClick(generatePaymentLink)}>
+        Get payment link
+      </OptionButton>
       <QRCodeReader onResult={initGiftCard}>
         <OptionButton>Redeem gift card</OptionButton>
       </QRCodeReader>
@@ -145,7 +149,7 @@ export default ({ children }) => {
   } = useContext(ZkAccountContext);
   const {
     openSeedPhraseModal, openAccountSetUpModal, openChangePasswordModal,
-    openConfirmLogoutModal, openDisablePasswordModal,
+    openConfirmLogoutModal, openDisablePasswordModal, openPaymentLinkModal,
     isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
   } = useContext(ModalContext);
   const { currentPool } = useContext(PoolContext);
@@ -170,6 +174,7 @@ export default ({ children }) => {
           getSeed={getSeed}
           currentPool={currentPool}
           close={closeZkAccountDropdown}
+          generatePaymentLink={openPaymentLinkModal}
         />
       )}
     >

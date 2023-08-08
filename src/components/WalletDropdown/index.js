@@ -59,25 +59,27 @@ const Content = ({
     <Container>
       <RowSpaceBetween>
         <SmallText>Wallet</SmallText>
-        <Row>
-          {currentPool.isNative && (
-            <>
-              <Balance
-                tokenSymbol={currentPool.tokenSymbol}
-                tokenDecimals={currentPool.tokenDecimals}
-                balance={nativeBalance}
-                isNative
-              />
-              <Text style={{ margin: '0 4px' }}>+</Text>
-            </>
-          )}
-          <Balance
-            tokenSymbol={currentPool.tokenSymbol}
-            tokenDecimals={currentPool.tokenDecimals}
-            balance={balance}
-            isWrapped={currentPool.isNative}
-          />
-        </Row>
+        {currentPool && (
+          <Row>
+            {currentPool.isNative && (
+              <>
+                <Balance
+                  tokenSymbol={currentPool.tokenSymbol}
+                  tokenDecimals={currentPool.tokenDecimals}
+                  balance={nativeBalance}
+                  isNative
+                />
+                <Text style={{ margin: '0 4px' }}>+</Text>
+              </>
+            )}
+            <Balance
+              tokenSymbol={currentPool.tokenSymbol}
+              tokenDecimals={currentPool.tokenDecimals}
+              balance={balance}
+              isWrapped={currentPool.isNative}
+            />
+          </Row>
+        )}
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>
         <AddressContainer>
@@ -88,12 +90,14 @@ const Content = ({
           </Tooltip>
         </AddressContainer>
       </CopyToClipboard>
-      <OptionButton
-        type="link"
-        href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
-      >
-        View in Explorer
-      </OptionButton>
+      {currentPool && (
+        <OptionButton
+          type="link"
+          href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
+        >
+          View in Explorer
+        </OptionButton>
+      )}
       <OptionButton onClick={onChangeWallet}>Change wallet</OptionButton>
       <OptionButton onClick={onDisconnect}>Disconnect</OptionButton>
     </Container>

@@ -24,12 +24,15 @@ import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
 import DemoBanner from 'components/DemoBanner';
 import RestrictionModal from 'components/RestrictionModal';
+import Layout from 'components/Layout';
+import PaymentLinkModal from 'components/PaymentLinkModal';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
+import Payment from 'pages/Payment';
 
 import aliceImage from 'assets/alice.webp';
 import bobImage from 'assets/bob.webp';
@@ -37,7 +40,7 @@ import robot1Image from 'assets/robot-1.webp';
 import robot2Image from 'assets/robot-2.webp';
 import robot3Image from 'assets/robot-3.webp';
 
-import { ZkAccountContext } from 'contexts';
+import ContextsProvider, { ZkAccountContext } from 'contexts';
 
 import { useRestriction } from 'hooks';
 
@@ -103,7 +106,7 @@ const Routes = ({ showWelcome, params }) => (
   </Switch>
 );
 
-const Content = () => {
+const MainApp = () => {
   const { zkAccount, isLoadingZkAccount, isDemo, lockAccount } = useContext(ZkAccountContext);
   const location = useLocation();
   const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
@@ -115,15 +118,9 @@ const Content = () => {
 
   if (isRestricted) {
     return (
-      <>
-        <Gradient />
-        <Layout>
-          <Header empty />
-          <PageContainer>
-            <RestrictionModal />
-          </PageContainer>
-        </Layout>
-      </>
+      <Layout header={<Header empty />}>
+        <RestrictionModal />
+      </Layout>
     );
   }
   return (
@@ -135,75 +132,42 @@ const Content = () => {
         <Robot2Image src={robot2Image} />
         <Robot3Image src={robot3Image} />
       </BackgroundImages>
-      <Gradient />
       {isDemo && <DemoBanner />}
-      <Layout>
-        <Header />
-        <PageContainer>
-          <Tabs />
-          <Routes showWelcome={showWelcome} params={location.search} />
-        </PageContainer>
-        <Footer />
-        <TransactionModal />
-        <WalletModal />
-        <AccountSetUpModal />
-        <RedeemGiftCardModal />
-        <PasswordModal />
-        <ChangePasswordModal />
-        <ToastContainer />
-        <SwapModal />
-        <ConfirmLogoutModal />
-        <SeedPhraseModal />
-        <IncreasedLimitsModal />
-        <DisablePasswordModal />
+      <Layout header={<Header />} footer={<Footer />}>
+        <Tabs />
+        <Routes showWelcome={showWelcome} params={location.search} />
       </Layout>
+      <TransactionModal />
+      <WalletModal />
+      <AccountSetUpModal />
+      <RedeemGiftCardModal />
+      <PasswordModal />
+      <ChangePasswordModal />
+      <ToastContainer />
+      <SwapModal />
+      <ConfirmLogoutModal />
+      <SeedPhraseModal />
+      <IncreasedLimitsModal />
+      <DisablePasswordModal />
+      <PaymentLinkModal />
     </>
   );
 }
 
 export default () => (
   <Router history={history}>
-    <Content />
+    <Switch>
+      <SentryRoute exact strict path="/payment/:address">
+        <Payment />
+      </SentryRoute>
+      <SentryRoute>
+        <ContextsProvider>
+          <MainApp />
+        </ContextsProvider>
+      </SentryRoute>
+    </Switch>
   </Router>
 );
-
-const Layout = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 14px 40px 40px;
-  background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
-  @media only screen and (max-width: 560px) {
-    padding: 21px 7px 28px;
-  }
-  @media only screen and (max-width: 800px) {
-    padding-bottom: 80px;
-`;
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  margin: 80px 0;
-  position: relative;
-  @media only screen and (max-width: 560px) {
-    margin: 30px 0;
-  }
-`;
-
-const Gradient = styled.div`
-  position: absolute;
-  width: 544px;
-  height: 585.08px;
-  left: calc(50% - 270px);
-  top: 100px;
-  background: linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
-  background: -moz-linear-gradient(231.28deg, rgba(247, 194, 59, 0.2) 19.66%, rgba(232, 110, 255, 0.2) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
-  filter: blur(250px);
-  transform: rotate(27.74deg) translate3d(0,0,0);
-`;
 
 const BackgroundImages = styled.div`
   position: absolute;

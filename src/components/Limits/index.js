@@ -8,7 +8,7 @@ import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import { formatNumber } from 'utils';
 
-const Limit = ({ value, loading, currentPool }) => {
+const Limit = ({ value, loading, currentPool, qty }) => {
   if (!value || loading) {
     return <Skeleton width={80} />
   }
@@ -24,7 +24,7 @@ const Limit = ({ value, loading, currentPool }) => {
       </Tooltip>
     </>
   ) : (
-    <Value style={{ marginRight: 23 }}>
+    <Value style={{ marginRight: qty > 1 ? 23 : 0 }}>
       {formatNumber(value, currentPool.tokenDecimals)} {currentPool.tokenSymbol}
     </Value>
   );
@@ -39,7 +39,7 @@ export default ({ limits, loading, currentPool }) => {
             {prefix}{' '}
             <NameSuffix>{suffix}</NameSuffix>
           </Name>
-          <Limit value={value} loading={loading} currentPool={currentPool} />
+          <Limit value={value} loading={loading} currentPool={currentPool} qty={limits.length} />
         </Row>
       ))}
     </Container>
@@ -86,6 +86,7 @@ const Value = styled.span`
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.bold};
   font-size: 14px;
+  margin-left: 10px;
 `;
 
 const InfoIcon = styled(InfoIconDefault)`

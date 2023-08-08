@@ -1,7 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-import ContextsProvider from 'contexts';
-
 import ThemeProvider from 'providers/ThemeProvider';
 import Web3Provider from 'providers/Web3Provider';
 
@@ -65,9 +63,7 @@ export default () => (
   <ThemeProvider>
     <GlobalStyle />
     <Web3Provider>
-      <ContextsProvider>
-        <Pages />
-      </ContextsProvider>
+      <Pages />
     </Web3Provider>
   </ThemeProvider>
 );
