@@ -14,8 +14,9 @@ import { createPermitSignature, getPermitType, getNullifier } from './utils';
 
 
 const MULTIPLIER = BigNumber.from('1000000'); // 100%
-const MIN_DIFF = BigNumber.from('5000'); // 0.5%
-const MAX_DIFF = BigNumber.from('15000'); // 1.5%
+const MIN_DIFF = BigNumber.from('1000'); // 0.1%
+const TARGET_DIFF = BigNumber.from('4000'); // 0.4%
+const MAX_DIFF = BigNumber.from('10000'); // 1.0%
 
 export function useTokenList(chainId) {
   const [tokenList, setTokenList] = useState([]);
@@ -61,7 +62,11 @@ export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
       setIsTokenAmountLoading(true);
       try {
         const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/quote`;
-        const params = `?src=${pool.tokenAddress}&dst=${fromToken}&amount=${amount.add(fee).toString()}`;
+        const amountWithFee = amount.add(fee);
+        const minAmount = amountWithFee.mul(MIN_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
+        const targetAmount = amountWithFee.mul(TARGET_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
+        const maxAmount = amountWithFee.mul(MAX_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
+        const params = `?src=${pool.tokenAddress}&dst=${fromToken}&amount=${targetAmount.toString()}`;
         const data = await (await fetch(`${apiUrl}${params}`)).json();
         const estimatedTokenAmount = BigNumber.from(data.toAmount);
 
@@ -70,12 +75,10 @@ export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
           const params = `?src=${fromToken}&dst=${pool.tokenAddress}&amount=${tokenAmount}`;
           const data = await (await fetch(`${apiUrl}${params}`)).json();
           const receivedAmount = BigNumber.from(data.toAmount);
-          let diff = receivedAmount.mul(MULTIPLIER).div(amount.add(fee));
-          if (diff.gte(MULTIPLIER.add(MIN_DIFF)) && diff.lte(MULTIPLIER.add(MAX_DIFF))) {
+          if (receivedAmount.gte(minAmount) && receivedAmount.lte(maxAmount)) {
             return tokenAmount;
           }
-          diff = diff.gte(MULTIPLIER) ? diff.add(MIN_DIFF) : diff.sub(MIN_DIFF);
-          return matchTokenAmount(tokenAmount.mul(MULTIPLIER).div(diff), attempt + 1);
+          return matchTokenAmount(tokenAmount.mul(targetAmount).div(receivedAmount), attempt + 1);
         }
         const tokenAmount = await matchTokenAmount(estimatedTokenAmount);
         setTokenAmount(tokenAmount);
