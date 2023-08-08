@@ -25,6 +25,7 @@ import Footer from 'components/Footer';
 import DemoBanner from 'components/DemoBanner';
 import RestrictionModal from 'components/RestrictionModal';
 import Layout from 'components/Layout';
+import PaymentLinkModal from 'components/PaymentLinkModal';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -148,6 +149,7 @@ const MainApp = () => {
       <SeedPhraseModal />
       <IncreasedLimitsModal />
       <DisablePasswordModal />
+      <PaymentLinkModal />
     </>
   );
 }
