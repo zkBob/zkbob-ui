@@ -15,6 +15,8 @@ export const TX_STATUSES = {
   SUSPICIOUS_ACCOUNT_WITHDRAWAL: 'suspicious_account_withdrawal',
   WRONG_NETWORK: 'wrong_network',
   SWITCH_NETWORK: 'switch_network',
+  SENT: 'sent',
+  PREPARING_TRANSACTION: 'preparing_transaction',
 };
 
 export const NETWORKS = {
@@ -79,3 +81,5 @@ export const INCREASED_LIMITS_STATUSES = {
   INACTIVE: 'inactive',
   RESYNC: 'resync',
 };
+
+export const PERMIT2_CONTRACT_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';

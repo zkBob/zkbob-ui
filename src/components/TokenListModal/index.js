@@ -28,10 +28,20 @@ export default ({ isOpen, onClose, tokens, onSelect }) => {
     [tokens, search]
   );
 
+  const handleClose = () => {
+    setSearch('');
+    onClose();
+  };
+
+  const handleSelect = token => {
+    setSearch('');
+    onSelect(token);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="Token list"
       width={460}
     >
@@ -45,7 +55,7 @@ export default ({ isOpen, onClose, tokens, onSelect }) => {
         />
         <List>
           {filteredTokens.map((token, index) => (
-            <ListItem key={index} token={token} onClick={() => onSelect(token)} />
+            <ListItem key={index} token={token} onClick={() => handleSelect(token)} />
           ))}
         </List>
         {!filteredTokens.length && (

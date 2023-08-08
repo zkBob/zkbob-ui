@@ -1,14 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useHistory, useParams } from 'react-router-dom';
+import { useAccount } from 'wagmi';
+import { ethers } from 'ethers';
 
 import Layout from 'components/Layout';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Limits from 'components/Limits';
-import Tooltip from 'components/Tooltip';
+// import Tooltip from 'components/Tooltip';
 import TokenListModal from 'components/TokenListModal';
 import Skeleton from 'components/Skeleton';
+import TransactionModal from 'components/TransactionModal';
 
 import WalletModal from 'containers/WalletModal';
 
@@ -19,35 +22,45 @@ import PseudoInput from './PseudoInput';
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import ModalContext from 'contexts/ModalContext';
+import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
+import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
+import TransactionModalContext, { TransactionModalContextProvider } from 'contexts/TransactionModalContext';
 
 import config from 'config';
 
 import { formatNumber } from 'utils';
-
-import { useTokenList, useTokenAmount, useLimitsAndFees, useTokenBalance } from './hooks';
+import { useApproval } from 'hooks';
+import { useTokenList, useTokenAmount, useLimitsAndFees, useTokenBalance, usePayment } from './hooks';
+import { getPermitType } from './utils';
 
 const pools = Object.values(config.pools).map((pool, index) =>
   ({ ...pool, alias: Object.keys(config.pools)[index] })
 );
 
-export default () => {
+const Payment = () => {
+  const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const params = useParams();
-  const [amount, setAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState(null);
-
   const addressPrefix = params.address.split(':')[0];
   const pool = Object.values(pools).find(pool => pool.addressPrefix === addressPrefix);
   if (!pool.paymentContractAddress) {
     history.push('/');
   }
 
+  const { address: account } = useAccount();
+  const [displayedAmount, setDisplayedAmount] = useState('');
+  const amount = useMemo(() => ethers.utils.parseUnits(displayedAmount || '0', pool?.tokenDecimals), [displayedAmount, pool]);
+  const [selectedToken, setSelectedToken] = useState(null);
+
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
   const { balance, isLoadingBalance } = useTokenBalance(pool?.chainId, selectedToken);
   const { tokenAmount, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
+  const { isApproved, approve } = useApproval(pool?.chainId, selectedToken?.address, tokenAmount);
+  const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
+  const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address);
 
-  const { isTokenListModalOpen, openTokenListModal, closeTokenListModal } = useContext(ModalContext);
+  const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
+  const { isTokenListModalOpen, openTokenListModal, closeTokenListModal, openWalletModal } = useContext(ModalContext);
   const tokenList = useTokenList(pool.chainId);
 
   useEffect(() => {
@@ -57,13 +70,18 @@ export default () => {
     }
   }, [tokenList]);
 
+  const onSend = () => {
+    setDisplayedAmount('');
+    send();
+  };
+
   return (
     <>
       <Layout header={<Header />}>
         <Title>Enter USD value and choose a token</Title>
         <Card>
           <InputLabel>The amount you'd like to send</InputLabel>
-          <Input placeholder={0} value={amount} onChange={setAmount} />
+          <Input placeholder={0} value={displayedAmount} onChange={setDisplayedAmount} />
           <InputLabel>Transfer amount</InputLabel>
           <PseudoInput
             value={tokenAmount}
@@ -96,7 +114,20 @@ export default () => {
               </Tooltip> */}
             </Row>
           </RowSpaceBetween>
-          <Button>Send</Button>
+          {(() => {
+            if (!account)
+              return <Button onClick={openWalletModal}>Connect wallet</Button>
+            else if (tokenAmount.isZero())
+              return <Button disabled>Enter amount</Button>
+            else if (tokenAmount.gt(balance))
+              return <Button disabled>Insufficient {selectedToken?.symbol} balance</Button>
+            else if (amount.gt(limit))
+              return <Button disabled>Amount exceeds limit</Button>
+            else if (!selectedToken?.tags.includes('native') && permitType === 'permit2' && !isApproved)
+              return <Button onClick={approve}>Approve tokens</Button>
+            else
+              return <Button onClick={onSend}>Send</Button>;
+          })()}
         </Card>
         <Limits
           loading={isLoadingLimit}
@@ -119,9 +150,29 @@ export default () => {
           closeTokenListModal();
         }}
       />
+      <TransactionModal
+        isOpen={isTxModalOpen}
+        onClose={closeTxModal}
+        status={txStatus}
+        amount={txAmount}
+        error={txError}
+        supportId={supportId}
+        currentPool={pool}
+        txHash={txHash}
+      />
     </>
   );
 }
+
+export default () => (
+  <SupportIdContextProvider>
+    <TransactionModalContextProvider>
+      <ModalContextProvider>
+        <Payment />
+      </ModalContextProvider>
+    </TransactionModalContextProvider>
+  </SupportIdContextProvider>
+);
 
 const Row = styled.div`
   display: flex;

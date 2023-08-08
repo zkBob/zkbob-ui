@@ -1,14 +1,21 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider, useContract } from 'wagmi';
+import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 
 import SupportIdContext from 'contexts/SupportIdContext';
+import TransactionModalContext from 'contexts/TransactionModalContext';
 
 import zp from 'contexts/ZkAccountContext/zp';
 
+import { TX_STATUSES } from 'constants';
+
+import { createPermitSignature, getPermitType, getNullifier } from './utils';
+
+
 const MULTIPLIER = BigNumber.from('1000000'); // 100%
-const MAX_DIFF = BigNumber.from('1015000'); // 101.5%
+const MIN_DIFF = BigNumber.from('5000'); // 0.5%
+const MAX_DIFF = BigNumber.from('15000'); // 1.5%
 
 export function useTokenList(chainId) {
   const [tokenList, setTokenList] = useState([]);
@@ -30,48 +37,50 @@ export function useTokenList(chainId) {
   return tokenList;
 }
 
-export function useTokenAmount(pool, toToken, rawAmount, fee) {
+export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
   const [amount, setAmount] = useState(ethers.constants.Zero);
   const [tokenAmount, setTokenAmount] = useState(ethers.constants.Zero);
   const [isTokenAmountLoading, setIsTokenAmountLoading] = useState(false);
 
   useEffect(() => {
-    if (!rawAmount || !pool) {
-      setAmount(ethers.constants.Zero);
-      return;
-    }
-    const amount = ethers.utils.parseUnits(rawAmount, pool.tokenDecimals);
-    const handler = setTimeout(() => setAmount(amount), 500);
+    const handler = setTimeout(() => setAmount(enteredAmount), 500);
     return () => clearTimeout(handler);
-  }, [rawAmount, pool]);
+  }, [enteredAmount, pool]);
 
   useEffect(() => {
-    if (!pool || !toToken) return;
+    if (!pool || !fromToken) return;
     if (amount.isZero()) {
       setTokenAmount(ethers.constants.Zero);
+      return;
+    }
+    if (pool.tokenAddress.toLowerCase() === fromToken.toLowerCase()) {
+      setTokenAmount(amount.add(fee));
       return;
     }
     async function getSwapDetails() {
       setIsTokenAmountLoading(true);
       try {
         const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/quote`;
-        const params = `?src=${pool.tokenAddress}&dst=${toToken}&amount=${amount.add(fee).toString()}`;
+        const params = `?src=${pool.tokenAddress}&dst=${fromToken}&amount=${amount.add(fee).toString()}`;
         const data = await (await fetch(`${apiUrl}${params}`)).json();
         const estimatedTokenAmount = BigNumber.from(data.toAmount);
 
-        async function matchTokenAmount(tokenAmount) {
-          const params = `?src=${toToken}&dst=${pool.tokenAddress}&amount=${tokenAmount}`;
+        async function matchTokenAmount(tokenAmount, attempt = 0) {
+          if (attempt > 10) throw new Error('Too many attempts');
+          const params = `?src=${fromToken}&dst=${pool.tokenAddress}&amount=${tokenAmount}`;
           const data = await (await fetch(`${apiUrl}${params}`)).json();
           const receivedAmount = BigNumber.from(data.toAmount);
-          const diff = receivedAmount.mul(MULTIPLIER).div(amount.add(fee));
-          if (diff.gte(MULTIPLIER) && diff.lte(MAX_DIFF)) {
+          let diff = receivedAmount.mul(MULTIPLIER).div(amount.add(fee));
+          if (diff.gte(MULTIPLIER.add(MIN_DIFF)) && diff.lte(MULTIPLIER.add(MAX_DIFF))) {
             return tokenAmount;
           }
-          return matchTokenAmount(tokenAmount.div(diff).mul(MULTIPLIER));
+          diff = diff.gte(MULTIPLIER) ? diff.add(MIN_DIFF) : diff.sub(MIN_DIFF);
+          return matchTokenAmount(tokenAmount.mul(MULTIPLIER).div(diff), attempt + 1);
         }
         const tokenAmount = await matchTokenAmount(estimatedTokenAmount);
         setTokenAmount(tokenAmount);
       } catch (error) {
+        setTokenAmount(ethers.constants.Zero);
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Payment.useSwapDetails' } });
       }
@@ -80,7 +89,7 @@ export function useTokenAmount(pool, toToken, rawAmount, fee) {
     getSwapDetails();
     const intervalId = setInterval(getSwapDetails, 10000); // 10 seconds
     return () => clearInterval(intervalId);
-  }, [pool, toToken, amount, fee]);
+  }, [pool, fromToken, amount, fee]);
 
   return { tokenAmount, isTokenAmountLoading };
 }
@@ -141,6 +150,111 @@ export function useLimitsAndFees(pool) {
 
   return { limit, isLoadingLimit, fee, isLoadingFee };
 }
+
+export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress) {
+  const { openTxModal, setTxStatus, setTxHash, setTxError } = useContext(TransactionModalContext);
+  const { address: account } = useAccount();
+  const { chain } = useNetwork();
+  const { data: signer } = useSigner({ chainId: pool.chainId });
+  const provider = useProvider({ chainId: pool.chainId });
+  const { switchNetworkAsync } = useSwitchNetwork({
+    chainId: pool.chainId,
+    throwForSwitchChainNotSupported: true,
+  });
+
+  const send = useCallback(async () => {
+    openTxModal();
+    try {
+      if (chain.id !== pool.chainId) {
+        setTxStatus(TX_STATUSES.SWITCH_NETWORK);
+        try {
+          await switchNetworkAsync();
+        } catch (error) {
+          console.error(error);
+          Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit.switchNetwork' } });
+          setTxStatus(TX_STATUSES.WRONG_NETWORK);
+          return;
+        }
+      }
+
+      const isNative = token.tags.includes('native');
+      let permitSignature = '0x';
+      if (!isNative) {
+        setTxStatus(TX_STATUSES.SIGN_MESSAGE);
+        const permitType = getPermitType(token, pool.chainId);
+        const deadline = Math.floor((Date.now() + 1000 * 60 * 60 * 24 * 365) / 1000); // 1 year
+        const nullifier = getNullifier(permitType);
+        const rawSignature = await createPermitSignature(
+          permitType,
+          pool.chainId,
+          token.address,
+          provider,
+          signer,
+          account,
+          pool.paymentContractAddress,
+          tokenAmount,
+          deadline,
+          nullifier,
+        );
+        const compactSignature = ethers.utils.splitSignature(rawSignature).compact;
+        permitSignature = ethers.utils.solidityPack(['uint256','uint256','bytes'], [nullifier, deadline, compactSignature]);
+        console.log(permitSignature)
+      }
+
+      setTxStatus(TX_STATUSES.PREPARING_TRANSACTION);
+      let oneInchData ='0x';
+      if (token.address.toLowerCase() !== pool.tokenAddress.toLowerCase()) {
+        const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/swap`;
+        const params = `?src=${token.address}&dst=${pool.tokenAddress}&amount=${tokenAmount.toString()}&from=${account}&slippage=1&receiver=${pool.paymentContractAddress}&disableEstimate=true`;
+        let data;
+        try {
+          data = await (await fetch(`${apiUrl}${params}`)).json();
+          oneInchData = data.tx.data;
+        } catch (error) {
+          throw new Error('Error getting exchange data. Please try again.');
+        }
+        if (BigNumber.from(data.toAmount).lt(amount.add(fee))) {
+          throw new Error('The exchange rate was changed. Please try again.');
+        }
+      }
+
+      setTxStatus(TX_STATUSES.CONFIRM_TRANSACTION);
+      const paymentABI = ['function pay(bytes,address,uint256,uint256,bytes,bytes,bytes) external payable'];
+      const paymentContractInstance = new ethers.Contract(pool.paymentContractAddress, paymentABI, signer);
+      const note = '0x';
+      const decodedZkAddress = ethers.utils.hexlify(ethers.utils.base58.decode(zkAddress.split(':')[1]));
+      const tx = await paymentContractInstance.pay(
+        decodedZkAddress,
+        isNative ? ethers.constants.AddressZero : token.address,
+        tokenAmount,
+        amount.add(fee),
+        permitSignature,
+        oneInchData,
+        note,
+        {
+          value: isNative ? tokenAmount : ethers.constants.Zero,
+          gasLimit: 2000000,
+        },
+      );
+      setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
+      await tx.wait();
+      setTxHash(tx.hash);
+      setTxStatus(TX_STATUSES.SENT);
+    } catch (error) {
+      console.error(error);
+      Sentry.captureException(error, { tags: { method: 'Payment.usePayment.send' } });
+      setTxError(error?.message);
+      setTxStatus(TX_STATUSES.REJECTED);
+    }
+  }, [
+    chain, pool, token, tokenAmount, account, provider, signer,
+    openTxModal, setTxStatus, setTxError, switchNetworkAsync,
+    zkAddress, fee, amount, setTxHash,
+  ]);
+
+  return { send };
+}
+
 const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
 
 export function useTokenBalance(chainId, selectedToken) {

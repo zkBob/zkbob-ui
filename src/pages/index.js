@@ -40,8 +40,6 @@ import robot2Image from 'assets/robot-2.webp';
 import robot3Image from 'assets/robot-3.webp';
 
 import ContextsProvider, { ZkAccountContext } from 'contexts';
-import { ModalContextProvider } from 'contexts/ModalContext';
-import { SupportIdContextProvider } from 'contexts/SupportIdContext';
 
 import { useRestriction } from 'hooks';
 
@@ -158,11 +156,7 @@ export default () => (
   <Router history={history}>
     <Switch>
       <SentryRoute exact strict path="/payment/:address">
-        <SupportIdContextProvider>
-          <ModalContextProvider>
-            <Payment />
-          </ModalContextProvider>
-        </SupportIdContextProvider>
+        <Payment />
       </SentryRoute>
       <SentryRoute>
         <ContextsProvider>

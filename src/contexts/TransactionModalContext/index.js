@@ -9,6 +9,7 @@ export const TransactionModalContextProvider = ({ children }) => {
   const [txStatus, setTxStatus] = useState(null);
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [txAmount, setTxAmount] = useState(ethers.constants.Zero);
+  const [txHash, setTxHash] = useState(null);
   const [txError, setTxError] = useState(null);
   const openTxModal = useCallback(() => {
     setIsTxModalOpen(true);
@@ -18,6 +19,7 @@ export const TransactionModalContextProvider = ({ children }) => {
     setTxStatus(null);
     setTxAmount(ethers.constants.Zero);
     setTxError(null);
+    setTxHash(null);
   }, []);
   return (
     <TransactionModalContext.Provider
@@ -26,6 +28,7 @@ export const TransactionModalContextProvider = ({ children }) => {
         isTxModalOpen, openTxModal, closeTxModal,
         txAmount, setTxAmount,
         txError, setTxError,
+        txHash, setTxHash,
       }}
     >
       {children}
