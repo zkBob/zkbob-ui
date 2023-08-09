@@ -61,14 +61,16 @@ const Payment = () => {
 
   const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
   const { isTokenListModalOpen, openTokenListModal, closeTokenListModal, openWalletModal } = useContext(ModalContext);
-  const tokenList = useTokenList(pool.chainId);
+  const tokenList = useTokenList(pool);
 
   useEffect(() => {
     if (tokenList.length) {
-      const defaultToken = tokenList.find(token => token.tags.includes('native'));
+      const defaultToken =
+        tokenList.find(token => token.symbol === pool.tokenSymbol) ||
+        tokenList.find(token => token.tags.includes('native'));
       setSelectedToken(defaultToken);
     }
-  }, [tokenList]);
+  }, [tokenList, pool]);
 
   const onSend = () => {
     setDisplayedAmount('');
@@ -92,7 +94,9 @@ const Payment = () => {
             isLoadingBalance={isLoadingBalance}
           />
           <RowSpaceBetween>
-            <Text>The recipient will get payment in {pool.tokenSymbol}</Text>
+            <Text style={{ marginRight: 20 }}>
+              The recipient will get payment in {pool.tokenSymbol}
+            </Text>
             <Row>
               <Text style={{ marginRight: 4 }}>Fee:</Text>
               {isLoadingFee
