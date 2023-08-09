@@ -92,7 +92,9 @@ const Payment = () => {
             isLoadingBalance={isLoadingBalance}
           />
           <RowSpaceBetween>
-            <Text>The recipient will get payment in {pool.tokenSymbol}</Text>
+            <Text style={{ marginRight: 20 }}>
+              The recipient will get payment in {pool.tokenSymbol}
+            </Text>
             <Row>
               <Text style={{ marginRight: 4 }}>Fee:</Text>
               {isLoadingFee

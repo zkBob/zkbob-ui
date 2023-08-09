@@ -19,7 +19,7 @@ export default () => {
   const { openWalletModal } = useContext(ModalContext);
   return (
     <Header>
-      <Logo />
+      <Logo style={{ marginRight: 10 }} />
       <Row>
         <NetworkLabel>
           <NetworkIcon src={NETWORKS[137].icon} />
