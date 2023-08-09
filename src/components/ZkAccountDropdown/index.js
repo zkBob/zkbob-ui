@@ -1,7 +1,6 @@
 import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import QRCode from 'react-qr-code';
-import { isMobile } from 'react-device-detect';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -109,11 +108,9 @@ const Content = ({
           <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>
       </RowSpaceBetween>
-      {isMobile &&
-        <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
-          Generate QR code address
-        </Button>
-      }
+      <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
+        Generate QR code address
+      </Button>
       {privateAddress ? (
         <PrivateAddress>{privateAddress}</PrivateAddress>
       ) : (
