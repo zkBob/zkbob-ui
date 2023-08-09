@@ -18,22 +18,27 @@ const MIN_DIFF = BigNumber.from('1000'); // 0.1%
 const TARGET_DIFF = BigNumber.from('4000'); // 0.4%
 const MAX_DIFF = BigNumber.from('10000'); // 1.0%
 
-export function useTokenList(chainId) {
+export function useTokenList(pool) {
   const [tokenList, setTokenList] = useState([]);
 
   useEffect(() => {
     async function getTokenList() {
       try {
-        const url = `https://api.1inch.io/v5.2/${chainId}/tokens`;
+        const url = `https://api.1inch.io/v5.2/${pool.chainId}/tokens`;
         const data = await (await fetch(url)).json();
-        setTokenList(Object.values(data.tokens));
+        const tokens = Object.values(data.tokens);
+        const index = tokens.findIndex(token => token.symbol === pool.tokenSymbol);
+        if (index > 0) {
+          tokens.unshift(tokens.splice(index, 1)[0]);
+        }
+        setTokenList(tokens);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Payment.useTokenList' } });
       }
     }
     getTokenList();
-  }, [chainId]);
+  }, [pool]);
 
   return tokenList;
 }
