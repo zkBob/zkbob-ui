@@ -15,7 +15,7 @@ const TOKEN_ABI = [
 ];
 
 export default (chainId, tokenAddress, amount, balance) => {
-  const { openTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
+  const { openTxModal, closeTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
   const { address: account } = useAccount();
   const { chain } = useNetwork();
   const { data: signer } = useSigner({ chainId });
@@ -62,7 +62,7 @@ export default (chainId, tokenAddress, amount, balance) => {
       const tx = await token.approve(PERMIT2_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await tx.wait();
-      setTxStatus(TX_STATUSES.APPROVED);
+      closeTxModal();
       updateAllowance();
     } catch (error) {
       console.error(error);
@@ -73,7 +73,10 @@ export default (chainId, tokenAddress, amount, balance) => {
       setTxError(message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
-  }, [openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain, signer, updateAllowance, chainId, tokenAddress]);
+  }, [
+    openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain,
+    signer, updateAllowance, chainId, tokenAddress, closeTxModal,
+  ]);
 
   return { isApproved, approve, updateAllowance };
 }

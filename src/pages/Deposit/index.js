@@ -22,8 +22,8 @@ import DefaultLink from 'components/Link';
 
 import { ReactComponent as WargingIcon } from 'assets/warning.svg';
 
-import { useFee, useParsedAmount, useLatestAction } from 'hooks';
-import { useDepositLimit, useMaxAmountExceeded, useApproval } from './hooks';
+import { useFee, useParsedAmount, useLatestAction, useApproval } from 'hooks';
+import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 
 import { formatNumber, minBigNumber } from 'utils';
 
@@ -55,7 +55,7 @@ export default () => {
     () => isNativeTokenUsed ? directDepositFee : fee,
     [isNativeTokenUsed, directDepositFee, fee],
   );
-  const { isApproved, approve } = useApproval(amount.add(fee), balance);
+  const { isApproved, approve } = useApproval(currentPool.chainId, currentPool.tokenAddress, amount.add(fee), balance);
   const depositLimit = useDepositLimit(limits, isNativeTokenUsed);
   const maxAmountExceeded = useMaxAmountExceeded(amount, usedBalance, usedFee, depositLimit);
 
