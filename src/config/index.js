@@ -24,7 +24,7 @@ const config = {
           prevTokenSymbol: 'BOB',
         },
         addressPrefix: 'zkbob_polygon',
-        paymentContractAddress: '0x88d1b47eb3C46C232a10D04618276eE4371c7408',
+        paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
       },
       'BOB-optimism': {
         chainId: 10,

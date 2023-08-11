@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers, BigNumber } from 'ethers';
 import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
+import { LiFi } from '@lifi/sdk';
 
 import SupportIdContext from 'contexts/SupportIdContext';
 import TransactionModalContext from 'contexts/TransactionModalContext';
@@ -12,6 +13,9 @@ import { TX_STATUSES } from 'constants';
 
 import { createPermitSignature, getPermitType, getNullifier } from './utils';
 
+const lifi = new LiFi({
+  integrator: 'zkBob',
+});
 
 const MULTIPLIER = BigNumber.from('1000000'); // 100%
 const MIN_DIFF = BigNumber.from('1000'); // 0.1%
@@ -24,10 +28,10 @@ export function useTokenList(pool) {
   useEffect(() => {
     async function getTokenList() {
       try {
-        const url = `https://api.1inch.io/v5.2/${pool.chainId}/tokens`;
+        const url = `https://tokens.1inch.io/v1.2/${pool.chainId}`;
         const data = await (await fetch(url)).json();
-        const tokens = Object.values(data.tokens);
-        const index = tokens.findIndex(token => token.symbol === pool.tokenSymbol);
+        const tokens = Object.entries(data).map(([key, value]) => ({ address: key, ...value }));
+        const index = tokens.findIndex(token => token.address === pool.tokenAddress);
         if (index > 0) {
           tokens.unshift(tokens.splice(index, 1)[0]);
         }
@@ -45,7 +49,7 @@ export function useTokenList(pool) {
 
 export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
   const [amount, setAmount] = useState(ethers.constants.Zero);
-  const [tokenAmount, setTokenAmount] = useState(ethers.constants.Zero);
+  const [liFiRoute, setLiFiRoute] = useState(null);
   const [isTokenAmountLoading, setIsTokenAmountLoading] = useState(false);
 
   useEffect(() => {
@@ -56,50 +60,69 @@ export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
   useEffect(() => {
     if (!pool || !fromToken) return;
     if (amount.isZero()) {
-      setTokenAmount(ethers.constants.Zero);
+      setLiFiRoute(null);
       return;
     }
+
+    const amountWithFee = amount.add(fee);
+
     if (pool.tokenAddress.toLowerCase() === fromToken.toLowerCase()) {
-      setTokenAmount(amount.add(fee));
+      setLiFiRoute({ estimate: { fromAmount: amountWithFee } });
       return;
     }
     async function getSwapDetails() {
       setIsTokenAmountLoading(true);
       try {
-        const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/quote`;
-        const amountWithFee = amount.add(fee);
         const minAmount = amountWithFee.mul(MIN_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
         const targetAmount = amountWithFee.mul(TARGET_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
         const maxAmount = amountWithFee.mul(MAX_DIFF.add(MULTIPLIER)).div((MULTIPLIER));
-        const params = `?src=${pool.tokenAddress}&dst=${fromToken}&amount=${targetAmount.toString()}`;
-        const data = await (await fetch(`${apiUrl}${params}`)).json();
-        const estimatedTokenAmount = BigNumber.from(data.toAmount);
 
-        async function matchTokenAmount(tokenAmount, attempt = 0) {
-          if (attempt > 10) throw new Error('Too many attempts');
-          const params = `?src=${fromToken}&dst=${pool.tokenAddress}&amount=${tokenAmount}`;
-          const data = await (await fetch(`${apiUrl}${params}`)).json();
-          const receivedAmount = BigNumber.from(data.toAmount);
-          if (receivedAmount.gte(minAmount) && receivedAmount.lte(maxAmount)) {
-            return tokenAmount;
-          }
-          return matchTokenAmount(tokenAmount.mul(targetAmount).div(receivedAmount), attempt + 1);
+        const opts = {
+          fromChainId: pool.chainId,
+          fromAmount: targetAmount.toString(),
+          fromTokenAddress: pool.tokenAddress,
+          fromAddress: pool.paymentContractAddress,
+          toChainId: pool.chainId,
+          toTokenAddress: fromToken,
+          toAddress: pool.paymentContractAddress,
+        };
+        const routes = await lifi.getRoutes(opts);
+        if (routes.routes.length === 0) {
+          throw new Error("no routes found");
         }
-        const tokenAmount = await matchTokenAmount(estimatedTokenAmount);
-        setTokenAmount(tokenAmount);
+        const estimatedTokenAmount = BigNumber.from(routes.routes[0].toAmount);
+
+        [opts.fromTokenAddress, opts.toTokenAddress] = [opts.toTokenAddress, opts.fromTokenAddress];
+
+        async function findLiFiRoute(tokenAmount, attempt = 0) {
+          if (attempt > 10) throw new Error('Too many attempts');
+          opts.fromAmount = tokenAmount.toString();
+          const routes = await lifi.getRoutes(opts);
+          if (routes.routes.length === 0) {
+            throw new Error("no routes found");
+          }
+          const receivedAmount = BigNumber.from(routes.routes[0].toAmount);
+
+          if (receivedAmount.gte(minAmount) && receivedAmount.lte(maxAmount)) {
+            return routes.routes[0].steps[0];
+          }
+          return findLiFiRoute(tokenAmount.mul(targetAmount).div(receivedAmount), attempt + 1);
+        }
+        const liFiRoute = await findLiFiRoute(estimatedTokenAmount);
+        setLiFiRoute(liFiRoute);
       } catch (error) {
-        setTokenAmount(ethers.constants.Zero);
+        setLiFiRoute(null);
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'Payment.useSwapDetails' } });
       }
       setIsTokenAmountLoading(false);
     }
     getSwapDetails();
-    const intervalId = setInterval(getSwapDetails, 10000); // 10 seconds
+    const intervalId = setInterval(getSwapDetails, 20000); // 20 seconds
     return () => clearInterval(intervalId);
   }, [pool, fromToken, amount, fee]);
 
-  return { tokenAmount, isTokenAmountLoading };
+  return { tokenAmount: BigNumber.from(liFiRoute?.estimate?.fromAmount || '0'), liFiRoute, isTokenAmountLoading };
 }
 
 export function useLimitsAndFees(pool) {
@@ -159,7 +182,7 @@ export function useLimitsAndFees(pool) {
   return { limit, isLoadingLimit, fee, isLoadingFee };
 }
 
-export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress) {
+export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liFiRoute) {
   const { openTxModal, setTxStatus, setTxHash, setTxError } = useContext(TransactionModalContext);
   const { address: account } = useAccount();
   const { chain } = useNetwork();
@@ -209,24 +232,25 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress) {
       }
 
       setTxStatus(TX_STATUSES.PREPARING_TRANSACTION);
-      let oneInchData ='0x';
+      let router ='0x0000000000000000000000000000000000000000';
+      let routerData ='0x';
       if (token.address.toLowerCase() !== pool.tokenAddress.toLowerCase()) {
-        const apiUrl = `https://api.1inch.io/v5.2/${pool.chainId}/swap`;
-        const params = `?src=${token.address}&dst=${pool.tokenAddress}&amount=${tokenAmount.toString()}&from=${account}&slippage=1&receiver=${pool.paymentContractAddress}&disableEstimate=true`;
-        let data;
+
+        let liFiTx;
         try {
-          data = await (await fetch(`${apiUrl}${params}`)).json();
-          oneInchData = data.tx.data;
+          liFiTx = await lifi.getStepTransaction(liFiRoute);
+          router = liFiTx.transactionRequest.to;
+          routerData = liFiTx.transactionRequest.data;
         } catch (error) {
           throw new Error('Error getting exchange data. Please try again.');
         }
-        if (BigNumber.from(data.toAmount).lt(amount.add(fee))) {
+        if (BigNumber.from(liFiTx.estimate.toAmount).lt(amount.add(fee))) {
           throw new Error('The exchange rate was changed. Please try again.');
         }
       }
 
       setTxStatus(TX_STATUSES.CONFIRM_TRANSACTION);
-      const paymentABI = ['function pay(bytes,address,uint256,uint256,bytes,bytes,bytes) external payable'];
+      const paymentABI = ['function pay(bytes,address,uint256,uint256,bytes,address,bytes,bytes) external payable'];
       const paymentContractInstance = new ethers.Contract(pool.paymentContractAddress, paymentABI, signer);
       const note = '0x';
       const decodedZkAddress = ethers.utils.hexlify(ethers.utils.base58.decode(zkAddress.split(':')[1]));
@@ -236,7 +260,8 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress) {
         tokenAmount,
         amount.add(fee),
         permitSignature,
-        oneInchData,
+        router,
+        routerData,
         note,
         {
           value: isNative ? tokenAmount : ethers.constants.Zero,
