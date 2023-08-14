@@ -54,10 +54,10 @@ const Payment = () => {
 
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
   const { balance, isLoadingBalance } = useTokenBalance(pool?.chainId, selectedToken);
-  const { tokenAmount, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
+  const { tokenAmount, liFiRoute, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
   const { isApproved, approve } = useApproval(pool?.chainId, selectedToken?.address, tokenAmount);
   const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
-  const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address);
+  const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
 
   const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
   const { isTokenListModalOpen, openTokenListModal, closeTokenListModal, openWalletModal } = useContext(ModalContext);
