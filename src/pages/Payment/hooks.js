@@ -281,7 +281,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
   }, [
     chain, pool, token, tokenAmount, account, provider, signer,
     openTxModal, setTxStatus, setTxError, switchNetworkAsync,
-    zkAddress, fee, amount, setTxHash,
+    zkAddress, fee, amount, setTxHash, liFiRoute,
   ]);
 
   return { send };
