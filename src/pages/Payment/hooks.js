@@ -28,9 +28,9 @@ export function useTokenList(pool) {
   useEffect(() => {
     async function getTokenList() {
       try {
-        const url = `https://tokens.1inch.io/v1.2/${pool.chainId}`;
+        const url = `https://li.quest/v1/tokens?chains[]=${pool.chainId}`;
         const data = await (await fetch(url)).json();
-        const tokens = Object.entries(data).map(([key, value]) => ({ address: key, ...value }));
+        const tokens = data.tokens[pool.chainId];
         const index = tokens.findIndex(token => token.address === pool.tokenAddress);
         if (index > 0) {
           tokens.unshift(tokens.splice(index, 1)[0]);
@@ -208,7 +208,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
         }
       }
 
-      const isNative = token.tags.includes('native');
+      const isNative = token.address === ethers.constants.AddressZero;
       let permitSignature = '0x';
       if (!isNative) {
         setTxStatus(TX_STATUSES.SIGN_MESSAGE);
@@ -235,7 +235,6 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       let router ='0x0000000000000000000000000000000000000000';
       let routerData ='0x';
       if (token.address.toLowerCase() !== pool.tokenAddress.toLowerCase()) {
-
         let liFiTx;
         try {
           liFiTx = await lifi.getStepTransaction(liFiRoute);
@@ -273,9 +272,13 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       setTxHash(tx.hash);
       setTxStatus(TX_STATUSES.SENT);
     } catch (error) {
+      let message = error?.message;
+      if (message?.includes('user rejected transaction')) {
+        message = 'User rejected transaction.';
+      }
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'Payment.usePayment.send' } });
-      setTxError(error?.message);
+      setTxError(message);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
@@ -300,7 +303,7 @@ export function useTokenBalance(chainId, selectedToken) {
     let balance = ethers.constants.Zero;
     if (account && selectedToken) {
       try {
-        if (selectedToken.tags.includes('native')) {
+        if (selectedToken.address === ethers.constants.AddressZero) {
           balance = await provider.getBalance(account);
         } else {
           const token = new ethers.Contract(selectedToken.address, TOKEN_ABI, provider);

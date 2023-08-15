@@ -29,7 +29,7 @@ export default (chainId, tokenAddress, amount, balance) => {
   const isApproved = useMemo(() => allowance.gte(amount), [allowance, amount]);
 
   const updateAllowance = useCallback(async () => {
-    if (!account || !tokenAddress || tokenAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+    if (!account || !tokenAddress || tokenAddress === ethers.constants.AddressZero) {
       setAllowance(ethers.constants.Zero);
       return;
     }
