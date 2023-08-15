@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 
 import Skeleton from 'components/Skeleton';
 
@@ -7,6 +8,13 @@ import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 import { formatNumber } from 'utils';
 
 export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }) => {
+  const usdBalance = useMemo(() => {
+    if (token?.priceUSD) {
+      const priceBN = ethers.utils.parseEther(token.priceUSD);
+      return balance.mul(priceBN).div(ethers.constants.WeiPerEther);
+    }
+    return ethers.constants.Zero;
+  }, [balance, token]);
   return (
     <Container>
       <RowSpaceBetween>
@@ -30,7 +38,10 @@ export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }
         {isLoadingBalance ? (
           <Skeleton width={40} />
         ) : (
-          <Balance>{formatNumber(balance, token?.decimals || 18)} {token?.symbol}</Balance>
+          <Balance>
+            {formatNumber(balance, token?.decimals || 18)} {token?.symbol}{' '}
+            {`($${formatNumber(usdBalance, token?.decimals || 18)})`}
+          </Balance>
         )}
       </Row>
     </Container>
@@ -87,6 +98,7 @@ const Value = styled(TokenSymbol)`
 const ItemIcon = styled.img`
   width: 24px;
   height: 24px;
+  border-radius: 50%;
 `;
 
 const Select = styled.div`

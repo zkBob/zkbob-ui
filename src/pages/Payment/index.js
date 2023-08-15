@@ -67,7 +67,7 @@ const Payment = () => {
     if (tokenList.length) {
       const defaultToken =
         tokenList.find(token => token.symbol === pool.tokenSymbol) ||
-        tokenList.find(token => token.tags.includes('native'));
+        tokenList.find(token => token.address === ethers.constants.AddressZero);
       setSelectedToken(defaultToken);
     }
   }, [tokenList, pool]);
@@ -127,7 +127,7 @@ const Payment = () => {
               return <Button disabled>Insufficient {selectedToken?.symbol} balance</Button>
             else if (amount.gt(limit))
               return <Button disabled>Amount exceeds limit</Button>
-            else if (!selectedToken?.tags.includes('native') && permitType === 'permit2' && !isApproved)
+            else if (selectedToken?.address !== ethers.constants.AddressZero && permitType === 'permit2' && !isApproved)
               return <Button onClick={approve}>Approve tokens</Button>
             else
               return <Button onClick={onSend}>Send</Button>;
