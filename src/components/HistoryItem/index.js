@@ -129,7 +129,8 @@ export default ({ item, zkAccount, currentPool }) => {
   }, []);
 
   const isPending = [0, 1].includes(item.state);
-  const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
+  // const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
+  const isDirectDepositLabelShown = false;
 
   return (
     <Container>
