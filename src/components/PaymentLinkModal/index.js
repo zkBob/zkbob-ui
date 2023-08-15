@@ -45,7 +45,7 @@ export default () => {
         <Description>
           Share this link to request a private payment.<br />
           The sender will have the option to select and send any token.{' '}
-          Tokens will be converted to BOB and deposited to your zkAccount.<br /><br />
+          Tokens will be converted to {currentPool.tokenSymbol} and deposited to your zkAccount.<br /><br />
           <b>Note:</b> Private payment links work on the same network where they are generated.
         </Description>
         <InputLabel>Copy and share your payment link</InputLabel>
