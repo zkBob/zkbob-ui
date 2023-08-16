@@ -28,9 +28,19 @@ export function useTokenList(pool) {
   useEffect(() => {
     async function getTokenList() {
       try {
-        const url = `https://li.quest/v1/tokens?chains[]=${pool.chainId}`;
-        const data = await (await fetch(url)).json();
-        const tokens = data.tokens[pool.chainId];
+        const lifiUrl = `https://li.quest/v1/tokens?chains[]=${pool.chainId}`;
+        const oneInchUrl = `https://tokens.1inch.io/v1.2/${pool.chainId}`;
+        const [lifiData, oneInchData] = await Promise.all(
+          [lifiUrl, oneInchUrl].map(url => fetch(url).then(res => res.json()))
+        );
+        let tokens = lifiData.tokens[pool.chainId];
+        tokens = tokens.map(token => {
+          let address = token.address;
+          if (address === ethers.constants.AddressZero) {
+            address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+          }
+          return { ...token, eip2612: oneInchData[address]?.eip2612 || false };
+        });
         const index = tokens.findIndex(token => token.address === pool.tokenAddress);
         if (index > 0) {
           tokens.unshift(tokens.splice(index, 1)[0]);
