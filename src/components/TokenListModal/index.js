@@ -78,6 +78,9 @@ const Container = styled.div`
       margin-bottom: 0;
     }
   }
+  @media only screen and (max-width: 420px) {
+    max-height: calc(100% - 30px);
+  }
 `;
 
 const TokenIcon = styled.img`
