@@ -36,7 +36,7 @@ export default () => {
             </AccountDropdownButton>
           </WalletDropdown>
         ) : (
-          <Button small onClick={openWalletModal}>
+          <Button small onClick={openWalletModal} style={{ whiteSpace: 'nowrap' }}>
             Connect wallet
           </Button>
         )}
