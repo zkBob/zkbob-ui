@@ -34,13 +34,7 @@ export function useTokenList(pool) {
           [lifiUrl, oneInchUrl].map(url => fetch(url).then(res => res.json()))
         );
         let tokens = lifiData.tokens[pool.chainId];
-        tokens = tokens.map(token => {
-          let address = token.address;
-          if (address === ethers.constants.AddressZero) {
-            address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-          }
-          return { ...token, eip2612: oneInchData[address]?.eip2612 || false };
-        });
+        tokens = tokens.map(token => ({ ...token, eip2612: oneInchData[token.address]?.eip2612 }));
         const index = tokens.findIndex(token => token.address === pool.tokenAddress);
         if (index > 0) {
           tokens.unshift(tokens.splice(index, 1)[0]);
