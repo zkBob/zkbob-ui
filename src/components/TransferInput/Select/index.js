@@ -48,6 +48,7 @@ export default ({ tokenSymbol, isNativeSelected, onTokenSelect }) => {
       isOpen={isTokenSelectorOpen}
       open={openTokenSelector}
       close={closeTokenSelector}
+      fullscreen={false}
       content={() => (
         <Content
           tokenSymbol={tokenSymbol}
