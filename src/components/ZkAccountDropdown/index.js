@@ -230,7 +230,7 @@ const BackIcon = styled(BackIconDefault)`
   left: 11px;
   cursor: pointer;
   padding: 10px;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     top: 11px;
   }
 `;

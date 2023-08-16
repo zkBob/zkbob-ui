@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 24px !important;
     background: ${({ theme }) => theme.modal.background} !important;
     opacity: 1 !important;
-    @media only screen and (max-width: 420px) {
+    @media only screen and (max-width: 560px) {
       width: 100% !important;
       height: 100% !important;
       border-radius: 0 !important;
@@ -62,7 +62,7 @@ const ModalContent = styled.div`
   padding: 26px;
   box-sizing: border-box;
   position: relative;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     padding: 26px 13px;
     width: 100%;
     height: 100%;
@@ -85,7 +85,7 @@ const CrossIcon = styled(CrossIconDefault)`
   top: 31px;
   right: 21px;
   cursor: pointer;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     top: 21px;
   }
 `;
@@ -96,7 +96,7 @@ const BackIcon = styled(BackIconDefault)`
   left: 11px;
   cursor: pointer;
   padding: 10px;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     top: 11px;
   }
 `;
