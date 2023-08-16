@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     opacity: 1;
   }
   .dropdown-fullscreen {
-    @media only screen and (max-width: 420px) {
+    @media only screen and (max-width: 560px) {
       top: 0 !important;
       left: 0 !important;
       right: 0 !important;
@@ -73,7 +73,7 @@ const CrossIcon = styled(CrossIconDefault)`
   top: 21px;
   right: 21px;
   cursor: pointer;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     display: block;
   }
 `;
