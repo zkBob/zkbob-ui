@@ -1,22 +1,50 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 
+import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
+
 const GlobalStyle = createGlobalStyle`
-  .dropdown {
+  .rc-tooltip {
     opacity: 1;
+  }
+  .dropdown-fullscreen {
+    @media only screen and (max-width: 420px) {
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      padding: 0 !important;
+
+      .rc-tooltip-inner {
+        width: 100vw !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+      }
+    }
   }
 `;
 
-export default ({ children, content, disabled, width, placement, style = {}, isOpen, open, close, ...props }) => {
+export default ({
+  children, content, disabled, width, placement,
+  style = {}, isOpen, open, close, fullscreen = true, ...props
+}) => {
   return (
     <>
       <GlobalStyle />
       <Tooltip
-        overlayClassName="dropdown"
+        overlayClassName={fullscreen ? 'dropdown-fullscreen' : ''}
         placement={placement || "bottomRight"}
         trigger={disabled ? [] : ['click']}
-        overlay={content}
+        overlay={() => (
+          <>
+            {fullscreen && <CrossIcon onClick={close} />}
+            {content()}
+          </>
+        )}
         showArrow={false}
         overlayInnerStyle={{
           minHeight: 0,
@@ -24,7 +52,6 @@ export default ({ children, content, disabled, width, placement, style = {}, isO
           borderRadius: '16px',
           backgroundColor: '#FFFFFF',
           width: width || 370,
-          maxWidth: 'calc(100vw - 10px)',
           boxSizing: 'border-box',
           boxShadow: '4px 10px 20px rgba(0, 0, 0, 0.1)',
           ...style,
@@ -39,3 +66,14 @@ export default ({ children, content, disabled, width, placement, style = {}, isO
     </>
   );
 }
+
+const CrossIcon = styled(CrossIconDefault)`
+  display: none;
+  position: absolute;
+  top: 21px;
+  right: 21px;
+  cursor: pointer;
+  @media only screen and (max-width: 420px) {
+    display: block;
+  }
+`;

@@ -230,6 +230,9 @@ const BackIcon = styled(BackIconDefault)`
   left: 11px;
   cursor: pointer;
   padding: 10px;
+  @media only screen and (max-width: 420px) {
+    top: 11px;
+  }
 `;
 
 const Title = styled.span`
