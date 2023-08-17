@@ -100,6 +100,7 @@ export default () => {
           isNativeSelected={isNativeSelected}
           setIsNativeSelected={setIsNativeSelected}
           isNativeTokenUsed={isNativeTokenUsed}
+          gaIdPostfix="deposit"
         />
         {(() => {
           if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
@@ -112,7 +113,7 @@ export default () => {
           else if (amount.gt(usedBalance.sub(usedFee))) return <Button disabled>Reduce amount to include {formatNumber(usedFee, currentPool.tokenDecimals)} fee</Button>
           else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
           else if (currentPool.isNative && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
-          else return <Button onClick={onDeposit}>Deposit</Button>;
+          else return <Button onClick={onDeposit} data-ga-id="initiate-operation-deposit">Deposit</Button>;
         })()}
         {isNativeTokenUsed && (
           <MessageContainer>

@@ -30,7 +30,9 @@ export default ({ restore }) => {
         Input your saved secret phrase to restore an existing account
       </Description>
       <TextArea value={mnemonic} onChange={onChange} $error={error} />
-      <Button onClick={onRestore}>Restore account</Button>
+      <Button onClick={onRestore} data-ga-id="login-secret-phrase-confirm">
+        Restore account
+      </Button>
     </Container>
   );
 };
