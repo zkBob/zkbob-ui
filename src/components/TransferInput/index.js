@@ -16,7 +16,7 @@ import { TOKENS_ICONS } from 'constants';
 export default ({
   amount, onChange, balance, nativeBalance, isLoadingBalance, fee,
   shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
-  isNativeSelected, setIsNativeSelected, isNativeTokenUsed,
+  isNativeSelected, setIsNativeSelected, isNativeTokenUsed, gaIdPostfix,
 }) => {
   const displayedFee = useDisplayedFee(currentPool, fee);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -74,7 +74,12 @@ export default ({
                   {formatNumber(isNativeTokenUsed ? nativeBalance : balance, currentPool.tokenDecimals)}{' '}
                   {currentPool.tokenSymbol}
                 </Text>
-                <MaxButton type="link" onClick={setMax} tabIndex="-1">Max</MaxButton>
+                <MaxButton
+                  type="link"
+                  onClick={setMax}
+                  tabIndex="-1"
+                  data-ga-id={`max-${gaIdPostfix}`}
+                >Max</MaxButton>
                 <Tooltip
                   content={`Click Max to set the maximum amount of ${currentPool.tokenSymbol} you can send including all fees and limits`}
                   placement="right"

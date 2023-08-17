@@ -81,7 +81,7 @@ export default () => {
     } else if (!ethers.utils.isAddress(receiver)) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Withdraw</Button>;
+      button = <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-withdraw">Withdraw</Button>;
     }
   } else {
     button = <AccountSetUpButton />;
@@ -103,6 +103,7 @@ export default () => {
           maxAmountExceeded={maxAmountExceeded}
           isLoadingFee={isLoadingFee}
           currentPool={currentPool}
+          gaIdPostfix="withdraw"
         />
         {convertionDetails.exist && (
           <ConvertOptions

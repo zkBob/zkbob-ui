@@ -72,6 +72,7 @@ const Content = ({ switchToPool, currentPool, close }) => {
                   key={index}
                   onClick={() => onSwitchPool(pool.alias)}
                   className={currentPool.alias === pool.alias ? 'active' : ''}
+                  data-ga-id={`pool-${pool.alias.toLowerCase()}`}
                 >
                   <RowSpaceBetween>
                     <Row>

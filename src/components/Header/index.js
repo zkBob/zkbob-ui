@@ -110,14 +110,14 @@ export default ({ empty }) => {
       </AccountDropdownButton>
     </WalletDropdown>
   ) : (
-    <Button small onClick={openWalletModal}>
+    <Button small onClick={openWalletModal} data-ga-id="wallet-header">
       Connect wallet
     </Button>
   );
 
   const zkAccountDropdown = zkAccount ? (
     <ZkAccountDropdown>
-      <AccountDropdownButton $refreshing={isLoadingState}>
+      <AccountDropdownButton $refreshing={isLoadingState} data-ga-id="zkaccount-profile">
         <Row>
           <ZkAvatar seed={zkAccount} size={16} />
           <Address>zkAccount</Address>
@@ -141,6 +141,7 @@ export default ({ empty }) => {
       contrast
       disabled={isLoadingZkAccount}
       onClick={openAccountSetUpModal}
+      data-ga-id="zkaccount-header"
     >
       {isLoadingZkAccount ? (isMobile ? 'Loading' : 'Loading zkAccount') : 'zkAccount'}
     </Button>
@@ -154,7 +155,7 @@ export default ({ empty }) => {
         </LogoSection>
         <AccountSection>
           {!isMobile && networkDropdown}
-          <BridgeButton small onClick={openSwapModal}>
+          <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
             Get {currentPool.tokenSymbol}
           </BridgeButton>
           {!isMobile && walletDropdown}
@@ -169,7 +170,7 @@ export default ({ empty }) => {
             </RefreshButtonContainer>
           )}
           <MoreDropdown>
-            <DropdownButton>
+            <DropdownButton data-ga-id="extra-menu-header">
               <DotsIcon />
             </DropdownButton>
           </MoreDropdown>

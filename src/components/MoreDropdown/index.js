@@ -7,9 +7,9 @@ import OptionButton from 'components/OptionButton';
 import { ModalContext } from 'contexts';
 
 const links = [
-  { name: 'Dune Analytics', href: 'https://dune.com/projects/zkBob' },
-  { name: 'Documentation', href: 'https://docs.zkbob.com/' },
-  { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
+  { name: 'Dune Analytics', href: 'https://dune.com/projects/zkBob', gaIdPostfix: 'dune' },
+  { name: 'Documentation', href: 'https://docs.zkbob.com/', gaIdPostfix: 'docs' },
+  { name: 'Linktree', href: 'https://linktr.ee/zkbob', gaIdPostfix: 'linktree' },
 ];
 
 const Content = ({ close }) => (
@@ -21,6 +21,7 @@ const Content = ({ close }) => (
         type="link"
         href={link.href}
         onClick={close}
+        data-ga-id={'extra-menu-' + link.gaIdPostfix}
       >
         {link.name}
       </OptionButton>
