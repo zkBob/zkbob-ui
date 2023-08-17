@@ -171,7 +171,7 @@ export default forwardRef((props, ref) => {
           if (!zkAccount) return <AccountSetUpButton />
           else if (isLoadingState) return <Button loading contrast disabled>Loading...</Button>
           else if (!data) return <Button disabled>Proceed</Button>
-          else return <Button onClick={validate}>Proceed</Button>;
+          else return <Button onClick={validate} data-ga-id="initiate-operation-multitransfer">Proceed</Button>;
         })()}
         <ConfirmTransactionModal
           title="Multitransfer confirmation"
@@ -184,7 +184,7 @@ export default forwardRef((props, ref) => {
           fee={fee}
           isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
-          type="transfer"
+          type="multitransfer"
           currentPool={currentPool}
         />
         <MultitransferDetailsModal

@@ -70,7 +70,7 @@ export default () => {
     } else if (!isAddressValid) {
       button = <Button disabled>Invalid address</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
+      button = <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-transfer">Transfer</Button>;
     }
   } else {
     button = <AccountSetUpButton />;
@@ -88,6 +88,7 @@ export default () => {
         maxAmountExceeded={maxAmountExceeded}
         isLoadingFee={isLoadingFee}
         currentPool={currentPool}
+        gaIdPostfix="transfer"
       />
       <MultilineInput
         placeholder="Enter address of zkBob receiver"

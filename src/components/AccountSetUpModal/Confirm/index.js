@@ -59,7 +59,11 @@ export default ({ mnemonic, confirmMnemonic }) => {
           );
         })}
       </Words>
-      <Button disabled={!match} onClick={confirmMnemonic}>Verify</Button>
+      <Button
+        disabled={!match}
+        onClick={confirmMnemonic}
+        data-ga-id="signup-secret-phrase-confirm"
+      >Verify</Button>
     </Container>
   );
 };

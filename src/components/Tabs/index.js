@@ -10,6 +10,7 @@ export default ({ tabs, activeTab, onTabClick, showBadge }) => {
           active={activeTab === index}
           onClick={() => onTabClick(index)}
           $showBadge={showBadge && tab.badge}
+          data-ga-id={`tab-${tab.name.toLowerCase()}`}
         >{tab.name}</Tab>
       )}
     </Tabs>

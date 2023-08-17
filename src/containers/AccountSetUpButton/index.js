@@ -13,6 +13,7 @@ export default () => {
       contrast
       disabled={isLoadingZkAccount}
       onClick={openAccountSetUpModal}
+      data-ga-id="zkaccount-get-started"
     >
       {isLoadingZkAccount ? 'Loading...' : 'Get started!'}
     </Button>

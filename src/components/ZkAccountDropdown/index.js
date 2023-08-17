@@ -61,8 +61,16 @@ const Content = ({
   }, [close]);
 
   const settingsOptions = [
-    { text: 'Show secret phrase', action: showSeedPhrase },
-    { text: `${hasPassword ? 'Disable' : 'Set'} password`, action: hasPassword ? removePassword : setPassword  },
+    {
+      text: 'Show secret phrase',
+      action: showSeedPhrase,
+      gaIdPostfix: 'secret-phrase',
+    },
+    {
+      text: `${hasPassword ? 'Disable' : 'Set'} password`,
+      action: hasPassword ? removePassword : setPassword,
+      gaIdPostfix: `${hasPassword ? 'disable' : 'enable'}-password`,
+    },
   ];
 
   if (showQRCode) {
@@ -88,7 +96,11 @@ const Content = ({
         <BackIcon onClick={() => setShowSettings(false)} />
         <Title style={{ marginBottom: 20 }}>Settings</Title>
         {settingsOptions.map((item, index) =>
-          <OptionButton key={index} onClick={() => handleOptionClick(item.action)}>
+          <OptionButton
+            key={index}
+            onClick={() => handleOptionClick(item.action)}
+            data-ga-id={`zkaccount-settings-${item.gaIdPostfix}`}
+          >
             {item.text}
           </OptionButton>
         )}
@@ -108,13 +120,22 @@ const Content = ({
           <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>
       </RowSpaceBetween>
-      <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
+      <Button
+        style={{ marginBottom: 10 }}
+        onClick={generateQRCode}
+        disabled={isLoadingState}
+        data-ga-id="zkaccount-generate-qr-code"
+      >
         Generate QR code address
       </Button>
       {privateAddress ? (
         <PrivateAddress>{privateAddress}</PrivateAddress>
       ) : (
-        <Button onClick={generatePrivateAddress} disabled={isLoadingState}>
+        <Button
+          onClick={generatePrivateAddress}
+          disabled={isLoadingState}
+          data-ga-id="zkaccount-generate-address"
+        >
           Generate receiving address
         </Button>
       )}
@@ -124,17 +145,17 @@ const Content = ({
         Receive tokens to this address or a previously generated address.
       </Description>
       {currentPool.paymentContractAddress && (
-        <OptionButton onClick={() => handleOptionClick(generatePaymentLink)}>
+        <OptionButton onClick={() => handleOptionClick(generatePaymentLink)} data-ga-id="zkaccount-payment-link">
           Get payment link
         </OptionButton>
       )}
       <QRCodeReader onResult={initGiftCard}>
-        <OptionButton>Redeem gift card</OptionButton>
+        <OptionButton data-ga-id="zkaccount-gift-card">Redeem gift card</OptionButton>
       </QRCodeReader>
-      <OptionButton onClick={() => setShowSettings(true)}>
+      <OptionButton onClick={() => setShowSettings(true)} data-ga-id="zkaccount-settings">
         Settings
       </OptionButton>
-      <OptionButton onClick={() => handleOptionClick(logout)}>
+      <OptionButton onClick={() => handleOptionClick(logout)} data-ga-id="zkaccount-logout">
         Log out
       </OptionButton>
     </Container>
