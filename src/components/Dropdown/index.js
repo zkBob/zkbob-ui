@@ -4,7 +4,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
 
-const GlobalStyle = createGlobalStyle`
+const GlobalDropdownStyle = createGlobalStyle`
   .rc-tooltip {
     opacity: 1;
   }
@@ -15,16 +15,34 @@ const GlobalStyle = createGlobalStyle`
       right: 0 !important;
       bottom: 0 !important;
       padding: 0 !important;
+      height: 100dvh !important;
+
+      .rc-tooltip-content {
+        height: 100% !important;
+      }
 
       .rc-tooltip-inner {
-        width: 100vw !important;
-        height: 100vh !important;
+        width: 100% !important;
+        height: 100% !important;
         border-radius: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
+        overflow-y: scroll !important;
+        padding-top: 50px !important;
+
+        & > div {
+          min-height: 100% !important;
+          justify-content: center !important;
+        }
       }
     }
+  }
+`;
+
+const GlobalBodyFullscreenStyle = createGlobalStyle`
+  body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
   }
 `;
 
@@ -34,7 +52,8 @@ export default ({
 }) => {
   return (
     <>
-      <GlobalStyle />
+      <GlobalDropdownStyle />
+      {fullscreen && isOpen && <GlobalBodyFullscreenStyle />}
       <Tooltip
         overlayClassName={fullscreen ? 'dropdown-fullscreen' : ''}
         placement={placement || "bottomRight"}
