@@ -36,7 +36,11 @@ export default () => {
           <Title>Transfer</Title>
           <Row>
             <Text>Multitransfer</Text>
-            <Switch checked={isMulti} onChange={setIsMulti} />
+            <Switch
+              checked={isMulti}
+              onChange={setIsMulti}
+              data-ga-id={`turn-${isMulti ? 'off' : 'on'}-multitransfer`}
+            />
             <CsvButtonContainer disabled={!isMulti}>
               <Button
                 type="link"

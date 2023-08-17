@@ -84,7 +84,12 @@ export default ({
             )}
           </Row>
         </DetailsContainer>
-        <Button onClick={onConfirm}>Confirm {isMultitransfer && 'multitransfer'}</Button>
+        <Button
+          onClick={onConfirm}
+          data-ga-id="confirm-operation"
+        >
+          Confirm {isMultitransfer && 'multitransfer'}
+        </Button>
       </Container>
     </Modal>
   );

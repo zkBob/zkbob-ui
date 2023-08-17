@@ -64,7 +64,7 @@ export default ({ confirmPassword }) => {
         <Rule $error={lengthError}>Please enter 6 or more characters</Rule>
         <Rule $error={matchError}>Password should match</Rule>
       </RulesContainer>
-      <Button onClick={confirm}>Verify</Button>
+      <Button onClick={confirm} data-ga-id="password-confirm">Verify</Button>
     </Container>
   );
 };

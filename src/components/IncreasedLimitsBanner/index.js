@@ -17,7 +17,7 @@ export default ({ status, account, openModal, kycUrls }) => {
       component = <>
         <InfinityLoopIcon />
         <Text>Want to increase your deposit limits?</Text>
-        <Button type="link" onClick={openModal}>Learn more</Button>
+        <Button type="link" onClick={openModal} data-ga-id="kyc-banner">Learn more</Button>
       </>;
       break;
     case INCREASED_LIMITS_STATUSES.ACTIVE:

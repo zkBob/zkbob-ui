@@ -10,7 +10,7 @@ const getConnectorName = connector => {
   return connector.name;
 }
 
-export default ({ callback }) => {
+export default ({ callback, gaIdPrefix = '' }) => {
   const { connector: activeConnector } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const { disconnectAsync } = useDisconnect();
@@ -29,6 +29,7 @@ export default ({ callback }) => {
         <WalletConnector
           key={index}
           onClick={() => connectWallet(connector)}
+          data-ga-id={gaIdPrefix + connector.name}
         >
           <WalletConnectorName>{getConnectorName(connector)}</WalletConnectorName>
           <WalletConnectorIcon src={CONNECTORS_ICONS[connector.name]} />

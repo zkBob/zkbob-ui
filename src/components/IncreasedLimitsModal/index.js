@@ -33,11 +33,16 @@ export default ({ isOpen, onClose, account, isWalletModalOpen, openWalletModal, 
           That's it. Your deposit limits will automatically increase if your connected wallet contains a BAB token.
         </Text>
         {account ? (
-          <LinkButton href={currentPool.kycUrls?.homepage.replace('%s', account)}>
+          <LinkButton
+            href={currentPool.kycUrls?.homepage.replace('%s', account)}
+            data-ga-id="kyc-banner-verify-bab"
+          >
             Verify my BAB token
           </LinkButton>
         ) : (
-          <Button onClick={openWalletModal}>Connect wallet</Button>
+          <Button onClick={openWalletModal} data-ga-id="kyc-banner-connect-wallet">
+            Connect wallet
+          </Button>
         )}
       </Container>
     </Modal>

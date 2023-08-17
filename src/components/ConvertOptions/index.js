@@ -31,7 +31,11 @@ export default ({
         <Text style={{ marginRight: 8 }}>
           Convert some {currentPool.tokenSymbol} to {details.toTokenSymbol} on withdrawal
         </Text>
-        <Switch checked={isConverting} onChange={setIsConverting} />
+        <Switch
+          checked={isConverting}
+          onChange={setIsConverting}
+          data-ga-id={`turn-${isConverting ? 'off' : 'on'}-convert-native-token`}
+        />
       </Row>
       {isConverting && (
         <Row>
@@ -45,6 +49,7 @@ export default ({
                 onClick={() => setAmountToConvert(option)}
                 active={amountToConvert.eq(option)}
                 disabled={option.gt(amountToWithdraw) || option.gt(maxAmountToWithdraw)}
+                data-ga-id={`native-token-convert-tier${index + 1}`}
               >
                 <TextBold>{formatNumber(option, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</TextBold>
                 <Text>

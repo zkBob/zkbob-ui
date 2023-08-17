@@ -35,10 +35,10 @@ const Start = ({ setStep }) => (
     <Description>
       To start working with zkBob you need a zkAccount
     </Description>
-    <Button onClick={() => setStep(STEP.CREATE_OPTIONS)}>
+    <Button onClick={() => setStep(STEP.CREATE_OPTIONS)} data-ga-id="signup-start">
       Create new zkAccount
     </Button>
-    <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)}>
+    <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)} data-ga-id="login-start">
       I already have a zkAccount
     </SecondButton>
   </Container>
@@ -46,10 +46,10 @@ const Start = ({ setStep }) => (
 
 const CreateOptions = ({ setStep }) => (
   <Container>
-    <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)}>
+    <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)} data-ga-id="signup-web3-wallet">
       Use my Web3 wallet
     </Button>
-    <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)}>
+    <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)} data-ga-id="signup-secret-phrase">
       Use zkBob secret phrase
     </SecondButton>
     <Description>
@@ -63,10 +63,10 @@ const CreateOptions = ({ setStep }) => (
 
 const RestoreOptions = ({ setStep }) => (
   <Container>
-    <Button onClick={() => setStep(STEP.RESTORE_WITH_WALLET)}>
+    <Button onClick={() => setStep(STEP.RESTORE_WITH_WALLET)} data-ga-id="login-web3-wallet">
       I used a Web3 wallet
     </Button>
-    <SecondButton onClick={() => setStep(STEP.RESTORE_WITH_SECRET)}>
+    <SecondButton onClick={() => setStep(STEP.RESTORE_WITH_SECRET)} data-ga-id="login-secret-phrase">
       I used zkBob secret phrase
     </SecondButton>
   </Container>
@@ -77,10 +77,10 @@ const PasswordPrompt = ({ setStep, close }) => (
     <Description>
       You can create a secure password that we'll ask you every time when you log in to zkAccount
     </Description>
-    <Button onClick={() => setStep(STEP.CREATE_PASSWORD)}>
+    <Button onClick={() => setStep(STEP.CREATE_PASSWORD)} data-ga-id="password-set">
       Set a password
     </Button>
-    <SecondButton onClick={close}>
+    <SecondButton onClick={close} data-ga-id="password-skip">
       Skip
     </SecondButton>
   </Container>
@@ -163,7 +163,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.CREATE_WITH_WALLET:
       title = 'Create new zkAccount';
-      component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
+      component = <Generate isCreation next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:

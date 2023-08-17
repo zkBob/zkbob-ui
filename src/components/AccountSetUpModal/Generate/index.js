@@ -12,7 +12,10 @@ export default ({ next, isCreation }) => {
           : 'Select the wallet you used to create your zkAccount'
         }
       </Description>
-      <WalletConnectors callback={next} />
+      <WalletConnectors
+        callback={next}
+        gaIdPrefix={(isCreation ? 'signup-' : 'login-')}
+      />
     </Container>
   );
 };
