@@ -33,6 +33,9 @@ const GlobalStyle = createGlobalStyle`
     src: url(${GilroyExtraBold}) format('woff');
     font-weight: 800;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     margin: 0;
     font-family: 'Gilroy';

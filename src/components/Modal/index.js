@@ -28,6 +28,12 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.modal.overlay} !important;
     z-index: 1 !important;
   }
+  .ReactModal__Body--open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export default ({ children, isOpen, onClose, title, onBack, width, style, containerStyle }) => {
@@ -82,11 +88,12 @@ const Title = styled.span`
 
 const CrossIcon = styled(CrossIconDefault)`
   position: absolute;
-  top: 31px;
-  right: 21px;
+  top: 21px;
+  right: 11px;
   cursor: pointer;
+  padding: 10px;
   @media only screen and (max-width: 560px) {
-    top: 21px;
+    top: 11px;
   }
 `;
 
