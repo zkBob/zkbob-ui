@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 import Dropdown from 'components/Dropdown';
@@ -10,6 +10,8 @@ import { ReactComponent as CheckIcon } from 'assets/check-stroke.svg';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import config from 'config';
+
+import { ZkAccountContext, ModalContext, PoolContext } from 'contexts';
 
 const chainIds = Object.keys(config.chains).map(chainId => Number(chainId));
 const poolsWithAliases = Object.values(config.pools).map((pool, index) => ({
@@ -23,7 +25,7 @@ const poolsByChainId = chainIds.map(chainId => {
   };
 });
 
-const Content = ({ switchToPool, currentPool, buttonRef }) => {
+const Content = ({ switchToPool, currentPool, close }) => {
   const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
 
   const showPools = useCallback(chainId => {
@@ -35,9 +37,9 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
   }, [openedChainId]);
 
   const onSwitchPool = useCallback(poolId => {
-    buttonRef.current.click();
+    close();
     switchToPool(poolId);
-  }, [switchToPool, buttonRef]);
+  }, [switchToPool, close]);
 
   return (
     <Container>
@@ -88,18 +90,30 @@ const Content = ({ switchToPool, currentPool, buttonRef }) => {
   );
 };
 
-export default ({ disabled, switchToPool, currentPool, buttonRef, children }) => (
-  <Dropdown
-    width={288}
-    placement="bottomLeft"
-    disabled={disabled}
-    content={() => (
-      <Content switchToPool={switchToPool} currentPool={currentPool} buttonRef={buttonRef} />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const { isPoolSwitching, isLoadingState, switchToPool } = useContext(ZkAccountContext);
+  const { isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      width={288}
+      placement="bottomLeft"
+      disabled={isPoolSwitching || isLoadingState}
+      isOpen={isNetworkDropdownOpen}
+      open={openNetworkDropdown}
+      close={closeNetworkDropdown}
+      content={() => (
+        <Content
+          switchToPool={switchToPool}
+          currentPool={currentPool}
+          close={closeNetworkDropdown}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;

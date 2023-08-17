@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import styled from 'styled-components';
 
 import OptionButtonDefault from 'components/OptionButton';
@@ -8,13 +8,15 @@ import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 
 import { TOKENS_ICONS } from 'constants';
 
+import { ModalContext } from 'contexts';
+
 const getTokenSymbol = (tokenSymbol, isNative) => (isNative ? '' : 'W') + tokenSymbol;
 
-const Content = ({ tokenSymbol, isNativeSelected, onTokenSelect, buttonRef }) => {
+const Content = ({ tokenSymbol, isNativeSelected, onTokenSelect, close }) => {
   const onSelect = useCallback(isNative => {
     onTokenSelect(isNative);
-    buttonRef.current.click();
-  }, [onTokenSelect, buttonRef]);
+    close();
+  }, [onTokenSelect, close]);
 
   return (
     <Container>
@@ -38,21 +40,25 @@ const Content = ({ tokenSymbol, isNativeSelected, onTokenSelect, buttonRef }) =>
 };
 
 export default ({ tokenSymbol, isNativeSelected, onTokenSelect }) => {
-  const buttonRef = useRef(null);
+  const { isTokenSelectorOpen, openTokenSelector, closeTokenSelector } = useContext(ModalContext);
   return (
     <Dropdown
       width={120}
       style={{ padding: '12px' }}
+      isOpen={isTokenSelectorOpen}
+      open={openTokenSelector}
+      close={closeTokenSelector}
+      fullscreen={false}
       content={() => (
         <Content
           tokenSymbol={tokenSymbol}
           isNativeSelected={isNativeSelected}
           onTokenSelect={onTokenSelect}
-          buttonRef={buttonRef}
+          close={closeTokenSelector}
         />
       )}
     >
-      <SelectedItemContainer ref={buttonRef}>
+      <SelectedItemContainer>
         <ItemIcon src={TOKENS_ICONS[getTokenSymbol(tokenSymbol, isNativeSelected)]} />
         {getTokenSymbol(tokenSymbol, isNativeSelected)}
         <DropdownIcon />

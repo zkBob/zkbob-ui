@@ -1,7 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-import ContextsProvider from 'contexts';
-
 import ThemeProvider from 'providers/ThemeProvider';
 import Web3Provider from 'providers/Web3Provider';
 
@@ -35,6 +33,9 @@ const GlobalStyle = createGlobalStyle`
     src: url(${GilroyExtraBold}) format('woff');
     font-weight: 800;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     margin: 0;
     font-family: 'Gilroy';
@@ -65,9 +66,7 @@ export default () => (
   <ThemeProvider>
     <GlobalStyle />
     <Web3Provider>
-      <ContextsProvider>
-        <Pages />
-      </ContextsProvider>
+      <Pages />
     </Web3Provider>
   </ThemeProvider>
 );

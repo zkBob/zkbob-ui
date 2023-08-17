@@ -1,7 +1,10 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 
 import Dropdown from 'components/Dropdown';
 import OptionButton from 'components/OptionButton';
+
+import { ModalContext } from 'contexts';
 
 const links = [
   { name: 'Dune Analytics', href: 'https://dune.com/projects/zkBob' },
@@ -9,7 +12,7 @@ const links = [
   { name: 'Linktree', href: 'https://linktr.ee/zkbob' },
 ];
 
-const Content = ({ buttonRef }) => (
+const Content = ({ close }) => (
   <Container>
     <Title>More about zkBob</Title>
     {links.map((link, index) =>
@@ -17,7 +20,7 @@ const Content = ({ buttonRef }) => (
         key={index}
         type="link"
         href={link.href}
-        onClick={() => buttonRef.current.click()}
+        onClick={close}
       >
         {link.name}
       </OptionButton>
@@ -25,15 +28,19 @@ const Content = ({ buttonRef }) => (
   </Container>
 );
 
-export default ({ buttonRef, openSwapModal, children, currentPool }) => (
-  <Dropdown
-    content={() =>
-      <Content buttonRef={buttonRef} openSwapModal={openSwapModal} currentPool={currentPool} />
-    }
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const { isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown } = useContext(ModalContext);
+  return (
+    <Dropdown
+      isOpen={isMoreDropdownOpen}
+      open={openMoreDropdown}
+      close={closeMoreDropdown}
+      content={() => <Content close={closeMoreDropdown} />}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;

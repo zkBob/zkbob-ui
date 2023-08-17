@@ -3518,10 +3518,29 @@
     eth-rpc-errors "^4.0.3"
     ethers "^5.7.2"
 
+"@lifi/sdk@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@lifi/sdk/-/sdk-2.2.3.tgz#8088303d1f41ee522b1aa2a5cacbacc47f629e1a"
+  integrity sha512-k5KFK5SRRqA1hGrQkkWPPhM0AYciAFyu6GLCJdDFUK6HM+No4qDQWT359K9mGU6FrXVhPMds58Imex/lj/XReQ==
+  dependencies:
+    "@ethersproject/abi" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@lifi/types" "^8.0.4"
+    bignumber.js "^9.1.1"
+    eth-rpc-errors "^4.0.3"
+    ethers "^5.7.2"
+
 "@lifi/types@^8.0.0":
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/@lifi/types/-/types-8.0.1.tgz#9818e409248bf3fe8f19aeac6675d630effa60af"
   integrity sha512-M3rHHZzo5vbytIRFhyi/Tg5hTbK37FNWd6bi1vbwKHWzwZPJ38Ga+2tcFFOiaI8Pghmh/0qnxZJ85TBOF9lHWg==
+  dependencies:
+    ethers "^5.7.2"
+
+"@lifi/types@^8.0.4":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-8.3.0.tgz#bc2d53b06d644317a290c2ac0fc9bac41760d256"
+  integrity sha512-M6uFDvv7Wr+ied2NUF/b3TIIPi5IFxIiJcxY+8gqd4OmRun/1jE0TvySHE4gUN3OdLUFiHRXUzHh0D7vSO/Xuw==
   dependencies:
     ethers "^5.7.2"
 

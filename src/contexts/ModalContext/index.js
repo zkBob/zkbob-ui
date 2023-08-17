@@ -49,6 +49,34 @@ export const ModalContextProvider = ({ children }) => {
   const openDisablePasswordModal = () => setIsDisablePasswordModalOpen(true);
   const closeDisablePasswordModal = () => setIsDisablePasswordModalOpen(false);
 
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const openNetworkDropdown = () => setIsNetworkDropdownOpen(true);
+  const closeNetworkDropdown = () => setIsNetworkDropdownOpen(false);
+
+  const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
+  const openWalletDropdown = () => setIsWalletDropdownOpen(true);
+  const closeWalletDropdown = () => setIsWalletDropdownOpen(false);
+
+  const [isZkAccountDropdownOpen, setIsZkAccountDropdownOpen] = useState(false);
+  const openZkAccountDropdown = () => setIsZkAccountDropdownOpen(true);
+  const closeZkAccountDropdown = () => setIsZkAccountDropdownOpen(false);
+
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
+  const openMoreDropdown = () => setIsMoreDropdownOpen(true);
+  const closeMoreDropdown = () => setIsMoreDropdownOpen(false);
+
+  const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState(false);
+  const openTokenSelector = () => setIsTokenSelectorOpen(true);
+  const closeTokenSelector = () => setIsTokenSelectorOpen(false);
+
+  const [isTokenListModalOpen, setIsTokenListModalOpen] = useState(false);
+  const openTokenListModal = () => setIsTokenListModalOpen(true);
+  const closeTokenListModal = () => setIsTokenListModalOpen(false);
+
+  const [isPaymentLinkModalOpen, setIsPaymentLinkModalOpen] = useState(false);
+  const openPaymentLinkModal = () => setIsPaymentLinkModalOpen(true);
+  const closePaymentLinkModal = () => setIsPaymentLinkModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
@@ -57,6 +85,12 @@ export const ModalContextProvider = ({ children }) => {
     closeConfirmLogoutModal();
     closeSeedPhraseModal();
     closeIncreasedLimitsModal();
+    closeNetworkDropdown();
+    closeWalletDropdown();
+    closeZkAccountDropdown();
+    closeMoreDropdown();
+    closeTokenSelector();
+    closePaymentLinkModal();
   };
 
   return (
@@ -73,6 +107,13 @@ export const ModalContextProvider = ({ children }) => {
         isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
         isRedeemGiftCardModalOpen, openRedeemGiftCardModal, closeRedeemGiftCardModal,
         isDisablePasswordModalOpen, openDisablePasswordModal, closeDisablePasswordModal,
+        isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown,
+        isWalletDropdownOpen, openWalletDropdown, closeWalletDropdown,
+        isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
+        isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown,
+        isTokenSelectorOpen, openTokenSelector, closeTokenSelector,
+        isTokenListModalOpen, openTokenListModal, closeTokenListModal,
+        isPaymentLinkModalOpen, openPaymentLinkModal, closePaymentLinkModal,
         closeAllModals,
       }}
     >

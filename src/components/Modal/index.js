@@ -1,49 +1,61 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import Modal from 'react-modal';
 
 import { ReactComponent as CrossIconDefault } from 'assets/cross.svg';
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
+const GlobalStyle = createGlobalStyle`
+  .ReactModal__Content {
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin-right: -50% !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 24px !important;
+    background: ${({ theme }) => theme.modal.background} !important;
+    opacity: 1 !important;
+    @media only screen and (max-width: 560px) {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0 !important;
+    }
+  }
+  .ReactModal__Overlay {
+    background: ${({ theme }) => theme.modal.overlay} !important;
+    z-index: 1 !important;
+  }
+  .ReactModal__Body--open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 export default ({ children, isOpen, onClose, title, onBack, width, style, containerStyle }) => {
-  const theme = useTheme();
-  const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      padding: '0',
-      border: '0',
-      borderRadius: '24px',
-      background: theme.modal.background,
-      opacity: '1',
-      maxWidth: 'calc(100% - 14px)',
-      maxHeight: 'calc(100% - 14px)',
-    },
-    overlay: {
-      background: theme.modal.overlay,
-      zIndex: '1',
-      ...containerStyle,
-    },
-  };
+  const customStyles = { overlay: { ...containerStyle } };
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      style={customStyles}
-      contentLabel={title}
-      appElement={document.body}
-    >
-      <ModalContent width={width} style={style}>
-        <Title>{title}</Title>
-        {onBack && <BackIcon onClick={onBack} />}
-        {onClose && <CrossIcon onClick={onClose} />}
-        {children}
-      </ModalContent>
-    </Modal>
+    <>
+      <GlobalStyle />
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={onClose}
+        style={customStyles}
+        contentLabel={title}
+        appElement={document.body}
+      >
+        <ModalContent width={width} style={style}>
+          <Title>{title}</Title>
+          {onBack && <BackIcon onClick={onBack} />}
+          {onClose && <CrossIcon onClick={onClose} />}
+          {children}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
@@ -56,8 +68,12 @@ const ModalContent = styled.div`
   padding: 26px;
   box-sizing: border-box;
   position: relative;
-  @media only screen and (max-width: 420px) {
+  @media only screen and (max-width: 560px) {
     padding: 26px 13px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    justify-content: center;
   }
 `;
 
@@ -72,9 +88,13 @@ const Title = styled.span`
 
 const CrossIcon = styled(CrossIconDefault)`
   position: absolute;
-  top: 31px;
-  right: 21px;
+  top: 21px;
+  right: 11px;
   cursor: pointer;
+  padding: 10px;
+  @media only screen and (max-width: 560px) {
+    top: 11px;
+  }
 `;
 
 const BackIcon = styled(BackIconDefault)`
@@ -83,4 +103,7 @@ const BackIcon = styled(BackIconDefault)`
   left: 11px;
   cursor: pointer;
   padding: 10px;
+  @media only screen and (max-width: 560px) {
+    top: 11px;
+  }
 `;

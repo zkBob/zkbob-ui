@@ -7,6 +7,7 @@ import useWindowDimensions from 'hooks/useWindowDimensions';
 import usePrevious from 'hooks/usePrevious';
 import useDisplayedFee from 'hooks/useDisplayedFee';
 import useMaxTransferable from './useMaxTransferable';
+import useApproval from './useApproval';
 
 export {
   useDateFromNow,
@@ -18,4 +19,5 @@ export {
   usePrevious,
   useDisplayedFee,
   useMaxTransferable,
+  useApproval,
 };

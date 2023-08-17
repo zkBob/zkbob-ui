@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useAccount } from 'wagmi';
 
 import ButtonDefault from 'components/Button';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
@@ -20,6 +21,11 @@ import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, CONNECTORS_ICONS, TOKENS_ICONS } from 'constants';
 import { useWindowDimensions } from 'hooks';
 
+import {
+  ZkAccountContext, ModalContext,
+  TokenBalanceContext, PoolContext,
+} from 'contexts';
+
 const { parseUnits } = ethers.utils;
 
 const formatBalance = (balance, tokenDecimals, isMobile) => {
@@ -34,18 +40,22 @@ const BalanceSkeleton = isMobile => (
   />
 );
 
-export default ({
-  openWalletModal, connector, isLoadingZkAccount, empty,
-  openAccountSetUpModal, account, zkAccount, openConfirmLogoutModal,
-  balance, nativeBalance, poolBalance, refresh, isLoadingBalance, getSeed,
-  openSwapModal, generateAddress, openChangePasswordModal,
-  openSeedPhraseModal, isDemo, disconnect, isLoadingState, openDisablePasswordModal,
-  switchToPool, currentPool, initializeGiftCard, isPoolSwitching,
-}) => {
-  const walletButtonRef = useRef(null);
-  const zkAccountButtonRef = useRef(null);
-  const networkButtonRef = useRef(null);
-  const moreButtonRef = useRef(null);
+export default ({ empty }) => {
+  const { address: account, connector } = useAccount();
+  const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const {
+    zkAccount, isLoadingZkAccount, balance: poolBalance,
+    updatePoolData, isPoolSwitching, isLoadingState,
+  } = useContext(ZkAccountContext);
+  const { openWalletModal, openAccountSetUpModal, openSwapModal } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+
+  const refresh = useCallback(e => {
+    e.stopPropagation();
+    updateBalance();
+    updatePoolData();
+  }, [updateBalance, updatePoolData]);
+
   const { width } = useWindowDimensions();
 
   const isMobile = width <= 800;
@@ -61,13 +71,8 @@ export default ({
   }
 
   const networkDropdown = (
-    <NetworkDropdown
-      buttonRef={networkButtonRef}
-      disabled={isPoolSwitching || isLoadingState}
-      switchToPool={switchToPool}
-      currentPool={currentPool}
-    >
-      <NetworkDropdownButton ref={networkButtonRef} $refreshing={isPoolSwitching || isLoadingState}>
+    <NetworkDropdown>
+      <NetworkDropdownButton $refreshing={isPoolSwitching || isLoadingState}>
         <NetworkIcon src={NETWORKS[currentPool.chainId].icon} />
         <Divider />
         <NetworkIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
@@ -81,18 +86,8 @@ export default ({
   );
 
   const walletDropdown = account ? (
-    <WalletDropdown
-      address={account}
-      balance={balance}
-      nativeBalance={nativeBalance}
-      connector={connector}
-      changeWallet={openWalletModal}
-      disconnect={disconnect}
-      buttonRef={walletButtonRef}
-      disabled={isLoadingBalance}
-      currentPool={currentPool}
-    >
-      <AccountDropdownButton ref={walletButtonRef} $refreshing={isLoadingBalance}>
+    <WalletDropdown>
+      <AccountDropdownButton $refreshing={isLoadingBalance}>
         <Row>
           {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
           <Address>{shortAddress(account)}</Address>
@@ -121,23 +116,8 @@ export default ({
   );
 
   const zkAccountDropdown = zkAccount ? (
-    <ZkAccountDropdown
-      balance={poolBalance}
-      generateAddress={generateAddress}
-      switchAccount={openAccountSetUpModal}
-      setPassword={openChangePasswordModal}
-      removePassword={openDisablePasswordModal}
-      logout={openConfirmLogoutModal}
-      showSeedPhrase={openSeedPhraseModal}
-      buttonRef={zkAccountButtonRef}
-      isDemo={isDemo}
-      isLoadingState={isLoadingState}
-      disabled={isLoadingState}
-      initializeGiftCard={initializeGiftCard}
-      getSeed={getSeed}
-      currentPool={currentPool}
-    >
-      <AccountDropdownButton ref={zkAccountButtonRef} $refreshing={isLoadingState}>
+    <ZkAccountDropdown>
+      <AccountDropdownButton $refreshing={isLoadingState}>
         <Row>
           <ZkAvatar seed={zkAccount} size={16} />
           <Address>zkAccount</Address>
@@ -173,41 +153,35 @@ export default ({
           <Logo />
         </LogoSection>
         <AccountSection>
-          <OnlyDesktop>
-            {networkDropdown}
-          </OnlyDesktop>
+          {!isMobile && networkDropdown}
           <BridgeButton small onClick={openSwapModal}>
             Get {currentPool.tokenSymbol}
           </BridgeButton>
-          <OnlyDesktop>
-            {walletDropdown}
-          </OnlyDesktop>
-          <OnlyDesktop>
-            {zkAccountDropdown}
-          </OnlyDesktop>
-          {zkAccount && (
-            <OnlyDesktop>
-              <RefreshButtonContainer onClick={refresh}>
-                {(isLoadingBalance || isLoadingState) ? (
-                  <Spinner size={18} />
-                ) : (
-                  <RefreshIcon />
-                )}
-              </RefreshButtonContainer>
-            </OnlyDesktop>
+          {!isMobile && walletDropdown}
+          {!isMobile && zkAccountDropdown}
+          {(zkAccount && !isMobile) && (
+            <RefreshButtonContainer onClick={refresh}>
+              {(isLoadingBalance || isLoadingState) ? (
+                <Spinner size={18} />
+              ) : (
+                <RefreshIcon />
+              )}
+            </RefreshButtonContainer>
           )}
-          <MoreDropdown buttonRef={moreButtonRef}>
-            <DropdownButton ref={moreButtonRef}>
+          <MoreDropdown>
+            <DropdownButton>
               <DotsIcon />
             </DropdownButton>
           </MoreDropdown>
         </AccountSection>
       </Row>
-      <OnlyMobile>
-        {networkDropdown}
-        {walletDropdown}
-        {zkAccountDropdown}
-      </OnlyMobile>
+      {isMobile && (
+        <OnlyMobile>
+          {networkDropdown}
+          {walletDropdown}
+          {zkAccountDropdown}
+        </OnlyMobile>
+      )}
     </>
   );
 }
@@ -217,12 +191,6 @@ const Row = styled.div`
   align-items: center;
   justify-content: space-between;
   position: relative;
-`;
-
-const OnlyDesktop = styled.div`
-  @media only screen and (max-width: 800px) {
-    display: none;
-  }
 `;
 
 const OnlyMobile = styled.div`
@@ -235,19 +203,17 @@ const OnlyMobile = styled.div`
   padding: 0 7px;
   background: #fff;
   z-index: 1;
-  @media only screen and (max-width: 800px) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    & > * {
-      margin-right: 2px;
-      margin-left: 2px;
-      &:last-child {
-        margin-right: 0;
-      }
-      &:first-child {
-        margin-left: 0;
-      }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  & > * {
+    margin-right: 2px;
+    margin-left: 2px;
+    &:last-child {
+      margin-right: 0;
+    }
+    &:first-child {
+      margin-left: 0;
     }
   }
 `;

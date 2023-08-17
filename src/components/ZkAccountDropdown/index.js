@@ -1,7 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import QRCode from 'react-qr-code';
-import { isMobile } from 'react-device-detect';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -16,11 +15,13 @@ import { formatNumber } from 'utils';
 
 import { TOKENS_ICONS } from 'constants';
 
+import { ZkAccountContext, ModalContext, PoolContext } from 'contexts';
 
 const Content = ({
   balance, generateAddress, getSeed, setPassword,
-  removePassword, logout, buttonRef, showSeedPhrase,
+  removePassword, logout, close, showSeedPhrase,
   isLoadingState, initializeGiftCard, currentPool,
+  generatePaymentLink,
 }) => {
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -48,16 +49,16 @@ const Content = ({
       const queryParams = new URLSearchParams(paramsString);
       const code = queryParams.get('gift-code');
       await initializeGiftCard(code);
-      buttonRef.current.click();
+      close();
     } catch (error) {
       console.log(error);
     }
-  }, [initializeGiftCard, buttonRef]);
+  }, [initializeGiftCard, close]);
 
   const handleOptionClick = useCallback(action => {
-    buttonRef.current.click();
+    close();
     action();
-  }, [buttonRef]);
+  }, [close]);
 
   const settingsOptions = [
     { text: 'Show secret phrase', action: showSeedPhrase },
@@ -107,11 +108,9 @@ const Content = ({
           <Balance style={{ marginLeft: 5 }}>{currentPool.tokenSymbol}</Balance>
         </Row>
       </RowSpaceBetween>
-      {isMobile &&
-        <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
-          Generate QR code address
-        </Button>
-      }
+      <Button style={{ marginBottom: 10 }} onClick={generateQRCode} disabled={isLoadingState}>
+        Generate QR code address
+      </Button>
       {privateAddress ? (
         <PrivateAddress>{privateAddress}</PrivateAddress>
       ) : (
@@ -124,6 +123,11 @@ const Content = ({
         You create a new address each time you connect.{' '}
         Receive tokens to this address or a previously generated address.
       </Description>
+      {currentPool.paymentContractAddress && (
+        <OptionButton onClick={() => handleOptionClick(generatePaymentLink)}>
+          Get payment link
+        </OptionButton>
+      )}
       <QRCodeReader onResult={initGiftCard}>
         <OptionButton>Redeem gift card</OptionButton>
       </QRCodeReader>
@@ -137,34 +141,46 @@ const Content = ({
   );
 };
 
-export default ({
-  balance, generateAddress, switchAccount, showSeedPhrase, disabled,
-  logout, buttonRef, children, isDemo, isLoadingState, currentPool,
-  initializeGiftCard, getSeed, setPassword, removePassword,
-}) => (
-  <Dropdown
-    disabled={disabled}
-    content={() => (
-      <Content
-        balance={balance}
-        generateAddress={generateAddress}
-        switchAccount={switchAccount}
-        setPassword={setPassword}
-        removePassword={removePassword}
-        logout={logout}
-        buttonRef={buttonRef}
-        showSeedPhrase={showSeedPhrase}
-        isDemo={isDemo}
-        isLoadingState={isLoadingState}
-        initializeGiftCard={initializeGiftCard}
-        getSeed={getSeed}
-        currentPool={currentPool}
-      />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const {
+    balance: poolBalance, generateAddress, isDemo,
+    isLoadingState, initializeGiftCard, getSeed,
+  } = useContext(ZkAccountContext);
+  const {
+    openSeedPhraseModal, openAccountSetUpModal, openChangePasswordModal,
+    openConfirmLogoutModal, openDisablePasswordModal, openPaymentLinkModal,
+    isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
+  } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      disabled={isLoadingState}
+      isOpen={isZkAccountDropdownOpen}
+      open={openZkAccountDropdown}
+      close={closeZkAccountDropdown}
+      content={() => (
+        <Content
+          balance={poolBalance}
+          generateAddress={generateAddress}
+          switchAccount={openAccountSetUpModal}
+          setPassword={openChangePasswordModal}
+          removePassword={openDisablePasswordModal}
+          logout={openConfirmLogoutModal}
+          showSeedPhrase={openSeedPhraseModal}
+          isDemo={isDemo}
+          isLoadingState={isLoadingState}
+          initializeGiftCard={initializeGiftCard}
+          getSeed={getSeed}
+          currentPool={currentPool}
+          close={closeZkAccountDropdown}
+          generatePaymentLink={openPaymentLinkModal}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;
@@ -214,6 +230,9 @@ const BackIcon = styled(BackIconDefault)`
   left: 11px;
   cursor: pointer;
   padding: 10px;
+  @media only screen and (max-width: 560px) {
+    top: 11px;
+  }
 `;
 
 const Title = styled.span`
