@@ -88,11 +88,12 @@ const Title = styled.span`
 
 const CrossIcon = styled(CrossIconDefault)`
   position: absolute;
-  top: 31px;
-  right: 21px;
+  top: 21px;
+  right: 11px;
   cursor: pointer;
+  padding: 10px;
   @media only screen and (max-width: 560px) {
-    top: 21px;
+    top: 11px;
   }
 `;
 

@@ -89,9 +89,10 @@ export default ({
 const CrossIcon = styled(CrossIconDefault)`
   display: none;
   position: absolute;
-  top: 21px;
-  right: 21px;
+  top: 11px;
+  right: 11px;
   cursor: pointer;
+  padding: 10px;
   @media only screen and (max-width: 560px) {
     display: block;
   }
