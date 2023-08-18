@@ -95,7 +95,7 @@ const Payment = () => {
           />
           <RowSpaceBetween>
             <Text style={{ marginRight: 20 }}>
-              The recipient will get payment in {pool.tokenSymbol}
+              The recipient receives payment in {pool.tokenSymbol}
             </Text>
             <Row>
               <Text style={{ marginRight: 4 }}>Fee:</Text>
