@@ -17,5 +17,6 @@ const ToastContainerStyled = styled(ToastContainer)`
     color: ${props => props.theme.text.color.secondary};
     font-size: 14px;
     line-height: 20px;
+    cursor: default;
   }
 `;

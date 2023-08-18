@@ -1,5 +1,10 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+
+import LinkDefault from 'components/Link';
+
+import { SUPPORT_URL } from 'constants';
 
 const { parseUnits, formatUnits, commify } = ethers.utils;
 
@@ -33,7 +38,12 @@ export const showLoadingError = cause => {
   toast.error(
     <span>
       <b>Error loading {cause}.</b><br />
-      Please try again later or contact our support if the issue persists.
+      Please try again later or <Link href={SUPPORT_URL}>contact our support</Link> if the issue persists.
     </span>
   );
 };
+
+const Link = styled(LinkDefault)`
+  color: inherit;
+  text-decoration: underline;
+`;
