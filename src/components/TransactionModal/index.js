@@ -87,7 +87,7 @@ const descriptions = {
   ),
   [TX_STATUSES.SENT]: ({ currentPool, txHash }) => (
     <span>
-      Your payment will be proceed during 10 minutes.<br />
+      Payment processing can take up to 10 minutes.<br />
       <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
         View the transaction
       </Link>
