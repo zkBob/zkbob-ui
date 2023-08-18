@@ -6,7 +6,7 @@ import Spinner from 'components/Spinner';
 import Button from 'components/Button';
 import Link from 'components/Link';
 
-import { TX_STATUSES, NETWORKS } from 'constants';
+import { TX_STATUSES, NETWORKS, SUPPORT_URL } from 'constants';
 
 import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
 import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
@@ -142,7 +142,11 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
         <Description>{error}</Description>
       )}
       {(FAILURE_STATUSES.includes(status)) && (
-        <Description>Support ID: {supportId}</Description>
+        <>
+          <Description style={{ marginBottom: 8 }}>Support ID: {supportId}</Description>
+          <Link href={SUPPORT_URL}>Contact support</Link>
+        </>
+
       )}
       {status === TX_STATUSES.DEPOSITED && (
         <OkButton onClick={onClose}>Got it!</OkButton>
