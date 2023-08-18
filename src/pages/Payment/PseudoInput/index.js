@@ -10,8 +10,12 @@ import { formatNumber } from 'utils';
 export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }) => {
   const usdBalance = useMemo(() => {
     if (token?.priceUSD) {
-      const priceBN = ethers.utils.parseEther(token.priceUSD);
-      return balance.mul(priceBN).div(ethers.constants.WeiPerEther);
+      try {
+        const priceBN = ethers.utils.parseEther(Number(token.priceUSD).toFixed(18));
+        return balance.mul(priceBN).div(ethers.constants.WeiPerEther);
+      } catch (error) {
+        return null;
+      }
     }
     return ethers.constants.Zero;
   }, [balance, token]);
@@ -40,7 +44,7 @@ export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }
         ) : (
           <Balance>
             {formatNumber(balance, token?.decimals || 18)} {token?.symbol}{' '}
-            {`($${formatNumber(usdBalance, token?.decimals || 18)})`}
+            {`($${usdBalance ? formatNumber(usdBalance, token?.decimals || 18) : '--'})`}
           </Balance>
         )}
       </Row>
