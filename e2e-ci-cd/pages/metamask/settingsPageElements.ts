@@ -1,6 +1,6 @@
 const SETTINGS_PAGE = '.settings-page';
-const advancedButton = `${SETTINGS_PAGE} button:nth-child(2)`;
-const networksButton = `${SETTINGS_PAGE} button:nth-child(6)`;
+const advancedButton = `//div[text()="Advanced"]`;
+const networksButton = `//div[contains(@class, "network-display")][@role="button"]`;
 const closeButton = `${SETTINGS_PAGE} .settings-page__close-button`;
 export const settingsPageElements = {
   SETTINGS_PAGE,
@@ -18,12 +18,25 @@ const showTestNetworksToggleOn =
 const showTestNetworksToggleOff =
   '(//div[@data-testid="advanced-setting-show-testnet-conversion"])[2]//input[@value="false"]/..';
 const resetAccountButton = '[data-testid="advanced-setting-reset-account"] button';
+
+const networkName = `//h6[text()="Network name"]/ancestor::label/input[@class="form-field__input"]`;
+const newRPCUrl = `//h6[text()="New RPC URL"]/ancestor::label/input[@class="form-field__input"]`;
+const chainID = `//h6[text()="Chain ID"]/ancestor::label/input[@class="form-field__input"]`;
+const currencySymbol = `//h6[text()="Currency symbol"]/ancestor::label/input[@class="form-field__input"]`;
+const explorerURL = `//h6[text()="Block explorer URL"]/ancestor::label/input[@class="form-field__input"]`;
+const save = `//button[text()="Save"]`
 export const advancedPageElements = {
   customNonceToggleOn,
   customNonceToggleOff,
   showTestNetworksToggleOn,
   showTestNetworksToggleOff,
   resetAccountButton,
+  networkName,
+  newRPCUrl,
+  chainID,
+  currencySymbol,
+  explorerURL,
+  save,
 };
 
 const nevermindButton = '.modal-container button:nth-child(1)';

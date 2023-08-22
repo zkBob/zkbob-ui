@@ -76,11 +76,13 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     await this.startImportWalletFlow();
     await this.restoreWalletWithSecretWords();
     await this.confirmAllDone();
+    
 
     await this.page
       .locator(mainPageElements.walletOverview)
       .waitFor({ state: 'visible', timeout: TIMEOUTS.big });
   }
+
 
   async showTestNetworks() {
     await this.focus();
@@ -91,6 +93,20 @@ export default class Metamask extends BasePage implements MetamaskMethods {
       await this.page.locator(advancedPageElements.showTestNetworksToggleOff).click();
     }
     await this.page.locator(mainPageElements.LOGO).click();
+  }
+  
+
+  async addCustomNetworks(){
+    await this.showTestNetworks();
+    await this.page.locator(settingsPageElements.networksButton).click();
+    await this.page.locator(mainPageElements.addCustomNetwork).click();
+    await this.page.locator(advancedPageElements.networkName).type('Optimism Goerli');
+    await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.optimism.io/');
+    await this.page.locator(advancedPageElements.chainID).type('420');
+    await this.page.locator(advancedPageElements.currencySymbol).type('ETH');
+    await this.page.locator(advancedPageElements.save).click();
+    await this.page.locator(mainPageElements.buttonConfirm).click();
+
   }
 
   async updateNetwork(params: NetworkParameters) {

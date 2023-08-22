@@ -57,6 +57,9 @@ const createAccount = {
   createButton: `${IMPORT_ACCOUNT_SELECTOR} .btn-secondary`,
 };
 
+const addCustomNetwork = `//button[text()="Add network"]`;
+const buttonConfirm = `//button[text()="Got it"]`;
+
 export const mainPageElements = {
   LOGO,
   networkSwitcher,
@@ -68,4 +71,6 @@ export const mainPageElements = {
   accountModal,
   importAccount,
   createAccount,
+  addCustomNetwork,
+  buttonConfirm,
 };

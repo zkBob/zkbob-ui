@@ -27,62 +27,164 @@ export default class OperationsWithTokenPages extends BasePage{
       await expect(this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
     }
 
-    async Deposit(): Promise<void> {
-      await this.focus();
-      await expect(this.locator('//button[text()="Enter an amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+    async SelectSepoliaNetwork():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
+      if (await this.locator('//div[3]//div[2]//div//img[contains(@src,"sepolia")]').isVisible()){
+        console.log('Sepolia Network has already been selected');
+      }
+
+      else{
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+        await this.locator('//button//div[text()="Sepolia"]').click();
+      }
+    }
+
+    async SelectGoerliOPNetwork():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      if (await (this.locator('//div[3]//div[2]//div//img[contains(@src,"optimism")]')).isVisible()){
+        console.log('Goerli OP Network has already been selected');
+      }
+
+      else{
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+        await this.locator('//button//div[text()="Goerli Optimism"]').click();
+      }
+    }
+
+    async SelectGoerliNetwork():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      if (await (this.locator('//div[3]//div[2]//div//img[contains(@src,"goerli")]')).isVisible()){
+        console.log('Goerli Network has already been selected');
+      }
+
+      else{
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+        await this.locator('//button//div[text()="Goerli"]').click();
+      }
+    }
+
+    async SelectBOB():Promise<void> {
+      await this.locator('//button//div[text()="BOB"]').click();
+    }
+
+    async SelectUSDM():Promise<void> {
+      await this.locator('//button//div[text()="USDM"]').click();
+    }
+
+    async SelectUSDC():Promise<void> {
+      await this.locator('//button//div[text()="USDC"]').click();
+    }
+
+    async SelectETH():Promise<void> {
+      await this.locator('//button//div[text()="ETH"]').click();
+    }
+
+
+    async GoToDepositTab():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.tab_deposit).click();
+      expect(this.page.url()).toContain('/deposit');
+    }
+
+    async DepositInputAmount():Promise<void> {
+      // await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1');
-      const [popup] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
-      await popup.locator('//button[text()="Sign"]').click();
-      await expect(this.locator('//span[text()="Deposit sent"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+    }
+
+    async button_Deposit():Promise<void> {
+      const [popupSwitchNetwork] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
+      await popupSwitchNetwork.locator('//button[text()="Switch network"]').click();
+      await expect(this.locator('//div/span[text()="Generating a proof"]')).toBeVisible();
+      const [popup2] = await Promise.all([this.waitForPage(), await expect(this.locator('//div/span[text()="Please sign a message"]')).toBeVisible()]);
+      await popup2.locator('//button[text()="Sign"]').click();
+    }
+
+    async button_DepositETH():Promise<void> {
+      const [popupSwitchNetwork] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
+      await popupSwitchNetwork.locator('//button[text()="Switch network"]').click();
+      const [popupConfirm] = await Promise.all([this.waitForPage(), this.locator('//div/span[text()="Waiting for transaction"]').isVisible()]);
+      await popupConfirm.locator('//button[text()="Confirm"]').click();
+    }
+
+    async TheCheckingTheDepositSent():Promise<void> {
+      await expect(this.locator('//span[text()="Deposit is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       await this.locator('//button[text()="Got it!"]').click();
       await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
     }
 
-    async Transfer(): Promise<void> {
 
-      await this.locator(OperationsWithTokenElementsLocators.tab_transfer).click();
-      expect(this.page.url()).toContain('/transfer');
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab).type('1');
-      await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
-      await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).type(this.ZKBOB_RECEIVER_ADDRESS);
-      await this.locator(OperationsWithTokenElementsLocators.button_transfer).click();
-      await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
-      await expect(this.locator('//span[text()="Transfer sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
-      await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes})
 
-      }
 
-    async CheckTransfer(): Promise<void> {
-      await this.ReloadPage()
 
-      // Change account from restore
-      await expect (this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout:TIMEOUTS.fiveMinutes});
-      await this.locator('//div//span[contains(text(), "zk")]').click();
-      await this.locator('//button[text()="Switch account"]').click();
-      await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
-      await this.locator('//span[text()="Input your saved seed phrase to restore an existing account"]//../textarea').type(this.ZKACCOUNT_SEED_PHRASE);
-      await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
-      await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
-      await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD);
-      await this.locator(zkAccountElementsLocators.button_Verify).click();
 
-      // Check last transfer
-      await this.locator(OperationsWithTokenElementsLocators.tab_history).click();
-      await expect(this.locator('(//span[text()="History"]//..//div[1]/span/span)[1]')).toHaveText('1', {timeout:TIMEOUTS.oneMinute});
 
-      }
 
-    async Withdraw(): Promise<void> {
 
-      await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
-      expect(this.page.url()).toContain('/withdraw');
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab).type('1');
-      await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).type(this.ADDRESS_METAMASK_ACCOUNT);
-      await this.locator(OperationsWithTokenElementsLocators.button_withdraw).click({timeout:TIMEOUTS.tenMinutes});
-      await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
-      await expect(this.locator('//span[text()="Withdrawal sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // async Transfer(): Promise<void> {
+
+    //   await this.locator(OperationsWithTokenElementsLocators.tab_transfer).click();
+    //   expect(this.page.url()).toContain('/transfer');
+    //   await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab).type('1');
+    //   await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
+    //   await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).type(this.ZKBOB_RECEIVER_ADDRESS);
+    //   await this.locator(OperationsWithTokenElementsLocators.button_transfer).click();
+    //   await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
+    //   await expect(this.locator('//span[text()="Transfer sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
+    //   await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes})
+
+    //   }
+
+    // async CheckTransfer(): Promise<void> {
+    //   await this.ReloadPage()
+
+    //   // Change account from restore
+    //   await expect (this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout:TIMEOUTS.fiveMinutes});
+    //   await this.locator('//div//span[contains(text(), "zk")]').click();
+    //   await this.locator('//button[text()="Switch account"]').click();
+    //   await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
+    //   await this.locator('//span[text()="Input your saved seed phrase to restore an existing account"]//../textarea').type(this.ZKACCOUNT_SEED_PHRASE);
+    //   await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
+    //   await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
+    //   await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD);
+    //   await this.locator(zkAccountElementsLocators.button_Verify).click();
+
+    //   // Check last transfer
+    //   await this.locator(OperationsWithTokenElementsLocators.tab_history).click();
+    //   await expect(this.locator('(//span[text()="History"]//..//div[1]/span/span)[1]')).toHaveText('1', {timeout:TIMEOUTS.oneMinute});
+
+    //   }
+
+    // async Withdraw(): Promise<void> {
+
+    //   await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
+    //   expect(this.page.url()).toContain('/withdraw');
+    //   await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab).type('1');
+    //   await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).type(this.ADDRESS_METAMASK_ACCOUNT);
+    //   await this.locator(OperationsWithTokenElementsLocators.button_withdraw).click({timeout:TIMEOUTS.tenMinutes});
+    //   await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
+    //   await expect(this.locator('//span[text()="Withdrawal sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
       
-    }
+    // }
     
 
     

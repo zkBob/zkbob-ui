@@ -3,16 +3,18 @@ import { test } from '../fixtures/testContextFixture';
 test.beforeEach(async ({metamask, zkAccount}) => {
   await metamask.importWallet()
   await zkAccount.open('/')
-  await zkAccount.button_zkAccount()
-  await zkAccount.button_Agree()
+  await zkAccount.button_GetStarted()
+  await zkAccount.button_CreateNewZkAccount()
+  await zkAccount.button_UseWeb3wallet()
   await zkAccount.ConnectMetaMaskWallet()
-  await zkAccount.GenerateKey()
+  await zkAccount.button_SignMessage()
+  await zkAccount.button_SetPassword()
   await zkAccount.CreatePassword()
-  await zkAccount.CheckAccount()
+  await zkAccount.CheckAccount() 
 });
 
 
 
-test('Deposit', async({OperationsWithToken}) => {
+test('Deposit BOB on Sepolia', async({OperationsWithToken}) => {
   await OperationsWithToken.Deposit()
 })

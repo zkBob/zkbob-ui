@@ -121,7 +121,7 @@ export default class zkAccountPage extends BasePage{
     }
     
     async CheckAccount(): Promise<void> {
-      await expect(this.locator('//span[text()="zkAccount"]/following-sibling::span[text()="BOB"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
 
     }
 
