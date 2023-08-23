@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import zkBobLibPackage from 'zkbob-client-js/package.json';
+import { useTranslation } from 'react-i18next';
 
 import { SupportIdContext, ZkAccountContext } from 'contexts';
 
@@ -13,6 +14,7 @@ import { ReactComponent as GithubIcon } from 'assets/github.svg';
 
 
 export default () => {
+  const { t } = useTranslation();
   const { supportId } = useContext(SupportIdContext);
   const { relayerVersion } = useContext(ZkAccountContext);
 
@@ -39,11 +41,11 @@ export default () => {
       </Row>
       <Row>
         <InnerRow>
-          <Text>Web: v{process.env.REACT_APP_VERSION}</Text>
-          <Text>Library: v{zkBobLibPackage.version}</Text>
-          <Text>Relayer: {relayerVersion || 'N/A'}</Text>
+          <Text>{t('common.web')}: v{process.env.REACT_APP_VERSION}</Text>
+          <Text>{t('common.library')}: v{zkBobLibPackage.version}</Text>
+          <Text>{t('common.relayer')}: {relayerVersion || 'N/A'}</Text>
           <TextRow>
-            <Text style={{ marginRight: 4 }}>Support ID:</Text>
+            <Text style={{ marginRight: 4 }}>{t('common.supportId')}:</Text>
             <Text>{supportId}</Text>
           </TextRow>
         </InnerRow>

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
@@ -9,6 +10,7 @@ export default ({
   isOpen, confirm, reset, password, isLoading,
   onPasswordChange, error, isAccountSetUpModalOpen
 }) => {
+  const { t } = useTranslation();
   const handleKeyPress = useCallback(event => {
     if(event.key === 'Enter'){
       confirm();
@@ -17,26 +19,26 @@ export default ({
   return (
     <Modal
       isOpen={isOpen}
-      title="Enter password"
+      title={t('enterPasswordModal.title')}
       containerStyle={{ visibility: isAccountSetUpModalOpen ? 'hidden' : 'visible' }}
     >
       <Container onKeyPress={handleKeyPress}>
         <Description>
-          To enhance security, password entry is required each time a page reloads.
+          {t('enterPasswordModal.description')}
         </Description>
         <Input
           autoFocus
           type="password"
-          placeholder="Password"
+          placeholder={t('common.password')}
           value={password}
           onChange={onPasswordChange}
           error={!!error}
           disabled={isLoading}
         />
         <Button onClick={confirm} disabled={isLoading}>
-          {isLoading ? 'Singing in...' : 'Sign in'}
+          {isLoading ? t('buttonText.signingIn') : t('buttonText.signIn')}
         </Button>
-        <Button type="link" onClick={reset}>Lost password? Click here to restore access</Button>
+        <Button type="link" onClick={reset}>{t('enterPasswordModal.lostPassword')}</Button>
       </Container>
     </Modal>
   );

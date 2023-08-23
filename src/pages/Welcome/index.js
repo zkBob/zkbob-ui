@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 
@@ -12,6 +13,7 @@ import Button from 'components/Button';
 import { ZkAccountContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const { isDemo } = useContext(ZkAccountContext);
   const history = useHistory();
   const location = useLocation();
@@ -20,7 +22,7 @@ export default () => {
       <Container>
         {isDemo ? (
           <>
-            <Title>Welcome to zkBob Demo Version!</Title>
+            <Title>{t('welcome.titleDemo')}</Title>
             <Description>
               {/* <Row>
                 <Text>Congrats! You have</Text>
@@ -28,21 +30,18 @@ export default () => {
                 <Text><b>10 BOB</b></Text>
               </Row> */}
               <Row>
-                <Text>
-                  Transfer BOB privately to friends, use to purchase sponsored items,{' '}
-                  or transfer to your own private zkAccount.
-                </Text>
+                <Text>{t('welcome.descriptionDemo')}</Text>
               </Row>
             </Description>
             <Button onClick={() => history.push('/transfer' + location.search)}>
-              Transfer my BOBs
+              {t('buttonText.transfer')}
             </Button>
           </>
         ) : (
           <>
-            <Title>Welcome to zkBob!</Title>
+            <Title>{t('welcome.title')}</Title>
             <Description>
-              <Text>Create a zkAccount to transfer tokens privately with your friends and colleagues.</Text>
+              <Text>{t('welcome.description')}</Text>
             </Description>
             <AccountSetUpButton />
           </>

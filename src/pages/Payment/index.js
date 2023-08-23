@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useHistory, useParams } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Layout from 'components/Layout';
 import Card from 'components/Card';
@@ -38,6 +39,7 @@ const pools = Object.values(config.pools).map((pool, index) =>
 );
 
 const Payment = () => {
+  const { t } = useTranslation();
   const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const params = useParams();
@@ -80,11 +82,11 @@ const Payment = () => {
   return (
     <>
       <Layout header={<Header />}>
-        <Title>Enter USD value and choose a token</Title>
+        <Title>{t('payment.title')}</Title>
         <Card>
-          <InputLabel>The amount you'd like to send</InputLabel>
+          <InputLabel>{t('payment.amountToSend')}</InputLabel>
           <Input placeholder={0} value={displayedAmount} onChange={setDisplayedAmount} />
-          <InputLabel>Transfer amount</InputLabel>
+          <InputLabel>{t('payment.transferAmount')}</InputLabel>
           <PseudoInput
             value={tokenAmount}
             token={selectedToken}
@@ -95,10 +97,10 @@ const Payment = () => {
           />
           <RowSpaceBetween>
             <Text style={{ marginRight: 20 }}>
-              The recipient receives payment in {pool.tokenSymbol}
+              {t('payment.recipientReceives', { symbol: pool.tokenSymbol })}
             </Text>
             <Row>
-              <Text style={{ marginRight: 4 }}>Fee:</Text>
+              <Text style={{ marginRight: 4 }}>{t('common.fee')}:</Text>
               {isLoadingFee
                 ? <Skeleton width={40} />
                 : <Text>{formatNumber(fee, pool.tokenDecimals)} USD</Text>
@@ -120,24 +122,23 @@ const Payment = () => {
           </RowSpaceBetween>
           {(() => {
             if (!account)
-              return <Button onClick={openWalletModal}>Connect wallet</Button>
+              return <Button onClick={openWalletModal}>{t('buttonText.connectWallet')}</Button>
             else if (tokenAmount.isZero())
-              return <Button disabled>Enter amount</Button>
+              return <Button disabled>{t('buttonText.enterAmount')}</Button>
             else if (tokenAmount.gt(balance))
-              return <Button disabled>Insufficient {selectedToken?.symbol} balance</Button>
+              return <Button disabled>{t('buttonText.insufficientBalance', { symbol: selectedToken?.symbol })}</Button>
             else if (amount.gt(limit))
-              return <Button disabled>Amount exceeds limit</Button>
+              return <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>
             else if (selectedToken?.address !== ethers.constants.AddressZero && permitType === 'permit2' && !isApproved)
-              return <Button onClick={approve}>Approve tokens</Button>
+              return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>
             else
-              return <Button onClick={onSend}>Send</Button>;
+              return <Button onClick={onSend}>{t('buttonText.send')}</Button>;
           })()}
         </Card>
         <Limits
           loading={isLoadingLimit}
           limits={[{
-            prefix: 'The maximum amount',
-            suffix: 'to be paid from one address',
+            name: <Trans i18nKey="payment.limit" />,
             value: limit,
           }]}
           currentPool={{ ...pool, tokenSymbol: 'USD' }}

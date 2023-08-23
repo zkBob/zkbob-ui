@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Card from 'components/Card';
 import HistoryItem from 'components/HistoryItem';
@@ -7,20 +8,18 @@ import HistoryItem from 'components/HistoryItem';
 import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const { pendingActions, zkAccount } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
-  const multi = pendingActions.length > 1;
   return (
     <Card
-      note={
-      `You can deposit, transfer or withdraw funds once the transaction${multi ? 's are' : ' is'} completed.`
-      }
+      note={t('pendingAction.note', { count: pendingActions.length })}
     >
       <Title>
-        Please wait for your transaction{multi ? 's' : ''} to finalize
+      {t('pendingAction.title', { count: pendingActions.length })}
       </Title>
       <Description>
-        Do not refresh the page for at least 30 seconds! Transaction status{multi ? 'es' : ''} will update automatically.
+      {t('pendingAction.description', { count: pendingActions.length })}
       </Description>
       <ListContainer>
         {pendingActions.map((action, index) =>

@@ -1,6 +1,7 @@
 import { useContext, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useWidgetEvents, WidgetEvent } from '@lifi/widget';
+import { useTranslation } from 'react-i18next';
 
 import { ModalContext } from 'contexts';
 import LiFiWidget from 'containers/LiFiWidget';
@@ -8,6 +9,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 export default () => {
+  const { t } = useTranslation();
   const { isSwapModalOpen, closeSwapModal } = useContext(ModalContext);
   const widgetEvents = useWidgetEvents();
   const [isInProgress, setIsInProgress] = useState(false);
@@ -41,14 +43,14 @@ export default () => {
       onClose={isConfirmationShown ? null : () => tryToClose()}
       width={480}
       style={{ padding: '26px 0 0' }}
-      title={isConfirmationShown ? 'The swap is in progress' : null}
+      title={isConfirmationShown ? t('swapModal.title') : null}
     >
       {isInProgress && isConfirmationShown && (
         <ConfirmationContainer>
-          <Text>You can close this window and return later to view the results. Do you want to close the window?</Text>
+          <Text>{t('swapModal.description')}</Text>
           <Row>
-            <NoButton onClick={reject}>No</NoButton>
-            <YesButton onClick={confirm}>Yes</YesButton>
+            <NoButton onClick={reject}>{t('buttonText.no')}</NoButton>
+            <YesButton onClick={confirm}>{t('buttonText.yes')}</YesButton>
           </Row>
         </ConfirmationContainer>
       )}

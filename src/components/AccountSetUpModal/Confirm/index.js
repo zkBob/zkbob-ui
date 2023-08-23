@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import shuffle from 'lodash.shuffle';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from 'components/Button';
 
 export default ({ mnemonic, confirmMnemonic }) => {
+  const { t } = useTranslation();
   const [shuffled] = useState(
     shuffle(mnemonic.split(' ').map((word, index) => ({ word, index })))
   );
@@ -32,7 +34,7 @@ export default ({ mnemonic, confirmMnemonic }) => {
   return (
     <Container>
       <Description>
-        Please input your secret phrase to verify it.<br/> Click on a word to remove it
+        <Trans i18nKey="accountSetupModal.confirmSecret.description" />
       </Description>
       <MnemonicInput>
         {repeated.map(wordObj =>
@@ -63,7 +65,7 @@ export default ({ mnemonic, confirmMnemonic }) => {
         disabled={!match}
         onClick={confirmMnemonic}
         data-ga-id="signup-secret-phrase-confirm"
-      >Verify</Button>
+      >{t('buttonText.verify')}</Button>
     </Container>
   );
 };

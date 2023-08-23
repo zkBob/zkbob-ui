@@ -1,26 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
 
 import image from 'assets/bob-earth.png';
 
-export default () => (
-  <Container>
-    <img width={250} src={image} alt="" />
-    <Title>
-      zkBob is not supported in this country or region
-    </Title>
-    <Description>
-      zkBob is not supported in United Arab Emirates.{' '}
-      You will be able to use the application from supported country or region.
-      <Link
-        href="https://docs.zkbob.com/zkbob-overview/compliance-and-security#geo-restrictions"
-        style={{ marginLeft: 5 }}
-      >Learn more</Link>
-    </Description>
-  </Container>
-);
+export default () => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <img width={250} src={image} alt="" />
+      <Title>
+        {t('restrictionModal.title')}
+      </Title>
+      <Description>
+        {t('restrictionModal.description', { country: 'United Arab Emirates' })}
+        <Link
+          href="https://docs.zkbob.com/zkbob-overview/compliance-and-security#geo-restrictions"
+          style={{ marginLeft: 5 }}
+        >
+          {t('common.learnMore')}
+        </Link>
+      </Description>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   display: flex;

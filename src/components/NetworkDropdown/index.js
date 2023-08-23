@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import OptionButtonDefault from 'components/OptionButton';
@@ -26,6 +27,7 @@ const poolsByChainId = chainIds.map(chainId => {
 });
 
 const Content = ({ switchToPool, currentPool, close }) => {
+  const { t } = useTranslation();
   const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
 
   const showPools = useCallback(chainId => {
@@ -43,7 +45,7 @@ const Content = ({ switchToPool, currentPool, close }) => {
 
   return (
     <Container>
-      <Title>Networks</Title>
+      <Title>{t('networks.title')}</Title>
       {poolsByChainId.map(({ chainId, pools }, index) =>
         <React.Fragment key={index}>
           <OptionButton

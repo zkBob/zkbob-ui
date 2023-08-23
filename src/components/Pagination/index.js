@@ -1,31 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 
 import arrowLeft from 'assets/arrow-left.svg';
 import arrowRight from 'assets/arrow-right.svg';
 
-export default ({ currentPage, numberOfPages, setCurrentPage }) => (
-  <Row>
-    <Button type="link" onClick={() => setCurrentPage(1)}>First</Button>
-    <InnerRow>
-      <Arrow
-        $visible={currentPage !== 1}
-        src={arrowLeft}
-        onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
-      />
-      <Text>Page {currentPage} of {numberOfPages}</Text>
-      <Arrow
-        $visible={currentPage !== numberOfPages}
-        src={arrowRight}
-        onClick={() => setCurrentPage(Math.min(currentPage + 1, numberOfPages))}
-      />
-    </InnerRow>
-    <Button type="link" onClick={() => setCurrentPage(numberOfPages)}>Last</Button>
-  </Row>
-
-);
+export default ({ currentPage, numberOfPages, setCurrentPage }) => {
+  const { t } = useTranslation();
+  return (
+    <Row>
+      <Button type="link" onClick={() => setCurrentPage(1)}>{t('pagination.first')}</Button>
+      <InnerRow>
+        <Arrow
+          $visible={currentPage !== 1}
+          src={arrowLeft}
+          onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+        />
+        <Text>{t('pagination.current', { current: currentPage, total: numberOfPages })}</Text>
+        <Arrow
+          $visible={currentPage !== numberOfPages}
+          src={arrowRight}
+          onClick={() => setCurrentPage(Math.min(currentPage + 1, numberOfPages))}
+        />
+      </InnerRow>
+      <Button type="link" onClick={() => setCurrentPage(numberOfPages)}>{t('pagination.last')}</Button>
+    </Row>
+  );
+};
 
 const Row = styled.div`
   display: flex;

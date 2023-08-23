@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Spinner from 'components/Spinner';
@@ -14,85 +15,83 @@ import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
 import { formatNumber } from 'utils';
 
 const titles = {
-  [TX_STATUSES.APPROVE_TOKENS]: 'Please approve tokens',
-  [TX_STATUSES.APPROVED]: 'Tokens approved',
-  [TX_STATUSES.SIGN_MESSAGE]: 'Please sign a message',
-  [TX_STATUSES.CONFIRM_TRANSACTION]: 'Please confirm transaction',
-  [TX_STATUSES.WAITING_FOR_TRANSACTION]: 'Waiting for transaction',
-  [TX_STATUSES.GENERATING_PROOF]: 'Generating a proof',
-  [TX_STATUSES.WAITING_FOR_RELAYER]: 'Waiting for relayer',
-  [TX_STATUSES.DEPOSITED]: 'Deposit is in progress',
-  [TX_STATUSES.TRANSFERRED]: 'Transfer is in progress',
-  [TX_STATUSES.TRANSFERRED_MULTI]: 'Multitransfer is in progress',
-  [TX_STATUSES.WITHDRAWN]: 'Withdrawal is in progress',
-  [TX_STATUSES.REJECTED]: 'Transaction was rejected',
-  [TX_STATUSES.SIGNATURE_EXPIRED]: 'Signature expired',
-  [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: 'Suspicious wallet connected',
-  [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: 'Suspicious recipient address',
-  [TX_STATUSES.WRONG_NETWORK]: 'Wrong network',
-  [TX_STATUSES.SWITCH_NETWORK]: 'Please switch the network',
-  [TX_STATUSES.SENT]: 'Your payment was sent',
-  [TX_STATUSES.PREPARING_TRANSACTION]: 'Preparing transaction',
+  [TX_STATUSES.APPROVE_TOKENS]: 'approveTokens',
+  [TX_STATUSES.APPROVED]: 'approved',
+  [TX_STATUSES.SIGN_MESSAGE]: 'signMessage',
+  [TX_STATUSES.CONFIRM_TRANSACTION]: 'confirmTransaction',
+  [TX_STATUSES.WAITING_FOR_TRANSACTION]: 'waitingForTransaction',
+  [TX_STATUSES.GENERATING_PROOF]: 'generatingProof',
+  [TX_STATUSES.WAITING_FOR_RELAYER]: 'waitingForRelayer',
+  [TX_STATUSES.DEPOSITED]: 'deposited',
+  [TX_STATUSES.TRANSFERRED]: 'transferred',
+  [TX_STATUSES.TRANSFERRED_MULTI]: 'transferredMulti',
+  [TX_STATUSES.WITHDRAWN]: 'withdrawn',
+  [TX_STATUSES.REJECTED]: 'rejected',
+  [TX_STATUSES.SIGNATURE_EXPIRED]: 'signatureExpired',
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: 'suspiciousAccountDeposit',
+  [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: 'suspiciousAccountWithdrawal',
+  [TX_STATUSES.WRONG_NETWORK]: 'wrongNetwork',
+  [TX_STATUSES.SWITCH_NETWORK]: 'switchNetwork',
+  [TX_STATUSES.SENT]: 'sent',
+  [TX_STATUSES.PREPARING_TRANSACTION]: 'preparingTransaction',
 };
 
-const descriptions = {
-  [TX_STATUSES.DEPOSITED]: ({ amount, currentPool }) => (
-    <span>
-      Your <b>{formatNumber(amount, currentPool.tokenDecimals, 18)} {currentPool.tokenSymbol}</b> deposit to the zero knowledge pool is in progress.<br /><br />
-      To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.
-    </span>
-  ),
-  [TX_STATUSES.TRANSFERRED]: ({ amount, currentPool }) => (
-    <span>
-      Your <b>{formatNumber(amount, currentPool.tokenDecimals, 18)} {currentPool.tokenSymbol}</b> transfer within the zero knowledge pool is in progress.
-    </span>
-  ),
-  [TX_STATUSES.TRANSFERRED_MULTI]: ({ amount, currentPool }) => (
-    <span>
-      Your <b>{formatNumber(amount, currentPool.tokenDecimals, 18)} {currentPool.tokenSymbol}</b> multitransfer within the zero knowledge pool is in progress.
-    </span>
-  ),
-  [TX_STATUSES.WITHDRAWN]: ({ amount, currentPool }) => (
-    <span>
-      Your <b>{formatNumber(amount, currentPool.tokenDecimals, 18)} {currentPool.tokenSymbol}</b> withdrawal from the zero knowledge pool is in progress.
-    </span>
-  ),
-  [TX_STATUSES.SIGNATURE_EXPIRED]: () => (
-    <span>
-      Your signature has expired. Please try again.
-    </span>
-  ),
-  [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: () => (
-    <span>
-      We found that your wallet was involved in suspicious activities.{' '}
-      Because of this, you can't use this wallet at zkBob. Please, try another wallet.
-    </span>
-  ),
-  [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: () => (
-    <span>
-      We found that the recipient's address was involved in suspicious activities.{' '}
-      Because of this, you can't withdraw funds to this address.
-    </span>
-  ),
-  [TX_STATUSES.WRONG_NETWORK]: ({ currentPool }) => (
-    <span>
-      Failed to switch the network.{' '}
-      Please connect your wallet to {NETWORKS[currentPool.chainId].name} and try again.
-    </span>
-  ),
-  [TX_STATUSES.APPROVED]: () => (
-    <span>
-      Your approval was successful. Now you can deposit your tokens.
-    </span>
-  ),
-  [TX_STATUSES.SENT]: ({ currentPool, txHash }) => (
-    <span>
-      Payment processing can take up to 10 minutes.<br />
-      <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)}>
-        View the transaction
-      </Link>
-    </span>
-  ),
+const useDescriptions = () => {
+  const { t } = useTranslation();
+  return {
+    [TX_STATUSES.DEPOSITED]: ({ amount, currentPool }) => (
+      <Trans
+        i18nKey="transactionModal.descriptions.deposited"
+        values={{
+          amount: formatNumber(amount, currentPool.tokenDecimals, 18),
+          symbol: currentPool.tokenSymbol,
+        }}
+      />
+    ),
+    [TX_STATUSES.TRANSFERRED]: ({ amount, currentPool }) => (
+      <Trans
+        i18nKey="transactionModal.descriptions.transferred"
+        values={{
+          amount: formatNumber(amount, currentPool.tokenDecimals, 18),
+          symbol: currentPool.tokenSymbol,
+        }}
+      />
+    ),
+    [TX_STATUSES.TRANSFERRED_MULTI]: ({ amount, currentPool }) => (
+      <Trans
+        i18nKey="transactionModal.descriptions.transferredMulti"
+        values={{
+          amount: formatNumber(amount, currentPool.tokenDecimals, 18),
+          symbol: currentPool.tokenSymbol,
+        }}
+      />
+    ),
+    [TX_STATUSES.WITHDRAWN]: ({ amount, currentPool }) => (
+      <Trans
+        i18nKey="transactionModal.descriptions.withdrawn"
+        values={{
+          amount: formatNumber(amount, currentPool.tokenDecimals, 18),
+          symbol: currentPool.tokenSymbol,
+        }}
+      />
+    ),
+    [TX_STATUSES.SIGNATURE_EXPIRED]: () => t('transactionModal.descriptions.signatureExpired'),
+    [TX_STATUSES.SUSPICIOUS_ACCOUNT_DEPOSIT]: () => t('transactionModal.descriptions.suspiciousAccountDeposit'),
+    [TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL]: () => t('transactionModal.descriptions.suspiciousAccountWithdrawal'),
+    [TX_STATUSES.WRONG_NETWORK]: ({ currentPool }) =>
+      t('transactionModal.descriptions.wrongNetwork', {
+        network: NETWORKS[currentPool.chainId].name
+      }),
+    [TX_STATUSES.APPROVED]: () => t('transactionModal.descriptions.approved'),
+    [TX_STATUSES.SENT]: ({ currentPool, txHash }) => (
+      <Trans
+        i18nKey="transactionModal.descriptions.sent"
+        components={{
+          1: <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)} />
+        }}
+      />
+    ),
+  };
 };
 
 const SUCCESS_STATUSES = [
@@ -114,6 +113,8 @@ const SUSPICIOUS_ACCOUNT_STATUSES = [
 ];
 
 export default ({ isOpen, onClose, status, amount, error, supportId, currentPool, txHash }) => {
+  const { t } = useTranslation();
+  const descriptions = useDescriptions();
   return (
     <Modal
       isOpen={isOpen}
@@ -122,11 +123,11 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
         ...FAILURE_STATUSES,
         ...SUSPICIOUS_ACCOUNT_STATUSES,
       ].includes(status) ? onClose : null}
-      title={titles[status]}
+      title={t(`transactionModal.titles.${titles[status]}`)}
     >
       {status === TX_STATUSES.SIGN_MESSAGE && (
         <SignDescription>
-          You need to sign a message allowing the contract to use your tokens for the deposit.
+          {t('transactionModal.descriptions.signMessage')}
         </SignDescription>
       )}
       {(() => {
@@ -143,16 +144,22 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
       )}
       {(FAILURE_STATUSES.includes(status)) && (
         <>
-          <Description style={{ marginBottom: 8 }}>Support ID: {supportId}</Description>
-          <Link href={SUPPORT_URL}>Contact support</Link>
+          <Description style={{ marginBottom: 8 }}>{t('common.supportId')}: {supportId}</Description>
+          <Link href={SUPPORT_URL}>
+            {t('common.contactSupport')}
+          </Link>
         </>
 
       )}
       {status === TX_STATUSES.DEPOSITED && (
-        <OkButton onClick={onClose}>Got it!</OkButton>
+        <OkButton onClick={onClose}>
+          {t('buttonText.gotIt')}
+        </OkButton>
       )}
       {SUSPICIOUS_ACCOUNT_STATUSES.includes(status) && (
-        <OkButton onClick={onClose}>Okay</OkButton>
+        <OkButton onClick={onClose}>
+          {t('buttonText.okay')}
+        </OkButton>
       )}
     </Modal>
   );
@@ -166,6 +173,9 @@ const Description = styled.span`
   margin-bottom: 16px;
   &:last-child {
     margin-bottom: 0;
+  }
+  & > strong {
+    font-weight: ${({ theme }) => theme.text.weight.bold};
   }
 `;
 

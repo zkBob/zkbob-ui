@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 export default ({ tabs, activeTab, onTabClick, showBadge }) => {
+  const { t } = useTranslation();
   return (
     <Tabs>
       {tabs.map((tab, index) =>
@@ -11,7 +13,7 @@ export default ({ tabs, activeTab, onTabClick, showBadge }) => {
           onClick={() => onTabClick(index)}
           $showBadge={showBadge && tab.badge}
           data-ga-id={`tab-${tab.name.toLowerCase()}`}
-        >{tab.name}</Tab>
+        >{t(tab.i18nKey)}</Tab>
       )}
     </Tabs>
   );

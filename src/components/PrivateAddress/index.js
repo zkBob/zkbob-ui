@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
 import Tooltip from 'components/Tooltip';
 
@@ -8,6 +9,7 @@ import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
 
 export default ({ children }) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
   const onCopy = useCallback((text, result) => {
     if (result) {
@@ -21,7 +23,7 @@ export default ({ children }) => {
         <Address>
           {children}
         </Address>
-        <Tooltip content="Copied" placement="right" visible={isCopied}>
+        <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
           {isCopied ? <CheckIcon /> : <CopyIcon />}
         </Tooltip>
       </PrivateAddressContainer>

@@ -2,6 +2,7 @@ import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 
 import ButtonDefault from 'components/Button';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
@@ -41,6 +42,7 @@ const BalanceSkeleton = isMobile => (
 );
 
 export default ({ empty }) => {
+  const { t } = useTranslation();
   const { address: account, connector } = useAccount();
   const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
@@ -111,7 +113,7 @@ export default ({ empty }) => {
     </WalletDropdown>
   ) : (
     <Button small onClick={openWalletModal} data-ga-id="wallet-header">
-      Connect wallet
+      {t('buttonText.connectWallet')}
     </Button>
   );
 
@@ -120,7 +122,7 @@ export default ({ empty }) => {
       <AccountDropdownButton $refreshing={isLoadingState} data-ga-id="zkaccount-profile">
         <Row>
           <ZkAvatar seed={zkAccount} size={16} />
-          <Address>zkAccount</Address>
+          <Address>{t('common.zkAccount')}</Address>
           {isLoadingState ? (
             <BalanceSkeleton isMobile={isMobile} />
           ) : (
