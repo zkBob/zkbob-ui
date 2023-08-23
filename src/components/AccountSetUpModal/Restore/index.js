@@ -1,11 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import TextAreaDefault from 'components/TextArea';
 
 export default ({ restore }) => {
+  const { t } = useTranslation();
   const [mnemonic, setMnemonic] = useState('');
   const [error, setError] = useState(false);
 
@@ -27,11 +29,11 @@ export default ({ restore }) => {
   return (
     <Container>
       <Description>
-        Input your saved secret phrase to restore an existing account
+        {t('accountSetupModal.restoreWithSecret.description')}
       </Description>
       <TextArea value={mnemonic} onChange={onChange} $error={error} />
       <Button onClick={onRestore} data-ga-id="login-secret-phrase-confirm">
-        Restore account
+        {t('buttonText.restoreAccount')}
       </Button>
     </Container>
   );

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
 import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
 import Button from 'components/Button';
@@ -12,6 +13,7 @@ import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 export default ({ type, data, currentPool }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
   const tokenSymbol = useMemo(() => {
@@ -25,7 +27,7 @@ export default ({ type, data, currentPool }) => {
   return (
     <Row>
       <InnerRow>
-        <Action>Latest {type}:</Action>
+        <Action>{t(`latestAction.${type}`)}:</Action>
         <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
         <Amount>
           {(() => {
@@ -46,7 +48,7 @@ export default ({ type, data, currentPool }) => {
         type="link"
         onClick={() => history.push('/history' + location.search)}
       >
-        View History
+        {t('latestAction.viewHistory')}
       </HistoryButton>
     </Row>
   );

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { useSignMessage } from 'wagmi';
 import md5 from 'js-md5';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -30,63 +31,76 @@ const STEP = {
   CREATE_PASSWORD: 12,
 };
 
-const Start = ({ setStep }) => (
-  <Container>
-    <Description>
-      To start working with zkBob you need a zkAccount
-    </Description>
-    <Button onClick={() => setStep(STEP.CREATE_OPTIONS)} data-ga-id="signup-start">
-      Create new zkAccount
-    </Button>
-    <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)} data-ga-id="login-start">
-      I already have a zkAccount
-    </SecondButton>
-  </Container>
-);
+const Start = ({ setStep }) => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <Description>
+        {t('accountSetupModal.start.description')}
+      </Description>
+      <Button onClick={() => setStep(STEP.CREATE_OPTIONS)} data-ga-id="signup-start">
+        {t('accountSetupModal.start.button1')}
+      </Button>
+      <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)} data-ga-id="login-start">
+        {t('accountSetupModal.start.button2')}
+      </SecondButton>
+    </Container>
+  );
+};
 
-const CreateOptions = ({ setStep }) => (
-  <Container>
-    <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)} data-ga-id="signup-web3-wallet">
-      Use my Web3 wallet
-    </Button>
-    <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)} data-ga-id="signup-secret-phrase">
-      Use zkBob secret phrase
-    </SecondButton>
-    <Description>
-      By creating zkAccount, you hereby agree to and accept zkBob{' '}
-      <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security">
-        Terms of Service
-      </Link>
-    </Description>
-  </Container>
-);
+const CreateOptions = ({ setStep }) => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)} data-ga-id="signup-web3-wallet">
+        {t('accountSetupModal.createOptions.button1')}
+      </Button>
+      <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)} data-ga-id="signup-secret-phrase">
+        {t('accountSetupModal.createOptions.button2')}
+      </SecondButton>
+      <Description>
+        <Trans
+          i18nKey="accountSetupModal.createOptions.description"
+          components={{ 1: <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security" /> }}
+        />
+      </Description>
+    </Container>
+  );
+};
 
-const RestoreOptions = ({ setStep }) => (
-  <Container>
-    <Button onClick={() => setStep(STEP.RESTORE_WITH_WALLET)} data-ga-id="login-web3-wallet">
-      I used a Web3 wallet
-    </Button>
-    <SecondButton onClick={() => setStep(STEP.RESTORE_WITH_SECRET)} data-ga-id="login-secret-phrase">
-      I used zkBob secret phrase
-    </SecondButton>
-  </Container>
-);
+const RestoreOptions = ({ setStep }) => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <Button onClick={() => setStep(STEP.RESTORE_WITH_WALLET)} data-ga-id="login-web3-wallet">
+        {t('accountSetupModal.restoreOptions.button1')}
+      </Button>
+      <SecondButton onClick={() => setStep(STEP.RESTORE_WITH_SECRET)} data-ga-id="login-secret-phrase">
+        {t('accountSetupModal.restoreOptions.button2')}
+      </SecondButton>
+    </Container>
+  );
+};
 
-const PasswordPrompt = ({ setStep, close }) => (
-  <Container>
-    <Description>
-      You can create a secure password that we'll ask you every time when you log in to zkAccount
-    </Description>
-    <Button onClick={() => setStep(STEP.CREATE_PASSWORD)} data-ga-id="password-set">
-      Set a password
-    </Button>
-    <SecondButton onClick={close} data-ga-id="password-skip">
-      Skip
-    </SecondButton>
-  </Container>
-);
+const PasswordPrompt = ({ setStep, close }) => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <Description>
+        {t('accountSetupModal.createPasswordPrompt.description')}
+      </Description>
+      <Button onClick={() => setStep(STEP.CREATE_PASSWORD)} data-ga-id="password-set">
+        {t('buttonText.setPassword')}
+      </Button>
+      <SecondButton onClick={close} data-ga-id="password-skip">
+        {t('buttonText.skip')}
+      </SecondButton>
+    </Container>
+  );
+};
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
+  const { t } = useTranslation();
   const { signMessageAsync } = useSignMessage();
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
@@ -147,62 +161,62 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   switch(step) {
     default:
     case STEP.START:
-      title = 'zkAccount';
+      title = t('accountSetupModal.start.title');
       component = <Start setStep={setStep} />;
       prevStep = null;
       break;
     case STEP.CREATE_OPTIONS:
-      title = 'Choose how you would like to create your account';
+      title = t('accountSetupModal.createOptions.title');
       component = <CreateOptions setStep={setNextStep} />;
       prevStep = STEP.START;
       break;
     case STEP.RESTORE_OPTIONS:
-      title = 'How did you create your account?';
+      title = t('accountSetupModal.restoreOptions.title');
       component = <RestoreOptions setStep={setStep} />;
       prevStep = STEP.START;
       break;
     case STEP.CREATE_WITH_WALLET:
-      title = 'Create new zkAccount';
+      title = t('accountSetupModal.createWithWallet.title');
       component = <Generate isCreation next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
-      title = 'Create new zkAccount';
+      title = t('accountSetupModal.createWithSecret.title');
       component = <Create mnemonic={newMnemonic} next={() => setStep(STEP.CONFIRM_SECRET)} />;
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_WALLET:
-      title = 'Login to your zkAccount';
+      title = t('accountSetupModal.restoreWithWallet.title');
       component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_RESTORE)} />;
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:
-      title = 'Restore zkAccount';
+      title = t('accountSetupModal.restoreWithSecret.title');
       component = <Restore restore={restore} />;
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.CONFIRM_SECRET:
-      title = 'Confirm secret phrase';
+      title = t('accountSetupModal.confirmSecret.title');
       component = <Confirm mnemonic={newMnemonic} confirmMnemonic={confirmMnemonic} />;
       prevStep = STEP.CREATE_WITH_SECRET;
       break;
     case STEP.SING_MESSAGE_TO_CREATE:
-      title = 'Sign the message to create your zkAccount';
+      title = t('accountSetupModal.signMessageToCreate.title');
       component = <Sign isCreation sign={generate} />;
       prevStep = STEP.CREATE_WITH_WALLET;
       break;
     case STEP.SING_MESSAGE_TO_RESTORE:
-      title = 'Sign the message to login to your zkAccount';
+      title = t('accountSetupModal.signMessageToRestore.title');
       component = <Sign sign={generate} />;
       prevStep = STEP.RESTORE_WITH_WALLET;
       break;
     case STEP.CREATE_PASSWORD_PROMPT:
-      title = 'Set up the password?';
+      title = t('accountSetupModal.createPasswordPrompt.title');
       component = <PasswordPrompt setStep={setStep} close={tryToClose} />;
       prevStep = null;
       break;
     case STEP.CREATE_PASSWORD:
-      title = 'Create password';
+      title = t('accountSetupModal.createPassword.title');
       component = <Password confirmPassword={confirmPassword} />;
       prevStep = null;
       break;

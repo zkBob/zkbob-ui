@@ -1,0 +1,410 @@
+{
+  "common": {
+    "learnMore": "Learn more",
+    "relayerFee": "Relayer fee",
+    "fee": "Fee",
+    "copied": "Copied!",
+    "balance": "Balance",
+    "poolBalance": "Pool balance",
+    "supportId": "Support ID",
+    "web": "Web",
+    "library": "Library",
+    "relayer": "Relayer",
+    "zkAccount": "zkAccount",
+    "from": "From",
+    "to": "To",
+    "contactSupport": "Contact support",
+    "wallet": "Wallet",
+    "viewInExplorer": "View in Explorer",
+    "settings": "Settings",
+    "password": "Password"
+  },
+  "buttonText": {
+    "connectWallet": "Connect wallet",
+    "enterAmount": "Enter amount",
+    "enterAddress": "Enter address",
+    "invalidAddress": "Invalid address",
+    "loading": "Loading...",
+    "getStarted": "Get started!",
+    "minAmount": "Min amount is {{amount}} {{symbol}}",
+    "insufficientBalance": "Insufficient {{symbol}} balance",
+    "reduceAmount": "Reduce amount to include {{fee}} fee",
+    "amountExceedsLimit": "Amount exceeds daily limit",
+    "approveTokens": "Approve tokens",
+    "deposit": "Deposit",
+    "transfer": "Transfer",
+    "withdraw": "Withdraw",
+    "proceed": "Proceed",
+    "confirm": "Confirm",
+    "send": "Send",
+    "yes": "Yes",
+    "no": "No",
+    "done": "Done",
+    "next": "Next",
+    "okay": "Okay",
+    "gotIt": "Got it",
+    "max": "Max",
+    "changeWallet": "Change wallet",
+    "disconnect": "Disconnect",
+    "showSecretPhrase": "Show secret phrase",
+    "setPassword": "Set password",
+    "disablePassword": "Disable password",
+    "generateQRCode": "Generate QR code address",
+    "generateAddress": "Generate receiving address",
+    "getPaymentLink": "Get payment link",
+    "redeemGiftCard": "Redeem gift card",
+    "logout": "Log out",
+    "continue": "Continue",
+    "signMessage": "Sign the message",
+    "skip": "Skip",
+    "verify": "Verify",
+    "restoreAccount": "Restore account",
+    "signIn": "Sign in",
+    "signingIn": "Signing in..."
+  },
+  "deposit": {
+    "title": "Deposit",
+    "note": "{{symbol}} will be deposited to your zkAccount. Once received, you can transfer {{symbol}} privately.",
+    "ddNote": "{{symbol}} depositing can take up to 10 minutes."
+  },
+  "transfer": {
+    "title": "Transfer",
+    "note": "The transfer will be performed privately. Sender, recipient and amount are never disclosed.",
+    "addressInputPlaceholder": "Enter address of zkBob receiver",
+    "addressInputHint": "The address can be generated in the account modal window"
+  },
+  "multitransfer": {
+    "title": "Multitransfer",
+    "instruction": "Add zkAddress, the amount of {{symbol}} to transfer. 1 address per row.",
+    "uploadCSV": "Upload CSV",
+    "uploadCSVHint": "Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount",
+    "errors": {
+      "syntax": "{{count}} $t(glossary.rows, {\"count\": {{count}} }) with incorrect $t(glossary.addresses, {\"count\": {{count}} }) or formatting $t(glossary.issues, {\"count\": {{count}} }).",
+      "duplicates": "Duplicate addresses found.",
+      "insufficientBalance": "Insufficient balance: {{amount}} {{symbol}} ({{fee}} fee) is required."
+    },
+    "addressesList": "Addresses list",
+    "willBeTransferredTo": "will be transferred to {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })",
+    "hasBeenTransferredTo": "has been transferred to {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+  },
+  "withdraw": {
+    "title": "Withdraw",
+    "note": "{{symbol}} will be withdrawn from zkBob and deposited into the provided wallet address.",
+    "addressInputPlaceholder": "Enter {{network}} address of receiver",
+    "convertion": "Convert some {{from}} to {{to}} on withdrawal",
+    "convertionDetails": "You will get <strong>{{amount1}} {{symbol1}}</strong> and <strong>~ {{amount2}} {{symbol2}}</strong>"
+  },
+  "limits": {
+    "deposit": {
+      "perTransaction": "<strong>Deposit</strong> limit per transaction",
+      "dailyPerAddress": "<strong>Daily deposit</strong> limit per address",
+      "daily": "<strong>Daily deposit</strong> limit"
+    },
+    "withdraw": {
+      "daily": "<strong>Daily withdrawal</strong> limit"
+    },
+    "poolSize": "<strong>Pool size</strong> limit",
+    "total": "out of {{amount}} {{symbol}} total"
+  },
+  "latestAction": {
+    "deposit": "Latest Deposit",
+    "withdraw": "Latest Withdrawal",
+    "transfer": "Latest Transfer",
+    "viewHistory": "View History"
+  },
+  "confirmTransaction": {
+    "titles": {
+      "withdraw": "Withdrawal confirmation",
+      "transfer": "Transfer confirmation",
+      "multitransfer": "Multitransfer confirmation"
+    },
+    "details": {
+      "withdraw": "withdrawal details",
+      "transfer": "transfer details",
+      "multitransfer": "multitransfer details"
+    },
+    "sendTo": "send to",
+    "sendToZk": "send to zkBob address",
+    "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
+    "viewAll": "view all",
+    "withdrawAmount": "Withdraw amount",
+    "numberOfTransactions": "Number of transactions"
+  },
+  "welcome": {
+    "title": "Welcome to zkBob!",
+    "description": "Create a zkAccount to transfer tokens privately with your friends and colleagues.",
+    "titleDemo": "Welcome to zkBob Demo Version!",
+    "descriptionDemo": "Transfer BOB privately to friends, use to purchase sponsored items, or transfer to your own private zkAccount.",
+    "bannerDemo": "For secure deposits, withdrawals and full-featured privacy, create a <1>zkBob account here</1>"
+  },
+  "payment": {
+    "title": "Enter USD value and choose a token",
+    "amountToSend": "The amount you'd like to send",
+    "transferAmount": "Transfer amount",
+    "recipientReceives": "The recipient receives payment in {{symbol}}",
+    "limit": "<strong>The maximum amount</strong> to be paid from one address"
+  },
+  "tokenList": {
+    "title": "Token list",
+    "searchToken": "Search your token",
+    "noTokensFound": "No tokens found"
+  },
+  "history": {
+    "title": "History",
+    "empty": "Make your first Deposit, Transfer or Withdrawal<br/>to create your History.",
+    "fee": "(fee {{amount}} {{symbol}})",
+    "highFee": "This transaction required additional operations, resulting in higher fees.",
+    "failed": "failed",
+    "noDescription": "No description",
+    "viewTx": "View tx"
+  },
+  "loadingError": {
+    "titles": {
+      "prefix": "Error loading",
+      "zkClient": "$t(loadingError.titles.prefix) zk-client.",
+      "zkAccount": "$t(loadingError.titles.prefix) zkAccount.",
+      "zkAccountBalance": "$t(loadingError.titles.prefix) zkAccount balance.",
+      "walletBalance": "$t(loadingError.titles.prefix) wallet balance.",
+      "history": "$t(loadingError.titles.prefix) history.",
+      "limits": "$t(loadingError.titles.prefix) limits."
+    },
+    "description": "Please try again later or <1>contact our support</1> if the issue persists."
+  },
+  "successNotification": {
+    "title": "The operation has been completed.",
+    "description": "Check the history tab or your zkAccount balance to get more information."
+  },
+  "pendingAction": {
+    "title": "Please wait for your $t(glossary.transactions, {\"count\": {{count}} }) to finalize",
+    "description": "Do not refresh the page for at least 30 seconds! Transaction $t(glossary.statuses, {\"count\": {{count}} }) will update automatically.",
+    "note": "You can deposit, transfer or withdraw funds once the transaction is completed.",
+    "note_other": "You can deposit, transfer or withdraw funds once the transactions are completed."
+  },
+  "swapModal": {
+    "title": "The swap is in progress",
+    "description": "You can close this window and return later to view the results. Do you want to close the window?"
+  },
+  "accountSetupModal": {
+    "start": {
+      "title": "zkAccount",
+      "description": "To start working with zkBob you need a zkAccount",
+      "button1": "Create new zkAccount",
+      "button2": "I already have a zkAccount"
+    },
+    "createOptions": {
+      "title": "Choose how you would like to create your account",
+      "description": "By creating zkAccount, you hereby agree to and accept zkBob <1>Terms of Service</1>",
+      "button1": "Use my Web3 wallet",
+      "button2": "Use zkBob secret phrase"
+    },
+    "restoreOptions": {
+      "title": "How did you create your account?",
+      "button1": "I used a Web3 wallet",
+      "button2": "I used zkBob secret phrase"
+    },
+    "createWithWallet": {
+      "title": "Create new zkAccount",
+      "description": "Choose the wallet that will be associated with your zkAccount"
+    },
+    "createWithSecret": {
+      "title": "Create new zkAccount",
+      "description": "Write down or copy these words in the right order and save them somewhere safe",
+      "warning": "Never share your secret phrase with anyone,<br/> store it securely!",
+      "copy": "Copy secret phrase"
+    },
+    "restoreWithWallet": {
+      "title": "Login to your zkAccount",
+      "description": "Select the wallet you used to create your zkAccount"
+    },
+    "restoreWithSecret": {
+      "title": "Restore zkAccount",
+      "description": "Input your saved secret phrase to restore an existing account"
+    },
+    "confirmSecret": {
+      "title": "Confirm secret phrase",
+      "description": "Please input your secret phrase to verify it.<br/> Click on a word to remove it"
+    },
+    "signMessageToCreate": {
+      "title": "Sign the message to create your zkAccount",
+      "description": "Your zkAccount is being created based on the connected wallet."
+    },
+    "signMessageToRestore": {
+      "title": "Sign the message to login to your zkAccount",
+      "description": "Accessing your zkAccount with your connected wallet."
+    },
+    "createPasswordPrompt": {
+      "title": "Set up the password?",
+      "description": "You can create a secure password that we'll ask you every time when you log in to zkAccount"
+    },
+    "createPassword": {
+      "title": "Create password",
+      "description": "To enhance security, password entry is required each time a page reloads."
+    }
+  },
+  "password": {
+    "placeholder1": "Password 6+ characters",
+    "placeholder2": "Verify password",
+    "rule1": "Please enter 6 or more characters",
+    "rule2": "Password should match"
+  },
+  "enterPasswordModal": {
+    "title": "Enter password",
+    "description": "$t(accountSetupModal.createPassword.description)",
+    "lostPassword": "Lost password? Click here to restore access"
+  },
+  "setPasswordModal": {
+    "title": "Set password"
+  },
+  "confirmLogoutModal": {
+    "title": "Log out and clear browsing data",
+    "description": "When you log out your zkAccount information is erased from the data cache and is no longer accessible with your password. Restore the account and balance using your secret phrase and a new password."
+  },
+  "disablePasswordModal": {
+    "title": "Disable password",
+    "description": "Please enter the current password"
+  },
+  "demoCard": {
+    "title": "Demo version",
+    "description1": "This zkBob version is designed for private, small-value transfers only (not for deposits/withdrawals).",
+    "description2": "<0>For a full-featured version,</0><1>create a free zkBob account here.</1>"
+  },
+  "increasedLimitsBanner": {
+    "inactive": "Want to increase your deposit limits?",
+    "active": "Increased deposit limits activated",
+    "resync": "To restore increased deposit limits - <1>resync your BAB token</1>"
+  },
+  "increasedLimitsModal": {
+    "title": "Extended limits",
+    "paragraph1": "To increase personal deposit limits you need to own a BAB token on the BNB Smart chain. What's a BAB token? <1>Find out now.</1>",
+    "paragraph2": "Verify your BAB:",
+    "step1": "Connect the Metamask or WalletConnect wallet containing your BAB token to zkBob. You DO NOT need to switch networks, stay on Polygon.",
+    "step2": "Click Verify my BAB token below.",
+    "paragraph3": "That's it. Your deposit limits will automatically increase if your connected wallet contains a BAB token.",
+    "button": "Verify my BAB token"
+  },
+  "more": {
+    "title": "More about zkBob",
+    "dune": "Dune Analytics",
+    "docs": "Documentation",
+    "linktree": "Linktree"
+  },
+  "networks": {
+    "title": "Networks"
+  },
+  "pagination": {
+    "first": "First",
+    "last": "Last",
+    "current": "Page {{current}} of {{total}}"
+  },
+  "paymentLinkModal": {
+    "title": "Get payment link",
+    "description": "Share this link to request a private payment.<br />The sender will have the option to select and send any token. Tokens will be converted to {{symbol}} and deposited to your zkAccount.<br /><br /><strong>Note:</strong> Private payment links work on the same network where they are generated.",
+    "copyAndShare": "Copy and share your payment link",
+    "getMoreInfo": "Get more info about payment links"
+  },
+  "reedeemGifCardModal": {
+    "loading": {
+      "title": "Preparing your gift card"
+    },
+    "start": {
+      "title": "You're Lucky!",
+      "description": "On this gift card you will find",
+      "button": "Claim {{symbol}}"
+    },
+    "createAccount": {
+      "title": "Before you can redeem<br /> a gift card",
+      "description": "To redeem a gift card you need a zkBob zkAccount! Create an account, or login into an existing account to claim your {{symbol}} tokens.",
+      "button": "Log in or create zkAccount"
+    },
+    "switchNetwork": {
+      "title": "We need to switch the network",
+      "description": "Gift card available only on {{network}}. To redeem it we need to change the network"
+    },
+    "inProgress": {
+      "title": "Transferring tokens to your zkAccount",
+      "description": "The process takes longer than usual. If the process does not complete within a few seconds, contact our <1>support team</1>"
+    },
+    "completed": {
+      "title": "Your {{symbol}} is on the way",
+      "description": "Your tokens will be delivered during the next 1-2 minutes. Check the transaction status on the History tab"
+    },
+    "failed": {
+      "error": "This gift card has already been used",
+      "otherError": "Something went wrong",
+      "description": "Please contact our support team to resolve this problem. Use Support ID in your request."
+    }
+  },
+  "restrictionModal": {
+    "title": "zkBob is not supported in this country or region",
+    "description": "zkBob is not supported in {{country}}. You will be able to use the application from supported country or region."
+  },
+  "secretPhraseModal": {
+    "title": "Show secret phrase",
+    "warning": "Never share your secret phrase with anyone,<br/> store it securely!",
+    "description": "If someone has your secret phrase they will have full control of your wallet.",
+    "copy": "Copy secret phrase"
+  },
+  "transactionModal": {
+    "titles": {
+      "approveTokens": "Please approve tokens",
+      "approved": "Tokens approved",
+      "signMessage": "Please sign a message",
+      "confirmTransaction": "Please confirm transaction",
+      "waitingForTransaction": "Waiting for transaction",
+      "generatingProof": "Generating a proof",
+      "waitingForRelayer": "Waiting for relayer",
+      "deposited": "Deposit is in progress",
+      "transferred": "Transfer is in progress",
+      "transferredMulti": "Multitransfer is in progress",
+      "withdrawn": "Withdrawal is in progress",
+      "rejected": "Transaction was rejected",
+      "signatureExpired": "Signature expired",
+      "suspiciousAccountDeposit": "Suspicious wallet connected",
+      "suspiciousAccountWithdrawal": "Suspicious recipient address",
+      "wrongNetwork": "Wrong network",
+      "switchNetwork": "Please switch the network",
+      "sent": "Your payment was sent",
+      "preparingTransaction": "Preparing transaction"
+    },
+    "descriptions": {
+      "deposited": "Your <strong>{{amount}} {{symbol}}</strong> deposit to the zero knowledge pool is in progress.<br /><br />To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.",
+      "transferred": "Your <strong>{{amount}} {{symbol}}</strong> transfer within the zero knowledge pool is in progress.",
+      "transferredMulti": "Your <strong>{{amount}} {{symbol}}</strong> multitransfer within the zero knowledge pool is in progress.",
+      "withdrawn": "Your <strong>{{amount}} {{symbol}}</strong> withdrawal from the zero knowledge pool is in progress.",
+      "signatureExpired": "Your signature has expired. Please try again.",
+      "suspiciousAccountDeposit": "We found that your wallet was involved in suspicious activities. Because of this, you can't use this wallet at zkBob. Please, try another wallet.",
+      "suspiciousAccountWithdrawal": "We found that the recipient's address was involved in suspicious activities. Because of this, you can't withdraw funds to this address.",
+      "wrongNetwork": "Failed to switch the network. Please connect your wallet to {{network}} and try again.",
+      "approved": "Your approval was successful. Now you can deposit your tokens.",
+      "sent": "Payment processing can take up to 10 minutes.<br /><1>View the transaction</1>",
+      "signMessage": "You need to sign a message allowing the contract to use your tokens for the deposit."
+    }
+  },
+  "maxButton": {
+    "tooltip": "Click Max to set the maximum amount of {{symbol}} you can send including all fees and limits"
+  },
+  "connectWalletModal": {
+    "title": "Connect web3 wallet",
+    "description": "Connect your wallet to deposit {{symbol}} into your zkAccount. If you are creating a new zkAccount, your wallet is used to derive a private encryption key for the zkBob application.",
+    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>"
+  },
+  "qrCode": {
+    "title": "QR code address",
+    "description": "To receive a private transfer from another zkAccount, your friend can scan this code from their app.<br />The other user just has to scan your QR code on the Transfer page"
+  },
+  "zkAccount": {
+    "addressDescription": "Use this address to receive tokens to your zkBob account. You create a new address each time you connect. Receive tokens to this address or a previously generated address."
+  },
+  "glossary": {
+    "rows": "row",
+    "rows_other": "rows",
+    "addresses": "address",
+    "addresses_other": "addresses",
+    "issues": "issue",
+    "issues_other": "issues",
+    "transactions": "transaction",
+    "transactions_other": "transactions",
+    "statuses": "status",
+    "statuses_other": "statuses"
+  }
+}

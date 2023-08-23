@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
+import { useTranslation } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
@@ -30,6 +31,7 @@ const prefixes = {
 };
 
 export default forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const {
     zkAccount, isLoadingState, transferMulti,
     estimateFee, verifyShieldedAddress,
@@ -136,7 +138,7 @@ export default forwardRef((props, ref) => {
 
   return (
     <>
-      <Text>Add zkAddress, the amount of {currentPool.tokenSymbol} to transfer. 1 address per row.</Text>
+      <Text>{t('multitransfer.instruction', { symbol: currentPool.tokenSymbol })}</Text>
       <TextEditor
         value={data}
         onChange={setData}
@@ -150,18 +152,15 @@ export default forwardRef((props, ref) => {
           <Error>
             {(() => {
               if (errorType === 'syntax') {
-                const multi = errors.length > 1;
-                return `
-                  ${errors.length} row${multi ? 's' : ''} with incorrect
-                  address${multi ? 'es' : ''} or formatting issue${multi ? 's' : ''}.
-                `;
+                return t('multitransfer.errors.syntax', { count: errors.length });
               } else if (errorType === 'duplicates') {
-                return 'Duplicate addresses found.'
+                return t('multitransfer.errors.duplicates');
               } else if (errorType === 'insufficient_funds') {
-                return `
-                  Insufficient balance: ${formatNumber(totalAmount.add(fee), currentPool.tokenDecimals, 9)} ${currentPool.tokenSymbol}
-                  (${formatNumber(fee, currentPool.tokenDecimals)} fee) is required.
-                `;
+                return t('multitransfer.errors.insufficientBalance', {
+                  amount: formatNumber(totalAmount.add(fee), currentPool.tokenDecimals, 9),
+                  symbol: currentPool.tokenSymbol,
+                  fee: formatNumber(fee, currentPool.tokenDecimals),
+                });
               }
             })()}
           </Error>
@@ -169,12 +168,11 @@ export default forwardRef((props, ref) => {
       }
       {(() => {
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button loading contrast disabled>Loading...</Button>
-          else if (!data) return <Button disabled>Proceed</Button>
-          else return <Button onClick={validate} data-ga-id="initiate-operation-multitransfer">Proceed</Button>;
+          else if (isLoadingState) return <Button loading contrast disabled>{t('buttonText.loading')}</Button>
+          else if (!data) return <Button disabled>{t('buttonText.proceed')}</Button>
+          else return <Button onClick={validate} data-ga-id="initiate-operation-multitransfer">{t('buttonText.proceed')}</Button>;
         })()}
         <ConfirmTransactionModal
-          title="Multitransfer confirmation"
           isOpen={isConfirmModalOpen}
           onClose={() => setIsConfirmModalOpen(false)}
           onConfirm={onTransfer}
@@ -188,7 +186,6 @@ export default forwardRef((props, ref) => {
           currentPool={currentPool}
         />
         <MultitransferDetailsModal
-          title="Multitransfer"
           isOpen={isDetailsModalOpen}
           onBack={closeDetailsModal}
           transfers={parsedData}

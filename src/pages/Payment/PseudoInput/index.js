@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Skeleton from 'components/Skeleton';
 
@@ -8,6 +9,7 @@ import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 import { formatNumber } from 'utils';
 
 export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }) => {
+  const { t } = useTranslation();
   const usdBalance = useMemo(() => {
     if (token?.priceUSD) {
       try {
@@ -38,7 +40,7 @@ export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }
         </Select>
       </RowSpaceBetween>
       <Row>
-        <Balance style={{ marginRight: 5 }}>Balance:</Balance>
+        <Balance style={{ marginRight: 5 }}>{t('common.balance')}:</Balance>
         {isLoadingBalance ? (
           <Skeleton width={40} />
         ) : (

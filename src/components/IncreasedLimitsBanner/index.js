@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import DefaultLink from 'components/Link';
 import DefaultButton from 'components/Button';
@@ -9,6 +10,7 @@ import { ReactComponent as WargingIconDefault } from 'assets/warning.svg';
 import { INCREASED_LIMITS_STATUSES } from 'constants';
 
 export default ({ status, account, openModal, kycUrls }) => {
+  const { t } = useTranslation();
   let component;
   switch(status) {
     default:
@@ -16,22 +18,28 @@ export default ({ status, account, openModal, kycUrls }) => {
     case INCREASED_LIMITS_STATUSES.INACTIVE:
       component = <>
         <InfinityLoopIcon />
-        <Text>Want to increase your deposit limits?</Text>
-        <Button type="link" onClick={openModal} data-ga-id="kyc-banner">Learn more</Button>
+        <Text>{t('increasedLimitsBanner.inactive')}</Text>
+        <Button type="link" onClick={openModal} data-ga-id="kyc-banner">{t('common.learnMore')}</Button>
       </>;
       break;
     case INCREASED_LIMITS_STATUSES.ACTIVE:
       component = <>
         <InfinityLoopIcon />
-        <Text>Increased deposit limits activated</Text>
+        <Text>{t('increasedLimitsBanner.active')}</Text>
       </>;
       break;
     case INCREASED_LIMITS_STATUSES.RESYNC:
       component = <>
         <WargingIcon />
         <Row>
-          <Text>To restore increased deposit limits -</Text>
-          <Link href={kycUrls?.homepage.replace('%s', account)}>resync your BAB token</Link>
+          <Text>
+            <Trans
+              i18nKey="increasedLimitsBanner.resync"
+              components={{
+                1: <Link href={kycUrls?.homepage.replace('%s', account)} />,
+              }}
+            />
+          </Text>
         </Row>
       </>;
       break;

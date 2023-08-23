@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 
 import LinkDefault from 'components/Link';
 
 export default () => (
   <DemoBanner>
-    For secure deposits, withdrawals and full-featured privacy,{' '}
-    create a <Link href="/" internal>zkBob account here</Link>
+    <Trans
+      i18nKey="welcome.bannerDemo"
+      components={{ 1: <Link href="/" internal /> }}
+    />
   </DemoBanner>
 );
 

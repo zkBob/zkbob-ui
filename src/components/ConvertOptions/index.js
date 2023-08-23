@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Switch from 'components/Switch';
 
@@ -10,6 +11,7 @@ export default ({
   amountToConvert, setAmountToConvert, amountToWithdraw,
   maxAmountToWithdraw, details, currentPool,
 }) => {
+  const { t } = useTranslation();
   const options = ['1', '5', '10'].map(opt => ethers.utils.parseUnits(opt, currentPool.tokenDecimals));
   const [isConverting, setIsConverting] = useState(false);
 
@@ -29,7 +31,7 @@ export default ({
     <Column>
       <Row>
         <Text style={{ marginRight: 8 }}>
-          Convert some {currentPool.tokenSymbol} to {details.toTokenSymbol} on withdrawal
+          {t('withdraw.convertion', { from: currentPool.tokenSymbol, to: details.toTokenSymbol })}
         </Text>
         <Switch
           checked={isConverting}

@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import OptionButton from 'components/OptionButton';
@@ -7,27 +8,30 @@ import OptionButton from 'components/OptionButton';
 import { ModalContext } from 'contexts';
 
 const links = [
-  { name: 'Dune Analytics', href: 'https://dune.com/projects/zkBob', gaIdPostfix: 'dune' },
-  { name: 'Documentation', href: 'https://docs.zkbob.com/', gaIdPostfix: 'docs' },
-  { name: 'Linktree', href: 'https://linktr.ee/zkbob', gaIdPostfix: 'linktree' },
+  { key: 'dune', href: 'https://dune.com/projects/zkBob' },
+  { key: 'docs', href: 'https://docs.zkbob.com/' },
+  { key: 'linktree', href: 'https://linktr.ee/zkbob' },
 ];
 
-const Content = ({ close }) => (
-  <Container>
-    <Title>More about zkBob</Title>
-    {links.map((link, index) =>
-      <OptionButton
-        key={index}
-        type="link"
-        href={link.href}
-        onClick={close}
-        data-ga-id={'extra-menu-' + link.gaIdPostfix}
-      >
-        {link.name}
-      </OptionButton>
-    )}
-  </Container>
-);
+const Content = ({ close }) => {
+  const { t } = useTranslation();
+  return (
+    <Container>
+      <Title>{t('more.title')}</Title>
+      {links.map((link, index) =>
+        <OptionButton
+          key={index}
+          type="link"
+          href={link.href}
+          onClick={close}
+          data-ga-id={'extra-menu-' + link.key}
+        >
+          {t(`more.${link.key}`)}
+        </OptionButton>
+      )}
+    </Container>
+  );
+};
 
 export default ({ children }) => {
   const { isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown } = useContext(ModalContext);

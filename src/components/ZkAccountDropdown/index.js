@@ -1,6 +1,7 @@
 import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import QRCode from 'react-qr-code';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -23,6 +24,7 @@ const Content = ({
   isLoadingState, initializeGiftCard, currentPool,
   generatePaymentLink,
 }) => {
+  const { t } = useTranslation();
   const [privateAddress, setPrivateAddress] = useState(null);
   const [showQRCode, setShowQRCode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -62,12 +64,12 @@ const Content = ({
 
   const settingsOptions = [
     {
-      text: 'Show secret phrase',
+      text: t('buttonText.showSecretPhrase'),
       action: showSeedPhrase,
       gaIdPostfix: 'secret-phrase',
     },
     {
-      text: `${hasPassword ? 'Disable' : 'Set'} password`,
+      text: hasPassword ? t('buttonText.disablePassword') : t('buttonText.setPassword'),
       action: hasPassword ? removePassword : setPassword,
       gaIdPostfix: `${hasPassword ? 'disable' : 'enable'}-password`,
     },
@@ -77,10 +79,9 @@ const Content = ({
     return (
       <Container>
         <BackIcon onClick={closeQRCode} />
-        <Title>QR code address</Title>
+        <Title>{t('qrCode.title')}</Title>
         <Description>
-          To receive a private transfer from another zkAccount, your friend can scan this code from their app.<br />
-          The other user just has to scan your QR code on the Transfer page
+          <Trans i18nKey="qrCode.description" />
         </Description>
         <QRCode
           value={privateAddress}
@@ -94,7 +95,7 @@ const Content = ({
     return (
       <Container>
         <BackIcon onClick={() => setShowSettings(false)} />
-        <Title style={{ marginBottom: 20 }}>Settings</Title>
+        <Title style={{ marginBottom: 20 }}>{t('common.settings')}</Title>
         {settingsOptions.map((item, index) =>
           <OptionButton
             key={index}
@@ -111,7 +112,7 @@ const Content = ({
   return (
     <Container>
       <RowSpaceBetween>
-        <SmallText>zkAccount</SmallText>
+        <SmallText>{t('common.zkAccount')}</SmallText>
         <Row>
           <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
           <Tooltip content={formatNumber(balance, currentPool.tokenDecimals, 18)} placement="bottom">
@@ -126,7 +127,7 @@ const Content = ({
         disabled={isLoadingState}
         data-ga-id="zkaccount-generate-qr-code"
       >
-        Generate QR code address
+        {t('buttonText.generateQRCode')}
       </Button>
       {privateAddress ? (
         <PrivateAddress>{privateAddress}</PrivateAddress>
@@ -136,27 +137,27 @@ const Content = ({
           disabled={isLoadingState}
           data-ga-id="zkaccount-generate-address"
         >
-          Generate receiving address
+          {t('buttonText.generateAddress')}
         </Button>
       )}
       <Description>
-        Use this address to receive tokens to your zkBob account.{' '}
-        You create a new address each time you connect.{' '}
-        Receive tokens to this address or a previously generated address.
+        {t('zkAccount.addressDescription')}
       </Description>
       {currentPool.paymentContractAddress && (
         <OptionButton onClick={() => handleOptionClick(generatePaymentLink)} data-ga-id="zkaccount-payment-link">
-          Get payment link
+          {t('buttonText.getPaymentLink')}
         </OptionButton>
       )}
       <QRCodeReader onResult={initGiftCard}>
-        <OptionButton data-ga-id="zkaccount-gift-card">Redeem gift card</OptionButton>
+        <OptionButton data-ga-id="zkaccount-gift-card">
+          {t('buttonText.redeemGiftCard')}
+        </OptionButton>
       </QRCodeReader>
       <OptionButton onClick={() => setShowSettings(true)} data-ga-id="zkaccount-settings">
-        Settings
+        {t('common.settings')}
       </OptionButton>
       <OptionButton onClick={() => handleOptionClick(logout)} data-ga-id="zkaccount-logout">
-        Log out
+        {t('buttonText.logout')}
       </OptionButton>
     </Container>
   );

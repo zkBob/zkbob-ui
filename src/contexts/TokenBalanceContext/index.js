@@ -43,7 +43,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'TokenBalanceContext.updateBalance' } });
-        showLoadingError('wallet balance');
+        showLoadingError('walletBalance');
       }
     }
     setBalance(balance);

@@ -1,23 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Card from 'components/Card';
 import Link from 'components/Link';
 
 export default () => {
+  const { t } = useTranslation();
   return (
     <Card>
       <Container>
-        <Title>Demo version</Title>
+        <Title>{t('demoCard.title')}</Title>
         <Description>
           <Text>
-            This zkBob version is designed for private,{' '}
-            small-value transfers only (not for deposits/withdrawals).
+            {t('demoCard.description1')}
           </Text>
         </Description>
         <Description>
-          <Text>For a full-featured version,</Text>
-          <Link href="/" internal size={16}>create a free zkBob account here.</Link>
+          <Trans
+            i18nKey="demoCard.description2"
+            components={{ 0: <Text />, 1: <Link href="/" internal size={16} /> }}
+          />
         </Description>
       </Container>
     </Card>

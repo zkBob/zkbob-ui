@@ -1,15 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import WalletConnectors from 'components/WalletConnectors';
 
 export default ({ next, isCreation }) => {
+  const { t } = useTranslation();
   return (
     <Container>
       <Description>
         {isCreation
-          ? 'Choose the wallet that will be associated with your zkAccount'
-          : 'Select the wallet you used to create your zkAccount'
+          ? t('accountSetupModal.createWithWallet.description')
+          : t('accountSetupModal.restoreWithWallet.description')
         }
       </Description>
       <WalletConnectors

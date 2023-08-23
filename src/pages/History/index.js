@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Card from 'components/Card';
 import Spinner from 'components/Spinner';
@@ -11,6 +12,7 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 import { PoolContext, ZkAccountContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const {
     history, zkAccount, pendingDirectDeposits,
     isLoadingZkAccount, isLoadingHistory,
@@ -21,7 +23,7 @@ export default () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const isLoading = isLoadingZkAccount || isLoadingHistory;
-  const title = 'History';
+  const title = t('history.title');
 
   const items = pendingDirectDeposits.concat(history);
   const isHistoryEmpty = items.length === 0;
@@ -40,8 +42,7 @@ export default () => {
       )}
       {(!isLoading && isHistoryEmpty) && (
         <Description>
-          Make your first Deposit, Transfer or Withdrawal<br/>
-          to create your History.
+          <Trans i18nKey="history.empty" />
         </Description>
       )}
       {(!isLoading && !zkAccount) && (

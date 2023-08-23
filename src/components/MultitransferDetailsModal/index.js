@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Tooltip from 'components/Tooltip';
@@ -13,6 +14,7 @@ import { formatNumber, shortAddress } from 'utils';
 import { TOKENS_ICONS } from 'constants';
 
 const ListItem = ({ index, data, zkAccount, currentPool }) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -40,7 +42,7 @@ const ListItem = ({ index, data, zkAccount, currentPool }) => {
             textAlign: 'center',
           }}
         >
-          <Tooltip content="Copied" placement="right" visible={isCopied}>
+          <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
             <CopyToClipboard text={data.address} onCopy={onCopy}>
               <Address>
                 {shortAddress(data.address, 22)}
@@ -56,12 +58,13 @@ const ListItem = ({ index, data, zkAccount, currentPool }) => {
 }
 
 export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount, currentPool }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       onBack={onBack}
-      title="Addresses list"
+      title={t('multitransfer.addressesList')}
       width={460}
     >
       <Container>
@@ -78,7 +81,9 @@ export default ({ isOpen, onClose, onBack, transfers, isSent, zkAccount, current
             </TotalAmount>
             <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
-          <Text>{isSent ? 'has been' : 'will be'} transferred to {transfers.length} zkBob addresses</Text>
+          <Text>
+            {t(`multitransfer.${isSent ? 'hasBeen' : 'willBe'}TransferredTo`, { count: transfers.length })}
+          </Text>
         </DetailsContainer>
         <List>
           {transfers.map((transfer, index) => (

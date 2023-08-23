@@ -1,26 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Link from 'components/Link';
 import WalletConnectors from 'components/WalletConnectors';
 
 export default ({ isOpen, close, currentPool }) => {
+  const { t } = useTranslation();
   return (
-    <Modal isOpen={isOpen} onClose={close} title="Connect web3 wallet">
+    <Modal isOpen={isOpen} onClose={close} title={t('connectWalletModal.title')}>
       {currentPool && (
         <Text>
-          Connect your wallet to deposit {currentPool.tokenSymbol} into your zkAccount.{' '}
-          If you are creating a new zkAccount, your wallet is used{' '}
-          to derive a private encryption key for the zkBob application.
+          {t('connectWalletModal.description', { symbol: currentPool.tokenSymbol })}
         </Text>
       )}
       <WalletConnectors callback={close} />
       <Text>
-        By connecting a wallet, you agree to zkBob<br />
-        <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security">
-          Terms of Service
-        </Link>
+        <Trans
+          i18nKey="connectWalletModal.note"
+          components={{
+            1: <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security" />,
+          }}
+        />
       </Text>
     </Modal>
   );

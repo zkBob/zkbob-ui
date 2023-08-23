@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 
 import LinkDefault from 'components/Link';
 
@@ -37,8 +38,8 @@ export const maxBigNumber = (...numbers) =>
 export const showLoadingError = cause => {
   toast.error(
     <span>
-      <b>Error loading {cause}.</b><br />
-      Please try again later or <Link href={SUPPORT_URL}>contact our support</Link> if the issue persists.
+      <b><Trans i18nKey={`loadingError.titles.${cause}`} /></b><br />
+      <Trans i18nKey={`loadingError.description`} components={{ 1: <Link href={SUPPORT_URL} /> }} />
     </span>
   );
 };

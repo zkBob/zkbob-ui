@@ -2,6 +2,7 @@ import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -36,6 +37,7 @@ const Content = ({
   address, balance, nativeBalance, connector, changeWallet,
   disconnect, close, currentPool,
 }) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -58,7 +60,7 @@ const Content = ({
   return (
     <Container>
       <RowSpaceBetween>
-        <SmallText>Wallet</SmallText>
+        <SmallText>{t('common.wallet')}</SmallText>
         {currentPool && (
           <Row>
             {currentPool.isNative && (
@@ -85,7 +87,7 @@ const Content = ({
         <AddressContainer>
           {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
           <ShortAddress address={address} />
-          <Tooltip content="Copied" placement="right" visible={isCopied}>
+          <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
             {isCopied ? <CheckIcon /> : <CopyIcon />}
           </Tooltip>
         </AddressContainer>
@@ -95,11 +97,15 @@ const Content = ({
           type="link"
           href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
         >
-          View in Explorer
+          {t('common.viewInExplorer')}
         </OptionButton>
       )}
-      <OptionButton onClick={onChangeWallet}>Change wallet</OptionButton>
-      <OptionButton onClick={onDisconnect}>Disconnect</OptionButton>
+      <OptionButton onClick={onChangeWallet}>
+        {t('buttonText.changeWallet')}
+      </OptionButton>
+      <OptionButton onClick={onDisconnect}>
+        {t('buttonText.disconnect')}
+      </OptionButton>
     </Container>
   );
 };
