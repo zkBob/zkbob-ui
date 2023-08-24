@@ -7,14 +7,14 @@ import { zkAccountCreatePasswordLocators, zkAccountElementsLocators } from '../z
 export default class OperationsWithTokenPages extends BasePage{
   readonly ADDRESS_METAMASK_ACCOUNT: string;
   readonly ZKACCOUNT_PASSWORD: string;
-  readonly ZKBOB_RECEIVER_ADDRESS: string;
+  readonly ZKBOB_ADDRESS_BOB_SEPOLIA: string;
   readonly ZKACCOUNT_SEED_PHRASE: string;
 
   constructor(page: Page) {
     super(page);
     this.ADDRESS_METAMASK_ACCOUNT = process.env.ADDRESS_METAMASK_ACCOUNT as string;
     this.ZKACCOUNT_PASSWORD = process.env.ZKACCOUNT_PASSWORD as string;
-    this.ZKBOB_RECEIVER_ADDRESS = process.env.ZKBOB_RECEIVER_ADDRESS as string;
+    this.ZKBOB_ADDRESS_BOB_SEPOLIA = process.env.ZKBOB_ADDRESS_BOB_SEPOLIA as string;
     this.ZKACCOUNT_SEED_PHRASE = process.env.ZKACCOUNT_SEED_PHRASE as string;
   }
 
@@ -63,20 +63,25 @@ export default class OperationsWithTokenPages extends BasePage{
       }
     }
 
-    async SelectBOB():Promise<void> {
-      await this.locator('//button//div[text()="BOB"]').click();
+    async SelectBOBSepolia():Promise<void> {
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+        await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
     }
 
-    async SelectUSDM():Promise<void> {
-      await this.locator('//button//div[text()="USDM"]').click();
+    async SelectBOBOPGoerli():Promise<void> {
+      await this.locator('//button[@data-ga-id="pool-bob-op-goerli"]').click();
+  }
+
+    async SelectUSDMGoerli():Promise<void> {
+      await this.locator('//button[@data-ga-id="pool-bob2usdc-goerli"]').click();
     }
 
-    async SelectUSDC():Promise<void> {
-      await this.locator('//button//div[text()="USDC"]').click();
+    async SelectUSDCGoerli():Promise<void> {
+      await this.locator('//button[@data-ga-id="pool-usdc-goerli"]').click();
     }
 
-    async SelectETH():Promise<void> {
-      await this.locator('//button//div[text()="ETH"]').click();
+    async SelectETHGoerli():Promise<void> {
+      await this.locator('//button[@data-ga-id="pool-weth-goerli"]').click();
     }
 
 
@@ -85,9 +90,22 @@ export default class OperationsWithTokenPages extends BasePage{
       expect(this.page.url()).toContain('/deposit');
     }
 
-    async DepositInputAmount():Promise<void> {
-      // await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1');
+    async GoToTransferTab():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.tab_transfer).click();
+      expect(this.page.url()).toContain('/transfer');
+    }
+
+    async GoToWithdrawTab():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
+      expect(this.page.url()).toContain('/withdraw');
+    }
+
+    async InputAmount():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.input_amount).type('1');
+    }
+
+    async InputAmountTransferTab():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab ).type('1');
     }
 
     async button_Deposit():Promise<void> {
@@ -111,6 +129,22 @@ export default class OperationsWithTokenPages extends BasePage{
       await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
     }
 
+    async EnterzkBOBAddress(ZKBOB_ADDRESS: string):Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
+      await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).type(ZKBOB_ADDRESS, { delay: 100 });
+    }
+
+    async button_Transfer():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.button_transfer).click();
+    }
+
+    async button_Confirm():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
+    }
+
+    async CheckTransfer():Promise<void> {
+      await expect(this.locator('//span[text()="Transfer is in progress"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
+    }
 
 
 

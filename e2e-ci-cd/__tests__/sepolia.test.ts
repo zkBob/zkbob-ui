@@ -1,4 +1,7 @@
 import { test } from '../fixtures/testContextFixture';
+import BasePage from '../pages/base';
+
+const ZKBOB_ADDRESS_BOB_SEPOLIA = process.env.ZKBOB_ADDRESS_BOB_SEPOLIA as string;
 
 test.beforeEach(async ({metamask, zkAccount}) => {
   await metamask.importWallet()
@@ -15,17 +18,24 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 
 
 test.describe('BOB pool', () => {
-    test.only('Deposit BOB', async ({ OperationsWithToken }) => {
+    test('Deposit BOB', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectSepoliaNetwork()
-        await OperationsWithToken.SelectBOB()
-        await OperationsWithToken.DepositInputAmount()
+        await OperationsWithToken.SelectBOBSepolia()
+        await OperationsWithToken.InputAmount()
         await OperationsWithToken.button_Deposit()
         await OperationsWithToken.TheCheckingTheDepositSent()
     });
   
-    test('Transfer BOB', async ({ OperationsWithToken }) => {
-      // ...
+    test.only('Transfer BOB', async ({ OperationsWithToken }) => {
+        await OperationsWithToken.GoToTransferTab()
+        await OperationsWithToken.SelectSepoliaNetwork()
+        await OperationsWithToken.SelectBOBSepolia()
+        await OperationsWithToken.InputAmountTransferTab()
+        await OperationsWithToken.EnterzkBOBAddress(ZKBOB_ADDRESS_BOB_SEPOLIA)
+        await OperationsWithToken.button_Transfer()
+        await OperationsWithToken.button_Confirm()
+        await OperationsWithToken.CheckTransfer()
     });
 
     test('Withdraw BOB', async ({ OperationsWithToken }) => {

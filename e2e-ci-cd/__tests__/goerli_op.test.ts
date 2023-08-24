@@ -1,5 +1,8 @@
 import { test } from '../fixtures/testContextFixture';
 
+
+const ZKBOB_ADDRESS_BOB_OP_GOERLI = process.env.ZKBOB_ADDRESS_BOB_OP_GOERLI as string;
+
 test.beforeEach(async ({metamask, zkAccount}) => {
     await metamask.importWallet()
     await metamask.addCustomNetworks()
@@ -16,17 +19,24 @@ test.beforeEach(async ({metamask, zkAccount}) => {
   
   
   test.describe('BOB pool', () => {
-      test.only('Deposit BOB', async ({ OperationsWithToken }) => {
-          await OperationsWithToken.GoToDepositTab()
-          await OperationsWithToken.SelectGoerliOPNetwork()
-          await OperationsWithToken.SelectBOB()
-          await OperationsWithToken.DepositInputAmount()
-          await OperationsWithToken.button_Deposit()
-          await OperationsWithToken.TheCheckingTheDepositSent()
+      test('Deposit BOB', async ({ OperationsWithToken }) => {
+        await OperationsWithToken.GoToDepositTab()
+        await OperationsWithToken.SelectGoerliOPNetwork()
+        await OperationsWithToken.SelectBOBOPGoerli()
+        await OperationsWithToken.InputAmount()
+        await OperationsWithToken.button_Deposit()
+        await OperationsWithToken.TheCheckingTheDepositSent()
       });
     
-      test('Transfer BOB', async ({ OperationsWithToken }) => {
-        // ...
+      test.only('Transfer BOB', async ({ OperationsWithToken }) => {
+        await OperationsWithToken.GoToTransferTab()
+        await OperationsWithToken.SelectGoerliOPNetwork()
+        await OperationsWithToken.SelectBOBOPGoerli()
+        await OperationsWithToken.InputAmountTransferTab()
+        await OperationsWithToken.EnterzkBOBAddress(ZKBOB_ADDRESS_BOB_OP_GOERLI)
+        await OperationsWithToken.button_Transfer()
+        await OperationsWithToken.button_Confirm()
+        await OperationsWithToken.CheckTransfer()
       });
   
       test('Withdraw BOB', async ({ OperationsWithToken }) => {

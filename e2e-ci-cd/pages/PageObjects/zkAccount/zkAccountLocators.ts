@@ -5,7 +5,7 @@ const button_IAlreadyHaveZkAccount = '//button[text()="I already have a zkAccoun
 const button_UseSecretPhrase = '//button[text()="Use zkBob secret phrase"]';
 const button_IUsedSeedPhrase = '//button[text()="I used zkBob secret phrase"]';
 const button_SignMessage = '//button[text()="Sign the message"]';
-const button_SetPassword = '//button[text()="Set a password"]';
+const button_SetPassword = '//button[text()="Set password"]';
 const button_GetStarted = '//button[text()="Get started!"]'
 const button_Agree = '//button[text()="Agree"]';
 const button_CreateWithSecretRecoveryPhrase = '//button[text()="secret recovery phrase"]';
