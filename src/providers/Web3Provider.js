@@ -10,9 +10,15 @@ const { chains, provider, webSocketProvider } = configureChains(
   [
     jsonRpcProvider({
       priority: 0,
-      rpc: chain => chain.id === optimism.id
-        ? ({ http: 'https://rpc.ankr.com/optimism' })
-        : null,
+      rpc: chain => {
+        if (chain.id === optimism.id) {
+          return ({ http: 'https://rpc.ankr.com/optimism' });
+        }
+        if (chain.id === sepolia.id) {
+          return ({ http: 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161' });
+        }
+        return null;
+      }
     }),
     publicProvider({ priority: 1 }),
   ],
