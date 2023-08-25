@@ -6,13 +6,17 @@ import { ProverMode } from 'zkbob-client-js/lib/config';
 import { TX_STATUSES } from 'constants';
 import config from 'config';
 
-const createClient = (currentPoolAlias, supportId) => {
-  return ZkBobClient.create({
-    pools: config.pools,
-    chains: config.chains,
-    snarkParams: config.snarkParams,
-    supportId,
-  }, currentPoolAlias);
+const createClient = (currentPoolAlias, supportId, callback) => {
+  return ZkBobClient.create(
+    {
+      pools: config.pools,
+      chains: config.chains,
+      snarkParams: config.snarkParams,
+      supportId,
+    },
+    currentPoolAlias,
+    callback,
+  );
 };
 
 const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver) => {

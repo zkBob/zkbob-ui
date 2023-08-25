@@ -13,6 +13,7 @@ import { ZkAccountContext, PoolContext } from 'contexts';
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import MultilineInput from 'components/MultilineInput';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
@@ -67,7 +68,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
-      button = <Button loading contrast disabled>{t('buttonText.loading')}</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
       button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {

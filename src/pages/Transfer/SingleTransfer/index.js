@@ -9,6 +9,7 @@ import PendingAction from 'containers/PendingAction';
 
 import TransferInput from 'components/TransferInput';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import MultilineInput from 'components/MultilineInput';
 
@@ -58,7 +59,7 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button loading contrast disabled>{t('buttonText.loading')}</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
       button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {
