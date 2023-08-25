@@ -25,6 +25,7 @@
     "enterAddress": "Enter address",
     "invalidAddress": "Invalid address",
     "loading": "Loading...",
+    "loadingPercentage": "Loading ({{percentage}}%)",
     "getStarted": "Get started!",
     "minAmount": "Min amount is {{amount}} {{symbol}}",
     "insufficientBalance": "Insufficient {{symbol}} balance",

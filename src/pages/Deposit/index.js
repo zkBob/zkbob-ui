@@ -15,6 +15,7 @@ import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsCon
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
@@ -115,7 +116,7 @@ export default () => {
             return <AccountSetUpButton />;
           }
           else if (isLoadingState || isLoadingLimits) {
-            return <Button loading contrast disabled>{t('buttonText.loading')}</Button>;
+            return <ButtonLoading />;
           }
           else if (amount.isZero()) {
             return <Button disabled>{t('buttonText.enterAmount')}</Button>;

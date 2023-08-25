@@ -9,6 +9,7 @@ import AccountSetUpButton from 'containers/AccountSetUpButton';
 import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import TextEditor from 'components/TextEditor';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
@@ -168,7 +169,7 @@ export default forwardRef((props, ref) => {
       }
       {(() => {
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button loading contrast disabled>{t('buttonText.loading')}</Button>
+          else if (isLoadingState) return <ButtonLoading />
           else if (!data) return <Button disabled>{t('buttonText.proceed')}</Button>
           else return <Button onClick={validate} data-ga-id="initiate-operation-multitransfer">{t('buttonText.proceed')}</Button>;
         })()}
