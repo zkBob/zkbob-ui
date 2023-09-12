@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 import { HistoryTransactionType } from 'zkbob-client-js';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -14,6 +15,7 @@ import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsCon
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
@@ -28,6 +30,7 @@ import { useDepositLimit, useMaxAmountExceeded } from './hooks';
 import { formatNumber, minBigNumber } from 'utils';
 
 export default () => {
+  const { t } = useTranslation();
   const { address: account } = useAccount();
   const {
       zkAccount, isLoadingZkAccount, deposit,
@@ -82,8 +85,8 @@ export default () => {
   return isPending ? <PendingAction /> : (
     <>
       <Card
-        title="Deposit"
-        note={`${currentPool.tokenSymbol} will be deposited to your zkAccount. Once received, you can transfer ${currentPool.tokenSymbol} privately.`}
+        title={t('deposit.title')}
+        note={t('deposit.note', { symbol: currentPool.tokenSymbol })}
       >
         <TransferInput
           balance={account ? balance : null}
@@ -103,25 +106,48 @@ export default () => {
           gaIdPostfix="deposit"
         />
         {(() => {
-          if (!zkAccount && !isLoadingZkAccount) return <AccountSetUpButton />
-          else if (!account) return <Button onClick={openWalletModal}>Connect wallet</Button>
-          if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState || isLoadingLimits) return <Button loading contrast disabled>Loading...</Button>
-          else if (amount.isZero()) return <Button disabled>Enter amount</Button>
-          else if (amount.lt(minTxAmount)) return <Button disabled>Min amount is {formatNumber(minTxAmount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Button>
-          else if (amount.gt(usedBalance)) return <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>
-          else if (amount.gt(usedBalance.sub(usedFee))) return <Button disabled>Reduce amount to include {formatNumber(usedFee, currentPool.tokenDecimals)} fee</Button>
-          else if (amount.gt(depositLimit)) return <Button disabled>Amount exceeds daily limit</Button>
-          else if (currentPool.isNative && !isNativeSelected && !isApproved) return <Button onClick={approve}>Approve tokens</Button>
-          else return <Button onClick={onDeposit} data-ga-id="initiate-operation-deposit">Deposit</Button>;
+          if (!zkAccount && !isLoadingZkAccount) {
+            return <AccountSetUpButton />;
+          }
+          else if (!account) {
+            return <Button onClick={openWalletModal}>{t('buttonText.connectWallet')}</Button>;
+          }
+          else if (!zkAccount) {
+            return <AccountSetUpButton />;
+          }
+          else if (isLoadingState || isLoadingLimits) {
+            return <ButtonLoading />;
+          }
+          else if (amount.isZero()) {
+            return <Button disabled>{t('buttonText.enterAmount')}</Button>;
+          }
+          else if (amount.lt(minTxAmount)) {
+            const minAmount = formatNumber(minTxAmount, currentPool.tokenDecimals);
+            return <Button disabled>{t('buttonText.minAmount', { amount: minAmount, symbol: currentPool.tokenSymbol })}</Button>;
+          }
+          else if (amount.gt(usedBalance)) {
+            return <Button disabled>{t('buttonText.insufficientBalance', { symbol: currentPool.tokenSymbol })}</Button>;
+          }
+          else if (amount.gt(usedBalance.sub(usedFee))) {
+            return <Button disabled>{t('buttonText.reduceAmount', { fee: formatNumber(usedFee, currentPool.tokenDecimals)})}</Button>;
+          }
+          else if (amount.gt(depositLimit)) {
+            return <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
+          }
+          else if (currentPool.isNative && !isNativeSelected && !isApproved) {
+            return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>;
+          }
+          else {
+            return <Button onClick={onDeposit} data-ga-id="initiate-operation-deposit">{t('buttonText.deposit')}</Button>;
+          }
         })()}
         {isNativeTokenUsed && (
           <MessageContainer>
             <WargingIcon/>
             <span style={{ margin: '0 4px 0 8px' }}>
-              {currentPool.tokenSymbol} depositing can take up to 10 minutes.
+              {t('deposit.ddNote', { symbol: currentPool.tokenSymbol })}
             </span>
-            <Link href="https://docs.zkbob.com/zkbob-overview/zkbob-pools/eth-pool-on-optimism">Learn more</Link>
+            <Link href="https://docs.zkbob.com/zkbob-overview/zkbob-pools/eth-pool-on-optimism">{t('common.learnMore')}</Link>
           </MessageContainer>
         )}
       </Card>
@@ -137,23 +163,21 @@ export default () => {
         loading={isLoadingLimits}
         limits={[
           {
-            prefix: "Deposit",
-            suffix: "limit per transaction",
+            name: <Trans i18nKey="limits.deposit.perTransaction" />,
             value: limits[isNativeTokenUsed ? 'singleDirectDepositLimit' : 'singleDepositLimit'],
           },
           {
-            prefix: "Daily deposit",
-            suffix: "limit per address",
+            name: <Trans i18nKey="limits.deposit.dailyPerAddress" />,
             value: limits[isNativeTokenUsed ? 'dailyDirectDepositLimitPerAddress' : 'dailyDepositLimitPerAddress'],
           },
-          { prefix: "Daily deposit", suffix: "limit", value: limits.dailyDepositLimit },
-          { prefix: "Pool size", suffix: "limit", value: limits.poolSizeLimit },
+          { name: <Trans i18nKey="limits.deposit.daily" />, value: limits.dailyDepositLimit },
+          { name: <Trans i18nKey="limits.poolSize" />, value: limits.poolSizeLimit },
         ]}
         currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
-          type="Deposit"
+          type="deposit"
           shielded={false}
           data={latestAction}
           currentPool={currentPool}

@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from 'components/Button';
 import Input from 'components/Input';
 
 export default ({ confirmPassword }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -44,27 +46,27 @@ export default ({ confirmPassword }) => {
   return (
     <Container onKeyPress={handleKeyPress}>
       <Description>
-        To enhance security, password entry is required each<br /> time a page reloads.
+        <Trans i18nKey="accountSetupModal.createPassword.description" />
       </Description>
       <Input
         type="password"
-        placeholder="Password 6+ characters"
+        placeholder={t('password.placeholder1')}
         value={password}
         onChange={handlePasswordChange}
         error={lengthError || matchError}
       />
       <Input
         type="password"
-        placeholder="Verify password"
+        placeholder={t('password.placeholder2')}
         value={passwordConfirmation}
         onChange={handlePasswordConfirmationChange}
         error={lengthError || matchError}
       />
       <RulesContainer>
-        <Rule $error={lengthError}>Please enter 6 or more characters</Rule>
-        <Rule $error={matchError}>Password should match</Rule>
+        <Rule $error={lengthError}>{t('password.rule1')}</Rule>
+        <Rule $error={matchError}>{t('password.rule2')}</Rule>
       </RulesContainer>
-      <Button onClick={confirm} data-ga-id="password-confirm">Verify</Button>
+      <Button onClick={confirm} data-ga-id="password-confirm">{t('buttonText.verify')}</Button>
     </Container>
   );
 };

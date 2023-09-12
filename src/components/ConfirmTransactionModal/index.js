@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
@@ -11,18 +12,19 @@ import { useDisplayedFee } from 'hooks';
 import { TOKENS_ICONS } from 'constants';
 
 export default ({
-  isOpen, onClose, onConfirm, title, amount, receiver,
+  isOpen, onClose, onConfirm, amount, receiver,
   isZkAddress, fee, numberOfTxs, type, isLoadingFee,
   isMultitransfer, transfers, openDetails, currentPool,
   amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
+  const { t } = useTranslation();
   const displayedFee = useDisplayedFee(currentPool, fee);
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={t(`confirmTransaction.titles.${type}`)}
       width={460}
     >
       <Container>
@@ -51,32 +53,32 @@ export default ({
           )}
           {isMultitransfer ? (
             <>
-              <MediumTextMulti>will be transferred to {transfers.length} zkBob addresses</MediumTextMulti>
-              <ViewAllButton type="link" onClick={openDetails}>view all</ViewAllButton>
+              <MediumTextMulti>{t('confirmTransaction.sendToMultiple', { count: transfers.length })}</MediumTextMulti>
+              <ViewAllButton type="link" onClick={openDetails}>{t('confirmTransaction.viewAll')}</ViewAllButton>
             </>
           ) : (
             <>
               <SmallText>
-                send to {isZkAddress ? 'zkBob address' : ''}
+                {isZkAddress ? t('confirmTransaction.sendToZk') : t('confirmTransaction.sendTo')}
               </SmallText>
               <MediumText>{receiver}</MediumText>
             </>
           )}
-          <SmallText>{type} details</SmallText>
+          <SmallText>{t(`confirmTransaction.details.${type}`)}</SmallText>
           {!amountToConvert.isZero() && (
             <Row>
-              <MediumText>Withdraw amount:</MediumText>
+              <MediumText>{t('confirmTransaction.withdrawAmount')}:</MediumText>
               <MediumText>{formatNumber(amount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</MediumText>
             </Row>
           )}
           {numberOfTxs > 1 && (
             <Row>
-              <MediumText>Number of transactions:</MediumText>
+              <MediumText>{t('confirmTransaction.numberOfTransactions')}:</MediumText>
               <MediumText>{numberOfTxs}</MediumText>
             </Row>
           )}
           <Row>
-            <MediumText>Relayer fee:</MediumText>
+            <MediumText>{t('common.relayerFee')}:</MediumText>
             {isLoadingFee ? (
               <Skeleton width={60} />
             ) : (
@@ -88,7 +90,7 @@ export default ({
           onClick={onConfirm}
           data-ga-id="confirm-operation"
         >
-          Confirm {isMultitransfer && 'multitransfer'}
+          {t('buttonText.confirm')}
         </Button>
       </Container>
     </Modal>

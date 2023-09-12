@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useContext} from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Input from 'components/Input';
@@ -8,6 +9,7 @@ import Modal from 'components/Modal';
 import { ModalContext, ZkAccountContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const { isChangePasswordModalOpen, closeChangePasswordModal } = useContext(ModalContext);
   const { setPassword } = useContext(ZkAccountContext);
   const history = useHistory();
@@ -61,28 +63,28 @@ export default () => {
     <Modal
       isOpen={isChangePasswordModalOpen}
       onClose={closeModal}
-      title="Set password"
+      title={t('setPasswordModal.title')}
     >
       <Container onKeyPress={handleKeyPress}>
         <Input
           type="password"
-          placeholder="Password 6+ characters"
+          placeholder={t('password.placeholder1')}
           value={newPassword}
           onChange={handleNewPasswordChange}
           error={lengthError || matchError}
         />
         <Input
           type="password"
-          placeholder="Verify password"
+          placeholder={t('password.placeholder2')}
           value={newPasswordConfirmation}
           onChange={handleNewPasswordConfirmationChange}
           error={lengthError || matchError}
         />
         <RulesContainer>
-          <Rule $error={lengthError}>Please enter 6 or more characters</Rule>
-          <Rule $error={matchError}>Password should match</Rule>
+          <Rule $error={lengthError}>{t('password.rule1')}</Rule>
+          <Rule $error={matchError}>{t('password.rule2')}</Rule>
         </RulesContainer>
-        <Button onClick={confirm}>Confirm</Button>
+        <Button onClick={confirm}>{t('buttonText.confirm')}</Button>
       </Container>
     </Modal>
   );

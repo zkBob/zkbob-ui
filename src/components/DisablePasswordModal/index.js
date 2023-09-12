@@ -1,5 +1,6 @@
 import React, { useContext, useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -8,6 +9,7 @@ import Input from 'components/Input';
 import { ModalContext, ZkAccountContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const { isDisablePasswordModalOpen, closeDisablePasswordModal } = useContext(ModalContext);
   const { removePassword } = useContext(ZkAccountContext);
   const [password, setPassword] = useState('');
@@ -43,21 +45,21 @@ export default () => {
     <Modal
       isOpen={isDisablePasswordModalOpen}
       onClose={closeModal}
-      title="Disable password"
+      title={t('disablePasswordModal.title')}
     >
       <Container onKeyPress={handleKeyPress}>
         <Description>
-          Please enter the current password
+          {t('disablePasswordModal.description')}
         </Description>
         <Input
           autoFocus
           type="password"
-          placeholder="Password"
+          placeholder={t('common.password')}
           value={password}
           onChange={handlePasswordChange}
           error={!!error}
         />
-        <Button onClick={confirm}>Confirm</Button>
+        <Button onClick={confirm}>{t('buttonText.confirm')}</Button>
       </Container>
     </Modal>
   );

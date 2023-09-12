@@ -1,6 +1,7 @@
 import React, { useContext, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Tooltip from 'components/Tooltip';
@@ -12,6 +13,7 @@ import { ReactComponent as CheckIcon } from 'assets/check.svg';
 import { ModalContext, ZkAccountContext, PoolContext } from 'contexts';
 
 export default () => {
+  const { t } = useTranslation();
   const { currentPool } = useContext(PoolContext);
   const { isPaymentLinkModalOpen, closePaymentLinkModal } = useContext(ModalContext);
   const { generateAddress } = useContext(ZkAccountContext);
@@ -39,28 +41,25 @@ export default () => {
     <Modal
       isOpen={isPaymentLinkModalOpen}
       onClose={closePaymentLinkModal}
-      title="Get payment link"
+      title={t('paymentLinkModal.title')}
     >
       <Container>
         <Description>
-          Share this link to request a private payment.<br />
-          The sender will have the option to select and send any token.{' '}
-          Tokens will be converted to {currentPool.tokenSymbol} and deposited to your zkAccount.<br /><br />
-          <b>Note:</b> Private payment links work on the same network where they are generated.
+          <Trans i18nKey="paymentLinkModal.description" values={{ symbol: currentPool.tokenSymbol }} />
         </Description>
-        <InputLabel>Copy and share your payment link</InputLabel>
+        <InputLabel>{t('paymentLinkModal.copyAndShare')}</InputLabel>
         <CopyToClipboard text={link} onCopy={onCopy}>
           <PaymentLinkContainer>
             <LinkText>
               {link}
             </LinkText>
-            <Tooltip content="Copied" placement="right" visible={isCopied}>
+            <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
               {isCopied ? <CheckIcon /> : <CopyIcon />}
             </Tooltip>
           </PaymentLinkContainer>
         </CopyToClipboard>
         <Link href="https://docs.zkbob.com/zkbob-overview/readme" size={16}>
-          Get more info about payment links
+          {t('paymentLinkModal.getMoreInfo')}
         </Link>
       </Container>
     </Modal>
@@ -86,7 +85,7 @@ const Description = styled.span`
   color: ${({ theme }) => theme.text.color.secondary};
   line-height: 24px;
   text-align: center;
-  & > b {
+  & > b, & > strong {
     font-weight: ${({ theme }) => theme.text.weight.bold};
   }
 `;

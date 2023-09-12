@@ -5,11 +5,12 @@ import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
 import {
-  TxDepositDeadlineExpiredError,
+  TxDepositDeadlineExpiredError, ClientState,
   HistoryRecordState, HistoryTransactionType,
 } from 'zkbob-client-js';
 import { ProverMode } from 'zkbob-client-js/lib/config';
 import { toast } from 'react-toastify';
+import { Trans } from 'react-i18next';
 
 import {
   TransactionModalContext, ModalContext, PoolContext,
@@ -73,16 +74,24 @@ export const ZkAccountContextProvider = ({ children }) => {
   const [giftCardTxHash, setGiftCardTxHash] = useState(null);
   const [pendingDirectDeposits, setPendingDirectDeposits] = useState([]);
 
+  function updateLoadingPercentage(state, progress) {
+    if (state === ClientState.StateUpdatingContinuous) {
+      setLoadingPercentage(progress);
+    } else {
+      setLoadingPercentage(null);
+    }
+  }
+
   useEffect(() => {
     if (zkClient || !supportId || !currentPool) return;
     async function create() {
       try {
-        const zkClient = await zp.createClient(currentPool.alias, supportId);
+        const zkClient = await zp.createClient(currentPool.alias, supportId, updateLoadingPercentage);
         setZkClient(zkClient);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.createZkClient' } });
-        showLoadingError('zk-client');
+        showLoadingError('zkClient');
       }
     }
     create();
@@ -113,7 +122,6 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
     }
     setIsLoadingZkAccount(false);
-    setLoadingPercentage(0);
   }, [zkClient]);
 
   const fromShieldedAmount = useCallback(async shieldedAmount => {
@@ -137,7 +145,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'ZkAccountContext.updateBalance' } });
-        showLoadingError('zkAccount balance');
+        showLoadingError('zkAccountBalance');
       }
     }
     setBalance(balance);
@@ -591,8 +599,8 @@ export const ZkAccountContextProvider = ({ children }) => {
           setGiftCardTxHash(null);
           toast.success(
             <span>
-              <b>The operation has been completed.</b><br />
-              Check the history tab or your zkAccount balance to get more information.
+              <b><Trans i18nKey="successNotification.title" /></b><br />
+              <Trans i18nKey="successNotification.description" />
             </span>
           );
         }

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
@@ -18,6 +19,7 @@ export default ({
   shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
   isNativeSelected, setIsNativeSelected, isNativeTokenUsed, gaIdPostfix,
 }) => {
+  const { t } = useTranslation();
   const displayedFee = useDisplayedFee(currentPool, fee);
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -54,7 +56,7 @@ export default ({
       </Row>
       <Row>
         <RowWrap style={{ marginRight: 20 }}>
-          <Text style={{ marginRight: 4 }}>Relayer fee:</Text>
+          <Text style={{ marginRight: 4 }}>{t('common.relayerFee')}:</Text>
           {isLoadingFee ? (
             <Skeleton width={40} />
           ) : (
@@ -64,7 +66,7 @@ export default ({
         {(balance || isLoadingBalance) && (
           <RowFlexEnd>
             <Text style={{ marginRight: 4 }}>
-              {shielded ? 'Pool balance' : 'Balance'}:
+              {shielded ? t('common.poolBalance') : t('common.balance')}:
             </Text>
             {isLoadingBalance ? (
               <Skeleton width={80} />
@@ -79,9 +81,11 @@ export default ({
                   onClick={setMax}
                   tabIndex="-1"
                   data-ga-id={`max-${gaIdPostfix}`}
-                >Max</MaxButton>
+                >
+                  {t('buttonText.max')}
+                </MaxButton>
                 <Tooltip
-                  content={`Click Max to set the maximum amount of ${currentPool.tokenSymbol} you can send including all fees and limits`}
+                  content={t('maxButton.tooltip', { symbol: currentPool.tokenSymbol })}
                   placement="right"
                   delay={0}
                   width={180}

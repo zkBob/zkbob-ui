@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import WalletDropdown from 'components/WalletDropdown';
@@ -15,6 +16,7 @@ import { CONNECTORS_ICONS, NETWORKS } from 'constants';
 import ModalContext from 'contexts/ModalContext';
 
 export default () => {
+  const { t } = useTranslation();
   const { address: account, connector } = useAccount();
   const { openWalletModal } = useContext(ModalContext);
   return (
@@ -37,7 +39,7 @@ export default () => {
           </WalletDropdown>
         ) : (
           <Button small onClick={openWalletModal} style={{ whiteSpace: 'nowrap' }}>
-            Connect wallet
+            {t('buttonText.connectWallet')}
           </Button>
         )}
       </Row>

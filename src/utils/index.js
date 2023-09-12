@@ -1,5 +1,11 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+import { Trans } from 'react-i18next';
+
+import LinkDefault from 'components/Link';
+
+import { SUPPORT_URL } from 'constants';
 
 const { parseUnits, formatUnits, commify } = ethers.utils;
 
@@ -32,8 +38,13 @@ export const maxBigNumber = (...numbers) =>
 export const showLoadingError = cause => {
   toast.error(
     <span>
-      <b>Error loading {cause}.</b><br />
-      Please try again later or contact our support if the issue persists.
+      <b><Trans i18nKey={`loadingError.titles.${cause}`} /></b><br />
+      <Trans i18nKey={`loadingError.description`} components={{ 1: <Link href={SUPPORT_URL} /> }} />
     </span>
   );
 };
+
+const Link = styled(LinkDefault)`
+  color: inherit;
+  text-decoration: underline;
+`;

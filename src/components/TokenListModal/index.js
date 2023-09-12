@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Input from 'components/Input';
@@ -18,6 +19,7 @@ const ListItem = ({ token, onClick }) => (
 );
 
 export default ({ isOpen, onClose, tokens, onSelect }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
 
   const filteredTokens = useMemo(() =>
@@ -42,12 +44,12 @@ export default ({ isOpen, onClose, tokens, onSelect }) => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title="Token list"
+      title={t('tokenList.title')}
       width={460}
     >
       <Container>
         <Input
-          placeholder="Search your token"
+          placeholder={t('tokenList.searchToken')}
           secondary
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -59,7 +61,7 @@ export default ({ isOpen, onClose, tokens, onSelect }) => {
           ))}
         </List>
         {!filteredTokens.length && (
-          <Text>No tokens found</Text>
+          <Text>{t('tokenList.noTokensFound')}</Text>
         )}
       </Container>
     </Modal>

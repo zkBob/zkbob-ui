@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import PendingAction from 'containers/PendingAction';
 
@@ -18,10 +19,9 @@ import { ZkAccountContext, PoolContext } from 'contexts';
 
 import { useLatestAction } from 'hooks';
 
-const note = 'The transfer will be performed privately. Sender, recipient and amount are never disclosed.';
-const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {
+  const { t } = useTranslation();
   const { isPending } = useContext(ZkAccountContext);
   const latestAction = useLatestAction(HistoryTransactionType.TransferOut);
   const [isMulti, setIsMulti] = useState(false);
@@ -31,11 +31,11 @@ export default () => {
 
   return isPending ? <PendingAction /> : (
     <>
-      <Card note={note}>
+      <Card note={t('transfer.note')}>
         <TitleRow>
-          <Title>Transfer</Title>
+          <Title>{t('transfer.title')}</Title>
           <Row>
-            <Text>Multitransfer</Text>
+            <Text>{t('multitransfer.title')}</Text>
             <Switch
               checked={isMulti}
               onChange={setIsMulti}
@@ -46,7 +46,7 @@ export default () => {
                 type="link"
                 onClick={() => fileInputRef?.current?.click()}
               >
-                Upload CSV
+                {t('multitransfer.uploadCSV')}
               </Button>
               <input
                 type="file"
@@ -55,7 +55,7 @@ export default () => {
                 onChange={e => multitransferRef?.current?.handleFileUpload(e)}
                 style={{ display: 'none' }}
               />
-              <Tooltip content={tooltipText} placement="right" delay={0} width={180}>
+              <Tooltip content={t('multitransfer.uploadCSVHint')} placement="right" delay={0} width={180}>
                 <InfoIcon />
               </Tooltip>
             </CsvButtonContainer>
@@ -65,7 +65,7 @@ export default () => {
       </Card>
       {latestAction && (
         <LatestAction
-          type="Transfer"
+          type="transfer"
           shielded={true}
           data={latestAction}
           currentPool={currentPool}

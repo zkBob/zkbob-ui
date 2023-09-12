@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -12,38 +13,43 @@ export default ({
   confirm, password, onPasswordChange,
   onKeyPress, error,
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Show secret phrase"
+      title={t('secretPhraseModal.title')}
     >
       <Container onKeyPress={mnemonic ? null : onKeyPress}>
         <Warning>
-          Never share your secret phrase with anyone,<br/> store it securely!
+          <Trans i18nKey="secretPhraseModal.warning" />
         </Warning>
         <Description>
-          If someone has your secret phrase they will have full control of your wallet.
+          {t('secretPhraseModal.description')}
         </Description>
         {mnemonic ? (
           <>
             <SeedPhrase value={mnemonic} />
             <CopyTextButton text={mnemonic} style={{ alignSelf: 'center' }}>
-              Copy secret phrase
+              {t('secretPhraseModal.copy')}
             </CopyTextButton>
-            <Button onClick={onClose}>Done</Button>
+            <Button onClick={onClose}>
+              {t('buttonText.done')}
+            </Button>
           </>
         ) : (
           <>
             <Input
               autoFocus
               type="password"
-              placeholder="Password"
+              placeholder={t('common.password')}
               value={password}
               onChange={onPasswordChange}
               error={!!error}
             />
-            <Button onClick={confirm}>Next</Button>
+            <Button onClick={confirm}>
+              {t('buttonText.next')}
+            </Button>
           </>
         )}
       </Container>

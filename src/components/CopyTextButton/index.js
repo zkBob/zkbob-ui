@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 
 export default ({ text, style, children }) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -15,7 +17,7 @@ export default ({ text, style, children }) => {
   }, []);
 
   return isCopied ? (
-    <Text style={style}>Copied!</Text>
+    <Text style={style}>{t('common.copied')}</Text>
   ) : (
     <CopyToClipboard text={text} onCopy={onCopy}>
       <LinkButton type="link" style={style}>

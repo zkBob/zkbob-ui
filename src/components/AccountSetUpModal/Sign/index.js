@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Spinner from 'components/Spinner';
 import Button from 'components/Button';
 
 export default ({ isCreation, sign }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = useCallback(async () => {
@@ -22,11 +24,11 @@ export default ({ isCreation, sign }) => {
       {isLoading && <Spinner />}
       <Note>
         {isCreation
-          ? 'Your zkAccount is being created based on the connected wallet.'
-          : 'Accessing your zkAccount with your connected wallet.'
+          ? t('accountSetupModal.signMessageToCreate.description')
+          : t('accountSetupModal.signMessageToRestore.description')
         }
       </Note>
-      {!isLoading && <Button onClick={onClick}>Sign the message</Button>}
+      {!isLoading && <Button onClick={onClick}>{t('buttonText.signMessage')}</Button>}
     </Container>
   );
 };

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
@@ -81,32 +82,41 @@ const AddressLink = ({ action, isMobile, currentChainId }) => {
   );
 };
 
-const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => (
-  <>
-    {!fee.isZero() && (
-      <FeeText>(fee {formatNumber(fee, tokenDecimals)} {tokenSymbol})</FeeText>
-    )}
-    {highFee && (
-      <Tooltip
-        content={
-          <span>
-            This transaction required additional operations, resulting in higher fees.{' '}
-            <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
-              Learn more
-            </Link>
-          </span>
-        }
-        placement={isMobile ? 'bottom' : 'right'}
-        delay={0}
-        width={200}
-      >
-        <InfoIcon />
-      </Tooltip>
-    )}
-  </>
-);
+const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {!fee.isZero() && (
+        <FeeText>
+          {t('history.fee', {
+            amount: formatNumber(fee, tokenDecimals),
+            symbol: tokenSymbol,
+          })}
+        </FeeText>
+      )}
+      {highFee && (
+        <Tooltip
+          content={
+            <span>
+              {t('history.highFee')}{' '}
+              <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
+                {t('common.learnMore')}
+              </Link>
+            </span>
+          }
+          placement={isMobile ? 'bottom' : 'right'}
+          delay={0}
+          width={200}
+        >
+          <InfoIcon />
+        </Tooltip>
+      )}
+    </>
+  );
+};
 
 export default ({ item, zkAccount, currentPool }) => {
+  const { t } = useTranslation();
   const date = useDateFromNow(item.timestamp);
   const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -173,8 +183,8 @@ export default ({ item, zkAccount, currentPool }) => {
             {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
-                <Text $error style={{ marginLeft: 10 }}>failed</Text>
-                <Tooltip content={item.failureReason || 'No description'} placement="right" delay={0} width={180}>
+                <Text $error style={{ marginLeft: 10 }}>{t('history.failed')}</Text>
+                <Tooltip content={item.failureReason || t('history.noDescription')} placement="right" delay={0} width={180}>
                   <InfoIcon />
                 </Tooltip>
               </>
@@ -195,7 +205,7 @@ export default ({ item, zkAccount, currentPool }) => {
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
-              {item.type === Deposit ? 'From' : 'To'}
+              {item.type === Deposit ? t('common.from') : t('common.to')}
             </Text>
             {[Deposit, Withdrawal].includes(item.type) ? (
               <AddressLink action={item} isMobile={isMobile} currentChainId={currentChainId} />
@@ -211,7 +221,7 @@ export default ({ item, zkAccount, currentPool }) => {
                     textAlign: 'center',
                   }}
                 >
-                  <Tooltip content="Copied" placement="right" visible={isCopied}>
+                  <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
                     <CopyToClipboard text={item.actions[0].to} onCopy={onCopy}>
                       <ZkAddress>
                         {(item.type === TransferOut && !item.actions[0].isLoopback) ? (
@@ -239,7 +249,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         onClick={() => setIsDetailsModalOpen(true)}
                         style={{ marginLeft: 5, fontSize: 16 }}
                       >
-                        {item.actions.length} addresses
+                        {item.actions.length} {t('glossary.addresses', { count: item.actions.length })}
                       </Button>
                     </>
                   ) : (
@@ -260,10 +270,10 @@ export default ({ item, zkAccount, currentPool }) => {
           <Row>
             {item.actions.length > 1 && item.type === TransferOut && (
               <MultitransferLabel>
-                {isMobile ? 'Multi' : 'Multitransfer'}
+                {t('multitransfer.title')}
               </MultitransferLabel>
             )}
-            {isDirectDepositLabelShown && (
+            {/* {isDirectDepositLabelShown && (
               <DirectDepositLabel>
                 {isMobile ? 'Direct' : 'Direct deposit'}
                 {isPending && (
@@ -285,10 +295,10 @@ export default ({ item, zkAccount, currentPool }) => {
                   </Tooltip>
                 )}
               </DirectDepositLabel>
-            )}
+            )} */}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', item.txHash)}>
-                View tx
+                {t('history.viewTx')}
               </Link>
             ) : (
               <span></span>

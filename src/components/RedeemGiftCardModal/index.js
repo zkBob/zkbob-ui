@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { BigNumber } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation, Trans } from 'react-i18next';
 
 import ButtonDefault from 'components/Button';
 import Modal from 'components/Modal';
@@ -31,6 +32,7 @@ const FAILED = 6;
 const gradient = 'linear-gradient(150deg, rgba(251, 237, 206, 0.8) 10%, rgba(250, 243, 230, 0.5) 50%, rgba(251, 237, 206, 0.8) 100%)';
 
 const SupportId = ({ supportId }) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -44,9 +46,9 @@ const SupportId = ({ supportId }) => {
     <CopyToClipboard text={supportId} onCopy={onCopy}>
       <SupportIdContainer>
         <Description style={{ marginRight: 8 }}>
-          Support ID: {supportId}
+          {t('common.supportId')}: {supportId}
         </Description>
-        <Tooltip content="Copied" placement="right" visible={isCopied}>
+        <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
           {isCopied ? <CheckIcon /> : <CopyIcon />}
         </Tooltip>
       </SupportIdContainer>
@@ -54,60 +56,81 @@ const SupportId = ({ supportId }) => {
   );
 };
 
-const LoadingScreen = () => (
-  <>
-    <SpinnerContainer>
-      <Spinner />
-    </SpinnerContainer>
-    <StatusTitle>Preparing your gift card</StatusTitle>
-  </>
-);
+const LoadingScreen = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <SpinnerContainer>
+        <Spinner />
+      </SpinnerContainer>
+      <StatusTitle>{t('reedeemGifCardModal.loading.title')}</StatusTitle>
+    </>
+  );
+};
 
-const CreateAccountScreen = ({ openCreateAccount }) => (
-  <>
-    <StatusTitle>
-      Before you can redeem<br /> a gift card
-    </StatusTitle>
-    <Description>
-      To redeem a gift card you need a zkBob zkAccount! Create an account,{' '}
-      or login into an existing account to claim your BOB tokens.
-    </Description>
-    <Button onClick={openCreateAccount}>Log in or create zkAccount</Button>
-  </>
-);
+const CreateAccountScreen = ({ openCreateAccount }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <StatusTitle>
+        <Trans i18nKey="reedeemGifCardModal.createAccount.title" />
+      </StatusTitle>
+      <Description>
+        {t('reedeemGifCardModal.createAccount.description', { symbol: 'BOB' })}
+      </Description>
+      <Button onClick={openCreateAccount}>
+        {t('reedeemGifCardModal.createAccount.button')}
+      </Button>
+    </>
+  );
+};
 
-const SwitchNetworkScreen = ({ giftCard, redeem }) => (
-  <>
-    <StatusTitle>
-      We need to switch the network
-    </StatusTitle>
-    <Description>
-      Gift card available only on {NETWORKS[config.pools[giftCard.poolAlias].chainId].name}.{' '}
-      To redeem it we need to change the network
-    </Description>
-    <Button onClick={redeem}>Got it</Button>
-  </>
-);
+const SwitchNetworkScreen = ({ giftCard, redeem }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <StatusTitle>
+        {t('reedeemGifCardModal.switchNetwork.title')}
+      </StatusTitle>
+      <Description>
+        {t('reedeemGifCardModal.switchNetwork.description', {
+          network: NETWORKS[config.pools[giftCard.poolAlias].chainId].name
+        })}
+      </Description>
+      <Button onClick={redeem}>
+        {t('buttonText.gotIt')}
+      </Button>
+    </>
+  );
+};
 
-const StartScreen = ({ giftCard, redeem, isLoadingZkAccount, tokenDecimals }) => (
-  <>
-    <Title>You're Lucky!</Title>
-    <Description>
-      On this gift card you will find
-    </Description>
-    <BalanceContainer>
-      <BobToken />
-      <Amount>{formatNumber(giftCard?.parsedBalance || BigNumber.from('0'), tokenDecimals)}</Amount>
-    </BalanceContainer>
-    {isLoadingZkAccount ? (
-      <Button loading contrast disabled>Loading...</Button>
-    ) : (
-      <Button onClick={redeem}>Claim BOB</Button>
-    )}
-  </>
-);
+const StartScreen = ({ giftCard, redeem, isLoadingZkAccount, tokenDecimals }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Title>{t('reedeemGifCardModal.start.title')}</Title>
+      <Description>
+        {t('reedeemGifCardModal.start.description')}
+      </Description>
+      <BalanceContainer>
+        <BobToken />
+        <Amount>{formatNumber(giftCard?.parsedBalance || BigNumber.from('0'), tokenDecimals)}</Amount>
+      </BalanceContainer>
+      {isLoadingZkAccount ? (
+        <Button loading contrast disabled>
+          {t('buttonText.loading')}
+        </Button>
+      ) : (
+        <Button onClick={redeem}>
+          {t('reedeemGifCardModal.start.button', { symbol: 'BOB' })}
+        </Button>
+      )}
+    </>
+  );
+};
 
 const InProgressScreen = ({ supportId }) => {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -124,13 +147,17 @@ const InProgressScreen = ({ supportId }) => {
         <ProgressText>{Math.min(progress, 99)}%</ProgressText>
       </SpinnerContainer>
       <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
-        Transferring tokens to your zkAccount
+        {t('reedeemGifCardModal.inProgress.title')}
       </StatusTitle>
       {progress > 99 && (
         <>
           <Description style={{ marginBottom: 16 }}>
-            The process takes longer than usual. If the process does not complete within a few seconds,{' '}
-            contact our <Link size={16} href="https://zkbob.canny.io/report-issue/">support team</Link>
+            <Trans
+              i18nKey="reedeemGifCardModal.inProgress.description"
+              components={{
+                1: <Link size={16} href="https://zkbob.canny.io/report-issue/" />
+              }}
+            />
           </Description>
           <SupportId supportId={supportId} />
         </>
@@ -139,37 +166,42 @@ const InProgressScreen = ({ supportId }) => {
   );
 }
 
-const CompletedScreen = ({ close }) => (
-  <>
-    <CheckCircleIcon />
-    <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
-     Your BOB is on the way
-    </StatusTitle>
-    <Description>
-      Your tokens will be delivered during the next 1-2 minutes.{' '}
-      Check the transaction status on the History tab
-    </Description>
-    <Button onClick={close}>Got it</Button>
-  </>
-);
+const CompletedScreen = ({ close }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <CheckCircleIcon />
+      <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
+        {t('reedeemGifCardModal.completed.title', { symbol: 'BOB' })}
+      </StatusTitle>
+      <Description>
+        {t('reedeemGifCardModal.completed.description')}
+      </Description>
+      <Button onClick={close}>
+        {t('buttonText.gotIt')}
+      </Button>
+    </>
+  );
+};
 
 const FailedScreen = ({ error, supportId }) => {
+  const { t } = useTranslation();
   const isClaimed = error?.message?.includes('Insufficient funds');
   return (
     <>
       <CrossIcon />
       <StatusTitle style={{ marginBottom: 16, marginTop: 0 }}>
-        {isClaimed ? 'This gift card has already been used' : 'Something went wrong'}
+        {isClaimed ? t('reedeemGifCardModal.failed.error') : t('reedeemGifCardModal.failed.otherError')}
       </StatusTitle>
       {!isClaimed &&
         <Description style={{ marginBottom: 16 }}>
-          Please contact our support team to resolve this problem. Use Support ID in your request.
+          {t('reedeemGifCardModal.failed.description')}
         </Description>
       }
       <SupportId supportId={supportId} />
       {!isClaimed &&
         <Button onClick={() => window.open('https://zkbob.canny.io/report-issue/', '_blank')}>
-          Contact support
+          {t('common.contactSupport')}
         </Button>
       }
     </>

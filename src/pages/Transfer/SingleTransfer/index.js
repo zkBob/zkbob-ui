@@ -2,12 +2,14 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
 import TransferInput from 'components/TransferInput';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import MultilineInput from 'components/MultilineInput';
 
@@ -19,6 +21,7 @@ import { formatNumber } from 'utils';
 import { useMaxAmountExceeded } from './hooks';
 
 export default () => {
+  const { t } = useTranslation();
   const {
     zkAccount, balance, transfer, isLoadingState,
     isPending, minTxAmount, verifyShieldedAddress,
@@ -56,21 +59,26 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button loading contrast disabled>Loading...</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter amount</Button>;
+      button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Button>
+      const minAmount = formatNumber(minTxAmount, currentPool.tokenDecimals);
+      button = <Button disabled>{t('buttonText.minAmount', { amount: minAmount, symbol: currentPool.tokenSymbol })}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>;
+      button = <Button disabled>{t('buttonText.insufficientBalance', { symbol: currentPool.tokenSymbol })}</Button>;
     } else if (amount.gt(maxTransferable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee, currentPool.tokenDecimals)} fee</Button>
+      button = <Button disabled>{t('buttonText.reduceAmount', { fee: formatNumber(fee, currentPool.tokenDecimals)})}</Button>
     } else if (!receiver) {
-      button = <Button disabled>Enter address</Button>;
+      button = <Button disabled>{t('buttonText.enterAddress')}</Button>;
     } else if (!isAddressValid) {
-      button = <Button disabled>Invalid address</Button>;
+      button = <Button disabled>{t('buttonText.invalidAddress')}</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-transfer">Transfer</Button>;
+      button = (
+        <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-transfer">
+          {t('buttonText.transfer')}
+        </Button>
+      );
     }
   } else {
     button = <AccountSetUpButton />;
@@ -91,15 +99,14 @@ export default () => {
         gaIdPostfix="transfer"
       />
       <MultilineInput
-        placeholder="Enter address of zkBob receiver"
-        hint="The address can be generated in the account modal window"
+        placeholder={t('transfer.addressInputPlaceholder')}
+        hint={t('transfer.addressInputHint')}
         value={receiver}
         onChange={setReceiver}
         qrCode={isMobile}
       />
       {button}
       <ConfirmTransactionModal
-        title="Transfer confirmation"
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={onTransfer}

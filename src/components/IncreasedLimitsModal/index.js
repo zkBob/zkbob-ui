@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from 'components/Button';
 import Link from 'components/Link';
@@ -8,40 +9,43 @@ import Modal from 'components/Modal';
 const DOCS_URL = 'https://www.binance.com/en/support/faq/how-to-mint-binance-account-bound-bab-token-bacaf9595b52440ea2b023195ba4a09c';
 
 export default ({ isOpen, onClose, account, isWalletModalOpen, openWalletModal, currentPool }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Extended limits"
+      title={t('increasedLimitsModal.title')}
       containerStyle={{ visibility: isWalletModalOpen ? 'hidden' : 'visible' }}
     >
       <Container>
         <Text>
-          To increase personal deposit limits you need to own a BAB token on the BNB Smart chain. What's a BAB token?
-          <Link href={DOCS_URL} style={{ marginLeft: 5 }}>Find out now.</Link>
+          <Trans
+            i18nKey="increasedLimitsModal.paragraph1"
+            components={{ 1: <Link href={DOCS_URL} /> }}
+          />
           <br /><br />
-          Verify your BAB:
+          {t('increasedLimitsModal.paragraph2')}
           <List>
             <li>
-              Connect the Metamask or WalletConnect wallet containing your BAB token to zkBob. You DO NOT need to switch networks, stay on Polygon.
+              {t('increasedLimitsModal.step1')}
             </li>
             <li>
-              Click Verify my BAB token below.
+              {t('increasedLimitsModal.step2')}
             </li>
           </List>
           <br />
-          That's it. Your deposit limits will automatically increase if your connected wallet contains a BAB token.
+          {t('increasedLimitsModal.paragraph3')}
         </Text>
         {account ? (
           <LinkButton
             href={currentPool.kycUrls?.homepage.replace('%s', account)}
             data-ga-id="kyc-banner-verify-bab"
           >
-            Verify my BAB token
+            {t('increasedLimitsModal.button')}
           </LinkButton>
         ) : (
           <Button onClick={openWalletModal} data-ga-id="kyc-banner-connect-wallet">
-            Connect wallet
+            {t('buttonText.connectWallet')}
           </Button>
         )}
       </Container>

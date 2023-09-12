@@ -1,24 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Button from 'components/Button';
 import CopyTextButton from 'components/CopyTextButton';
 import SeedPhrase from 'components/SeedPhrase';
 
 export default ({ mnemonic, next }) => {
+  const { t } = useTranslation();
   return (
     <Container>
       <Description>
-        Write down or copy these words in the right order and save them somewhere safe
+        {t('accountSetupModal.createWithSecret.description')}
       </Description>
       <Warning>
-        Never share your secret phrase with anyone,<br/> store it securely!
+        <Trans i18nKey="accountSetupModal.createWithSecret.warning" />
       </Warning>
       <SeedPhrase value={mnemonic} />
       <CopyTextButton text={mnemonic} style={{ alignSelf: 'center' }}>
-        Copy secret phrase
+        {t('accountSetupModal.createWithSecret.copy')}
       </CopyTextButton>
-      <Button onClick={next}>Continue</Button>
+      <Button onClick={next}>{t('buttonText.continue')}</Button>
     </Container>
   );
 };

@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
 import { HistoryTransactionType } from 'zkbob-client-js';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
@@ -12,6 +13,7 @@ import { ZkAccountContext, PoolContext } from 'contexts';
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import MultilineInput from 'components/MultilineInput';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
@@ -27,6 +29,7 @@ import { NETWORKS } from 'constants';
 import { useMaxAmountExceeded, useConvertion } from './hooks';
 
 export default () => {
+  const { t } = useTranslation();
   const {
     zkAccount, balance, withdraw, isLoadingState,
     isPending, isDemo, limits, isLoadingLimits, minTxAmount,
@@ -65,23 +68,28 @@ export default () => {
   let button = null;
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
-      button = <Button loading contrast disabled>Loading...</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter amount</Button>;
+      button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Button>
+      const minAmount = formatNumber(minTxAmount, currentPool.tokenDecimals);
+      button = <Button disabled>{t('buttonText.minAmount', { amount: minAmount, symbol: currentPool.tokenSymbol })}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {currentPool.tokenSymbol} balance</Button>;
+      button = <Button disabled>{t('buttonText.insufficientBalance', { symbol: currentPool.tokenSymbol })}</Button>;
     } else if (amount.gt(maxWithdrawable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee, currentPool.tokenDecimals)} fee</Button>;
+      button = <Button disabled>{t('buttonText.reduceAmount', { fee: formatNumber(fee, currentPool.tokenDecimals)})}</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
-      button = <Button disabled>Amount exceeds daily limit</Button>;
+      button = <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
     } else if (!receiver) {
-      button = <Button disabled>Enter address</Button>;
+      button = <Button disabled>{t('buttonText.enterAddress')}</Button>;
     } else if (!ethers.utils.isAddress(receiver)) {
-      button = <Button disabled>Invalid address</Button>;
+      button = <Button disabled>{t('buttonText.invalidAddress')}</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-withdraw">Withdraw</Button>;
+      button = (
+        <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-withdraw">
+          {t('buttonText.withdraw')}
+        </Button>
+      );
     }
   } else {
     button = <AccountSetUpButton />;
@@ -89,8 +97,8 @@ export default () => {
   return isPending ? <PendingAction /> : (
     <>
       <Card
-        title="Withdraw"
-        note={`${currentPool.tokenSymbol} will be withdrawn from zkBob and deposited into the provided wallet address.`}
+        title={t('withdraw.title')}
+        note={t('withdraw.note', { symbol: currentPool.tokenSymbol })}
       >
         <TransferInput
           balance={zkAccount ? balance : null}
@@ -116,26 +124,29 @@ export default () => {
           />
         )}
         <MultilineInput
-          placeholder={`Enter ${NETWORKS[currentPool.chainId].name} address of receiver`}
+          placeholder={t('withdraw.addressInputPlaceholder', { network: NETWORKS[currentPool.chainId].name })}
           secondary
           value={receiver}
           onChange={setReceiver}
         />
         {!amountToConvert.isZero() && (
           <Text>
-            You will get <b>{formatNumber(amount.sub(amountToConvert), currentPool.tokenDecimals)} {currentPool.tokenSymbol}</b> and{' '}
-            <b>
-              ~ {formatNumber(
+            <Trans
+              i18nKey="withdraw.convertionDetails"
+              values={{
+                amount1: formatNumber(amount.sub(amountToConvert), currentPool.tokenDecimals),
+                symbol1: currentPool.tokenSymbol,
+                amount2: formatNumber(
                   amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)),
                   currentPool.tokenDecimals
-                )}{' '}
-              {convertionDetails.toTokenSymbol}
-            </b>
+                ),
+                symbol2: convertionDetails.toTokenSymbol,
+              }}
+            />
           </Text>
         )}
         {button}
         <ConfirmTransactionModal
-          title="Withdrawal confirmation"
           isOpen={isConfirmModalOpen}
           onClose={() => setIsConfirmModalOpen(false)}
           onConfirm={onWihdrawal}
@@ -145,7 +156,7 @@ export default () => {
           fee={fee}
           isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
-          type="withdrawal"
+          type="withdraw"
           amountToConvert={amountToConvert}
           convertionDetails={convertionDetails}
           currentPool={currentPool}
@@ -153,14 +164,15 @@ export default () => {
       </Card>
       <Limits
         loading={isLoadingLimits}
-        limits={[
-          { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
-        ]}
+        limits={[{
+          name: <Trans i18nKey="limits.withdraw.daily" />,
+          value: limits.dailyWithdrawalLimit,
+        }]}
         currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
-          type="Withdrawal"
+          type="withdraw"
           shielded={true}
           data={latestAction}
           currentPool={currentPool}
@@ -175,7 +187,7 @@ const Text = styled.span`
   line-height: 20px;
   color: ${props => props.theme.text.color.primary};
   text-align: center;
-  & > b {
+  & > b, & > strong {
     font-weight: 600;
   }
 `;
