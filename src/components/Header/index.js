@@ -145,7 +145,7 @@ export default ({ empty }) => {
       onClick={openAccountSetUpModal}
       data-ga-id="zkaccount-header"
     >
-      {isLoadingZkAccount ? (isMobile ? 'Loading' : 'Loading zkAccount') : 'zkAccount'}
+      {isLoadingZkAccount ? (isMobile ? t('buttonText.loading') : t('buttonText.loadingZkAccount')) : t('common.zkAccount')}
     </Button>
   );
 
@@ -158,7 +158,7 @@ export default ({ empty }) => {
         <AccountSection>
           {!isMobile && networkDropdown}
           <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
-            Get {currentPool.tokenSymbol}
+            {t('buttonText.getToken', { symbol: currentPool.tokenSymbol })}
           </BridgeButton>
           {!isMobile && walletDropdown}
           {!isMobile && zkAccountDropdown}
