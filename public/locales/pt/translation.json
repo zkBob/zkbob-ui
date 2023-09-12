@@ -1,0 +1,414 @@
+{
+  "common": {
+    "learnMore": "Saiba mais",
+    "relayerFee": "Taxa de relayer",
+    "fee": "Taxa",
+    "copied": "Copiado!",
+    "balance": "Saldo",
+    "poolBalance": "Saldo da pool",
+    "supportId": "ID de suporte",
+    "web": "Web",
+    "library": "Biblioteca",
+    "relayer": "Relayer",
+    "zkAccount": "zkConta",
+    "from": "De",
+    "to": "Para",
+    "contactSupport": "Contatar suporte",
+    "wallet": "Carteira",
+    "viewInExplorer": "Ver no explorador",
+    "settings": "Configurações",
+    "password": "Senha",
+    "language": "Língua"
+  },
+  "buttonText": {
+    "connectWallet": "Conectar carteira",
+    "enterAmount": "Inserir valor",
+    "enterAddress": "Inserir endereço",
+    "invalidAddress": "Endereço inválido",
+    "loading": "Carregando...",
+    "loadingZkAccount": "Carregando zkConta...",
+    "loadingPercentage": "Carregando ({{percentage}}%)",
+    "getStarted": "Começar!",
+    "minAmount": "O valor mínimo é {{amount}} {{symbol}}",
+    "insufficientBalance": "Saldo de {{symbol}} insuficiente",
+    "reduceAmount": "Reduza o valor para incluir a taxa de {{fee}}",
+    "amountExceedsLimit": "O valor excede o limite diário",
+    "approveTokens": "Aprovar tokens",
+    "deposit": "Depositar",
+    "transfer": "Transferir",
+    "withdraw": "Retirar",
+    "proceed": "Prosseguir",
+    "confirm": "Confirmar",
+    "send": "Enviar",
+    "yes": "Sim",
+    "no": "Não",
+    "done": "Concluído",
+    "next": "Próximo",
+    "okay": "Ok",
+    "gotIt": "Entendi",
+    "max": "Máximo",
+    "changeWallet": "Mudar carteira",
+    "disconnect": "Desconectar",
+    "showSecretPhrase": "Mostrar frase secreta",
+    "setPassword": "Definir senha",
+    "disablePassword": "Desativar senha",
+    "generateQRCode": "Gerar código QR do endereço",
+    "generateAddress": "Gerar endereço de recebimento",
+    "getPaymentLink": "Obter link de pagamento",
+    "redeemGiftCard": "Resgatar cartão-presente",
+    "logout": "Sair",
+    "continue": "Continuar",
+    "signMessage": "Assinar a mensagem",
+    "skip": "Pular",
+    "verify": "Verificar",
+    "restoreAccount": "Restaurar conta",
+    "signIn": "Entrar",
+    "signingIn": "Entrando...",
+    "getToken": "Obter {{symbol}}"
+  },
+  "deposit": {
+    "title": "Depositar",
+    "note": "{{symbol}} será depositado em sua conta zkAccount. Uma vez recebido, você pode transferir {{symbol}} de forma privada.",
+    "ddNote": "O depósito de {{symbol}} pode levar até 10 minutos."
+  },
+  "transfer": {
+    "title": "Transferir",
+    "note": "A transferência será realizada de forma privada. Remetente, destinatário e valor nunca são revelados.",
+    "addressInputPlaceholder": "Inserir endereço do destinatário zkBob",
+    "addressInputHint": "O endereço pode ser gerado na janela de modal da conta"
+  },
+  "multitransfer": {
+    "title": "Multitransferir",
+    "instruction": "Adicione o endereço zk, a quantidade de {{symbol}} a ser transferida. 1 endereço por linha.",
+    "uploadCSV": "Enviar CSV",
+    "uploadCSVHint": "Clique em Enviar CSV para adicionar um arquivo .csv preparado de sua máquina. Cada linha deve conter: endereço zk, quantidade",
+    "errors": {
+      "syntax": "{{count}} $t(glossary.rows, {\"count\": {{count}} }) com endereços $t(glossary.addresses, {\"count\": {{count}} }) ou formatação incorretos $t(glossary.issues, {\"count\": {{count}} }).",
+      "duplicates": "Endereços duplicados encontrados.",
+      "insufficientBalance": "Saldo insuficiente: é necessária uma quantia de {{amount}} {{symbol}} (taxa de {{fee}})."
+    },
+    "addressesList": "Lista de endereços",
+    "willBeTransferredTo": "será transferido para {{count}} endereço zkBob $t(glossary.addresses, {\"count\": {{count}} })",
+    "hasBeenTransferredTo": "foi transferido para {{count}} endereço zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+  },
+  "withdraw": {
+    "title": "Retirar",
+    "note": "{{symbol}} será retirado do zkBob e depositado no endereço da carteira fornecido.",
+    "addressInputPlaceholder": "Inserir endereço {{network}} do destinatário",
+    "convertion": "Converter parte de {{from}} para {{to}} na retirada",
+    "convertionDetails": "Você receberá <strong>{{amount1}} {{symbol1}}</strong> e <strong>~ {{amount2}} {{symbol2}}</strong>"
+  },
+  "limits": {
+    "deposit": {
+      "perTransaction": "Limite de <strong>depósito</strong> por transação",
+      "dailyPerAddress": "Limite diário de <strong>depósito</strong> por endereço",
+      "daily": "Limite diário de <strong>depósito</strong>"
+    },
+    "withdraw": {
+      "daily": "Limite diário de <strong>retirada</strong>"
+    },
+    "poolSize": "Limite de <strong>tamanho da pool</strong>",
+    "total": "de um total de {{amount}} {{symbol}}"
+  },
+  "latestAction": {
+    "deposit": "Último depósito",
+    "withdraw": "Última retirada",
+    "transfer": "Última transferência",
+    "viewHistory": "Ver histórico"
+  },
+  "confirmTransaction": {
+    "titles": {
+      "withdraw": "Confirmação de retirada",
+      "transfer": "Confirmação de transferência",
+      "multitransfer": "Confirmação de multitransferência"
+    },
+    "details": {
+      "withdraw": "detalhes da retirada",
+      "transfer": "detalhes da transferência",
+      "multitransfer": "detalhes da multitransferência"
+    },
+    "sendTo": "enviar para",
+    "sendToZk": "enviar para endereço zkBob",
+    "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
+    "viewAll": "ver todos",
+    "withdrawAmount": "Quantidade a ser retirada",
+    "numberOfTransactions": "Número de transações"
+  },
+  "welcome": {
+    "title": "Bem-vindo ao zkBob!",
+    "description": "Crie uma conta zkBob para transferir tokens de forma privada com seus amigos e colegas.",
+    "titleDemo": "Bem-vindo à Versão de Demonstração do zkBob!",
+    "descriptionDemo": "Transfira BOB de forma privada para amigos, use para comprar itens patrocinados ou transfira para sua própria conta privada zkBob.",
+    "bannerDemo": "Para depósitos seguros, retiradas e privacidade completa, crie uma <1>conta zkBob aqui</1>"
+  },
+  "payment": {
+    "title": "Insira o valor em USD e escolha um token",
+    "amountToSend": "A quantia que você gostaria de enviar",
+    "transferAmount": "Quantidade a ser transferida",
+    "recipientReceives": "O destinatário recebe o pagamento em {{symbol}}",
+    "limit": "<strong>O valor máximo</strong> a ser pago a partir de um endereço"
+  },
+  "tokenList": {
+    "title": "Lista de tokens",
+    "searchToken": "Pesquise seu token",
+    "noTokensFound": "Nenhum token encontrado"
+  },
+  "history": {
+    "title": "Histórico",
+    "empty": "Faça seu primeiro depósito, transferência ou retirada<br/>para criar seu histórico.",
+    "fee": "(taxa {{amount}} {{symbol}})",
+    "highFee": "Essa transação exigiu operações adicionais, resultando em taxas mais altas.",
+    "failed": "falhou",
+    "noDescription": "Sem descrição",
+    "viewTx": "Ver tx"
+  },
+  "loadingError": {
+    "titles": {
+      "prefix": "Erro ao carregar",
+      "zkClient": "$t(loadingError.titles.prefix) zkCliente.",
+      "zkAccount": "$t(loadingError.titles.prefix) zkConta.",
+      "zkAccountBalance": "$t(loadingError.titles.prefix) saldo da zkConta.",
+      "walletBalance": "$t(loadingError.titles.prefix) saldo da carteira.",
+      "history": "$t(loadingError.titles.prefix) histórico.",
+      "limits": "$t(loadingError.titles.prefix) limites."
+    },
+    "description": "Tente novamente mais tarde ou <1>entre em contato com nosso suporte</1> se o problema persistir."
+  },
+  "successNotification": {
+    "title": "A operação foi concluída.",
+    "description": "Verifique a guia de histórico ou o saldo da sua conta zkBob para obter mais informações."
+  },
+  "pendingAction": {
+    "title": "Aguarde suas $t(glossary.transactions, {\"count\": {{count}} }) serem finalizadas",
+    "description": "Não atualize a página por pelo menos 30 segundos! A $t(glossary.statuses, {\"count\": {{count}} }) da transação será atualizada automaticamente.",
+    "note": "Você pode depositar, transferir ou retirar fundos assim que a transação for concluída.",
+    "note_other": "Você pode depositar, transferir ou retirar fundos assim que as transações forem concluídas."
+  },
+  "swapModal": {
+    "title": "A troca está em andamento",
+    "description": "Você pode fechar esta janela e voltar mais tarde para ver os resultados. Deseja fechar a janela?"
+  },
+  "accountSetupModal": {
+    "start": {
+      "title": "zkAccount",
+      "description": "Para começar a usar o zkBob, você precisa de uma conta zkAccount",
+      "button1": "Criar nova conta zkAccount",
+      "button2": "Já tenho uma conta zkAccount"
+    },
+    "createOptions": {
+      "title": "Escolha como você deseja criar sua conta",
+      "description": "Ao criar uma conta zkAccount, você concorda e aceita os <1>Termos de Serviço</1> do zkBob",
+      "button1": "Usar minha carteira Web3",
+      "button2": "Usar a frase secreta do zkBob"
+    },
+    "restoreOptions": {
+      "title": "Como você criou sua conta?",
+      "button1": "Usei uma carteira Web3",
+      "button2": "Usei a frase secreta do zkBob"
+    },
+    "createWithWallet": {
+      "title": "Criar nova conta zkAccount",
+      "description": "Escolha a carteira que será associada à sua conta zkAccount"
+    },
+    "createWithSecret": {
+      "title": "Criar nova conta zkAccount",
+      "description": "Anote ou copie estas palavras na ordem correta e guarde-as em um local seguro",
+      "warning": "Nunca compartilhe sua frase secreta com ninguém,<br/> guarde-a com segurança!",
+      "copy": "Copiar frase secreta"
+    },
+    "restoreWithWallet": {
+      "title": "Acessar sua conta zkAccount",
+      "description": "Selecione a carteira que você usou para criar sua conta zkAccount"
+    },
+    "restoreWithSecret": {
+      "title": "Restaurar conta zkAccount",
+      "description": "Digite sua frase secreta salva para restaurar uma conta existente"
+    },
+    "confirmSecret": {
+      "title": "Confirmar frase secreta",
+      "description": "Digite sua frase secreta para verificá-la.<br/> Clique em uma palavra para removê-la"
+    },
+    "signMessageToCreate": {
+      "title": "Assine a mensagem para criar sua conta zkAccount",
+      "description": "Sua conta zkAccount está sendo criada com base na carteira conectada."
+    },
+    "signMessageToRestore": {
+      "title": "Assine a mensagem para acessar sua conta zkAccount",
+      "description": "Acessando sua conta zkAccount com sua carteira conectada."
+    },
+    "createPasswordPrompt": {
+      "title": "Configurar senha?",
+      "description": "Você pode criar uma senha segura que será solicitada cada vez que você entrar na sua conta zkAccount"
+    },
+    "createPassword": {
+      "title": "Criar senha",
+      "description": "Para aumentar a segurança, a entrada de senha é necessária cada vez que uma página é recarregada."
+    }
+  },
+  "password": {
+    "placeholder1": "Senha com 6+ caracteres",
+    "placeholder2": "Verificar senha",
+    "rule1": "Por favor, insira 6 ou mais caracteres",
+    "rule2": "As senhas devem coincidir"
+  },
+  "enterPasswordModal": {
+    "title": "Digite a senha",
+    "description": "$t(accountSetupModal.createPassword.description)",
+    "lostPassword": "Esqueceu a senha? Clique aqui para recuperar o acesso"
+  },
+  "setPasswordModal": {
+    "title": "Definir senha"
+  },
+  "confirmLogoutModal": {
+    "title": "Sair e limpar os dados de navegação",
+    "description": "Quando você sai, suas informações de conta zkAccount são apagadas do cache de dados e não estão mais acessíveis com sua senha. Restaure a conta e o saldo usando sua frase secreta e uma nova senha."
+  },
+  "disablePasswordModal": {
+    "title": "Desativar senha",
+    "description": "Por favor, digite a senha atual"
+  },
+  "demoCard": {
+    "title": "Versão de demonstração",
+    "description1": "Esta versão do zkBob é projetada apenas para transferências privadas de pequeno valor (não para depósitos ou retiradas).",
+    "description2": "<0>Para uma versão completa,</0><1>crie uma conta gratuita do zkBob aqui.</1>"
+  },
+  "increasedLimitsBanner": {
+    "inactive": "Deseja aumentar seus limites de depósito?",
+    "active": "Limites de depósito aumentados ativados",
+    "resync": "Para restaurar os limites de depósito aumentados - <1>resincronize seu token BAB</1>"
+  },
+  "increasedLimitsModal": {
+    "title": "Limites estendidos",
+    "paragraph1": "Para aumentar os limites de depósito pessoal, você precisa possuir um token BAB na BNB Smart Chain. O que é um token BAB? <1>Descubra agora.</1>",
+    "paragraph2": "Verifique seu token BAB:",
+    "step1": "Conecte a carteira Metamask ou WalletConnect que contém seu token BAB ao zkBob. Você NÃO precisa mudar de rede, permaneça na Polygon.",
+    "step2": "Clique em Verificar meu token BAB abaixo.",
+    "paragraph3": "É isso aí. Seus limites de depósito aumentarão automaticamente se sua carteira conectada contiver um token BAB.",
+    "button": "Verificar meu token BAB"
+  },
+  "more": {
+    "title": "Mais sobre o zkBob",
+    "dune": "Dune Analytics",
+    "docs": "Documentação",
+    "linktree": "Linktree"
+  },
+  "networks": {
+    "title": "Redes"
+  },
+  "pagination": {
+    "first": "Primeira",
+    "last": "Última",
+    "current": "Página {{current}} de {{total}}"
+  },
+  "paymentLinkModal": {
+    "title": "Obter link de pagamento",
+    "description": "Compartilhe este link para solicitar um pagamento privado.<br />O remetente terá a opção de selecionar e enviar qualquer token. Os tokens serão convertidos para {{symbol}} e depositados em sua conta zkAccount.<br /><br /><strong>Observação:</strong> Links de pagamento privado funcionam na mesma rede em que são gerados.",
+    "copyAndShare": "Copiar e compartilhar seu link de pagamento",
+    "getMoreInfo": "Obtenha mais informações sobre links de pagamento"
+  },
+  "reedeemGifCardModal": {
+    "loading": {
+      "title": "Preparando seu cartão presente"
+    },
+    "start": {
+      "title": "Você é sortudo!",
+      "description": "Neste cartão presente, você encontrará",
+      "button": "Reivindicar {{symbol}}"
+    },
+    "createAccount": {
+      "title": "Antes de poder resgatar<br /> um cartão presente",
+      "description": "Para resgatar um cartão presente, você precisa de uma conta zkBob zkAccount! Crie uma conta ou faça login em uma conta existente para reivindicar seus tokens {{symbol}}.",
+      "button": "Faça login ou crie uma conta zkAccount"
+    },
+    "switchNetwork": {
+      "title": "Precisamos mudar a rede",
+      "description": "O cartão presente está disponível apenas na {{network}}. Para resgatá-lo, precisamos mudar a rede"
+    },
+    "inProgress": {
+      "title": "Transferindo tokens para sua conta zkAccount",
+      "description": "O processo leva mais tempo do que o usual. Se o processo não for concluído em alguns segundos, entre em contato com nossa <1>equipe de suporte</1>"
+    },
+    "completed": {
+      "title": "{{symbol}} está a caminho",
+      "description": "Seus tokens serão entregues durante os próximos 1-2 minutos. Verifique o status da transação na guia de Histórico"
+    },
+    "failed": {
+      "error": "Este cartão presente já foi usado",
+      "otherError": "Algo deu errado",
+      "description": "Entre em contato com nossa equipe de suporte para resolver este problema. Use o ID de suporte em sua solicitação."
+    }
+  },
+  "restrictionModal": {
+    "title": "zkBob não é suportado neste país ou região",
+    "description": "zkBob não é suportado em {{country}}. Você poderá usar o aplicativo em um país ou região suportados."
+  },
+  "secretPhraseModal": {
+    "title": "Mostrar frase secreta",
+    "warning": "Nunca compartilhe sua frase secreta com ninguém,<br/> guarde-a com segurança!",
+    "description": "Se alguém tiver sua frase secreta, ela terá controle total sobre sua carteira.",
+    "copy": "Copiar frase secreta"
+  },
+  "transactionModal": {
+    "titles": {
+      "approveTokens": "Por favor, aprove tokens",
+      "approved": "Tokens aprovados",
+      "signMessage": "Por favor, assine uma mensagem",
+      "confirmTransaction": "Por favor, confirme a transação",
+      "waitingForTransaction": "Aguardando transação",
+      "generatingProof": "Gerando uma prova",
+      "waitingForRelayer": "Aguardando relayer",
+      "deposited": "Depósito em andamento",
+      "transferred": "Transferência em andamento",
+      "transferredMulti": "Multitransferência em andamento",
+      "withdrawn": "Retirada em andamento",
+      "rejected": "Transação rejeitada",
+      "signatureExpired": "Assinatura expirada",
+      "suspiciousAccountDeposit": "Carteira suspeita conectada",
+      "suspiciousAccountWithdrawal": "Endereço do destinatário suspeito",
+      "wrongNetwork": "Rede incorreta",
+      "switchNetwork": "Por favor, mude a rede",
+      "sent": "Seu pagamento foi enviado",
+      "preparingTransaction": "Preparando a transação"
+    },
+    "descriptions": {
+      "deposited": "Seu depósito de <strong>{{amount}} {{symbol}}</strong> na piscina de conhecimento zero está em andamento.<br /><br />Para aumentar o nível de privacidade, considere manter os tokens na piscina de conhecimento zero por algum tempo antes de fazer a retirada.",
+      "transferred": "Sua transferência de <strong>{{amount}} {{symbol}}</strong> dentro da piscina de conhecimento zero está em andamento.",
+      "transferredMulti": "Sua multitransferência de <strong>{{amount}} {{symbol}}</strong> dentro da piscina de conhecimento zero está em andamento.",
+      "withdrawn": "Sua retirada de <strong>{{amount}} {{symbol}}</strong> da piscina de conhecimento zero está em andamento.",
+      "signatureExpired": "Sua assinatura expirou. Por favor, tente novamente.",
+      "suspiciousAccountDeposit": "Descobrimos que sua carteira esteve envolvida em atividades suspeitas. Por causa disso, você não pode usar esta carteira no zkBob. Por favor, tente outra carteira.",
+      "suspiciousAccountWithdrawal": "Descobrimos que o endereço do destinatário esteve envolvido em atividades suspeitas. Por causa disso, você não pode retirar fundos para este endereço.",
+      "wrongNetwork": "Falha ao mudar de rede. Por favor, conecte sua carteira à {{network}} e tente novamente.",
+      "approved": "Sua aprovação foi bem-sucedida. Agora você pode depositar seus tokens.",
+      "sent": "O processamento do pagamento pode levar até 10 minutos.<br /><1>Veja a transação</1>",
+      "signMessage": "Você precisa assinar uma mensagem permitindo que o contrato use seus tokens para o depósito."
+    }
+  },
+  "maxButton": {
+    "tooltip": "Clique em Máximo para definir a quantidade máxima de {{symbol}} que você pode enviar, incluindo todas as taxas e limites"
+  },
+  "connectWalletModal": {
+    "title": "Conectar carteira Web3",
+    "description": "Conecte sua carteira para depositar {{symbol}} em sua conta zkAccount. Se você estiver criando uma nova conta zkAccount, sua carteira será usada para derivar uma chave de criptografia privada para o aplicativo zkBob.",
+    "note": "Ao conectar uma carteira, você concorda com os <1>Termos de Serviço</1> do zkBob"
+  },
+  "qrCode": {
+    "title": "Endereço do código QR",
+    "description": "Para receber uma transferência privada de outra conta zkAccount, seu amigo pode escanear este código no aplicativo dele.<br />O outro usuário só precisa escanear seu código QR na página de Transferência"
+  },
+  "zkAccount": {
+    "addressDescription": "Use este endereço para receber tokens em sua conta zkBob. Você cria um novo endereço cada vez que se conecta. Receba tokens neste endereço ou em um endereço gerado anteriormente."
+  },
+  "glossary": {
+    "rows": "linha",
+    "rows_other": "linhas",
+    "addresses": "endereço",
+    "addresses_other": "endereços",
+    "issues": "problema",
+    "issues_other": "problemas",
+    "transactions": "transação",
+    "transactions_other": "transações",
+    "statuses": "status",
+    "statuses_other": "status"
+  }
+}

@@ -17,7 +17,8 @@
     "wallet": "Wallet",
     "viewInExplorer": "View in Explorer",
     "settings": "Settings",
-    "password": "Password"
+    "password": "Password",
+    "language": "Language"
   },
   "buttonText": {
     "connectWallet": "Connect wallet",
@@ -25,6 +26,7 @@
     "enterAddress": "Enter address",
     "invalidAddress": "Invalid address",
     "loading": "Loading...",
+    "loadingZkAccount": "Loading zkAccount...",
     "loadingPercentage": "Loading ({{percentage}}%)",
     "getStarted": "Get started!",
     "minAmount": "Min amount is {{amount}} {{symbol}}",
@@ -61,7 +63,8 @@
     "verify": "Verify",
     "restoreAccount": "Restore account",
     "signIn": "Sign in",
-    "signingIn": "Signing in..."
+    "signingIn": "Signing in...",
+    "getToken": "Get {{symbol}}"
   },
   "deposit": {
     "title": "Deposit",
