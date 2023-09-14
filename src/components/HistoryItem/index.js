@@ -179,7 +179,7 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
           <Row>
-            <Date>{date}</Date>
+            {date && <Date>{date}</Date>}
             {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
