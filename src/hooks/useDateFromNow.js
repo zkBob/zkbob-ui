@@ -6,6 +6,8 @@ const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 
 export default timestamp => {
+  if (!timestamp) return null;
+
   const [date, setDate] = useState(null);
   const [interval, setInterval] = useState(SECOND);
 
