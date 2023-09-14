@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import OptionButton from 'components/OptionButton';
 
-import { ModalContext } from 'contexts';
+import { ModalContext, LanguageContext } from 'contexts';
 
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
@@ -22,14 +22,15 @@ const languages = {
 };
 
 const Content = ({ close }) => {
+  const { changeLanguage } = useContext(LanguageContext);
   const { t, i18n } = useTranslation();
   const [showLanguages, setShowLanguages] = useState(false);
 
-  const selectLanguage = lang => {
-    i18n.changeLanguage(lang);
+  const selectLanguage = useCallback(lang => {
+    changeLanguage(lang);
     setShowLanguages(false);
     close();
-  }
+  }, [close, changeLanguage])
 
   if (showLanguages) {
     return (
