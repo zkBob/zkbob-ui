@@ -133,7 +133,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
 
   const generate = useCallback(async () => {
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    const signedMessage = await signMessageAsync({ message });
+    let signedMessage = await signMessageAsync({ message });
+    // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
+    const MIN_VALID_V_VALUE = 27;
+    let sigV = parseInt(signedMessage.slice(-2), 16);
+    if (sigV < MIN_VALID_V_VALUE) {
+      sigV += MIN_VALID_V_VALUE
+    }
+    signedMessage = signedMessage.slice(0, -2) + sigV.toString(16);
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
     setStep(STEP.CREATE_PASSWORD_PROMPT);
