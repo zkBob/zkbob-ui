@@ -211,6 +211,7 @@ export const ZkAccountContextProvider = ({ children }) => {
             to: item.destination,
             amount: await fromShieldedAmount(item.amount),
           }],
+          fee: await fromShieldedAmount(item.fee),
         })));
       } catch (error) {
         console.error(error);
