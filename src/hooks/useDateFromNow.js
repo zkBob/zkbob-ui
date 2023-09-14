@@ -10,6 +10,10 @@ export default timestamp => {
   const [interval, setInterval] = useState(SECOND);
 
   const update = useCallback(() => {
+    if (!timestamp) {
+      setDate(null);
+      return;
+    }
     const now = moment();
     const time = moment(timestamp * 1000);
     const days = now.diff(time, 'days');
