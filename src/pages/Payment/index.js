@@ -26,6 +26,7 @@ import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-b
 import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
 import TransactionModalContext, { TransactionModalContextProvider } from 'contexts/TransactionModalContext';
+import { LanguageContextProvider } from 'contexts/LanguageContext';
 
 import config from 'config';
 
@@ -173,7 +174,9 @@ export default () => (
   <SupportIdContextProvider>
     <TransactionModalContextProvider>
       <ModalContextProvider>
-        <Payment />
+        <LanguageContextProvider>
+          <Payment />
+        </LanguageContextProvider>
       </ModalContextProvider>
     </TransactionModalContextProvider>
   </SupportIdContextProvider>
