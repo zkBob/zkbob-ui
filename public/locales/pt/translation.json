@@ -36,7 +36,7 @@
     "approveTokens": "Aprovar tokens",
     "deposit": "Depositar",
     "transfer": "Transferir",
-    "withdraw": "Retirar",
+    "withdraw": "Sacar",
     "proceed": "Prosseguir",
     "confirm": "Confirmar",
     "send": "Enviar",
@@ -92,7 +92,7 @@
     "hasBeenTransferredTo": "foi transferido para {{count}} endereço zkBob $t(glossary.addresses, {\"count\": {{count}} })"
   },
   "withdraw": {
-    "title": "Retirar",
+    "title": "Sacar",
     "note": "{{symbol}} será retirado do zkBob e depositado no endereço da carteira fornecido.",
     "addressInputPlaceholder": "Inserir endereço {{network}} do destinatário",
     "convertion": "Converter parte de {{from}} para {{to}} na retirada",
@@ -181,8 +181,8 @@
   "pendingAction": {
     "title": "Aguarde suas $t(glossary.transactions, {\"count\": {{count}} }) serem finalizadas",
     "description": "Não atualize a página por pelo menos 30 segundos! A $t(glossary.statuses, {\"count\": {{count}} }) da transação será atualizada automaticamente.",
-    "note": "Você pode depositar, transferir ou retirar fundos assim que a transação for concluída.",
-    "note_other": "Você pode depositar, transferir ou retirar fundos assim que as transações forem concluídas."
+    "note": "Você pode depositar, transferir ou sacar fundos assim que a transação for concluída.",
+    "note_other": "Você pode depositar, transferir ou sacar fundos assim que as transações forem concluídas."
   },
   "swapModal": {
     "title": "A troca está em andamento",
@@ -377,7 +377,7 @@
       "withdrawn": "Sua retirada de <strong>{{amount}} {{symbol}}</strong> da piscina de conhecimento zero está em andamento.",
       "signatureExpired": "Sua assinatura expirou. Por favor, tente novamente.",
       "suspiciousAccountDeposit": "Descobrimos que sua carteira esteve envolvida em atividades suspeitas. Por causa disso, você não pode usar esta carteira no zkBob. Por favor, tente outra carteira.",
-      "suspiciousAccountWithdrawal": "Descobrimos que o endereço do destinatário esteve envolvido em atividades suspeitas. Por causa disso, você não pode retirar fundos para este endereço.",
+      "suspiciousAccountWithdrawal": "Descobrimos que o endereço do destinatário esteve envolvido em atividades suspeitas. Por causa disso, você não pode sacar fundos para este endereço.",
       "wrongNetwork": "Falha ao mudar de rede. Por favor, conecte sua carteira à {{network}} e tente novamente.",
       "approved": "Sua aprovação foi bem-sucedida. Agora você pode depositar seus tokens.",
       "sent": "O processamento do pagamento pode levar até 10 minutos.<br /><1>Veja a transação</1>",
