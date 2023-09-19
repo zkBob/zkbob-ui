@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/react';
 import { ethers, BigNumber } from 'ethers';
 import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 import { LiFi } from '@lifi/sdk';
+import { Multicall } from 'ethereum-multicall';
 
 import SupportIdContext from 'contexts/SupportIdContext';
 import TransactionModalContext from 'contexts/TransactionModalContext';
@@ -11,6 +12,7 @@ import zp from 'contexts/ZkAccountContext/zp';
 
 import { TX_STATUSES } from 'constants';
 
+import { formatNumber } from 'utils';
 import { createPermitSignature, getPermitType, getNullifier } from './utils';
 
 const lifi = new LiFi({
@@ -21,6 +23,51 @@ const MULTIPLIER = BigNumber.from('1000000'); // 100%
 const MIN_DIFF = BigNumber.from('1000'); // 0.1%
 const TARGET_DIFF = BigNumber.from('4000'); // 0.4%
 const MAX_DIFF = BigNumber.from('10000'); // 1.0%
+
+const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
+
+export function useTokensBalances(tokenList, chainId) {
+  const { address: account } = useAccount();
+  const provider = useProvider({ chainId });
+  const [balances, setBalances] = useState({});
+  const [isLoadingBalances, setIsLoadingBalances] = useState(true);
+
+  const updateBalance = useCallback(async () => {
+    setIsLoadingBalances(true);
+    let balances = {};
+    if (account && tokenList.length > 0) {
+      try {
+        const multicall = new Multicall({ ethersProvider: provider });
+        const contractCallContext = tokenList.map(token => ({
+          reference: token.address,
+          contractAddress: token.address,
+          abi: TOKEN_ABI,
+          calls: [{ reference: token.address, methodName: 'balanceOf', methodParameters: [account] }],
+        }));
+        const data = await Promise.all([
+          provider.getBalance(account),
+          multicall.call(contractCallContext),
+        ]);
+        balances[ethers.constants.AddressZero] = data[0];
+        delete data[1].results[ethers.constants.AddressZero];
+        Object.values(data[1].results).forEach(({ callsReturnContext }) => {
+          balances[callsReturnContext[0].reference] = BigNumber.from(callsReturnContext[0].returnValues);
+        });
+      } catch (error) {
+        console.error(error);
+        Sentry.captureException(error, { tags: { method: 'Payment.useTokenBalace' } });
+      }
+    }
+    setBalances(balances);
+    setIsLoadingBalances(false);
+  }, [account, provider, tokenList]);
+
+  useEffect(() => {
+    updateBalance();
+  }, [updateBalance]);
+
+  return { balances, isLoadingBalances };
+}
 
 export function useTokenList(pool) {
   const [tokenList, setTokenList] = useState([]);
@@ -50,6 +97,37 @@ export function useTokenList(pool) {
 
   return tokenList;
 }
+
+export function useTokensWithBalances(pool) {
+  const tokenList = useTokenList(pool);
+  const { balances, isLoadingBalances } = useTokensBalances(tokenList, pool.chainId);
+  const [tokenListWithBalances, setTokenListWithBalances] = useState([]);
+
+  useEffect(() => {
+    const tokenListWithBalances = tokenList.map(token => {
+      let balanceUSD = null;
+      if (token.priceUSD && balances[token.address]) {
+        const priceBN = ethers.utils.parseEther(Number(token.priceUSD).toFixed(18));
+        const balanceUsdBN = balances[token.address].mul(priceBN).div(ethers.constants.WeiPerEther);
+        balanceUSD = formatNumber(balanceUsdBN, token?.decimals || 18);
+      }
+      return {
+        ...token,
+        balance: balances[token.address],
+        balanceUSD,
+      };
+    });
+    const sorted = tokenListWithBalances.sort((a, b) => {
+      if (a.balanceUSD === null) return 1;
+      if (b.balanceUSD === null) return -1;
+      return b.balanceUSD - a.balanceUSD;
+    });
+    setTokenListWithBalances(sorted);
+  }, [balances, tokenList]);
+
+  return { tokens: tokenListWithBalances, isLoadingBalances };
+}
+
 
 export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
   const [amount, setAmount] = useState(ethers.constants.Zero);
@@ -292,39 +370,4 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
   ]);
 
   return { send };
-}
-
-const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
-
-export function useTokenBalance(chainId, selectedToken) {
-  const { address: account } = useAccount();
-  const provider = useProvider({ chainId });
-  const [balance, setBalance] = useState(ethers.constants.Zero);
-  const [isLoadingBalance, setIsLoadingBalance] = useState(true);
-
-  const updateBalance = useCallback(async () => {
-    setIsLoadingBalance(true);
-    let balance = ethers.constants.Zero;
-    if (account && selectedToken) {
-      try {
-        if (selectedToken.address === ethers.constants.AddressZero) {
-          balance = await provider.getBalance(account);
-        } else {
-          const token = new ethers.Contract(selectedToken.address, TOKEN_ABI, provider);
-          balance = await token.balanceOf(account);
-        }
-      } catch (error) {
-        console.error(error);
-        Sentry.captureException(error, { tags: { method: 'Payment.useTokenBalace' } });
-      }
-    }
-    setBalance(balance);
-    setIsLoadingBalance(false);
-  }, [selectedToken, account, provider]);
-
-  useEffect(() => {
-    updateBalance();
-  }, [updateBalance]);
-
-  return { balance, isLoadingBalance };
 }
