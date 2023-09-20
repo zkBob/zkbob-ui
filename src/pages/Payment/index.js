@@ -19,6 +19,7 @@ import WalletModal from 'containers/WalletModal';
 import Header from './Header';
 import Input from './Input';
 import PseudoInput from './PseudoInput';
+import ConfirmationModal from './ConfirmationModal';
 
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
 // import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
@@ -32,7 +33,7 @@ import config from 'config';
 
 import { formatNumber } from 'utils';
 import { useApproval } from 'hooks';
-import { useTokenList, useTokenAmount, useLimitsAndFees, useTokenBalance, usePayment } from './hooks';
+import { useTokensWithBalances, useTokenAmount, useLimitsAndFees, usePayment } from './hooks';
 import { getPermitType } from './utils';
 
 const pools = Object.values(config.pools).map((pool, index) =>
@@ -56,28 +57,32 @@ const Payment = () => {
   const [selectedToken, setSelectedToken] = useState(null);
 
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
-  const { balance, isLoadingBalance } = useTokenBalance(pool?.chainId, selectedToken);
   const { tokenAmount, liFiRoute, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
   const { isApproved, approve } = useApproval(pool?.chainId, selectedToken?.address, tokenAmount);
   const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
   const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
 
-  const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
-  const { isTokenListModalOpen, openTokenListModal, closeTokenListModal, openWalletModal } = useContext(ModalContext);
-  const tokenList = useTokenList(pool);
+  const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError, csvLink } = useContext(TransactionModalContext);
+  const {
+    isTokenListModalOpen, openTokenListModal,
+    closeTokenListModal, openWalletModal,
+    openPaymentConfirmationModal, closePaymentConfirmationModal,
+  } = useContext(ModalContext);
+  const { tokens, isLoadingBalances } = useTokensWithBalances(pool);
 
   useEffect(() => {
-    if (tokenList.length) {
+    if (tokens.length) {
       const defaultToken =
-        tokenList.find(token => token.symbol === pool.tokenSymbol) ||
-        tokenList.find(token => token.address === ethers.constants.AddressZero);
+        tokens.find(token => token.symbol === pool.tokenSymbol) ||
+        tokens.find(token => token.address === ethers.constants.AddressZero);
       setSelectedToken(defaultToken);
     }
-  }, [tokenList, pool]);
+  }, [tokens, pool]);
 
   const onSend = () => {
     setDisplayedAmount('');
     send();
+    closePaymentConfirmationModal();
   };
 
   return (
@@ -93,8 +98,7 @@ const Payment = () => {
             token={selectedToken}
             onSelect={openTokenListModal}
             isLoading={isTokenAmountLoading}
-            balance={balance}
-            isLoadingBalance={isLoadingBalance}
+            isLoadingBalances={isLoadingBalances}
           />
           <RowSpaceBetween>
             <Text style={{ marginRight: 20 }}>
@@ -126,14 +130,14 @@ const Payment = () => {
               return <Button onClick={openWalletModal}>{t('buttonText.connectWallet')}</Button>
             else if (tokenAmount.isZero())
               return <Button disabled>{t('buttonText.enterAmount')}</Button>
-            else if (tokenAmount.gt(balance))
+            else if (tokenAmount.gt(selectedToken?.balance || ethers.constants.Zero))
               return <Button disabled>{t('buttonText.insufficientBalance', { symbol: selectedToken?.symbol })}</Button>
             else if (amount.gt(limit))
               return <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>
             else if (selectedToken?.address !== ethers.constants.AddressZero && permitType === 'permit2' && !isApproved)
               return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>
             else
-              return <Button onClick={onSend}>{t('buttonText.send')}</Button>;
+              return <Button onClick={openPaymentConfirmationModal}>{t('buttonText.send')}</Button>;
           })()}
         </Card>
         <Limits
@@ -150,11 +154,22 @@ const Payment = () => {
       <TokenListModal
         isOpen={isTokenListModalOpen}
         onClose={closeTokenListModal}
-        tokens={tokenList}
+        tokens={tokens}
+        isLoadingBalances={isLoadingBalances}
         onSelect={token => {
           setSelectedToken(token);
           closeTokenListModal();
         }}
+      />
+      <ConfirmationModal
+        onConfirm={onSend}
+        amount={displayedAmount}
+        symbol={'USD'}
+        tokenAmount={tokenAmount}
+        token={selectedToken}
+        receiver={params.address}
+        sender={account}
+        fee={formatNumber(fee, pool?.tokenDecimals)}
       />
       <TransactionModal
         isOpen={isTxModalOpen}
@@ -165,6 +180,7 @@ const Payment = () => {
         supportId={supportId}
         currentPool={pool}
         txHash={txHash}
+        csvLink={csvLink}
       />
     </>
   );

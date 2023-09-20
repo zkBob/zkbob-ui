@@ -8,19 +8,8 @@ import Skeleton from 'components/Skeleton';
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 import { formatNumber } from 'utils';
 
-export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }) => {
+export default ({ value, token, onSelect, isLoading, isLoadingBalances }) => {
   const { t } = useTranslation();
-  const usdBalance = useMemo(() => {
-    if (token?.priceUSD) {
-      try {
-        const priceBN = ethers.utils.parseEther(Number(token.priceUSD).toFixed(18));
-        return balance.mul(priceBN).div(ethers.constants.WeiPerEther);
-      } catch (error) {
-        return null;
-      }
-    }
-    return ethers.constants.Zero;
-  }, [balance, token]);
   return (
     <Container>
       <RowSpaceBetween>
@@ -41,12 +30,12 @@ export default ({ value, token, onSelect, isLoading, balance, isLoadingBalance }
       </RowSpaceBetween>
       <Row>
         <Balance style={{ marginRight: 5 }}>{t('common.balance')}:</Balance>
-        {isLoadingBalance ? (
+        {isLoadingBalances ? (
           <Skeleton width={40} />
         ) : (
           <Balance>
-            {formatNumber(balance, token?.decimals || 18)} {token?.symbol}{' '}
-            {`($${usdBalance ? formatNumber(usdBalance, token?.decimals || 18) : '--'})`}
+            {formatNumber(token?.balance || ethers.constants.Zero, token?.decimals || 18)} {token?.symbol}{' '}
+            {`($${token?.balanceUSD || '--'})`}
           </Balance>
         )}
       </Row>

@@ -18,7 +18,10 @@
     "viewInExplorer": "View in Explorer",
     "settings": "Settings",
     "password": "Password",
-    "language": "Language"
+    "language": "Language",
+    "sender": "Sender",
+    "recipient": "Recipient",
+    "link": "Link"
   },
   "buttonText": {
     "connectWallet": "Connect wallet",
@@ -132,7 +135,8 @@
     "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
     "viewAll": "view all",
     "withdrawAmount": "Withdraw amount",
-    "numberOfTransactions": "Number of transactions"
+    "numberOfTransactions": "Number of transactions",
+    "senderAddress": "Sender address"
   },
   "welcome": {
     "title": "Welcome to zkBob!",
@@ -371,7 +375,7 @@
       "preparingTransaction": "Preparing transaction"
     },
     "descriptions": {
-      "deposited": "Your <strong>{{amount}} {{symbol}}</strong> deposit to the zero knowledge pool is in progress.<br /><br />To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.",
+      "deposited": "Your <strong>{{amount}} {{symbol}}</strong> deposit to the zero knowledge pool is in progress.<br />To increase the level of privacy, consider keeping the tokens in the zero knowledge pool for some time before withdrawal.",
       "transferred": "Your <strong>{{amount}} {{symbol}}</strong> transfer within the zero knowledge pool is in progress.",
       "transferredMulti": "Your <strong>{{amount}} {{symbol}}</strong> multitransfer within the zero knowledge pool is in progress.",
       "withdrawn": "Your <strong>{{amount}} {{symbol}}</strong> withdrawal from the zero knowledge pool is in progress.",
@@ -380,7 +384,7 @@
       "suspiciousAccountWithdrawal": "We found that the recipient's address was involved in suspicious activities. Because of this, you can't withdraw funds to this address.",
       "wrongNetwork": "Failed to switch the network. Please connect your wallet to {{network}} and try again.",
       "approved": "Your approval was successful. Now you can deposit your tokens.",
-      "sent": "Payment processing can take up to 10 minutes.<br /><1>View the transaction</1>",
+      "sent": "Payment processing can take up to 10 minutes.<br /><1>View the transaction</1><br />or download<br /><2><3></3>Payment statement</2>",
       "signMessage": "You need to sign a message allowing the contract to use your tokens for the deposit."
     }
   },
@@ -398,6 +402,10 @@
   },
   "zkAccount": {
     "addressDescription": "Use this address to receive tokens to your zkBob account. You create a new address each time you connect. Receive tokens to this address or a previously generated address."
+  },
+  "paymentStatement": {
+    "amount": "Amount in {{symbol}}",
+    "fee": "Fee in {{symbol}}"
   },
   "glossary": {
     "rows": "row",

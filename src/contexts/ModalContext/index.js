@@ -77,6 +77,10 @@ export const ModalContextProvider = ({ children }) => {
   const openPaymentLinkModal = () => setIsPaymentLinkModalOpen(true);
   const closePaymentLinkModal = () => setIsPaymentLinkModalOpen(false);
 
+  const [isPaymentConfirmationModalOpen, setIsPaymentConfirmationModalOpen] = useState(false);
+  const openPaymentConfirmationModal = () => setIsPaymentConfirmationModalOpen(true);
+  const closePaymentConfirmationModal = () => setIsPaymentConfirmationModalOpen(false);
+
   const closeAllModals = () => {
     closeWalletModal();
     closeAccountSetUpModal();
@@ -91,6 +95,7 @@ export const ModalContextProvider = ({ children }) => {
     closeMoreDropdown();
     closeTokenSelector();
     closePaymentLinkModal();
+    closePaymentConfirmationModal();
   };
 
   return (
@@ -114,6 +119,7 @@ export const ModalContextProvider = ({ children }) => {
         isTokenSelectorOpen, openTokenSelector, closeTokenSelector,
         isTokenListModalOpen, openTokenListModal, closeTokenListModal,
         isPaymentLinkModalOpen, openPaymentLinkModal, closePaymentLinkModal,
+        isPaymentConfirmationModalOpen, openPaymentConfirmationModal, closePaymentConfirmationModal,
         closeAllModals,
       }}
     >
