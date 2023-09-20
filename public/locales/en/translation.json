@@ -132,7 +132,8 @@
     "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
     "viewAll": "view all",
     "withdrawAmount": "Withdraw amount",
-    "numberOfTransactions": "Number of transactions"
+    "numberOfTransactions": "Number of transactions",
+    "senderAddress": "Sender address"
   },
   "welcome": {
     "title": "Welcome to zkBob!",

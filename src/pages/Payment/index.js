@@ -19,6 +19,7 @@ import WalletModal from 'containers/WalletModal';
 import Header from './Header';
 import Input from './Input';
 import PseudoInput from './PseudoInput';
+import ConfirmationModal from './ConfirmationModal';
 
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
 // import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
@@ -62,7 +63,11 @@ const Payment = () => {
   const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
 
   const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
-  const { isTokenListModalOpen, openTokenListModal, closeTokenListModal, openWalletModal } = useContext(ModalContext);
+  const {
+    isTokenListModalOpen, openTokenListModal,
+    closeTokenListModal, openWalletModal,
+    openPaymentConfirmationModal, closePaymentConfirmationModal,
+  } = useContext(ModalContext);
   const { tokens, isLoadingBalances } = useTokensWithBalances(pool);
 
   useEffect(() => {
@@ -77,6 +82,7 @@ const Payment = () => {
   const onSend = () => {
     setDisplayedAmount('');
     send();
+    closePaymentConfirmationModal();
   };
 
   return (
@@ -131,7 +137,7 @@ const Payment = () => {
             else if (selectedToken?.address !== ethers.constants.AddressZero && permitType === 'permit2' && !isApproved)
               return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>
             else
-              return <Button onClick={onSend}>{t('buttonText.send')}</Button>;
+              return <Button onClick={openPaymentConfirmationModal}>{t('buttonText.send')}</Button>;
           })()}
         </Card>
         <Limits
@@ -154,6 +160,16 @@ const Payment = () => {
           setSelectedToken(token);
           closeTokenListModal();
         }}
+      />
+      <ConfirmationModal
+        onConfirm={onSend}
+        amount={displayedAmount}
+        symbol={'USD'}
+        tokenAmount={tokenAmount}
+        token={selectedToken}
+        receiver={params.address}
+        sender={account}
+        fee={formatNumber(fee, pool?.tokenDecimals)}
       />
       <TransactionModal
         isOpen={isTxModalOpen}
