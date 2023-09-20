@@ -4,13 +4,14 @@ import { ethers, BigNumber } from 'ethers';
 import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 import { LiFi } from '@lifi/sdk';
 import { Multicall } from 'ethereum-multicall';
+import { useTranslation } from 'react-i18next';
 
 import SupportIdContext from 'contexts/SupportIdContext';
 import TransactionModalContext from 'contexts/TransactionModalContext';
 
 import zp from 'contexts/ZkAccountContext/zp';
 
-import { TX_STATUSES } from 'constants';
+import { TX_STATUSES, NETWORKS } from 'constants';
 
 import { formatNumber } from 'utils';
 import { createPermitSignature, getPermitType, getNullifier } from './utils';
@@ -266,7 +267,8 @@ export function useLimitsAndFees(pool) {
 }
 
 export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liFiRoute) {
-  const { openTxModal, setTxStatus, setTxHash, setTxError } = useContext(TransactionModalContext);
+  const { openTxModal, setTxStatus, setTxHash, setTxError, setCsvLink } = useContext(TransactionModalContext);
+  const { t } = useTranslation();
   const { address: account } = useAccount();
   const { chain } = useNetwork();
   const { data: signer } = useSigner({ chainId: pool.chainId });
@@ -353,6 +355,26 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await tx.wait();
       setTxHash(tx.hash);
+      const rows = [
+        [
+          t('paymentStatement.amount', { symbol: 'USD' }),
+          t('paymentStatement.amount', { symbol: token.symbol }),
+          t('common.sender'),
+          t('common.recipient'),
+          t('paymentStatement.fee', { symbol: 'USD' }),
+          t('common.link'),
+        ],
+        [
+          ethers.utils.formatUnits(amount, pool.tokenDecimals),
+          ethers.utils.formatUnits(tokenAmount, token.decimals),
+          account,
+          zkAddress,
+          ethers.utils.formatUnits(fee, pool.tokenDecimals),
+          NETWORKS[pool.chainId].blockExplorerUrls.tx.replace('%s', tx.hash),
+        ],
+      ];
+      const csvContent = 'data:text/csv;charset=utf-8,' + rows.map(e => e.join(',')).join('\n');
+      setCsvLink(encodeURI(csvContent));
       setTxStatus(TX_STATUSES.SENT);
     } catch (error) {
       let message = error?.message;
@@ -367,7 +389,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
   }, [
     chain, pool, token, tokenAmount, account, provider, signer,
     openTxModal, setTxStatus, setTxError, switchNetworkAsync,
-    zkAddress, fee, amount, setTxHash, liFiRoute,
+    zkAddress, fee, amount, setTxHash, liFiRoute, t, setCsvLink,
   ]);
 
   return { send };

@@ -62,7 +62,7 @@ const Payment = () => {
   const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
   const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
 
-  const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError } = useContext(TransactionModalContext);
+  const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError, csvLink } = useContext(TransactionModalContext);
   const {
     isTokenListModalOpen, openTokenListModal,
     closeTokenListModal, openWalletModal,
@@ -180,6 +180,7 @@ const Payment = () => {
         supportId={supportId}
         currentPool={pool}
         txHash={txHash}
+        csvLink={csvLink}
       />
     </>
   );

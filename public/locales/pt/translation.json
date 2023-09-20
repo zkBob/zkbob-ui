@@ -18,7 +18,10 @@
     "viewInExplorer": "Ver no explorador",
     "settings": "Configurações",
     "password": "Senha",
-    "language": "Língua"
+    "language": "Língua",
+    "sender": "Remetente",
+    "recipient": "Destinatário",
+    "link": "Link"
   },
   "buttonText": {
     "connectWallet": "Conectar carteira",
@@ -372,7 +375,7 @@
       "preparingTransaction": "Preparando a transação"
     },
     "descriptions": {
-      "deposited": "Seu depósito de <strong>{{amount}} {{symbol}}</strong> na piscina de conhecimento zero está em andamento.<br /><br />Para aumentar o nível de privacidade, considere manter os tokens na piscina de conhecimento zero por algum tempo antes de fazer a retirada.",
+      "deposited": "Seu depósito de <strong>{{amount}} {{symbol}}</strong> na piscina de conhecimento zero está em andamento.<br />Para aumentar o nível de privacidade, considere manter os tokens na piscina de conhecimento zero por algum tempo antes de fazer a retirada.",
       "transferred": "Sua transferência de <strong>{{amount}} {{symbol}}</strong> dentro da piscina de conhecimento zero está em andamento.",
       "transferredMulti": "Sua multitransferência de <strong>{{amount}} {{symbol}}</strong> dentro da piscina de conhecimento zero está em andamento.",
       "withdrawn": "Sua retirada de <strong>{{amount}} {{symbol}}</strong> da piscina de conhecimento zero está em andamento.",
@@ -381,7 +384,7 @@
       "suspiciousAccountWithdrawal": "Descobrimos que o endereço do destinatário esteve envolvido em atividades suspeitas. Por causa disso, você não pode sacar fundos para este endereço.",
       "wrongNetwork": "Falha ao mudar de rede. Por favor, conecte sua carteira à {{network}} e tente novamente.",
       "approved": "Sua aprovação foi bem-sucedida. Agora você pode depositar seus tokens.",
-      "sent": "O processamento do pagamento pode levar até 10 minutos.<br /><1>Veja a transação</1>",
+      "sent": "O processamento do pagamento pode levar até 10 minutos.<br /><1>Visualizar a transação</1><br />ou baixar<br /><2><3></3>Extrato de pagamento</2>",
       "signMessage": "Você precisa assinar uma mensagem permitindo que o contrato use seus tokens para o depósito."
     }
   },
@@ -399,6 +402,10 @@
   },
   "zkAccount": {
     "addressDescription": "Use este endereço para receber tokens em sua conta zkBob. Você cria um novo endereço cada vez que se conecta. Receba tokens neste endereço ou em um endereço gerado anteriormente."
+  },
+  "paymentStatement": {
+    "amount": "Valor em {{symbol}}",
+    "fee": "Taxa em {{symbol}}"
   },
   "glossary": {
     "rows": "linha",

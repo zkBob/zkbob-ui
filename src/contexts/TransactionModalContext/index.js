@@ -11,6 +11,7 @@ export const TransactionModalContextProvider = ({ children }) => {
   const [txAmount, setTxAmount] = useState(ethers.constants.Zero);
   const [txHash, setTxHash] = useState(null);
   const [txError, setTxError] = useState(null);
+  const [csvLink, setCsvLink] = useState(null);
   const openTxModal = useCallback(() => {
     setIsTxModalOpen(true);
   }, []);
@@ -20,6 +21,7 @@ export const TransactionModalContextProvider = ({ children }) => {
     setTxAmount(ethers.constants.Zero);
     setTxError(null);
     setTxHash(null);
+    setCsvLink(null);
   }, []);
   return (
     <TransactionModalContext.Provider
@@ -29,6 +31,7 @@ export const TransactionModalContextProvider = ({ children }) => {
         txAmount, setTxAmount,
         txError, setTxError,
         txHash, setTxHash,
+        csvLink, setCsvLink,
       }}
     >
       {children}
