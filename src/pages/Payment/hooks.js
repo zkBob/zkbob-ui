@@ -145,6 +145,7 @@ export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
       setLiFiRoute(null);
       return;
     }
+    setLiFiRoute({ estimate: { fromAmount: ethers.constants.Zero } });
 
     const amountWithFee = amount.add(fee);
 
