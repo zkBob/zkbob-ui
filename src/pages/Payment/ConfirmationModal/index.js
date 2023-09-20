@@ -37,7 +37,7 @@ export default ({ onConfirm, amount, symbol, tokenAmount, token, receiver, sende
           </Row>
           <Row>
             <MediumText>{t('common.fee')}:</MediumText>
-            <MediumText>{fee}</MediumText>
+            <MediumText>{fee} {symbol}</MediumText>
           </Row>
         </DetailsContainer>
         <Button
