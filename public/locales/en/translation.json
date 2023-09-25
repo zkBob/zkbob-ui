@@ -146,7 +146,7 @@
     "bannerDemo": "For secure deposits, withdrawals and full-featured privacy, create a <1>zkBob account here</1>"
   },
   "payment": {
-    "title": "Enter USD value and choose a token",
+    "title": "Enter {{symbol}} value and choose a token",
     "amountToSend": "The amount you'd like to send",
     "transferAmount": "Transfer amount",
     "recipientReceives": "The recipient receives payment in {{symbol}}",
