@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-export default ({ value, onChange }) => {
+export default ({ value, onChange, currency }) => {
   const inputRef = useRef();
   const spanRef = useRef();
   const [width, setWidth] = useState(0);
@@ -26,7 +26,7 @@ export default ({ value, onChange }) => {
         onChange={e => handleChange(e.target.value)}
         style={{ width }}
       />
-      <Currency>USD</Currency>
+      <Currency>{currency}</Currency>
     </Container>
   );
 };

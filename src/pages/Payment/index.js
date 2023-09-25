@@ -9,7 +9,6 @@ import Layout from 'components/Layout';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Limits from 'components/Limits';
-// import Tooltip from 'components/Tooltip';
 import TokenListModal from 'components/TokenListModal';
 import Skeleton from 'components/Skeleton';
 import TransactionModal from 'components/TransactionModal';
@@ -22,7 +21,6 @@ import PseudoInput from './PseudoInput';
 import ConfirmationModal from './ConfirmationModal';
 
 import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
-// import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
 import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
@@ -50,6 +48,7 @@ const Payment = () => {
   if (!pool.paymentContractAddress) {
     history.push('/');
   }
+  const currency = ['USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
 
   const { address: account } = useAccount();
   const [displayedAmount, setDisplayedAmount] = useState('');
@@ -87,11 +86,11 @@ const Payment = () => {
 
   return (
     <>
-      <Layout header={<Header />}>
-        <Title>{t('payment.title')}</Title>
+      <Layout header={<Header pool={pool} />}>
+        <Title>{t('payment.title', { symbol: currency })}</Title>
         <Card>
           <InputLabel>{t('payment.amountToSend')}</InputLabel>
-          <Input placeholder={0} value={displayedAmount} onChange={setDisplayedAmount} />
+          <Input placeholder={0} value={displayedAmount} onChange={setDisplayedAmount} currency={currency} />
           <InputLabel>{t('payment.transferAmount')}</InputLabel>
           <PseudoInput
             value={tokenAmount}
@@ -108,21 +107,8 @@ const Payment = () => {
               <Text style={{ marginRight: 4 }}>{t('common.fee')}:</Text>
               {isLoadingFee
                 ? <Skeleton width={40} />
-                : <Text>{formatNumber(fee, pool.tokenDecimals)} USD</Text>
+                : <Text>{formatNumber(fee, pool.tokenDecimals)} {currency}</Text>
               }
-              {/* <Tooltip
-                content={
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span>Deposit fee: 0.2 USD</span>
-                    <span>Convert fee: 0.8 USD</span>
-                    <span>Fee: 0.4 USD</span>
-                  </div>
-                }
-                placement="right"
-                delay={0}
-              >
-                <InfoIcon />
-              </Tooltip> */}
             </Row>
           </RowSpaceBetween>
           {(() => {
@@ -146,7 +132,7 @@ const Payment = () => {
             name: <Trans i18nKey="payment.limit" />,
             value: limit,
           }]}
-          currentPool={{ ...pool, tokenSymbol: 'USD' }}
+          currentPool={{ ...pool, tokenSymbol: currency }}
         />
         <TryZkBobBannerImage onClick={() => history.push('/')} />
       </Layout>
@@ -164,7 +150,7 @@ const Payment = () => {
       <ConfirmationModal
         onConfirm={onSend}
         amount={displayedAmount}
-        symbol={'USD'}
+        symbol={currency}
         tokenAmount={tokenAmount}
         token={selectedToken}
         receiver={params.address}

@@ -150,7 +150,9 @@ export function useTokenAmount(pool, fromToken, enteredAmount, fee) {
 
     const amountWithFee = amount.add(fee);
 
-    if (pool.tokenAddress.toLowerCase() === fromToken.toLowerCase()) {
+    const isPoolToken = pool.tokenAddress.toLowerCase() === fromToken.toLowerCase();
+    const isUnwrappedPoolToken = pool.isNative && fromToken === ethers.constants.AddressZero;
+    if (isPoolToken || isUnwrappedPoolToken) {
       setLiFiRoute({ estimate: { fromAmount: amountWithFee } });
       return;
     }
@@ -245,9 +247,8 @@ export function useLimitsAndFees(pool) {
     setIsLoadingFee(true);
     let fee = ethers.constants.Zero;
     try {
-      // const data = await zkClient.directDepositFee();
-      // const wei = await zkClient.shieldedAmountToWei(data);
-      const wei = '100000';
+      const data = await zkClient.directDepositFee();
+      const wei = await zkClient.shieldedAmountToWei(data);
       fee = BigNumber.from(wei);
     } catch (error) {
       console.error(error);
@@ -255,7 +256,7 @@ export function useLimitsAndFees(pool) {
     }
     setFee(fee);
     setIsLoadingFee(false);
-  }, [/*zkClient*/]);
+  }, [zkClient]);
 
   useEffect(() => {
     if (!zkClient) return;
@@ -319,7 +320,12 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       setTxStatus(TX_STATUSES.PREPARING_TRANSACTION);
       let router ='0x0000000000000000000000000000000000000000';
       let routerData ='0x';
-      if (token.address.toLowerCase() !== pool.tokenAddress.toLowerCase()) {
+      const isPoolToken = pool.tokenAddress.toLowerCase() === token.address.toLowerCase();
+      const isUnwrappedPoolToken = pool.isNative && token.address === ethers.constants.AddressZero;
+      if (isUnwrappedPoolToken) {
+        router = pool.tokenAddress;
+        routerData = '0xd0e30db0';
+      } else if (!isPoolToken) {
         let liFiTx;
         try {
           liFiTx = await lifi.getStepTransaction(liFiRoute);
@@ -341,7 +347,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       const tx = await paymentContractInstance.pay(
         decodedZkAddress,
         isNative ? ethers.constants.AddressZero : token.address,
-        tokenAmount,
+        isUnwrappedPoolToken ? ethers.constants.Zero : tokenAmount,
         amount.add(fee),
         permitSignature,
         router,

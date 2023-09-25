@@ -33,7 +33,7 @@ export default ({ onConfirm, amount, symbol, tokenAmount, token, receiver, sende
           <SmallText>{t(`confirmTransaction.details.transfer`)}</SmallText>
           <Row>
             <MediumText>{t('confirmTransaction.senderAddress')}:</MediumText>
-            <MediumText>{shortAddress(sender)}</MediumText>
+            <MediumText>{shortAddress(sender || '')}</MediumText>
           </Row>
           <Row>
             <MediumText>{t('common.fee')}:</MediumText>
