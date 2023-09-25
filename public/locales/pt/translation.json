@@ -21,7 +21,8 @@
     "language": "Língua",
     "sender": "Remetente",
     "recipient": "Destinatário",
-    "link": "Link"
+    "link": "Link",
+    "payment": "Pagamento"
   },
   "buttonText": {
     "connectWallet": "Conectar carteira",

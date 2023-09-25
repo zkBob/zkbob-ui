@@ -139,8 +139,10 @@ export default ({ item, zkAccount, currentPool }) => {
   }, []);
 
   const isPending = [0, 1].includes(item.state);
-  // const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
-  const isDirectDepositLabelShown = false;
+  const isPaymentLabelShown = item.type === DirectDeposit && (
+    item.sender === currentPool.paymentContractAddress.toLowerCase() ||
+    item.actions[0].from === currentPool.paymentContractAddress.toLowerCase()
+  );
 
   return (
     <Container>
@@ -232,7 +234,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
                             item.actions[0].to,
-                            isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
+                            isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
                           )}
                         </Text>
                       </ZkAddress>
@@ -258,7 +260,7 @@ export default ({ item, zkAccount, currentPool }) => {
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
-                          isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
+                          isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
                         )}
                       </Text>
                     </>
@@ -273,10 +275,10 @@ export default ({ item, zkAccount, currentPool }) => {
                 {t('multitransfer.title')}
               </MultitransferLabel>
             )}
-            {/* {isDirectDepositLabelShown && (
-              <DirectDepositLabel>
-                {isMobile ? 'Direct' : 'Direct deposit'}
-                {isPending && (
+            {isPaymentLabelShown && (
+              <DirectDepositLabel style={{ marginRight: isPending ? 0 : 10 }}>
+                {t('common.payment')}
+                {/* {isPending && (
                   <Tooltip
                     content={
                       <span>
@@ -293,9 +295,9 @@ export default ({ item, zkAccount, currentPool }) => {
                   >
                     <InfoIcon />
                   </Tooltip>
-                )}
+                )} */}
               </DirectDepositLabel>
-            )} */}
+            )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', item.txHash)}>
                 {t('history.viewTx')}

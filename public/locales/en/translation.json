@@ -21,7 +21,8 @@
     "language": "Language",
     "sender": "Sender",
     "recipient": "Recipient",
-    "link": "Link"
+    "link": "Link",
+    "payment": "Payment"
   },
   "buttonText": {
     "connectWallet": "Connect wallet",
