@@ -169,8 +169,6 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
 };
 
 const Description = styled.span`
-  display: flex;
-  flex-direction: column;
   font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   text-align: center;
@@ -201,7 +199,7 @@ const CrossIcon = styled(CrossIconDefault)`
 `;
 
 const DownloadLink = styled(Link)`
-  display: flex;
+  display: inline-flex;
   align-self: center;
   justify-content: center;
   align-items: center;
