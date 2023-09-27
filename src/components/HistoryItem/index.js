@@ -140,8 +140,8 @@ export default ({ item, zkAccount, currentPool }) => {
 
   const isPending = [0, 1].includes(item.state);
   const isPaymentLabelShown = item.type === DirectDeposit && (
-    item.sender === currentPool.paymentContractAddress.toLowerCase() ||
-    item.actions[0].from === currentPool.paymentContractAddress.toLowerCase()
+    (item.sender && item.sender === currentPool.paymentContractAddress?.toLowerCase()) ||
+    (item.actions[0]?.from && item.actions[0].from === currentPool.paymentContractAddress?.toLowerCase())
   );
 
   return (
