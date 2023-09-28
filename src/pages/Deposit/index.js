@@ -1,5 +1,4 @@
 import React, { useState, useContext, useCallback, useMemo } from 'react';
-import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
@@ -10,7 +9,10 @@ import { useTranslation, Trans } from 'react-i18next';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsContext, PoolContext } from 'contexts';
+import {
+  ZkAccountContext, TokenBalanceContext, ModalContext,
+  IncreasedLimitsContext, PoolContext, WalletContext,
+} from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -31,7 +33,7 @@ import { formatNumber, minBigNumber } from 'utils';
 
 export default () => {
   const { t } = useTranslation();
-  const { address: account } = useAccount();
+  const { address: account } = useContext(WalletContext);
   const {
       zkAccount, isLoadingZkAccount, deposit,
       isLoadingState, isPending, isDemo,

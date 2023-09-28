@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import styled from 'styled-components';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+
+import { WalletContext } from 'contexts';
 
 import { CONNECTORS_ICONS } from 'constants';
 
@@ -11,17 +12,18 @@ const getConnectorName = connector => {
 }
 
 export default ({ callback, gaIdPrefix = '' }) => {
-  const { connector: activeConnector } = useAccount();
-  const { connectAsync, connectors } = useConnect();
-  const { disconnectAsync } = useDisconnect();
+  const {
+    connector: activeConnector, connect,
+    disconnect, connectors,
+  } = useContext(WalletContext);
 
   const connectWallet = useCallback(async connector => {
     if (connector.id === activeConnector?.id) {
-      await disconnectAsync();
+      await disconnect();
     }
-    await connectAsync({ connector });
+    await connect({ connector });
     callback?.();
-  }, [connectAsync, disconnectAsync, activeConnector, callback]);
+  }, [connect, disconnect, activeConnector, callback]);
 
   return (
     <>

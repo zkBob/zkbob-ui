@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 
-import { TransactionModalContext } from 'contexts';
+import { TransactionModalContext, WalletContext } from 'contexts';
 
 import { TX_STATUSES, PERMIT2_CONTRACT_ADDRESS } from 'constants';
 import { useMemo } from 'react';
@@ -16,14 +15,7 @@ const TOKEN_ABI = [
 
 export default (chainId, tokenAddress, amount, balance) => {
   const { openTxModal, closeTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
-  const { address: account } = useAccount();
-  const { chain } = useNetwork();
-  const { data: signer } = useSigner({ chainId });
-  const provider = useProvider({ chainId });
-  const { switchNetworkAsync } = useSwitchNetwork({
-    chainId,
-    throwForSwitchChainNotSupported: true,
-  });
+  const { address: account, provider, signer, chain, switchNetwork } = useContext(WalletContext);
   const [allowance, setAllowance] = useState(ethers.constants.Zero);
 
   const isApproved = useMemo(() => allowance.gte(amount), [allowance, amount]);
@@ -49,7 +41,7 @@ export default (chainId, tokenAddress, amount, balance) => {
       if (chain.id !== chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
-          await switchNetworkAsync();
+          await switchNetwork();
         } catch (error) {
           console.error(error);
           Sentry.captureException(error, { tags: { method: 'hooks.useApproval.approve.switchNetwork' } });
@@ -74,7 +66,7 @@ export default (chainId, tokenAddress, amount, balance) => {
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain,
+    openTxModal, setTxStatus, setTxError, switchNetwork, chain,
     signer, updateAllowance, chainId, tokenAddress, closeTxModal,
   ]);
 

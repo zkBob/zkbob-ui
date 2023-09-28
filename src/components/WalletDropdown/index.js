@@ -1,7 +1,6 @@
 import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useAccount, useDisconnect } from 'wagmi';
 import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
@@ -16,7 +15,7 @@ import { formatNumber } from 'utils';
 
 import { CONNECTORS_ICONS, NETWORKS, TOKENS_ICONS } from 'constants';
 
-import { ModalContext, TokenBalanceContext, PoolContext } from 'contexts';
+import { ModalContext, TokenBalanceContext, PoolContext, WalletContext } from 'contexts';
 
 
 const Balance = ({ tokenSymbol, balance, isWrapped, isNative, tokenDecimals }) => (
@@ -111,8 +110,7 @@ const Content = ({
 };
 
 export default ({ children }) => {
-  const { address, connector } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { address, connector, disconnect } = useContext(WalletContext);
   const { balance, nativeBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     openWalletModal, isWalletDropdownOpen,

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useHistory, useParams } from 'react-router-dom';
-import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
 import { useTranslation, Trans } from 'react-i18next';
 
@@ -26,6 +25,8 @@ import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
 import TransactionModalContext, { TransactionModalContextProvider } from 'contexts/TransactionModalContext';
 import { LanguageContextProvider } from 'contexts/LanguageContext';
+import WalletContext, { WalletContextProvider } from 'contexts/WalletContext';
+import PoolContext from 'contexts/PoolContext';
 
 import config from 'config';
 
@@ -38,19 +39,14 @@ const pools = Object.values(config.pools).map((pool, index) =>
   ({ ...pool, alias: Object.keys(config.pools)[index] })
 );
 
-const Payment = () => {
+const Payment = ({ pool }) => {
   const { t } = useTranslation();
   const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const params = useParams();
-  const addressPrefix = params.address.split(':')[0];
-  const pool = Object.values(pools).find(pool => pool.addressPrefix === addressPrefix);
-  if (!pool.paymentContractAddress) {
-    history.push('/');
-  }
   const currency = ['USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
 
-  const { address: account } = useAccount();
+  const { address: account } = useContext(WalletContext);
   const [displayedAmount, setDisplayedAmount] = useState('');
   const amount = useMemo(() => ethers.utils.parseUnits(displayedAmount || '0', pool?.tokenDecimals), [displayedAmount, pool]);
   const [selectedToken, setSelectedToken] = useState(null);
@@ -172,17 +168,30 @@ const Payment = () => {
   );
 }
 
-export default () => (
-  <SupportIdContextProvider>
-    <TransactionModalContextProvider>
-      <ModalContextProvider>
-        <LanguageContextProvider>
-          <Payment />
-        </LanguageContextProvider>
-      </ModalContextProvider>
-    </TransactionModalContextProvider>
-  </SupportIdContextProvider>
-);
+export default () => {
+  const history = useHistory();
+  const params = useParams();
+  const addressPrefix = params.address.split(':')[0];
+  const pool = Object.values(pools).find(pool => pool.addressPrefix === addressPrefix);
+  if (!pool.paymentContractAddress) {
+    history.push('/');
+  }
+  return (
+    <PoolContext.Provider value={{ currentPool: pool }}>
+      <WalletContextProvider>
+        <SupportIdContextProvider>
+          <TransactionModalContextProvider>
+            <ModalContextProvider>
+              <LanguageContextProvider>
+                <Payment pool={pool} />
+              </LanguageContextProvider>
+            </ModalContextProvider>
+          </TransactionModalContextProvider>
+        </SupportIdContextProvider>
+      </WalletContextProvider>
+    </PoolContext.Provider>
+  );
+};
 
 const Row = styled.div`
   display: flex;

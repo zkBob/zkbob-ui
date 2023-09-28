@@ -1,9 +1,8 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers } from 'ethers';
-import { useContract, useAccount, useProvider, useBalance } from 'wagmi';
 import * as Sentry from '@sentry/react';
 
-import { PoolContext } from 'contexts';
+import { PoolContext, WalletContext } from 'contexts';
 
 import { showLoadingError } from 'utils';
 
@@ -14,18 +13,8 @@ const TokenBalanceContext = createContext({ balance: null });
 export default TokenBalanceContext;
 
 export const TokenBalanceContextProvider = ({ children }) => {
-  const { address: account } = useAccount();
+  const { address: account, provider, getBalance } = useContext(WalletContext);
   const { currentPool } = useContext(PoolContext);
-  const provider = useProvider({ chainId: currentPool.chainId });
-  const token = useContract({
-    address: currentPool.tokenAddress,
-    abi: TOKEN_ABI,
-    signerOrProvider: provider
-  });
-  const { refetch: getNativeBalance } = useBalance({
-    address: account,
-    chainId: currentPool.chainId,
-  });
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
@@ -34,11 +23,12 @@ export const TokenBalanceContextProvider = ({ children }) => {
     setIsLoadingBalance(true);
     let balance = ethers.constants.Zero;
     let nativeBalance = ethers.constants.Zero;
-    if (account && token) {
+    if (account) {
       try {
+        const token = new ethers.Contract(currentPool.tokenAddress, TOKEN_ABI, provider);
         [balance, nativeBalance] = await Promise.all([
           token.balanceOf(account),
-          getNativeBalance().then(({ data: { value } }) => value),
+          getBalance().then(({ data: { value } }) => value),
         ]);
       } catch (error) {
         console.error(error);
@@ -49,7 +39,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
     setBalance(balance);
     setNativeBalance(nativeBalance);
     setIsLoadingBalance(false);
-  }, [token, account, getNativeBalance]);
+  }, [account, getBalance, provider, currentPool.tokenAddress]);
 
   useEffect(() => {
     updateBalance();
