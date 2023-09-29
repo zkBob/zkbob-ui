@@ -64,7 +64,7 @@ const actions = {
 };
 
 function getSign(item) {
-  if (item.actions.length === 1 && item.actions[0].isLoopback) {
+  if (item.actions?.length === 1 && item.actions[0].isLoopback) {
     return '';
   }
   return actions[item.type].sign;
@@ -212,7 +212,7 @@ export default ({ item, zkAccount, currentPool }) => {
             {[Deposit, Withdrawal].includes(item.type) ? (
               <AddressLink action={item} isMobile={isMobile} currentChainId={currentChainId} />
             ) : (
-              item.actions.length === 1 ? (
+              item.actions?.length === 1 ? (
                 <Tooltip
                   content={item.actions[0].to}
                   delay={0.3}
@@ -251,7 +251,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         onClick={() => setIsDetailsModalOpen(true)}
                         style={{ marginLeft: 5, fontSize: 16 }}
                       >
-                        {item.actions.length} {t('glossary.addresses', { count: item.actions.length })}
+                        {item.actions?.length} {t('glossary.addresses', { count: item.actions?.length })}
                       </Button>
                     </>
                   ) : (
@@ -270,7 +270,7 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
           <Row>
-            {item.actions.length > 1 && item.type === TransferOut && (
+            {item.actions?.length > 1 && item.type === TransferOut && (
               <MultitransferLabel>
                 {t('multitransfer.title')}
               </MultitransferLabel>
@@ -308,7 +308,7 @@ export default ({ item, zkAccount, currentPool }) => {
           </Row>
         </RowSpaceBetween>
       </Column>
-      {item.actions.length > 1 && (
+      {item.actions?.length > 1 && (
         <MultitransferDetailsModal
           transfers={item.actions.map(action => ({ address: action.to, ...action }))}
           isOpen={isDetailsModalOpen}
