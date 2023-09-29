@@ -59,7 +59,7 @@ const Payment = () => {
   const { tokenAmount, liFiRoute, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
   const { isApproved, approve } = useApproval(pool?.chainId, selectedToken?.address, tokenAmount);
   const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
-  const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
+  const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute, currency);
 
   const { txStatus, isTxModalOpen, closeTxModal, txAmount, txHash, txError, csvLink } = useContext(TransactionModalContext);
   const {

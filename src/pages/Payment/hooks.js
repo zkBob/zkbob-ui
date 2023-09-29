@@ -267,7 +267,7 @@ export function useLimitsAndFees(pool) {
   return { limit, isLoadingLimit, fee, isLoadingFee };
 }
 
-export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liFiRoute) {
+export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liFiRoute, currency) {
   const { openTxModal, setTxStatus, setTxHash, setTxError, setCsvLink } = useContext(TransactionModalContext);
   const { t } = useTranslation();
   const { address: account } = useAccount();
@@ -363,11 +363,11 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       setTxHash(tx.hash);
       const rows = [
         [
-          t('paymentStatement.amount', { symbol: 'USD' }),
+          t('paymentStatement.amount', { symbol: currency }),
           t('paymentStatement.amount', { symbol: token.symbol }),
           t('common.sender'),
           t('common.recipient'),
-          t('paymentStatement.fee', { symbol: 'USD' }),
+          t('paymentStatement.fee', { symbol: currency }),
           t('common.link'),
         ],
         [
@@ -396,6 +396,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
     chain, pool, token, tokenAmount, account, provider, signer,
     openTxModal, setTxStatus, setTxError, switchNetworkAsync,
     zkAddress, fee, amount, setTxHash, liFiRoute, t, setCsvLink,
+    currency,
   ]);
 
   return { send };
