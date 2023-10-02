@@ -13,7 +13,7 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { useDateFromNow, useWindowDimensions } from 'hooks';
+import { useDateFromNow } from 'hooks';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
@@ -115,13 +115,15 @@ const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => {
   );
 };
 
-export default ({ item, zkAccount, currentPool }) => {
+const Date = ({ timestamp }) => {
+  const date = useDateFromNow(timestamp);
+  return <DateText>{date}</DateText>;
+};
+
+export default ({ item, zkAccount, currentPool, isMobile }) => {
   const { t } = useTranslation();
-  const date = useDateFromNow(item.timestamp);
-  const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const isMobile = width <= 500;
   const currentChainId = currentPool.chainId;
   const tokenSymbol = useMemo(() => {
     if (item.timestamp <= currentPool.migration?.timestamp) {
@@ -181,7 +183,7 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
           <Row>
-            {date && <Date>{date}</Date>}
+            {item.timestamp && <Date timestamp={item.timestamp} />}
             {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
@@ -375,13 +377,13 @@ const Text = styled.span`
   color: ${props => props.theme.text.color[props.$error ? 'error' : 'primary']};
 `;
 
-const Date = styled.span`
+const DateText = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.secondary};
   opacity: 60%;
 `;
 
-const FeeText = styled(Date)``;
+const FeeText = styled(DateText)``;
 
 const SpinnerSmall = styled(Spinner)`
   margin-left: 10px;

@@ -6,11 +6,14 @@ import Card from 'components/Card';
 import HistoryItem from 'components/HistoryItem';
 
 import { PoolContext, ZkAccountContext } from 'contexts';
+import { useWindowDimensions } from 'hooks';
 
 export default () => {
   const { t } = useTranslation();
   const { pendingActions, zkAccount } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 500;
   return (
     <Card
       note={t('pendingAction.note', { count: pendingActions.length })}
@@ -24,7 +27,7 @@ export default () => {
       <ListContainer>
         {pendingActions.map((action, index) =>
           <HistoryItemContainer key={index}>
-            <HistoryItem item={action} currentPool={currentPool} zkAccount={zkAccount} />
+            <HistoryItem item={action} currentPool={currentPool} zkAccount={zkAccount} isMobile={isMobile} />
           </HistoryItemContainer>
         )}
       </ListContainer>
