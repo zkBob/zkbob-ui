@@ -56,6 +56,11 @@ export default () => {
     checkAddress(receiver);
   }, [receiver, verifyShieldedAddress]);
 
+  useEffect(() => {
+    setDisplayAmount('');
+    setReceiver('');
+  }, [currentPool.alias]);
+
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
