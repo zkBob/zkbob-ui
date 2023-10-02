@@ -60,8 +60,10 @@ export default () => {
   }, [maxWithdrawable, limits, currentPool.tokenDecimals]);
 
   useEffect(() => {
+    setDisplayAmount('');
     setAmountToConvert(ethers.constants.Zero);
-  }, [currentPool]);
+    setReceiver('');
+  }, [currentPool.alias]);
 
   if (isDemo) return <DemoCard />;
 
