@@ -54,14 +54,14 @@ export default class Metamask extends BasePage implements MetamaskMethods {
   private async restoreWalletWithSecretWords() {
     const words = this.METAMASK_SEED_PHRASE.split(" ")
     for (const [i, word] of words.entries()) {
-      await this.page.type(`#import-srp__srp-word-${i}`, word)
+      await this.page.type(`#import-srp__srp-word-${i}`, word, { delay: 100 })
     }
     await this.page
       .locator(firstTimeFlowFormPageElements.passwordInput)
-      .type(this.METAMASK_PASSWORD);
+      .type(this.METAMASK_PASSWORD, { delay: 100 });
     await this.page
       .locator(firstTimeFlowFormPageElements.confirmPasswordInput)
-      .type(this.METAMASK_PASSWORD);
+      .type(this.METAMASK_PASSWORD, { delay: 100 });
     await this.clickElementJS(firstTimeFlowFormPageElements.newSignupCheckbox);
     await this.clickElementJS(firstTimeFlowFormPageElements.importButton);
   }
@@ -102,7 +102,7 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     await this.page.locator(mainPageElements.addCustomNetwork).click();
     await this.page.locator(advancedPageElements.networkName).type('Optimism Goerli');
     await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.optimism.io/');
-    await this.page.locator(advancedPageElements.chainID).type('420');
+    await this.page.locator(advancedPageElements.chainID).type('11155111');
     await this.page.locator(advancedPageElements.currencySymbol).type('ETH');
     await this.page.locator(advancedPageElements.save).click();
     await this.page.locator(mainPageElements.buttonConfirm).click();

@@ -4,13 +4,13 @@ const tab_withdraw = '//div[text()="Withdraw"]';
 const tab_history = '//div[text()="History"]';
 
 
-const button_deposit = '//button[text()="Deposit"]';
+const button_deposit = '//button[@data-ga-id="initiate-operation-deposit"]';
 const button_transfer = '//button[@data-ga-id="initiate-operation-transfer"]';
-const button_withdraw = '//button[text()="Withdraw"]';
+const button_withdraw = '//button[@data-ga-id="initiate-operation-withdraw"]';
 const button_confirm = '//button[contains(text(), "Confirm")]';
 const button_sign_in = '//button[text()="Sign in"]';
 
-const enter_web3_address = '//input[@placeholder="Enter Sepolia address of receiver"]';
+const enter_web3_address = '//div//textarea[contains(@placeholder, "address of receiver")]';
 const input_amount_in_deposit_tab = '//span[text()="Deposit"]/ancestor::div//input[@placeholder="0"]';
 const input_amount_in_transfer_tab = '//span[text()="Transfer"]/ancestor::div//input[@placeholder="0"]';
 const input_amount_in_withdraw_tab = '//span[text()="Withdraw"]/ancestor::div//input[@placeholder="0"]';

@@ -27,6 +27,8 @@ export default class OperationsWithTokenPages extends BasePage{
       await expect(this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
     }
 
+    //Sepolia
+
     async SelectSepoliaNetwork():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       if (await this.locator('//div[3]//div[2]//div//img[contains(@src,"sepolia")]').isVisible()){
@@ -38,6 +40,23 @@ export default class OperationsWithTokenPages extends BasePage{
         await this.locator('//button//div[text()="Sepolia"]').click();
       }
     }
+
+    async SelectBOBSepolia():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
+      // if (await (this.locator('//div[text()="BOB"]')).isVisible()){
+      //   console.log('BOB has already been selected');
+      // }
+
+      // else{
+      //   await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+      //   await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
+      // }
+      await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+      await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
+      
+  }
+
+    //Goerli OP
 
     async SelectGoerliOPNetwork():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
@@ -51,6 +70,13 @@ export default class OperationsWithTokenPages extends BasePage{
       }
     }
 
+    async SelectBOBOPGoerli():Promise<void> {
+      await this.locator('//button[@data-ga-id="pool-bob-op-goerli"]').click();
+  }
+
+
+    //Goerli
+
     async SelectGoerliNetwork():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
       if (await (this.locator('//div[3]//div[2]//div//img[contains(@src,"goerli")]')).isVisible()){
@@ -61,16 +87,7 @@ export default class OperationsWithTokenPages extends BasePage{
         await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
         await this.locator('//button//div[text()="Goerli"]').click();
       }
-    }
-
-    async SelectBOBSepolia():Promise<void> {
-        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
-        await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
-    }
-
-    async SelectBOBOPGoerli():Promise<void> {
-      await this.locator('//button[@data-ga-id="pool-bob-op-goerli"]').click();
-  }
+    }  
 
     async SelectUSDMGoerli():Promise<void> {
       await this.locator('//button[@data-ga-id="pool-bob2usdc-goerli"]').click();
@@ -101,19 +118,21 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async InputAmount():Promise<void> {
-      await this.locator(OperationsWithTokenElementsLocators.input_amount).type('1');
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1');
     }
 
     async InputAmountTransferTab():Promise<void> {
       await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab ).type('1');
     }
 
+    //Deposit
+
     async button_Deposit():Promise<void> {
       const [popupSwitchNetwork] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
       await popupSwitchNetwork.locator('//button[text()="Switch network"]').click();
       await expect(this.locator('//div/span[text()="Generating a proof"]')).toBeVisible();
-      const [popup2] = await Promise.all([this.waitForPage(), await expect(this.locator('//div/span[text()="Please sign a message"]')).toBeVisible()]);
-      await popup2.locator('//button[text()="Sign"]').click();
+      const [popup2] = await Promise.all([this.waitForPage(), await (this.locator('//div/span[text()="Please sign a message"]')).isVisible({timeout: TIMEOUTS.tenMinutes})]);
+      await popup2.locator('//button[@data-testid="signature-sign-button"]').click();
     }
 
     async button_DepositETH():Promise<void> {
@@ -125,9 +144,11 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async TheCheckingTheDepositSent():Promise<void> {
       await expect(this.locator('//span[text()="Deposit is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
-      await this.locator('//button[text()="Got it!"]').click();
+      await this.locator('//button[text()="Got it"]').click();
       await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
     }
+
+    //Transfer
 
     async EnterzkBOBAddress(ZKBOB_ADDRESS: string):Promise<void> {
       await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
@@ -146,67 +167,26 @@ export default class OperationsWithTokenPages extends BasePage{
       await expect(this.locator('//span[text()="Transfer is in progress"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
     }
 
+    //Withdraw
 
+    async InputAmountWithdrawTab():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab ).type('1', { delay: 100 });
+    }
 
+    async EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS: string):Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).click();
+      await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).type(WEB3_WALLET_ADDRESS, { delay: 100 });
+    }
 
+    async button_Withdraw():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.button_withdraw).click();
+    }
 
+    async CheckWithdraw():Promise<void> {
+      await expect(this.locator('//span[text()="Withdrawal is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute}); 
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // async Transfer(): Promise<void> {
-
-    //   await this.locator(OperationsWithTokenElementsLocators.tab_transfer).click();
-    //   expect(this.page.url()).toContain('/transfer');
-    //   await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab).type('1');
-    //   await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).click();
-    //   await this.locator(OperationsWithTokenElementsLocators.enter_receiver_address).type(this.ZKBOB_RECEIVER_ADDRESS);
-    //   await this.locator(OperationsWithTokenElementsLocators.button_transfer).click();
-    //   await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
-    //   await expect(this.locator('//span[text()="Transfer sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
-    //   await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes})
-
-    //   }
-
-    // async CheckTransfer(): Promise<void> {
-    //   await this.ReloadPage()
-
-    //   // Change account from restore
-    //   await expect (this.locator('//div//span[contains(text(), "zk")]')).toBeVisible({timeout:TIMEOUTS.fiveMinutes});
-    //   await this.locator('//div//span[contains(text(), "zk")]').click();
-    //   await this.locator('//button[text()="Switch account"]').click();
-    //   await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
-    //   await this.locator('//span[text()="Input your saved seed phrase to restore an existing account"]//../textarea').type(this.ZKACCOUNT_SEED_PHRASE);
-    //   await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
-    //   await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
-    //   await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD);
-    //   await this.locator(zkAccountElementsLocators.button_Verify).click();
-
-    //   // Check last transfer
-    //   await this.locator(OperationsWithTokenElementsLocators.tab_history).click();
-    //   await expect(this.locator('(//span[text()="History"]//..//div[1]/span/span)[1]')).toHaveText('1', {timeout:TIMEOUTS.oneMinute});
-
-    //   }
 
     // async Withdraw(): Promise<void> {
 

@@ -2,6 +2,7 @@ import { test } from '../fixtures/testContextFixture';
 import BasePage from '../pages/base';
 
 const ZKBOB_ADDRESS_BOB_SEPOLIA = process.env.ZKBOB_ADDRESS_BOB_SEPOLIA as string;
+const WEB3_WALLET_ADDRESS = process.env.WEB3_WALLET_ADDRESS as string;
 
 test.beforeEach(async ({metamask, zkAccount}) => {
   await metamask.importWallet()
@@ -27,7 +28,7 @@ test.describe('BOB pool', () => {
         await OperationsWithToken.TheCheckingTheDepositSent()
     });
   
-    test.only('Transfer BOB', async ({ OperationsWithToken }) => {
+    test('Transfer BOB', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToTransferTab()
         await OperationsWithToken.SelectSepoliaNetwork()
         await OperationsWithToken.SelectBOBSepolia()
@@ -39,6 +40,13 @@ test.describe('BOB pool', () => {
     });
 
     test('Withdraw BOB', async ({ OperationsWithToken }) => {
-        // ...
-      });
-  });
+        await OperationsWithToken.GoToWithdrawTab()
+        await OperationsWithToken.SelectSepoliaNetwork()
+        await OperationsWithToken.SelectBOBSepolia()
+        await OperationsWithToken.InputAmountWithdrawTab()
+        await OperationsWithToken.EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS)
+        await OperationsWithToken.button_Withdraw()
+        await OperationsWithToken.button_Confirm()
+        await OperationsWithToken.CheckWithdraw()
+    });
+});

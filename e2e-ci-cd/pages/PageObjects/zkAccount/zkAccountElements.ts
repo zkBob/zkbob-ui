@@ -64,8 +64,8 @@ export default class zkAccountPage extends BasePage{
     // }
 
     async CreatePasswordForzkAccount(): Promise<void> {
-      await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
-      await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD);
+      await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD, { delay: 100 });
+      await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD, { delay: 100 });
 
       await this.locator(zkAccountElementsLocators.button_Verify).click();
     }
@@ -115,8 +115,8 @@ export default class zkAccountPage extends BasePage{
     }
 
     async CreatePassword(): Promise<void> {
-      await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD);
-      await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD);
+      await this.locator(zkAccountCreatePasswordLocators.input_NewPassword).type(this.ZKACCOUNT_PASSWORD, { delay: 100 });
+      await this.locator(zkAccountCreatePasswordLocators.input_RepeatPassword).type(this.ZKACCOUNT_PASSWORD, { delay: 100 });
       await this.locator(zkAccountElementsLocators.button_Verify).click();
     }
     
@@ -126,7 +126,7 @@ export default class zkAccountPage extends BasePage{
     }
 
     async RestoreAccount(): Promise<void> {
-      await this.locator("//textarea").type(this.ZKACCOUNT_SEED_PHRASE);
+      await this.locator("//textarea").type(this.ZKACCOUNT_SEED_PHRASE, { delay: 100 });
       await this.locator(zkAccountElementsLocators.button_RestoreAccount).click();
     }
 }
