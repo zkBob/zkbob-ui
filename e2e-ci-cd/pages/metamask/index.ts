@@ -29,9 +29,10 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     this.METAMASK_PASSWORD = process.env.METAMASK_PASSWORD || '12344321';
   }
 
-  private async confirmWelcomePage() {
-    const getStartedBtn = this.page.locator(welcomePageElements.confirmButton);
-    await getStartedBtn.click();
+  private async AgreeToTermsOfUse() {
+    await this.page.locator('//input[@data-testid="onboarding-terms-checkbox"]').click();
+    // const getStartedBtn = this.page.locator(welcomePageElements.confirmButton);
+    // await getStartedBtn.click();
   }
 
   private async startImportWalletFlow() {
@@ -56,26 +57,29 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     for (const [i, word] of words.entries()) {
       await this.page.type(`#import-srp__srp-word-${i}`, word, { delay: 100 })
     }
+    await this.page.locator('//button[@data-testid="import-srp-confirm"]').click();
     await this.page
       .locator(firstTimeFlowFormPageElements.passwordInput)
       .type(this.METAMASK_PASSWORD, { delay: 100 });
     await this.page
       .locator(firstTimeFlowFormPageElements.confirmPasswordInput)
       .type(this.METAMASK_PASSWORD, { delay: 100 });
-    await this.clickElementJS(firstTimeFlowFormPageElements.newSignupCheckbox);
-    await this.clickElementJS(firstTimeFlowFormPageElements.importButton);
+    await this.page.locator(firstTimeFlowFormPageElements.PasswordTermsCheckbox).click();
+    await this.page.locator(firstTimeFlowFormPageElements.importButton).click();
   }
 
-  private async confirmAllDone() {
-    await this.clickElementJS(endOfFlowPageElements.allDoneButton);
+  private async confirmAll() {
+    await this.page.locator(endOfFlowPageElements.gotItButton).click();
+    await this.page.locator(endOfFlowPageElements.extensionNextButton).click();
+    await this.page.locator(endOfFlowPageElements.doneButton).click();
   }
 
   async importWallet(): Promise<void> {
-    await this.confirmWelcomePage();
-    await this.rejectAnalitycs();
+    await this.AgreeToTermsOfUse();
     await this.startImportWalletFlow();
+    await this.rejectAnalitycs();
     await this.restoreWalletWithSecretWords();
-    await this.confirmAllDone();
+    await this.confirmAll();
     
 
     await this.page
@@ -96,7 +100,7 @@ export default class Metamask extends BasePage implements MetamaskMethods {
   }
   
 
-  async addCustomNetworks(){
+  async addGoerliOPNetwork(){
     await this.showTestNetworks();
     await this.page.locator(settingsPageElements.networksButton).click();
     await this.page.locator(mainPageElements.addCustomNetwork).click();
@@ -104,6 +108,19 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.optimism.io/');
     await this.page.locator(advancedPageElements.chainID).type('11155111');
     await this.page.locator(advancedPageElements.currencySymbol).type('ETH');
+    await this.page.locator(advancedPageElements.save).click();
+    await this.page.locator(mainPageElements.buttonConfirm).click();
+
+  }
+
+  async addGoerliNetwork(){
+    await this.showTestNetworks();
+    await this.page.locator(settingsPageElements.networksButton).click();
+    await this.page.locator(mainPageElements.addCustomNetwork).click();
+    await this.page.locator(advancedPageElements.networkName).type('Goerli');
+    await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.infura.io/v3/');
+    await this.page.locator(advancedPageElements.chainID).type('5');
+    await this.page.locator(advancedPageElements.currencySymbol).type('GoerliETH');
     await this.page.locator(advancedPageElements.save).click();
     await this.page.locator(mainPageElements.buttonConfirm).click();
 

@@ -21,7 +21,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 });
   
   test.describe('ETH pool', () => {
-      test('Deposit WETH', async ({ OperationsWithToken }) => {
+      test('Deposit ETH', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectGoerliNetwork()
         await OperationsWithToken.SelectETHGoerli()

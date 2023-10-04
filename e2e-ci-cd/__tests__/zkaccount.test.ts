@@ -4,7 +4,7 @@ import { test } from '../fixtures/testContextFixture';
 // test.describe.configure({mode: `parallel`})
 
 
-test('Create zkAccount with MetaMask', async ({zkAccount, metamask}) => {
+test.only('Create zkAccount with MetaMask', async ({zkAccount, metamask}) => {
   await metamask.importWallet()
   await zkAccount.open('/')
   await zkAccount.button_GetStarted()

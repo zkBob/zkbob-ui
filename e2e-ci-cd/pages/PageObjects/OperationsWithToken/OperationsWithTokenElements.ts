@@ -185,21 +185,7 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async CheckWithdraw():Promise<void> {
       await expect(this.locator('//span[text()="Withdrawal is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute}); 
-    }
-
-
-    // async Withdraw(): Promise<void> {
-
-    //   await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
-    //   expect(this.page.url()).toContain('/withdraw');
-    //   await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab).type('1');
-    //   await this.locator(OperationsWithTokenElementsLocators.enter_web3_address).type(this.ADDRESS_METAMASK_ACCOUNT);
-    //   await this.locator(OperationsWithTokenElementsLocators.button_withdraw).click({timeout:TIMEOUTS.tenMinutes});
-    //   await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
-    //   await expect(this.locator('//span[text()="Withdrawal sent"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
-      
-    // }
-    
+    }    
 
     
 }

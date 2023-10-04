@@ -6,7 +6,7 @@ const WEB3_WALLET_ADDRESS = process.env.WEB3_WALLET_ADDRESS as string;
 
 test.beforeEach(async ({metamask, zkAccount}) => {
     await metamask.importWallet()
-    await metamask.addCustomNetworks()
+    await metamask.addGoerliOPNetwork()
     await zkAccount.open('/')
     await zkAccount.button_GetStarted()
     await zkAccount.button_CreateNewZkAccount()

@@ -18,7 +18,7 @@ interface TestContextFixture {
 export const test = base.extend<TestContextFixture>({
   metamaskContext: [
     async ({}, use) => {
-      const pathToExtension = path.join(__dirname, '../dist/metamask/');
+      const pathToExtension = path.join(__dirname, '../dist/metamask_11.1.1/');
       const userDataDir = path.join(
         __dirname,
         `../tmp/${+new Date()}${Math.random()}`,
@@ -26,7 +26,7 @@ export const test = base.extend<TestContextFixture>({
 
       const context = await chromium.launchPersistentContext(userDataDir, {
         headless: false,
-        viewport: { width: 1280, height: 1024 },
+        viewport: { width: 1280, height: 1280 },
         args: [
           `--disable-extensions-except=${pathToExtension}`,
           `--load-extension=${pathToExtension}`,
