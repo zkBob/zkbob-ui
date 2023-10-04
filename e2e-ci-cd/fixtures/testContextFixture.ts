@@ -18,7 +18,7 @@ interface TestContextFixture {
 export const test = base.extend<TestContextFixture>({
   metamaskContext: [
     async ({}, use) => {
-      const pathToExtension = path.join(__dirname, '../dist/metamask_11.1.1/');
+      const pathToExtension = path.join(__dirname, '../dist/metamask/');
       const userDataDir = path.join(
         __dirname,
         `../tmp/${+new Date()}${Math.random()}`,
