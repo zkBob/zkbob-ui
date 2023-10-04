@@ -1,4 +1,4 @@
-### E2E UI TESTS
+### E2E TESTS
 
 Install dependencies:
 ```
