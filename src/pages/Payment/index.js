@@ -53,7 +53,7 @@ const Payment = ({ pool }) => {
 
   const { limit, isLoadingLimit, fee, isLoadingFee } = useLimitsAndFees(pool);
   const { tokenAmount, liFiRoute, isTokenAmountLoading } = useTokenAmount(pool, selectedToken?.address, amount, fee);
-  const { isApproved, approve } = useApproval(pool?.chainId, selectedToken?.address, tokenAmount);
+  const { isApproved, approve } = useApproval(pool, selectedToken?.address, tokenAmount);
   const permitType = useMemo(() => getPermitType(selectedToken, pool?.chainId), [pool, selectedToken]);
   const { send } = usePayment(selectedToken, tokenAmount, amount, fee, pool, params.address, liFiRoute);
 

@@ -1,13 +1,38 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import WalletConnectors from 'components/WalletConnectors';
+import Button from 'components/Button';
+
+import { PoolContext } from 'contexts';
+
+import config from 'config';
+
+const poolsWithAliases = Object.values(config.pools).map((pool, index) => ({
+  ...pool,
+  alias: Object.keys(config.pools)[index],
+}));
 
 export default ({ next, isCreation }) => {
   const { t } = useTranslation();
+  const { currentPool, setCurrentPool } = useContext(PoolContext);
+
+  const switchPool = useCallback(() => {
+    const pool = poolsWithAliases.find(pool => pool.isTron !== currentPool.isTron);
+    setCurrentPool(pool.alias);
+  }, [setCurrentPool, currentPool.isTron]);
+
   return (
     <Container>
+      {!isCreation && (
+        <Warning>
+          <Trans
+            i18nKey={`accountSetupModal.restoreWithWallet.warning${currentPool.isTron ? '_tron' : ''}`}
+            components={{ 1: <Button type="link" onClick={switchPool} /> }}
+          />
+        </Warning>
+      )}
       <Description>
         {isCreation
           ? t('accountSetupModal.createWithWallet.description')
@@ -39,5 +64,18 @@ const Description = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.text.color.primary};
   line-height: 20px;
+  text-align: center;
+`;
+
+const Warning = styled.div`
+  background: ${({ theme }) => theme.warning.background};
+  border: 1px solid ${({ theme }) => theme.warning.border};
+  color: ${({ theme }) => theme.warning.text.color};
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-size: 14px;
+  line-height: 20px;
+  margin-left: -7px;
+  margin-right: -7px;
   text-align: center;
 `;

@@ -43,7 +43,7 @@ const BalanceSkeleton = isMobile => (
 
 export default ({ empty }) => {
   const { t } = useTranslation();
-  const { address: account, connector } = useContext(WalletContext);
+  const { address: account, connector, isTron } = useContext(WalletContext);
   const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
@@ -157,9 +157,11 @@ export default ({ empty }) => {
         </LogoSection>
         <AccountSection>
           {!isMobile && networkDropdown}
-          <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
-            {t('buttonText.getToken', { symbol: currentPool.tokenSymbol })}
-          </BridgeButton>
+          {!isTron && (
+            <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
+              {t('buttonText.getToken', { symbol: currentPool.tokenSymbol })}
+            </BridgeButton>
+          )}
           {!isMobile && walletDropdown}
           {!isMobile && zkAccountDropdown}
           {(zkAccount && !isMobile) && (

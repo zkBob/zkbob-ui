@@ -41,7 +41,10 @@ export default ZkAccountContext;
 export const ZkAccountContextProvider = ({ children }) => {
   const { currentPool, setCurrentPool } = useContext(PoolContext);
   const previousPoolAlias = usePrevious(currentPool.alias);
-  const { address: account, chain, signer, switchNetwork } = useContext(WalletContext);
+  const {
+    address: account, chain, switchNetwork,
+    sign, signTypedData, sendTransaction,
+  } = useContext(WalletContext);
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal, closeAllModals } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
@@ -320,9 +323,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
       const shieldedAmount = await toShieldedAmount(amount);
       if (isNative) {
-        await zp.directDeposit(signer, zkClient, shieldedAmount, setTxStatus);
+        await zp.directDeposit(account, sendTransaction, zkClient, shieldedAmount, setTxStatus);
       } else {
-        await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+        await zp.deposit(account, sign, signTypedData, zkClient, shieldedAmount, relayerFee, setTxStatus);
       }
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -345,9 +348,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
     }
   }, [
-    zkClient, updatePoolData, signer, openTxModal, setTxAmount,
+    zkClient, updatePoolData, signTypedData, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
-    chain, switchNetwork, currentPool,
+    chain, switchNetwork, currentPool, sendTransaction, account, sign,
   ]);
 
   const transfer = useCallback(async (to, amount, relayerFee) => {

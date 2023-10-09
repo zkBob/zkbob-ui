@@ -60,7 +60,7 @@ export default () => {
     () => isNativeTokenUsed ? directDepositFee : fee,
     [isNativeTokenUsed, directDepositFee, fee],
   );
-  const { isApproved, approve } = useApproval(currentPool.chainId, currentPool.tokenAddress, amount.add(fee), balance);
+  const { isApproved, approve } = useApproval(currentPool, currentPool.tokenAddress, amount.add(fee), balance, currentPool.depositScheme);
   const depositLimit = useDepositLimit(limits, isNativeTokenUsed);
   const maxAmountExceeded = useMaxAmountExceeded(amount, usedBalance, usedFee, depositLimit);
 
@@ -136,7 +136,7 @@ export default () => {
           else if (amount.gt(depositLimit)) {
             return <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
           }
-          else if (currentPool.isNative && !isNativeSelected && !isApproved) {
+          else if (['permit2', 'approve'].includes(currentPool.depositScheme) && !isNativeTokenUsed && !isApproved) {
             return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>;
           }
           else {

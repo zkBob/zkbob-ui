@@ -14,16 +14,16 @@ const getConnectorName = connector => {
 export default ({ callback, gaIdPrefix = '' }) => {
   const {
     connector: activeConnector, connect,
-    disconnect, connectors,
+    disconnect, connectors, isTron,
   } = useContext(WalletContext);
 
   const connectWallet = useCallback(async connector => {
-    if (connector.id === activeConnector?.id) {
+    if (connector.id === activeConnector?.id && !isTron) {
       await disconnect();
     }
     await connect({ connector });
     callback?.();
-  }, [connect, disconnect, activeConnector, callback]);
+  }, [connect, disconnect, activeConnector, callback, isTron]);
 
   return (
     <>

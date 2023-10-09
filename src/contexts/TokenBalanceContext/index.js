@@ -5,15 +5,14 @@ import * as Sentry from '@sentry/react';
 import { PoolContext, WalletContext } from 'contexts';
 
 import { showLoadingError } from 'utils';
-
-const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
+import tokenAbi from 'abis/token.json';
 
 const TokenBalanceContext = createContext({ balance: null });
 
 export default TokenBalanceContext;
 
 export const TokenBalanceContextProvider = ({ children }) => {
-  const { address: account, provider, getBalance } = useContext(WalletContext);
+  const { address: account, getBalance, callContract } = useContext(WalletContext);
   const { currentPool } = useContext(PoolContext);
   const [balance, setBalance] = useState(ethers.constants.Zero);
   const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
@@ -25,10 +24,9 @@ export const TokenBalanceContextProvider = ({ children }) => {
     let nativeBalance = ethers.constants.Zero;
     if (account) {
       try {
-        const token = new ethers.Contract(currentPool.tokenAddress, TOKEN_ABI, provider);
         [balance, nativeBalance] = await Promise.all([
-          token.balanceOf(account),
-          getBalance().then(({ data: { value } }) => value),
+          callContract(currentPool.tokenAddress, tokenAbi, 'balanceOf', [account]),
+          getBalance(),
         ]);
       } catch (error) {
         console.error(error);
@@ -39,7 +37,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
     setBalance(balance);
     setNativeBalance(nativeBalance);
     setIsLoadingBalance(false);
-  }, [account, getBalance, provider, currentPool.tokenAddress]);
+  }, [account, getBalance, callContract, currentPool.tokenAddress]);
 
   useEffect(() => {
     updateBalance();

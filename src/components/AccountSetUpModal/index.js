@@ -134,7 +134,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
 
   const generate = useCallback(async () => {
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    let signedMessage = await signMessage({ message });
+    let signedMessage = await signMessage(message);
     if (!window.location.host.includes(process.env.REACT_APP_LEGACY_SIGNATURE_DOMAIN)) {
       // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
       const MIN_VALID_V_VALUE = 27;

@@ -1,6 +1,7 @@
 import { ethers, BigNumber } from 'ethers';
 
 import { PERMIT2_CONTRACT_ADDRESS } from 'constants';
+import tokenAbi from 'abis/token.json';
 
 export function getPermitType(token, chainId) {
   if (token?.symbol === 'USDC') return chainId === 137 ? 'permit-usdc-polygon' : 'permit-usdc';
@@ -23,11 +24,7 @@ export function getNullifier(permitType) {
 }
 
 async function getNameAndNonce(tokenAddress, ownerAddress, provider) {
-  const tokenABI = [
-    'function name() view returns (string)',
-    'function nonces(address) view returns (uint256)',
-  ];
-  const tokenContractInstance = new ethers.Contract(tokenAddress, tokenABI, provider);
+  const tokenContractInstance = new ethers.Contract(tokenAddress, tokenAbi, provider);
   const [name, nonce] = await Promise.all([
     tokenContractInstance.name(),
     tokenContractInstance.nonces(ownerAddress),
