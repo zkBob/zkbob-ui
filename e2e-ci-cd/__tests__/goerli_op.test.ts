@@ -20,12 +20,12 @@ test.beforeEach(async ({metamask, zkAccount}) => {
   
   
   test.describe('BOB pool', () => {
-      test('Deposit BOB', async ({ OperationsWithToken }) => {
+      test.only('Deposit BOB', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectGoerliOPNetwork()
         await OperationsWithToken.SelectBOBOPGoerli()
         await OperationsWithToken.InputAmount()
-        await OperationsWithToken.button_Deposit()
+        await OperationsWithToken.button_DepositOPGoerli()
         await OperationsWithToken.TheCheckingTheDepositSent()
       });
     

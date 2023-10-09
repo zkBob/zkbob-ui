@@ -1,6 +1,6 @@
 const SETTINGS_PAGE = '.settings-page';
 const advancedButton = `//div[text()="Advanced"]`;
-const networksButton = `//div[contains(@class, "network-display")][@role="button"]`;
+const networksButton = `//button[@data-testid="network-display"]`;
 const closeButton = `${SETTINGS_PAGE} .settings-page__close-button`;
 export const settingsPageElements = {
   SETTINGS_PAGE,

@@ -1,3 +1,4 @@
+import { browserName } from 'react-device-detect';
 import { test } from '../fixtures/testContextFixture';
 import BasePage from '../pages/base';
 
@@ -19,7 +20,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 
 
 test.describe('BOB pool', () => {
-    test('Deposit BOB', async ({ OperationsWithToken }) => {
+    test.only('Deposit BOB', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectSepoliaNetwork()
         await OperationsWithToken.SelectBOBSepolia()

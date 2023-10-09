@@ -43,16 +43,16 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async SelectBOBSepolia():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
-      // if (await (this.locator('//div[text()="BOB"]')).isVisible()){
-      //   console.log('BOB has already been selected');
-      // }
+      if (await (this.locator('//div[text()="BOB"]')).isVisible()){
+        console.log('BOB has already been selected');
+      }
 
-      // else{
-      //   await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
-      //   await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
-      // }
-      await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
-      await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
+      else{
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+        await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
+      }
+      // await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
+      // await this.locator('//button[@data-ga-id="pool-bob-sepolia"]').click();
       
   }
 
@@ -65,13 +65,14 @@ export default class OperationsWithTokenPages extends BasePage{
       }
 
       else{
-        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
-        await this.locator('//button//div[text()="Goerli Optimism"]').click();
+        await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click({delay: 100});
+        await this.locator('//button//div[text()="Goerli Optimism"]').click({delay: 100});
       }
     }
 
     async SelectBOBOPGoerli():Promise<void> {
       await this.locator('//button[@data-ga-id="pool-bob-op-goerli"]').click();
+      await this.sleep(TIMEOUTS.medium);
   }
 
 
@@ -118,21 +119,32 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async InputAmount():Promise<void> {
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1');
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1', {delay: 100});
     }
 
     async InputAmountTransferTab():Promise<void> {
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab ).type('1');
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab ).type('1', {delay: 100});
     }
 
     //Deposit
+
+    async button_DepositOPGoerli():Promise<void> {
+      await this.locator(OperationsWithTokenElementsLocators.button_deposit).click();
+      await expect(this.locator('//div/span[text()="Generating a proof"]')).toBeVisible();
+      const [popup2] = await Promise.all([this.waitForPage(), await (this.locator('//div/span[text()="Please sign a message"]')).isVisible({timeout: TIMEOUTS.tenMinutes})]);
+      await popup2.locator('//i[@aria-label="Scroll down"]').click();
+      await popup2.locator('//button[text()="Sign"]').click();
+    }
+
 
     async button_Deposit():Promise<void> {
       const [popupSwitchNetwork] = await Promise.all([this.waitForPage(), this.locator(OperationsWithTokenElementsLocators.button_deposit).click()]);
       await popupSwitchNetwork.locator('//button[text()="Switch network"]').click();
       await expect(this.locator('//div/span[text()="Generating a proof"]')).toBeVisible();
       const [popup2] = await Promise.all([this.waitForPage(), await (this.locator('//div/span[text()="Please sign a message"]')).isVisible({timeout: TIMEOUTS.tenMinutes})]);
-      await popup2.locator('//button[@data-testid="signature-sign-button"]').click();
+      await popup2.locator('//i[@aria-label="Scroll down"]').click();
+      await popup2.locator('//button[text()="Sign"]').click();
     }
 
     async button_DepositETH():Promise<void> {
@@ -143,6 +155,7 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async TheCheckingTheDepositSent():Promise<void> {
+      await expect(this.locator('//span[text()="Generating a proof"]')).not.toBeVisible({timeout: TIMEOUTS.fiveMinutes});
       await expect(this.locator('//span[text()="Deposit is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       await this.locator('//button[text()="Got it"]').click();
       await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
@@ -164,6 +177,7 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async CheckTransfer():Promise<void> {
+      await expect(this.locator('//span[text()="Generating a proof"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes});
       await expect(this.locator('//span[text()="Transfer is in progress"]')).toBeVisible({timeout: TIMEOUTS.tenMinutes});
     }
 
@@ -184,6 +198,7 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async CheckWithdraw():Promise<void> {
+      await expect(this.locator('//span[text()="Generating a proof"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes});
       await expect(this.locator('//span[text()="Withdrawal is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute}); 
     }    
 

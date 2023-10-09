@@ -53,12 +53,14 @@ export const secureYourWalletPageElements = {
 const END_OF_FLOW_PAGE = '.end-of-flow';
 const gotItButton = '//button[@data-testid="onboarding-complete-done"]';
 const extensionNextButton = '//button[@data-testid="pin-extension-next"]';
-const doneButton = '//button[@data-testid="pin-extension-done"]'
+const doneButton = '//button[@data-testid="pin-extension-done"]';
+const popoverClose = '//button[@data-testid="popover-close"]';
 export const endOfFlowPageElements = {
   END_OF_FLOW_PAGE,
   gotItButton,
   extensionNextButton,
   doneButton,
+  popoverClose,
 };
 
 const REVEAL_SEED_PAGE = '.reveal-seed-phrase';

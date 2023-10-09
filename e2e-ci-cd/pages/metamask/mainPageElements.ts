@@ -57,8 +57,12 @@ const createAccount = {
   createButton: `${IMPORT_ACCOUNT_SELECTOR} .btn-secondary`,
 };
 
-const addCustomNetwork = `//button[text()="Add network"]`;
+const buttonAddNetwork = `//button[text()="Add network"]`;
+const buttonAddNetworkManually = '//a[@data-testid="add-network-manually"]';
+const buttonSwitchToNetwork = '//button/h6[text()="Switch to Optimism Goerli"]';
 const buttonConfirm = `//button[text()="Got it"]`;
+const buttonAccountMenu = '//button[@data-testid="account-options-menu-button"]';
+const buttonSettings = '//button[@data-testid="global-menu-settings"]';
 
 export const mainPageElements = {
   LOGO,
@@ -71,6 +75,10 @@ export const mainPageElements = {
   accountModal,
   importAccount,
   createAccount,
-  addCustomNetwork,
+  buttonAddNetwork,
   buttonConfirm,
+  buttonAccountMenu,
+  buttonSettings,
+  buttonAddNetworkManually,
+  buttonSwitchToNetwork,
 };

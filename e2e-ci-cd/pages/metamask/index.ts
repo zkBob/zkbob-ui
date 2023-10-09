@@ -72,6 +72,7 @@ export default class Metamask extends BasePage implements MetamaskMethods {
     await this.page.locator(endOfFlowPageElements.gotItButton).click();
     await this.page.locator(endOfFlowPageElements.extensionNextButton).click();
     await this.page.locator(endOfFlowPageElements.doneButton).click();
+    await this.page.locator(endOfFlowPageElements.popoverClose).click();
   }
 
   async importWallet(): Promise<void> {
@@ -90,8 +91,8 @@ export default class Metamask extends BasePage implements MetamaskMethods {
 
   async showTestNetworks() {
     await this.focus();
-    await this.page.locator(mainPageElements.accountMenu.button).click();
-    await this.page.locator(mainPageElements.accountMenu.settingsButton).click();
+    await this.page.locator(mainPageElements.buttonAccountMenu).click();
+    await this.page.locator(mainPageElements.buttonSettings).click();
     await this.page.locator(settingsPageElements.advancedButton).click();
     if (await this.page.locator(advancedPageElements.showTestNetworksToggleOff).isVisible()) {
       await this.page.locator(advancedPageElements.showTestNetworksToggleOff).click();
@@ -103,20 +104,23 @@ export default class Metamask extends BasePage implements MetamaskMethods {
   async addGoerliOPNetwork(){
     await this.showTestNetworks();
     await this.page.locator(settingsPageElements.networksButton).click();
-    await this.page.locator(mainPageElements.addCustomNetwork).click();
-    await this.page.locator(advancedPageElements.networkName).type('Optimism Goerli');
-    await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.optimism.io/');
-    await this.page.locator(advancedPageElements.chainID).type('11155111');
-    await this.page.locator(advancedPageElements.currencySymbol).type('ETH');
+    await this.page.locator(mainPageElements.buttonAddNetwork).click();
+    await this.page.locator(mainPageElements.buttonAddNetworkManually).click();
+    await this.page.locator(advancedPageElements.networkName).type('Optimism Goerli', { delay: 100 });
+    await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.optimism.io/', { delay: 100 });
+    await this.page.locator(advancedPageElements.chainID).type('420', { delay: 100 });
+    await this.page.locator(advancedPageElements.currencySymbol).type('ETH', { delay: 100 });
     await this.page.locator(advancedPageElements.save).click();
-    await this.page.locator(mainPageElements.buttonConfirm).click();
+    // await this.page.locator(mainPageElements.buttonConfirm).click();
+    await this.page.locator(mainPageElements.buttonSwitchToNetwork).click();
 
   }
 
   async addGoerliNetwork(){
     await this.showTestNetworks();
     await this.page.locator(settingsPageElements.networksButton).click();
-    await this.page.locator(mainPageElements.addCustomNetwork).click();
+    await this.page.locator(mainPageElements.buttonAddNetwork).click();
+    await this.page.locator(mainPageElements.buttonAddNetworkManually).click();
     await this.page.locator(advancedPageElements.networkName).type('Goerli');
     await this.page.locator(advancedPageElements.newRPCUrl).type('https://goerli.infura.io/v3/');
     await this.page.locator(advancedPageElements.chainID).type('5');
