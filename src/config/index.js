@@ -17,7 +17,7 @@ const config = {
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
-        minTxAmount: 50000n, // 0.05 USDC
+        minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
         migration: {
           timestamp: 1689689468,
@@ -26,18 +26,23 @@ const config = {
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
       },
-      'BOB-optimism': {
+      'BOB2USDC-optimism': {
         chainId: 10,
         poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
-        tokenAddress: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
+        tokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
         relayerUrls: ['https://relayer-optimism.zkbob.com/'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
-        tokenSymbol: 'BOB',
-        tokenDecimals: 18,
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'permit',
+        depositScheme: 'usdc',
+        minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-bob-optimism',
+        migration: {
+          timestamp: 1696854269,
+          prevTokenSymbol: 'BOB',
+        },
         addressPrefix: 'zkbob_optimism',
       },
       'WETH-optimism': {
