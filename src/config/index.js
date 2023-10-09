@@ -17,7 +17,7 @@ const config = {
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
-        minTxAmount: 50000n, // 0.05 USDC
+        minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
         migration: {
           timestamp: 1689689468,
@@ -37,7 +37,7 @@ const config = {
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc',
-        minTxAmount: 50000n, // 0.05 USDC
+        minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-bob-optimism',
         migration: {
           timestamp: 1696854269,
