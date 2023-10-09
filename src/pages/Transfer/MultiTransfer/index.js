@@ -22,7 +22,7 @@ import { useFee } from 'hooks';
 
 const prefixes = {
   'BOB2USDC-polygon': 'zkbob_polygon',
-  'BOB-optimism': 'zkbob_optimism',
+  'BOB2USDC-optimism': 'zkbob_optimism',
   'BOB-sepolia': 'zkbob_sepolia',
   'BOB2USDC-goerli': 'zkbob_goerli',
   'USDC-goerli': 'zkbob_goerli_usdc',
