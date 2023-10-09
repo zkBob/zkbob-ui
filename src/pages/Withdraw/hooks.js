@@ -19,7 +19,7 @@ export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.con
 };
 
 const NATIVE_TOKENS = {
-  'BOB-optimism': 'ETH',
+  'BOB2USDC-optimism': 'ETH',
   'BOB2USDC-goerli': 'ETH',
   'BOB2USDC-polygon': 'MATIC',
 };
