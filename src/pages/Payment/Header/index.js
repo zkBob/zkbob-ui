@@ -15,7 +15,7 @@ import { CONNECTORS_ICONS, NETWORKS } from 'constants';
 
 import ModalContext from 'contexts/ModalContext';
 
-export default () => {
+export default ({ pool }) => {
   const { t } = useTranslation();
   const { address: account, connector } = useAccount();
   const { openWalletModal } = useContext(ModalContext);
@@ -24,8 +24,8 @@ export default () => {
       <Logo style={{ marginRight: 10 }} />
       <Row>
         <NetworkLabel>
-          <NetworkIcon src={NETWORKS[137].icon} />
-          {NETWORKS[137].name}
+          <NetworkIcon src={NETWORKS[pool.chainId].icon} />
+          {NETWORKS[pool.chainId].name}
         </NetworkLabel>
         {account ? (
           <WalletDropdown>

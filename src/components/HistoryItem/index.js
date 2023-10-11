@@ -13,7 +13,7 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { useDateFromNow, useWindowDimensions } from 'hooks';
+import { useDateFromNow } from 'hooks';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
@@ -64,7 +64,7 @@ const actions = {
 };
 
 function getSign(item) {
-  if (item.actions.length === 1 && item.actions[0].isLoopback) {
+  if (item.actions?.length === 1 && item.actions[0].isLoopback) {
     return '';
   }
   return actions[item.type].sign;
@@ -115,13 +115,15 @@ const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => {
   );
 };
 
-export default ({ item, zkAccount, currentPool }) => {
+const Date = ({ timestamp }) => {
+  const date = useDateFromNow(timestamp);
+  return <DateText>{date}</DateText>;
+};
+
+export default ({ item, zkAccount, currentPool, isMobile }) => {
   const { t } = useTranslation();
-  const date = useDateFromNow(item.timestamp);
-  const { width } = useWindowDimensions();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const isMobile = width <= 500;
   const currentChainId = currentPool.chainId;
   const tokenSymbol = useMemo(() => {
     if (item.timestamp <= currentPool.migration?.timestamp) {
@@ -139,8 +141,10 @@ export default ({ item, zkAccount, currentPool }) => {
   }, []);
 
   const isPending = [0, 1].includes(item.state);
-  // const isDirectDepositLabelShown = item.type === DirectDeposit && !currentPool.isNative;
-  const isDirectDepositLabelShown = false;
+  const isPaymentLabelShown = item.type === DirectDeposit && (
+    (item.sender && item.sender === currentPool.paymentContractAddress?.toLowerCase()) ||
+    (item.actions[0]?.from && item.actions[0].from === currentPool.paymentContractAddress?.toLowerCase())
+  );
 
   return (
     <Container>
@@ -179,7 +183,7 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
           <Row>
-            {date && <Date>{date}</Date>}
+            {item.timestamp && <Date timestamp={item.timestamp} />}
             {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
@@ -210,7 +214,7 @@ export default ({ item, zkAccount, currentPool }) => {
             {[Deposit, Withdrawal].includes(item.type) ? (
               <AddressLink action={item} isMobile={isMobile} currentChainId={currentChainId} />
             ) : (
-              item.actions.length === 1 ? (
+              item.actions?.length === 1 ? (
                 <Tooltip
                   content={item.actions[0].to}
                   delay={0.3}
@@ -232,7 +236,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         <Text style={{ marginLeft: 5 }}>
                           {shortAddress(
                             item.actions[0].to,
-                            isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
+                            isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
                           )}
                         </Text>
                       </ZkAddress>
@@ -249,7 +253,7 @@ export default ({ item, zkAccount, currentPool }) => {
                         onClick={() => setIsDetailsModalOpen(true)}
                         style={{ marginLeft: 5, fontSize: 16 }}
                       >
-                        {item.actions.length} {t('glossary.addresses', { count: item.actions.length })}
+                        {item.actions?.length} {t('glossary.addresses', { count: item.actions?.length })}
                       </Button>
                     </>
                   ) : (
@@ -258,7 +262,7 @@ export default ({ item, zkAccount, currentPool }) => {
                       <Text style={{ marginLeft: 5 }}>
                         {shortAddress(
                           item.actions[0].to,
-                          isMobile ? 10 : (isDirectDepositLabelShown ? 16 : 22)
+                          isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
                         )}
                       </Text>
                     </>
@@ -268,15 +272,15 @@ export default ({ item, zkAccount, currentPool }) => {
             )}
           </Row>
           <Row>
-            {item.actions.length > 1 && item.type === TransferOut && (
+            {item.actions?.length > 1 && item.type === TransferOut && (
               <MultitransferLabel>
                 {t('multitransfer.title')}
               </MultitransferLabel>
             )}
-            {/* {isDirectDepositLabelShown && (
-              <DirectDepositLabel>
-                {isMobile ? 'Direct' : 'Direct deposit'}
-                {isPending && (
+            {isPaymentLabelShown && (
+              <DirectDepositLabel style={{ marginRight: isPending ? 0 : 10 }}>
+                {t('common.payment')}
+                {/* {isPending && (
                   <Tooltip
                     content={
                       <span>
@@ -293,9 +297,9 @@ export default ({ item, zkAccount, currentPool }) => {
                   >
                     <InfoIcon />
                   </Tooltip>
-                )}
+                )} */}
               </DirectDepositLabel>
-            )} */}
+            )}
             {(item.txHash && item.txHash !== '0') ? (
               <Link size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', item.txHash)}>
                 {t('history.viewTx')}
@@ -306,7 +310,7 @@ export default ({ item, zkAccount, currentPool }) => {
           </Row>
         </RowSpaceBetween>
       </Column>
-      {item.actions.length > 1 && (
+      {item.actions?.length > 1 && (
         <MultitransferDetailsModal
           transfers={item.actions.map(action => ({ address: action.to, ...action }))}
           isOpen={isDetailsModalOpen}
@@ -373,13 +377,13 @@ const Text = styled.span`
   color: ${props => props.theme.text.color[props.$error ? 'error' : 'primary']};
 `;
 
-const Date = styled.span`
+const DateText = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.secondary};
   opacity: 60%;
 `;
 
-const FeeText = styled(Date)``;
+const FeeText = styled(DateText)``;
 
 const SpinnerSmall = styled(Spinner)`
   margin-left: 10px;

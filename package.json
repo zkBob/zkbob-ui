@@ -1,6 +1,6 @@
 {
   "name": "zkbob-ui",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "private": true,
   "dependencies": {
     "@dicebear/avatars": "^4.10.2",
@@ -17,6 +17,7 @@
     "codemirror": "5.65.9",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.1.1",
+    "ethereum-multicall": "^2.19.0",
     "ethers": "5.7.2",
     "history": "4.10.1",
     "i18next": "^23.4.4",
@@ -49,7 +50,7 @@
     "wagmi": "^0.12.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "5.3.0-beta4"
+    "zkbob-client-js": "5.3.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

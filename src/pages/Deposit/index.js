@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useMemo } from 'react';
+import React, { useState, useContext, useCallback, useMemo, useEffect } from 'react';
 import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -79,6 +79,10 @@ export default () => {
       Sentry.captureException(error, { tags: { method: 'Deposit.setMax' } });
     }
   }, [usedFee, depositLimit, usedBalance, currentPool.tokenDecimals]);
+
+  useEffect(() => {
+    setDisplayAmount('');
+  }, [currentPool.alias]);
 
   if (isDemo) return <DemoCard />;
 

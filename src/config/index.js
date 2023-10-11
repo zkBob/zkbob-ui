@@ -44,6 +44,7 @@ const config = {
           prevTokenSymbol: 'BOB',
         },
         addressPrefix: 'zkbob_optimism',
+        paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
       },
       'WETH-optimism': {
         chainId: 10,
@@ -63,6 +64,7 @@ const config = {
         minTxAmount: 1000000n, // 0.001 ETH
         ddSubgraph: 'zkbob-eth-optimism',
         addressPrefix: 'zkbob_optimism_eth',
+        paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
       },
     },
     chains: {

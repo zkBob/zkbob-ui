@@ -2327,7 +2327,7 @@
   dependencies:
     "@ethersproject/logger" "^5.6.0"
 
-"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.7.2":
+"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.0.10", "@ethersproject/providers@^5.7.2":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.2.tgz#f8b1a4f275d7ce58cf0a2eec222269a08beb18cb"
   integrity sha512-g34EWZ1WWAVgr4aptGlVBF8mhl3VWjv+8hoAnzStu8Ah22VHBsuGzP17eb6xDVRzw895G4W7vvx60lFFur/1Rg==
@@ -8821,6 +8821,11 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
+err-code@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/err-code/-/err-code-2.0.3.tgz#23c2f3b756ffdfc608d30e27c9a941024807e7f9"
+  integrity sha512-2bmlRpNKBxT/CRmPOlyISQpNj+qSeYvcym/uT0Jx2bMOlKLtSy1ZmLuVxSEKKyor/N5yhvp/ZiG1oE3DEYMSFA==
+
 error-ex@^1.3.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/error-ex/-/error-ex-1.3.2.tgz#b4ac40648107fdcdcfae242f428bea8a14d4f1bf"
@@ -9460,6 +9465,14 @@ ethereum-cryptography@^2.0.0:
     "@scure/bip32" "1.3.1"
     "@scure/bip39" "1.2.1"
 
+ethereum-multicall@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/ethereum-multicall/-/ethereum-multicall-2.19.0.tgz#28462bf48792bf7bb0b2db1ca546f439b2adab96"
+  integrity sha512-ECMxdf1ffxBWTCLeAzEGGWUYNdlNq4zXPj/ZPXdaixbx/qZ/gw4ongwpuR5UGy6D5epWDftvFvIAEzmkwGZ1lQ==
+  dependencies:
+    "@ethersproject/providers" "^5.0.10"
+    ethers "^5.0.15"
+
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
@@ -9504,7 +9517,7 @@ ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.4:
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethers@5.7.2, ethers@^5.7.0, ethers@^5.7.2:
+ethers@5.7.2, ethers@^5.0.15, ethers@^5.7.0, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -12277,15 +12290,15 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libzkbob-rs-wasm-web-mt@1.4.2-beta:
-  version "1.4.2-beta"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web-mt/-/libzkbob-rs-wasm-web-mt-1.4.2-beta.tgz#6d4c1b2d8fd16af3f067ddcd50e88efd1d533f46"
-  integrity sha512-N8DApn2+6RDpusKccZMh+IfRFuKwbYhlxe98vwjC013FmWbgGs/5LsfTmhJ1DvwrNIxSkyQ2JrSX8WvRxbT4LA==
+libzkbob-rs-wasm-web-mt@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web-mt/-/libzkbob-rs-wasm-web-mt-1.4.2.tgz#134140557a23f251a40995f64102d9b1091b94a2"
+  integrity sha512-2jvdNy20Va2e9IAlPbmewZ/7aeZMH1NBEQFhfH9BVObhVqNpNWWhna82zRXT0ebfu+HJwaZGJ1w4n6UzzYO4cw==
 
-libzkbob-rs-wasm-web@1.4.2-beta:
-  version "1.4.2-beta"
-  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-1.4.2-beta.tgz#b489663666bd69cdedfb043fa63d151827b27140"
-  integrity sha512-iKfEr+w0FX9IVoK85zp7J7+L8a/pbVpE3N8fEAI1QoY1OcWMeMqqJNMiF0TLkxU7F8QpG832G4LyTqCi+ByBYA==
+libzkbob-rs-wasm-web@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/libzkbob-rs-wasm-web/-/libzkbob-rs-wasm-web-1.4.2.tgz#c69453f387817eb5d0e335d9b6a2bead28ce5b49"
+  integrity sha512-CJDe7lpxsS70Z/eSvVmufSq4nQZ25M59a49ZIXEyTG86hJ9xCNkCjIiSvJSZh0+UwVQI87PSkmMeQY+AefqDSQ==
 
 lie@3.1.1:
   version "3.1.1"
@@ -14368,6 +14381,14 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
+promise-retry@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/promise-retry/-/promise-retry-2.0.1.tgz#ff747a13620ab57ba688f5fc67855410c370da22"
+  integrity sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==
+  dependencies:
+    err-code "^2.0.2"
+    retry "^0.12.0"
+
 promise-throttle@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/promise-throttle/-/promise-throttle-1.1.2.tgz#8a59d0424b6f9673aa8405c8b6bd4b5e4f7f71db"
@@ -15325,6 +15346,11 @@ restore-cursor@^2.0.0:
   dependencies:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
+
+retry@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
+  integrity sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==
 
 retry@^0.13.1:
   version "0.13.1"
@@ -18429,10 +18455,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zkbob-client-js@5.3.0-beta4:
-  version "5.3.0-beta4"
-  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-5.3.0-beta4.tgz#581dea90f76bf8ee665705ad6ed488912f14eeb2"
-  integrity sha512-dNoIr1Tr69CS7qH4yAN4moY901vlDMAfRR4HwdxATVoFpsxApSMhnGqodlUR2GoychP0DxXeDa9HV3Ckwfkc2g==
+zkbob-client-js@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/zkbob-client-js/-/zkbob-client-js-5.3.0.tgz#b0ae16e560ee86eb278ec0f1c5dfd775724992d8"
+  integrity sha512-b4WOFjMfXhrwxGOPw8V1+4kL/FkfB7D/SFye/nToG/sAhTP0gi7LhaSvTD/BwqlfKnyyI52KiAXs4TscUf6Tyg==
   dependencies:
     "@ethereumjs/util" "^8.0.2"
     "@graphprotocol/client-cli" "3.0.0"
@@ -18445,8 +18471,9 @@ zkbob-client-js@5.3.0-beta4:
     graphql "16.7.1"
     hdwallet-babyjub "^0.0.2"
     idb "^7.0.0"
-    libzkbob-rs-wasm-web "1.4.2-beta"
-    libzkbob-rs-wasm-web-mt "1.4.2-beta"
+    libzkbob-rs-wasm-web "1.4.2"
+    libzkbob-rs-wasm-web-mt "1.4.2"
+    promise-retry "^2.0.1"
     promise-throttle "^1.1.2"
     regenerator-runtime "^0.13.9"
     tronweb "^5.3.0"

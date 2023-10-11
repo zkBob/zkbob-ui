@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle, useEffect } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
@@ -136,6 +136,13 @@ export default forwardRef((props, ref) => {
     setIsConfirmModalOpen(true);
     setIsDetailsModalOpen(false);
   }, []);
+
+  useEffect(() => {
+    setData('');
+    setParsedData([]);
+    setErrors([]);
+    setErrorType(null);
+  }, [currentPool.alias]);
 
   return (
     <>

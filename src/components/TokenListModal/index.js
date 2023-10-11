@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Input from 'components/Input';
-import { useMemo } from 'react';
+
+import { formatNumber } from 'utils';
 
 const ListItem = ({ token, onClick }) => (
   <ItemContainer onClick={onClick}>
     <ItemInnerContainer>
-      <TokenIcon src={token.logoURI} />
-      <Column>
-        <TokenSymbol>{token.symbol}</TokenSymbol>
-        <TokenName>{token.name}</TokenName>
-      </Column>
+      <Row>
+        <TokenIcon src={token.logoURI} />
+        <Column>
+          <TokenSymbol>{token.symbol}</TokenSymbol>
+          <TokenName>{token.name}</TokenName>
+        </Column>
+      </Row>
+      {(token?.balance && !token.balance.isZero()) && (
+        <Column style={{ alignItems: 'flex-end' }}>
+          <TokenSymbol>{formatNumber(token.balance, token?.decimals || 18)}</TokenSymbol>
+          <TokenName>{`≈ $${token?.balanceUSD || '--'}`}</TokenName>
+        </Column>
+      )}
     </ItemInnerContainer>
   </ItemContainer>
 );
@@ -95,6 +104,7 @@ const TokenIcon = styled.img`
 const ItemInnerContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   padding: 7px 10px;
 `;
@@ -106,6 +116,12 @@ const ItemContainer = styled.div`
     background-color: ${({ theme }) => theme.walletConnectorOption.background.hover};
     border-radius: 16px;
   }
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Column = styled.div`

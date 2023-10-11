@@ -11,6 +11,7 @@ import { TX_STATUSES, NETWORKS, SUPPORT_URL } from 'constants';
 
 import { ReactComponent as CheckIconDefault } from 'assets/check-circle.svg';
 import { ReactComponent as CrossIconDefault } from 'assets/cross-circle.svg';
+import { ReactComponent as CsvFileIcon} from 'assets/csv-file.svg';
 
 import { formatNumber } from 'utils';
 
@@ -83,11 +84,13 @@ const useDescriptions = () => {
         network: NETWORKS[currentPool.chainId].name
       }),
     [TX_STATUSES.APPROVED]: () => t('transactionModal.descriptions.approved'),
-    [TX_STATUSES.SENT]: ({ currentPool, txHash }) => (
+    [TX_STATUSES.SENT]: ({ currentPool, txHash, csvLink }) => (
       <Trans
         i18nKey="transactionModal.descriptions.sent"
         components={{
-          1: <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)} />
+          1: <Link href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', txHash)} />,
+          2: <DownloadLink href={csvLink} download={`payment_statement_${txHash}.csv`} />,
+          3: <CsvFileIcon style={{ marginRight: 12 }} />,
         }}
       />
     ),
@@ -112,7 +115,7 @@ const SUSPICIOUS_ACCOUNT_STATUSES = [
   TX_STATUSES.SUSPICIOUS_ACCOUNT_WITHDRAWAL,
 ];
 
-export default ({ isOpen, onClose, status, amount, error, supportId, currentPool, txHash }) => {
+export default ({ isOpen, onClose, status, amount, error, supportId, currentPool, txHash, csvLink }) => {
   const { t } = useTranslation();
   const descriptions = useDescriptions();
   return (
@@ -137,7 +140,7 @@ export default ({ isOpen, onClose, status, amount, error, supportId, currentPool
         else return <Spinner />;
       })()}
       {descriptions[status] && (
-        <Description>{descriptions[status]({ amount, currentPool, txHash })}</Description>
+        <Description>{descriptions[status]({ amount, currentPool, txHash, csvLink })}</Description>
       )}
       {(status === TX_STATUSES.REJECTED && error) && (
         <Description>{error}</Description>
@@ -193,4 +196,18 @@ const CheckIcon = styled(CheckIconDefault)`
 
 const CrossIcon = styled(CrossIconDefault)`
   margin-bottom: 16px;
+`;
+
+const DownloadLink = styled(Link)`
+  display: inline-flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  padding: 0px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--buttons-blue-n-2, rgba(22, 67, 206, 0.90));
+  color: var(--buttons-blue-n-2, rgba(22, 67, 206, 0.90));
+  font-size: 16px;
+  margin-top: 16px;
 `;
