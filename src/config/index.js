@@ -44,6 +44,7 @@ const config = {
           prevTokenSymbol: 'BOB',
         },
         addressPrefix: 'zkbob_optimism',
+        paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
       },
       'WETH-optimism': {
         chainId: 10,
