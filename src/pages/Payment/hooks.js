@@ -107,22 +107,21 @@ export function useTokensWithBalances(pool) {
   useEffect(() => {
     const tokenListWithBalances = tokenList.map(token => {
       let balanceUSD = null;
+      let balanceUSDNumber = 0;
       if (token.priceUSD && balances[token.address]) {
         const priceBN = ethers.utils.parseEther(Number(token.priceUSD).toFixed(18));
         const balanceUsdBN = balances[token.address].mul(priceBN).div(ethers.constants.WeiPerEther);
+        balanceUSDNumber = Number(ethers.utils.formatUnits(balanceUsdBN, token?.decimals || 18));
         balanceUSD = formatNumber(balanceUsdBN, token?.decimals || 18);
       }
       return {
         ...token,
         balance: balances[token.address],
         balanceUSD,
+        balanceUSDNumber,
       };
     });
-    const sorted = tokenListWithBalances.sort((a, b) => {
-      if (a.balanceUSD === null) return 1;
-      if (b.balanceUSD === null) return -1;
-      return b.balanceUSD - a.balanceUSD;
-    });
+    const sorted = tokenListWithBalances.sort((a, b) => b.balanceUSDNumber - a.balanceUSDNumber);
     setTokenListWithBalances(sorted);
   }, [balances, tokenList]);
 
