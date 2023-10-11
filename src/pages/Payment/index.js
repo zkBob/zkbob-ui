@@ -20,8 +20,6 @@ import Input from './Input';
 import PseudoInput from './PseudoInput';
 import ConfirmationModal from './ConfirmationModal';
 
-import { ReactComponent as TryZkBobBannerImageDefault } from 'assets/try-zkbob-banner.svg';
-
 import ModalContext, { ModalContextProvider } from 'contexts/ModalContext';
 import SupportIdContext, { SupportIdContextProvider } from 'contexts/SupportIdContext';
 import TransactionModalContext, { TransactionModalContextProvider } from 'contexts/TransactionModalContext';
@@ -134,7 +132,10 @@ const Payment = () => {
           }]}
           currentPool={{ ...pool, tokenSymbol: currency }}
         />
-        <TryZkBobBannerImage onClick={() => history.push('/')} />
+        <TryZkBobBannerImage
+          src={require('assets/try-zkbob-banner.webp')}
+          onClick={() => history.push('/')}
+        />
       </Layout>
       <WalletModal />
       <TokenListModal
@@ -222,7 +223,8 @@ const Title = styled.span`
   }
 `;
 
-const TryZkBobBannerImage = styled(TryZkBobBannerImageDefault)`
+const TryZkBobBannerImage = styled.img`
+  width: 480px;
   max-width: 100%;
   margin-top: 20px;
   cursor: pointer;
