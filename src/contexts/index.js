@@ -9,23 +9,26 @@ import IncreasedLimitsContext, { IncreasedLimitsContextProvider } from 'contexts
 import PoolContext, { PoolContextProvider } from 'contexts/PoolContext';
 import TokenPriceContext, { TokenPriceContextProvider } from 'contexts/TokenPriceContext';
 import LanguageContext, { LanguageContextProvider } from 'contexts/LanguageContext';
+import WalletContext, { WalletContextProvider } from 'contexts/WalletContext';
 
 const ContextsProvider = ({ children }) => (
   <SupportIdContextProvider>
     <TransactionModalContextProvider>
       <ModalContextProvider>
         <PoolContextProvider>
-          <TokenPriceContextProvider>
-            <TokenBalanceContextProvider>
-              <ZkAccountContextProvider>
-                <IncreasedLimitsContextProvider>
-                  <LanguageContextProvider>
-                    {children}
-                  </LanguageContextProvider>
-                </IncreasedLimitsContextProvider>
-              </ZkAccountContextProvider>
-            </TokenBalanceContextProvider>
-          </TokenPriceContextProvider>
+          <WalletContextProvider>
+            <TokenPriceContextProvider>
+              <TokenBalanceContextProvider>
+                <ZkAccountContextProvider>
+                  <IncreasedLimitsContextProvider>
+                    <LanguageContextProvider>
+                      {children}
+                    </LanguageContextProvider>
+                  </IncreasedLimitsContextProvider>
+                </ZkAccountContextProvider>
+              </TokenBalanceContextProvider>
+            </TokenPriceContextProvider>
+          </WalletContextProvider>
         </PoolContextProvider>
       </ModalContextProvider>
     </TransactionModalContextProvider>
@@ -36,5 +39,5 @@ export default ContextsProvider;
 export {
   ZkAccountContext, TokenBalanceContext, TransactionModalContext,
   ModalContext, SupportIdContext, IncreasedLimitsContext, PoolContext,
-  TokenPriceContext, LanguageContext,
+  TokenPriceContext, LanguageContext, WalletContext,
 };

@@ -1,31 +1,22 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 
-import { TransactionModalContext } from 'contexts';
+import { TransactionModalContext, WalletContext } from 'contexts';
 
 import { TX_STATUSES, PERMIT2_CONTRACT_ADDRESS } from 'constants';
-import { useMemo } from 'react';
+import tokenAbi from 'abis/token.json';
 
 
-const TOKEN_ABI = [
-  'function allowance(address, address) pure returns (uint256)',
-  'function approve(address, uint256) returns (bool)',
-];
-
-export default (chainId, tokenAddress, amount, balance) => {
+export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
   const { openTxModal, closeTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
-  const { address: account } = useAccount();
-  const { chain } = useNetwork();
-  const { data: signer } = useSigner({ chainId });
-  const provider = useProvider({ chainId });
-  const { switchNetworkAsync } = useSwitchNetwork({
-    chainId,
-    throwForSwitchChainNotSupported: true,
-  });
+  const { address: account, chain, switchNetwork, callContract, waitForTx } = useContext(WalletContext);
   const [allowance, setAllowance] = useState(ethers.constants.Zero);
 
+  const contractForApproval = useMemo(() =>
+    type === 'permit2' ? PERMIT2_CONTRACT_ADDRESS : pool.poolAddress,
+    [type, pool.poolAddress]
+  );
   const isApproved = useMemo(() => allowance.gte(amount), [allowance, amount]);
 
   const updateAllowance = useCallback(async () => {
@@ -33,11 +24,9 @@ export default (chainId, tokenAddress, amount, balance) => {
       setAllowance(ethers.constants.Zero);
       return;
     }
-    const token = new ethers.Contract(tokenAddress, TOKEN_ABI, provider);
-    token.allowance(account, PERMIT2_CONTRACT_ADDRESS).then(allowance => {
-      setAllowance(allowance);
-    });
-  }, [account, provider, tokenAddress]);
+    const allowance = await callContract(tokenAddress, tokenAbi, 'allowance', [account, contractForApproval]);
+    setAllowance(allowance);
+  }, [account, callContract, tokenAddress, contractForApproval]);
 
   useEffect(() => {
     updateAllowance();
@@ -46,10 +35,10 @@ export default (chainId, tokenAddress, amount, balance) => {
   const approve = useCallback(async () => {
     try {
       openTxModal();
-      if (chain.id !== chainId) {
+      if (chain.id !== pool.chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
-          await switchNetworkAsync();
+          await switchNetwork();
         } catch (error) {
           console.error(error);
           Sentry.captureException(error, { tags: { method: 'hooks.useApproval.approve.switchNetwork' } });
@@ -58,24 +47,23 @@ export default (chainId, tokenAddress, amount, balance) => {
         }
       }
       setTxStatus(TX_STATUSES.APPROVE_TOKENS);
-      const token = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
-      const tx = await token.approve(PERMIT2_CONTRACT_ADDRESS, ethers.constants.MaxUint256);
+      const tx = await callContract(tokenAddress, tokenAbi, 'approve', [contractForApproval, ethers.constants.MaxUint256], true);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
-      await tx.wait();
+      await waitForTx(tx);
       closeTxModal();
       updateAllowance();
     } catch (error) {
-      console.error(error);
       Sentry.captureException(error, { tags: { method: 'hooks.useApproval.approve' } });
-      const message = error.message.includes('user rejected transaction')
+      const message = error.message?.includes('user rejected transaction')
         ? 'User denied transaction signature'
         : error.message;
-      setTxError(message);
+      setTxError(message || error);
       setTxStatus(TX_STATUSES.REJECTED);
     }
   }, [
-    openTxModal, setTxStatus, setTxError, switchNetworkAsync, chain,
-    signer, updateAllowance, chainId, tokenAddress, closeTxModal,
+    openTxModal, setTxStatus, setTxError, switchNetwork, chain,
+    waitForTx, updateAllowance, pool.chainId, tokenAddress, closeTxModal,
+    callContract, contractForApproval,
   ]);
 
   return { isApproved, approve, updateAllowance };

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
-import { useContract, useProvider } from 'wagmi';
+
+import WalletContext from 'contexts/WalletContext';
 
 export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.constants.Zero) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
@@ -28,27 +29,24 @@ const POOL_CONTRACT_ABI = ['function tokenSeller() pure returns (address)'];
 const SWAP_CONTRACT_ABI = ['function quoteSellForETH(uint256) pure returns (uint256)'];
 
 export const useConvertion = (currentPool) => {
-  const provider = useProvider({ chainId: currentPool.chainId });
-  const poolContract = useContract({
-    address: currentPool.poolAddress,
-    abi: POOL_CONTRACT_ABI,
-    signerOrProvider: provider
-  });
+  const { callContract, isTron } = useContext(WalletContext);
   const [price, setPrice] = useState(ethers.constants.Zero);
   const [exist, setExist] = useState(false);
 
   useEffect(() => {
     async function getPrice() {
+      if (isTron) return;
       try {
         let swapContractAddress = ethers.constants.AddressZero;
         try {
-          swapContractAddress = await poolContract.tokenSeller();
+          swapContractAddress = await callContract(currentPool.poolAddress, POOL_CONTRACT_ABI, 'tokenSeller');
         } catch (error) {}
         const exist = swapContractAddress !== ethers.constants.AddressZero;
         setExist(exist);
         if (!exist) return;
-        const swapContract = new ethers.Contract(swapContractAddress, SWAP_CONTRACT_ABI, provider);
-        const price = await swapContract.quoteSellForETH(ethers.utils.parseUnits('1', currentPool.tokenDecimals));
+        const price = await callContract(swapContractAddress, SWAP_CONTRACT_ABI, 'quoteSellForETH', [
+          ethers.utils.parseUnits('1', currentPool.tokenDecimals),
+        ]);
         setPrice(price);
       } catch (error) {
         console.error(error);
@@ -60,7 +58,7 @@ export const useConvertion = (currentPool) => {
     getPrice();
     const interval = setInterval(getPrice, 1000 * 60 * 5);
     return () => clearInterval(interval);
-  }, [poolContract, provider, currentPool]);
+  }, [callContract, currentPool, isTron]);
 
   return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
 };

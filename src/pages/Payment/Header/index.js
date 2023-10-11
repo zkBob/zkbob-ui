@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { useAccount } from 'wagmi';
 import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
@@ -14,10 +13,11 @@ import { shortAddress } from 'utils';
 import { CONNECTORS_ICONS, NETWORKS } from 'constants';
 
 import ModalContext from 'contexts/ModalContext';
+import WalletContext from 'contexts/WalletContext';
 
 export default ({ pool }) => {
   const { t } = useTranslation();
-  const { address: account, connector } = useAccount();
+  const { address: account, connector } = useContext(WalletContext);
   const { openWalletModal } = useContext(ModalContext);
   return (
     <Header>

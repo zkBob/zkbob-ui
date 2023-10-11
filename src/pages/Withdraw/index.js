@@ -8,7 +8,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, PoolContext } from 'contexts';
+import { ZkAccountContext, PoolContext, WalletContext } from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -35,6 +35,7 @@ export default () => {
     isPending, isDemo, limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
   const { currentPool } = useContext(PoolContext);
+  const { isAddress } = useContext(WalletContext);
   const [displayAmount, setDisplayAmount] = useState('');
   const amount = useParsedAmount(displayAmount, currentPool.tokenDecimals);
   const [receiver, setReceiver] = useState('');
@@ -84,7 +85,7 @@ export default () => {
       button = <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
     } else if (!receiver) {
       button = <Button disabled>{t('buttonText.enterAddress')}</Button>;
-    } else if (!ethers.utils.isAddress(receiver)) {
+    } else if (!isAddress(receiver)) {
       button = <Button disabled>{t('buttonText.invalidAddress')}</Button>;
     } else {
       button = (

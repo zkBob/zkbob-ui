@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { WalletProvider as TronWalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks';
 
 import ThemeProvider from 'providers/ThemeProvider';
 import Web3Provider from 'providers/Web3Provider';
@@ -66,7 +67,9 @@ export default () => (
   <ThemeProvider>
     <GlobalStyle />
     <Web3Provider>
-      <Pages />
+      <TronWalletProvider autoConnect={false}>
+        <Pages />
+      </TronWalletProvider>
     </Web3Provider>
   </ThemeProvider>
 );

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { useTranslation } from 'react-i18next';
