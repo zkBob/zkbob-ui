@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Router, Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import { HashRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
@@ -155,7 +155,7 @@ const MainApp = () => {
 }
 
 export default () => (
-  <Router history={history}>
+  <HashRouter>
     <Switch>
       <SentryRoute exact strict path="/payment/:address">
         <Payment />
@@ -166,7 +166,7 @@ export default () => (
         </ContextsProvider>
       </SentryRoute>
     </Switch>
-  </Router>
+  </HashRouter>
 );
 
 const BackgroundImages = styled.div`
