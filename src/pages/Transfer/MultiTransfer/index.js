@@ -20,17 +20,6 @@ import { PoolContext, ZkAccountContext } from 'contexts';
 import { formatNumber } from 'utils';
 import { useFee } from 'hooks';
 
-const prefixes = {
-  'BOB2USDC-polygon': 'zkbob_polygon',
-  'BOB2USDC-optimism': 'zkbob_optimism',
-  'BOB-sepolia': 'zkbob_sepolia',
-  'BOB2USDC-goerli': 'zkbob_goerli',
-  'USDC-goerli': 'zkbob_goerli_usdc',
-  'BOB-op-goerli': 'zkbob_goerli_optimism',
-  'WETH-goerli': 'zkbob_goerli_eth',
-  'WETH-optimism': 'zkbob_optimism_eth',
-};
-
 export default forwardRef((props, ref) => {
   const { t } = useTranslation();
   const {
@@ -150,7 +139,7 @@ export default forwardRef((props, ref) => {
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder={`${prefixes[currentPool.alias]}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
+        placeholder={`${currentPool.addressPrefix}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
         errorLines={errors}
         error={errorType}
       />
