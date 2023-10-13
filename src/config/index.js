@@ -160,6 +160,21 @@ const config = {
         ddSubgraph: 'zkbob-eth-goerli',
         addressPrefix: 'zkbob_goerli_eth',
       },
+      'USDT-shasta': {
+        chainId: 2494104990,
+        poolAddress: 'TLTyi81NhoeGfsq8Ef1STDYs6E7HFSAruV',
+        tokenAddress: 'TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs',
+        relayerUrls: ['https://shasta-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDT',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'approve',
+        minTxAmount: 50000n, // 0.05 USDT
+        addressPrefix: 'zkbob_shasta',
+        isTron: true,
+      },
     },
     chains: {
       '11155111': {
@@ -170,6 +185,9 @@ const config = {
       },
       '420': {
         rpcUrls: ['https://goerli.optimism.io']
+      },
+      '2494104990': {
+        rpcUrls: ['https://api.shasta.trongrid.io']
       }
     },
     snarkParams: {

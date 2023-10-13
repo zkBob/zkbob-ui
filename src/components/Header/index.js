@@ -1,7 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useAccount } from 'wagmi';
 import { useTranslation } from 'react-i18next';
 
 import ButtonDefault from 'components/Button';
@@ -25,6 +24,7 @@ import { useWindowDimensions } from 'hooks';
 import {
   ZkAccountContext, ModalContext,
   TokenBalanceContext, PoolContext,
+  WalletContext,
 } from 'contexts';
 
 const { parseUnits } = ethers.utils;
@@ -43,7 +43,7 @@ const BalanceSkeleton = isMobile => (
 
 export default ({ empty }) => {
   const { t } = useTranslation();
-  const { address: account, connector } = useAccount();
+  const { address: account, connector, isTron } = useContext(WalletContext);
   const { balance, nativeBalance, updateBalance, isLoadingBalance } = useContext(TokenBalanceContext);
   const {
     zkAccount, isLoadingZkAccount, balance: poolBalance,
@@ -157,9 +157,11 @@ export default ({ empty }) => {
         </LogoSection>
         <AccountSection>
           {!isMobile && networkDropdown}
-          <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
-            {t('buttonText.getToken', { symbol: currentPool.tokenSymbol })}
-          </BridgeButton>
+          {!isTron && (
+            <BridgeButton small onClick={openSwapModal} data-ga-id="get-token-header">
+              {t('buttonText.getToken', { symbol: currentPool.tokenSymbol })}
+            </BridgeButton>
+          )}
           {!isMobile && walletDropdown}
           {!isMobile && zkAccountDropdown}
           {(zkAccount && !isMobile) && (

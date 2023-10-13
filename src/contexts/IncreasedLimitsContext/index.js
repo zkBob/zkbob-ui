@@ -1,9 +1,8 @@
 import { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { useAccount } from 'wagmi';
 import * as Sentry from '@sentry/react';
 
 import { INCREASED_LIMITS_STATUSES } from 'constants';
-import { PoolContext } from 'contexts';
+import { PoolContext, WalletContext } from 'contexts';
 
 const IncreasedLimitsContext = createContext({});
 
@@ -11,7 +10,7 @@ export default IncreasedLimitsContext;
 
 export const IncreasedLimitsContextProvider = ({ children }) => {
   const { currentPool } = useContext(PoolContext);
-  const { address } = useAccount();
+  const { address } = useContext(WalletContext);
   const [status, setStatus] = useState(null);
 
   const updateStatus = useCallback(async () => {

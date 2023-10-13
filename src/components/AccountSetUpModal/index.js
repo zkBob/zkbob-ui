@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useSignMessage } from 'wagmi';
 import md5 from 'js-md5';
 import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
+
+import { WalletContext } from 'contexts';
 
 import Create from './Create';
 import Confirm from './Confirm';
@@ -101,7 +102,7 @@ const PasswordPrompt = ({ setStep, close }) => {
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { t } = useTranslation();
-  const { signMessageAsync } = useSignMessage();
+  const { signMessage } = useContext(WalletContext);
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
@@ -133,7 +134,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
 
   const generate = useCallback(async () => {
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    let signedMessage = await signMessageAsync({ message });
+    let signedMessage = await signMessage(message);
     if (!window.location.host.includes(process.env.REACT_APP_LEGACY_SIGNATURE_DOMAIN)) {
       // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
       const MIN_VALID_V_VALUE = 27;
@@ -146,7 +147,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
     setStep(STEP.CREATE_PASSWORD_PROMPT);
-  }, [signMessageAsync]);
+  }, [signMessage]);
 
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;

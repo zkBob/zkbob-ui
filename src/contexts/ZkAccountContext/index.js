@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork } from 'wagmi';
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 import * as Sentry from "@sentry/react";
@@ -14,7 +13,7 @@ import { Trans } from 'react-i18next';
 
 import {
   TransactionModalContext, ModalContext, PoolContext,
-  TokenBalanceContext, SupportIdContext,
+  TokenBalanceContext, SupportIdContext, WalletContext,
 } from 'contexts';
 
 import { TX_STATUSES } from 'constants';
@@ -42,13 +41,10 @@ export default ZkAccountContext;
 export const ZkAccountContextProvider = ({ children }) => {
   const { currentPool, setCurrentPool } = useContext(PoolContext);
   const previousPoolAlias = usePrevious(currentPool.alias);
-  const { address: account } = useAccount();
-  const { chain } = useNetwork();
-  const { data: signer } = useSigner({ chainId: currentPool.chainId });
-  const { switchNetworkAsync } = useSwitchNetwork({
-    chainId: currentPool.chainId,
-    throwForSwitchChainNotSupported: true,
-  });
+  const {
+    address: account, chain, switchNetwork,
+    sign, signTypedData, sendTransaction,
+  } = useContext(WalletContext);
   const { openTxModal, setTxStatus, setTxAmount, setTxError } = useContext(TransactionModalContext);
   const { openPasswordModal, closePasswordModal, closeAllModals } = useContext(ModalContext);
   const { updateBalance: updateTokenBalance } = useContext(TokenBalanceContext);
@@ -317,7 +313,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       if (chain.id !== currentPool.chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
-          await switchNetworkAsync();
+          await switchNetwork();
         } catch (error) {
           console.error(error);
           Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit.switchNetwork' } });
@@ -327,9 +323,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
       const shieldedAmount = await toShieldedAmount(amount);
       if (isNative) {
-        await zp.directDeposit(signer, zkClient, shieldedAmount, setTxStatus);
+        await zp.directDeposit(account, sendTransaction, zkClient, shieldedAmount, setTxStatus);
       } else {
-        await zp.deposit(signer, zkClient, shieldedAmount, relayerFee, setTxStatus);
+        await zp.deposit(account, sign, signTypedData, zkClient, shieldedAmount, relayerFee, setTxStatus);
       }
       updatePoolData();
       setTimeout(updateTokenBalance, 5000);
@@ -352,9 +348,9 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
     }
   }, [
-    zkClient, updatePoolData, signer, openTxModal, setTxAmount,
+    zkClient, updatePoolData, signTypedData, openTxModal, setTxAmount,
     setTxStatus, updateTokenBalance, toShieldedAmount, setTxError,
-    chain, switchNetworkAsync, currentPool,
+    chain, switchNetwork, currentPool, sendTransaction, account, sign,
   ]);
 
   const transfer = useCallback(async (to, amount, relayerFee) => {
