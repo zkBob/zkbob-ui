@@ -76,8 +76,8 @@ const config = {
       },
     },
     snarkParams: {
-      transferParamsUrl: 'https://r2-ipfs-test.zkbob.com/prod/transfer_params.bin',
-      transferVkUrl: 'https://r2-ipfs-test.zkbob.com/prod/transfer_verification_key.json'
+      transferParamsUrl: 'https://zkbob-params-test.infura-ipfs.io/ipfs/QmSjWBE3hAS7tMzsYLUJBbZzMCpo5h9urYYSobw9RUoAh6',
+      transferVkUrl: 'https://zkbob-params-test.infura-ipfs.io/ipfs/QmaKxC6H8mWgv6LR2uYHt8zAjM5JWJeQPahLda7SuV81xv'
     },
   },
   dev: {
