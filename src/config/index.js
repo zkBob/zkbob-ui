@@ -76,8 +76,8 @@ const config = {
       },
     },
     snarkParams: {
-      transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
-      transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json'
+      transferParamsUrl: 'https://r2-ipfs-test.zkbob.com/prod/transfer_params.bin',
+      transferVkUrl: 'https://r2-ipfs-test.zkbob.com/prod/transfer_verification_key.json'
     },
   },
   dev: {
@@ -173,8 +173,8 @@ const config = {
       }
     },
     snarkParams: {
-      transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
-      transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
+      transferParamsUrl: 'https://r2-ipfs-test.zkbob.com/staging/transfer_params.bin',
+      transferVkUrl: 'https://r2-ipfs-test.zkbob.com/staging/transfer_verification_key.json'
     },
   }
 };
