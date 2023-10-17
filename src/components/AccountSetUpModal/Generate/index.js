@@ -1,36 +1,20 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import WalletConnectors from 'components/WalletConnectors';
-import Button from 'components/Button';
 
 import { PoolContext } from 'contexts';
 
-import config from 'config';
-
-const poolsWithAliases = Object.values(config.pools).map((pool, index) => ({
-  ...pool,
-  alias: Object.keys(config.pools)[index],
-}));
-
 export default ({ next, isCreation }) => {
   const { t } = useTranslation();
-  const { currentPool, setCurrentPool } = useContext(PoolContext);
-
-  const switchPool = useCallback(() => {
-    const pool = poolsWithAliases.find(pool => pool.isTron !== currentPool.isTron);
-    setCurrentPool(pool.alias);
-  }, [setCurrentPool, currentPool.isTron]);
+  const { currentPool } = useContext(PoolContext);
 
   return (
     <Container>
       {!isCreation && (
         <Warning>
-          <Trans
-            i18nKey={`accountSetupModal.restoreWithWallet.warning${currentPool.isTron ? '_tron' : ''}`}
-            components={{ 1: <Button type="link" onClick={switchPool} /> }}
-          />
+          {t(`accountSetupModal.restoreWithWallet.warning${currentPool.isTron ? '_tron' : ''}`)}
         </Warning>
       )}
       <Description>
@@ -42,6 +26,7 @@ export default ({ next, isCreation }) => {
       <WalletConnectors
         callback={next}
         gaIdPrefix={(isCreation ? 'signup-' : 'login-')}
+        showAll={!isCreation}
       />
     </Container>
   );

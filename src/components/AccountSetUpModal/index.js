@@ -102,10 +102,11 @@ const PasswordPrompt = ({ setStep, close }) => {
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { t } = useTranslation();
-  const { signMessage } = useContext(WalletContext);
+  const { tronWallet, evmWallet } = useContext(WalletContext);
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
+  const [isTronWalletSelected, setIsTronWalletSelected] = useState(false);
 
   const closeModal = useCallback(() => {
     setStep(STEP.START);
@@ -133,6 +134,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   }, []);
 
   const generate = useCallback(async () => {
+    const { signMessage } = isTronWalletSelected ? tronWallet : evmWallet;
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
     let signedMessage = await signMessage(message);
     if (!window.location.host.includes(process.env.REACT_APP_LEGACY_SIGNATURE_DOMAIN)) {
@@ -147,7 +149,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
     setStep(STEP.CREATE_PASSWORD_PROMPT);
-  }, [signMessage]);
+  }, [isTronWalletSelected, tronWallet, evmWallet]);
 
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
@@ -187,7 +189,15 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.CREATE_WITH_WALLET:
       title = t('accountSetupModal.createWithWallet.title');
-      component = <Generate isCreation next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
+      component = (
+        <Generate
+          isCreation
+          next={connector => {
+            setIsTronWalletSelected(connector.isTron);
+            setStep(STEP.SING_MESSAGE_TO_CREATE);
+          }}
+        />
+      );
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
@@ -197,7 +207,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.RESTORE_WITH_WALLET:
       title = t('accountSetupModal.restoreWithWallet.title');
-      component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_RESTORE)} />;
+      component = (
+        <Generate
+          next={connector => {
+            setIsTronWalletSelected(connector.isTron);
+            setStep(STEP.SING_MESSAGE_TO_RESTORE);
+          }}
+        />
+      );
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:

@@ -224,8 +224,8 @@
     "restoreWithWallet": {
       "title": "Login to your zkAccount",
       "description": "Select the wallet you used to create your zkAccount",
-      "warning": "Wallets are shown for the current selected pool. If you want to use Tron with the Tronlink wallet, please <1>switch the pool here.</1>",
-      "warning_tron": "Wallets are shown for the current selected pool. If you want to use Polygon, Optimism or Ethereum, please <1>switch the pool here.</1>"
+      "warning": "TronLink wallet will be used only for restoring access to your previous zkBob account",
+      "warning_tron": "MetaMask and Wallet Connect wallets will be used only for restoring access to your previous zkBob account"
     },
     "restoreWithSecret": {
       "title": "Restore zkAccount",
