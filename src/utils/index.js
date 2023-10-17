@@ -14,7 +14,7 @@ export const shortAddress = (string, length = 10) =>
 
 export const formatNumber = (wei, tokenDecimals, customNumberDecimals) => {
   if (wei.isZero()) return '0';
-  if (wei.lte(parseUnits('0.0001', tokenDecimals))) return '≈ 0';
+  if (tokenDecimals > 4 && wei.lte(parseUnits('0.0001', tokenDecimals))) return '≈ 0';
 
   const numberDecimals = typeof customNumberDecimals === 'number'
     ? customNumberDecimals
