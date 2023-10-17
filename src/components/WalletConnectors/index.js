@@ -1,29 +1,28 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { WalletContext } from 'contexts';
 
 import { CONNECTORS_ICONS } from 'constants';
 
-const getConnectorName = connector => {
-  if (connector.name === 'WalletConnectLegacy') return 'WalletConnect';
-  // if (connector.name === 'WalletConnect') return 'WalletConnect v2';
-  return connector.name;
-}
+export default ({ callback, gaIdPrefix = '', showAll = false }) => {
+  const { isTron, evmWallet, tronWallet } = useContext(WalletContext);
 
-export default ({ callback, gaIdPrefix = '' }) => {
-  const {
-    connector: activeConnector, connect,
-    disconnect, connectors, isTron,
-  } = useContext(WalletContext);
+  const connectors = useMemo(() => {
+    if (showAll && isTron) return [...tronWallet.connectors, ...evmWallet.connectors];
+    if (showAll) return [...evmWallet.connectors, ...tronWallet.connectors];
+    if (isTron) return tronWallet.connectors;
+    return evmWallet.connectors;
+  }, [showAll, isTron, evmWallet, tronWallet]);
 
   const connectWallet = useCallback(async connector => {
-    if (connector.id === activeConnector?.id && !isTron) {
-      await disconnect();
+    if (!connector.isTron && connector.id === evmWallet.connector?.id) {
+      await evmWallet.disconnect();
     }
+    const { connect } = connector.isTron ? tronWallet : evmWallet;
     await connect({ connector });
-    callback?.();
-  }, [connect, disconnect, activeConnector, callback, isTron]);
+    callback?.(connector);
+  }, [callback, evmWallet, tronWallet]);
 
   return (
     <>
@@ -33,7 +32,7 @@ export default ({ callback, gaIdPrefix = '' }) => {
           onClick={() => connectWallet(connector)}
           data-ga-id={gaIdPrefix + connector.name}
         >
-          <WalletConnectorName>{getConnectorName(connector)}</WalletConnectorName>
+          <WalletConnectorName>{connector.name}</WalletConnectorName>
           <WalletConnectorIcon src={CONNECTORS_ICONS[connector.name]} />
         </WalletConnector>
       )}

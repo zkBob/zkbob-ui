@@ -224,8 +224,8 @@
     "restoreWithWallet": {
       "title": "Acessar sua conta zkAccount",
       "description": "Selecione a carteira que você usou para criar sua conta zkAccount",
-      "warning": "As carteiras são exibidas para a pool selecionada atualmente. Se você deseja usar o Tron com a carteira Tronlink, por favor <1>troque a pool aqui.</1>",
-      "warning_tron": "As carteiras são exibidas para a pool selecionada atualmente. Se você deseja usar Polygon, Optimism ou Ethereum, por favor <1>troque a pool aqui.</1>"
+      "warning": "A carteira TronLink será usada apenas para restaurar o acesso à sua conta anterior zkBob",
+      "warning_tron": "As carteiras MetaMask e Wallet Connect serão usadas apenas para restaurar o acesso à sua conta anterior zkBob"
     },
     "restoreWithSecret": {
       "title": "Restaurar conta zkAccount",

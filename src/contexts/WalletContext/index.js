@@ -70,6 +70,7 @@ const convertWalletToConnector = wallet => ({
   ...wallet.adapter,
   id: wallet.adapter.name.toLowerCase(),
   ready: !['Loading', 'NotFound'].includes(wallet.state),
+  isTron: true,
 });
 
 const useTronWallet = pool => {
@@ -170,7 +171,7 @@ export const WalletContextProvider = ({ children }) => {
   const wallet = currentPool.isTron ? tronWallet : evmWallet;
 
   return (
-    <WalletContext.Provider value={wallet}>
+    <WalletContext.Provider value={{ ...wallet, evmWallet, tronWallet }}>
       {children}
     </WalletContext.Provider>
   );
