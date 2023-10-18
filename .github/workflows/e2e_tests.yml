@@ -3,10 +3,11 @@ name: E2E tests
 on:
   pull_request:
     branches:
-      staging
+      - staging
   push:
     branches:
-      e2e-tests
+      - staging
+      - e2e-tests
         
 env:
   ENV: local
@@ -21,7 +22,15 @@ jobs:
       ZKBOB_RECEIVER_ADDRESS: ${{ secrets.ZKBOB_RECEIVER_ADDRESS }}
       METAMASK_PASSWORD: ${{ secrets.METAMASK_PASSWORD }}
       METAMASK_SEED_PHRASE: ${{ secrets.METAMASK_SEED_PHRASE }}
-      ADDRESS_METAMASK_ACCOUNT: ${{ secrets.ADDRESS_METAMASK_ACCOUNT }}
+      ZKBOB_ADDRESS_BOB_SEPOLIA: ${{ secrets.ZKBOB_ADDRESS_BOB_SEPOLIA }}
+      ZKBOB_ADDRESS_BOB_OP_GOERLI: ${{ secrets.ZKBOB_ADDRESS_BOB_OP_GOERLI }}
+      ZKBOB_ADDRESS_USDM_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDM_GOERLI }}
+      ZKBOB_ADDRESS_USDC_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDC_GOERLI }}
+      ZKBOB_ADDRESS_ETH_GOERLI: ${{ secrets.ZKBOB_ADDRESS_ETH_GOERLI }}
+      WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
+
+
+
     steps:
       - name: Check out this repo
         uses: actions/checkout@v3
@@ -29,33 +38,33 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: v14.17.0
+          node-version: v16.14.2
       
+      # - name: Install Playwright
+      #   run: |
+      #     cd e2e-ci-cd/
+      #     npm install --global yarn
+      #     yarn
+      #     npx playwright install
+
+      - name: Install dependencies
+        run: npm ci
       - name: Install Playwright
+        run: npx playwright install --with-deps
+  
+      - name: Sepolia network
         run: |
-          cd e2e-ci-cd/
-          npm install --global yarn
-          yarn
-          npx playwright install
+          cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
       
-      - name: Create account
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
-      
-      - name: Deposit
+      - name: Goerli Optimism network
         if: always()
         run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test deposit.test.ts
+          cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
 
-      - name: Transfer
+      - name: Goerli
         if: always()
         run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test transfer.test.ts  
-
-      - name: Withdraw
-        if: always()
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test withdraw.test.ts    
+          cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  
 
       - uses: actions/upload-artifact@v3
         if: always()
