@@ -21,12 +21,13 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 });
   
   test.describe('ETH pool', () => {
-      test('Deposit ETH', async ({ OperationsWithToken }) => {
+      test('Deposit WETH', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectGoerliNetwork()
         await OperationsWithToken.SelectETHGoerli()
+        await OperationsWithToken.SelectWETHToken()
         await OperationsWithToken.InputAmount()
-        await OperationsWithToken.button_DepositETH()
+        await OperationsWithToken.button_Deposit()
         await OperationsWithToken.TheCheckingTheDepositSent()
         });
     
@@ -55,7 +56,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
     
     
     test.describe('USDC pool', () => {
-        test('Deposit USDC', async ({ OperationsWithToken }) => {
+        test.only('Deposit USDC', async ({ OperationsWithToken }) => {
             await OperationsWithToken.GoToDepositTab()
             await OperationsWithToken.SelectGoerliNetwork()
             await OperationsWithToken.SelectUSDCGoerli()

@@ -92,14 +92,22 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async SelectUSDMGoerli():Promise<void> {
       await this.locator('//button[@data-ga-id="pool-bob2usdc-goerli"]').click();
+      await this.sleep(TIMEOUTS.medium);
     }
 
     async SelectUSDCGoerli():Promise<void> {
       await this.locator('//button[@data-ga-id="pool-usdc-goerli"]').click();
+      await this.sleep(TIMEOUTS.medium);
     }
 
     async SelectETHGoerli():Promise<void> {
       await this.locator('//button[@data-ga-id="pool-weth-goerli"]').click();
+      await this.sleep(TIMEOUTS.medium);
+    }
+
+    async SelectWETHToken():Promise<void>{
+      await this.locator('//div[text()="ETH"]').click();
+      await this.locator('//button/div[text()="WETH"]').click();
     }
 
 
@@ -124,6 +132,7 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async InputAmountTransferTab():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       await this.locator(OperationsWithTokenElementsLocators.input_amount_in_transfer_tab ).type('1', {delay: 100});
     }
 
