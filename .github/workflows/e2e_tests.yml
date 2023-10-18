@@ -40,17 +40,12 @@ jobs:
         with:
           node-version: v16.14.2
       
-      # - name: Install Playwright
-      #   run: |
-      #     cd e2e-ci-cd/
-      #     npm install --global yarn
-      #     yarn
-      #     npx playwright install
-
-      - name: Install dependencies
-        run: npm ci
       - name: Install Playwright
-        run: npx playwright install --with-deps
+        run: |
+          cd e2e-ci-cd/
+          npm install --global yarn
+          yarn
+          npx playwright install
   
       - name: Sepolia network
         run: |
