@@ -76,8 +76,8 @@ const config = {
       },
     },
     snarkParams: {
-      transferParamsUrl: 'https://ipfs.io/ipfs/QmSjWBE3hAS7tMzsYLUJBbZzMCpo5h9urYYSobw9RUoAh6',
-      transferVkUrl: 'https://ipfs.io/ipfs/QmaKxC6H8mWgv6LR2uYHt8zAjM5JWJeQPahLda7SuV81xv'
+      transferParamsUrl: 'https://5tqpkqtbrkd5ookgni4yydvxgsnaazxl53pdgymjgkiaqwb56lzq.arweave.net/7OD1QmGKh9c5Rmo5jA63NJoAZuvu3jNhiTKQCFg98vM',
+      transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY'
     },
   },
   dev: {
