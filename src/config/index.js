@@ -75,9 +75,12 @@ const config = {
         rpcUrls: ['https://rpc.ankr.com/optimism'],
       },
     },
-    snarkParams: {
+    snarkParams: process.env.REACT_APP_HOSTING === 'netlify' ? {
+      transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
+      transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json',
+    } : {
       transferParamsUrl: 'https://5tqpkqtbrkd5ookgni4yydvxgsnaazxl53pdgymjgkiaqwb56lzq.arweave.net/7OD1QmGKh9c5Rmo5jA63NJoAZuvu3jNhiTKQCFg98vM',
-      transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY'
+      transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY',
     },
   },
   dev: {
@@ -173,8 +176,8 @@ const config = {
       }
     },
     snarkParams: {
-      transferParamsUrl: 'https://r2-ipfs-test.zkbob.com/staging/transfer_params.bin',
-      transferVkUrl: 'https://r2-ipfs-test.zkbob.com/staging/transfer_verification_key.json'
+      transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
+      transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
     },
   }
 };
