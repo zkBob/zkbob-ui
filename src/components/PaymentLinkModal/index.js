@@ -20,7 +20,7 @@ export default () => {
 
   const [address, setAddress] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  const link = `${window.location.origin}/payment/${address}`;
+  const link = `${window.location.origin}/#/payment/${address}`;
 
   useEffect(() => {
     async function updateAddress() {
