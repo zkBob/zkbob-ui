@@ -1,0 +1,423 @@
+{
+    "common": {
+      "learnMore": "了解更多",
+      "relayerFee": "中继器费用",
+      "fee": "费用",
+      "copied": "已复制！",
+      "balance": "余额",
+      "poolBalance": "资金池余额",
+      "supportId": "Support ID",
+      "web": "网页",
+      "library": "库",
+      "relayer": "中继器",
+      "zkAccount": "zk账户",
+      "from": "发送自",
+      "to": "发送至",
+      "contactSupport": "联系客服",
+      "wallet": "钱包",
+      "viewInExplorer": "在浏览器中打开",
+      "settings": "设定",
+      "password": "密码",
+      "language": "语言",
+      "sender": "发送人",
+      "recipient": "收款人",
+      "link": "链接",
+      "payment": "支付"
+    },
+    "buttonText": {
+      "connectWallet": "连接钱包",
+      "enterAmount": "输入金额",
+      "enterAddress": "输入地址",
+      "invalidAddress": "无效地址",
+      "loading": "正在载入……",
+      "loadingZkAccount": "正在载入zk账户……",
+      "loadingPercentage": "正在载入({{percentage}}%)",
+      "getStarted": "马上开始！",
+      "minAmount": "最低金额{{amount}} {{symbol}}",
+      "insufficientBalance": "{{symbol}}余额不足",
+      "reduceAmount": "降低金额以覆盖{{fee}}手续费",
+      "amountExceedsLimit": "金额超出每日限额",
+      "approveTokens": "允许调用代币",
+      "deposit": "存入",
+      "transfer": "转账",
+      "withdraw": "提现",
+      "proceed": "继续",
+      "confirm": "确认",
+      "send": "发送",
+      "yes": "是",
+      "no": "否",
+      "done": "已完成",
+      "next": "下一步",
+      "okay": "Okay",
+      "gotIt": "收到",
+      "max": "最大",
+      "changeWallet": "切换钱包",
+      "disconnect": "中断连接",
+      "showSecretPhrase": "显示助记词",
+      "setPassword": "设置密码",
+      "disablePassword": "停用密码",
+      "generateQRCode": "生成二维码地址",
+      "generateAddress": "生成收款地址",
+      "getPaymentLink": "生成付款链接",
+      "redeemGiftCard": "兑换礼品卡",
+      "logout": "登出",
+      "continue": "继续",
+      "signMessage": "签名",
+      "skip": "跳过",
+      "verify": "验证",
+      "restoreAccount": "恢复账号",
+      "signIn": "登入",
+      "signingIn": "正在登入……",
+      "getToken": "获取{{symbol}}"
+    },
+    "deposit": {
+      "title": "存入",
+      "note": "{{symbol}}将会被存入您的zk账户。成功收款后，您可以进行{{symbol}}的隐私转账。",
+      "ddNote": "存入{{symbol}}最多需要10分钟。"
+    },
+    "transfer": {
+      "title": "转账",
+      "note": "转账将会以隐私的方式完成。发送人，收款人，及转账金额将不会被公开。",
+      "addressInputPlaceholder": "请输入zkBob收款人地址",
+      "addressInputHint": "地址可以在账户模态窗口中生成"
+    },
+    "multitransfer": {
+      "title": "转账至多个地址",
+      "instruction": "1 address per row. 输入zk地址，以及需要转账的{{symbol}}数量。每行一个地址。",
+      "uploadCSV": "上传CSV文件",
+      "uploadCSVHint": "点击“上传CSV文件”并从设备中添加.csv文件。每行应包括：zk地址，转账金额",
+      "errors": {
+        "syntax": "{{count}} $t(glossary.rows, {\"count\": {{count}} })与$t(glossary.addresses, {\"count\": {{count}} })错误，或格式化 $t(glossary.issues, {\"count\": {{count}} })。",
+        "duplicates": "地址重复。",
+        "insufficientBalance": "余额不足：需要{{amount}} {{symbol}} ({{fee}} 作为手续费。"
+      },
+      "addressesList": "地址列表",
+      "willBeTransferredTo": "将发送至 {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })",
+      "hasBeenTransferredTo": "已发送至{{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+    },
+    "withdraw": {
+      "title": "提现",
+      "note": "{{symbol}}将会从zkBob中取出并存入到您提供的钱包地址",
+      "addressInputPlaceholder": "输入收款人的{{network}}地址",
+      "convertion": "提款时将一部分 {{from}} 转化为 {{to}}",
+      "convertionDetails": " 您将收到 <strong>{{amount1}} {{symbol1}}</strong> 和 <strong>~ {{amount2}} {{symbol2}}</strong>"
+    },
+    "limits": {
+      "deposit": {
+        "perTransaction": "每笔交易<strong>存入</strong>限额",
+        "dailyPerAddress": "单个地址<strong>每日存入</strong>限额",
+        "daily": "<strong>每日存入</strong>限额"
+      },
+      "withdraw": {
+        "daily": "<strong>每日提现</strong>限额"
+      },
+      "poolSize": "<strong>资金池</strong>限额",
+      "total": "总共 {{amount}} {{symbol}}"
+    },
+    "latestAction": {
+      "deposit": "最近存入",
+      "withdraw": "最近提款",
+      "transfer": "最近转账",
+      "viewHistory": "查看历史记录"
+    },
+    "confirmTransaction": {
+      "titles": {
+        "withdraw": "确认提现",
+        "transfer": "确认转账",
+        "multitransfer": "确认多地址转账"
+      },
+      "details": {
+        "withdraw": "提现详情",
+        "transfer": "转账详情",
+        "multitransfer": "多地址转账详情"
+      },
+      "sendTo": "发送至",
+      "sendToZk": "发送至zkBob地址",
+      "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
+      "viewAll": "显示全部",
+      "withdrawAmount": "提款金额",
+      "numberOfTransactions": "交易笔数",
+      "senderAddress": "发送人地址"
+    },
+    "welcome": {
+      "title": "欢迎来到zkBob！",
+      "description": "创建专属于您的zk账户，以安全私密的方式转账给您的家人及朋友。",
+      "titleDemo": "欢迎来到zkBob测试版！",
+      "descriptionDemo": "以安全私密的方式转账BOB给朋友、购买合作的产品、或转账至您的私人zk账户。",
+      "bannerDemo": " 在<1>此处创建zkBob帐户</1>, 解锁安全私密的存取款方式，获得全方位隐私"
+    },
+    "payment": {
+      "title": "输入 {{symbol}} 金额并选择代币种类",
+      "amountToSend": "需要发送的金额",
+      "transferAmount": "转账金额",
+      "recipientReceives": "收款者将收到{{symbol}付款",
+      "limit": "单个地址<strong>最大</strong>付款金额"
+    },
+    "tokenList": {
+      "title": "代币列表",
+      "searchToken": "搜索代币",
+      "noTokensFound": "未找到代币"
+    },
+    "history": {
+      "title": "历史记录",
+      "empty": "进行第一笔存入，转账，或提款以<br/>解锁历史记录。",
+      "fee": "(手续费 {{amount}} {{symbol}})",
+      "highFee": "本次交易需要额外操作，将产生更高的手续费。",
+      "failed": "失败",
+      "noDescription": "无说明",
+      "viewTx": "浏览交易哈希"
+    },
+    "loadingError": {
+      "titles": {
+        "prefix": "载入失败",
+        "zkClient": "zk客户端 $t(loadingError.titles.prefix)。",
+        "zkAccount": "zk账户 $t(loadingError.titles.prefix)。",
+        "zkAccountBalance": "zk账户余额 t(loadingError.titles.prefix)。",
+        "walletBalance": "钱包余额 t(loadingError.titles.prefix)。",
+        "history": "历史记录 t(loadingError.titles.prefix)。",
+        "limits": "限额 t(loadingError.titles.prefix)。"
+      },
+      "description": "请重试，若仍存在问题，请<1>联系客服联系客服</1>。"
+    },
+    "successNotification": {
+      "title": "操作已完成。",
+      "description": "点击历史记录或您的zk账户余额以获取更多信息。"
+    },
+    "pendingAction": {
+      "title": "请等待$t(glossary.transactions, {\"count\": {{count}} })完成",
+      "description": "请至少30秒内不要刷新页面！交易 $t(glossary.statuses, {\"count\": {{count}} }) 将自动更新。",
+      "note": "交易完成后，您可以存入、转账或提取资金。",
+      "note_other": "交易完成后，您可以存入、转账或提取资金。"
+    },
+    "swapModal": {
+      "title": "兑换进行中",
+      "description": "您可以关闭此窗口并稍后返回页面以查看结果。是否关闭窗口？"
+    },
+    "accountSetupModal": {
+      "start": {
+        "title": "zk账户",
+        "description": "您需要一个zk账户以开始使用zkBob",
+        "button1": "创建新的zk账户",
+        "button2": "已有zk账户"
+      },
+      "createOptions": {
+        "title": "选择您创建账户的方式",
+        "description": "创建zk账户，即表示您同意并接受zkBob<1>服务条款</1>",
+        "button1": "使用Web3钱包",
+        "button2": "使用zkBob助记词"
+      },
+      "restoreOptions": {
+        "title": "您通过何种方式创建账户？",
+        "button1": "我用的是Web3钱包",
+        "button2": "我用的是zkBob助记词"
+      },
+      "createWithWallet": {
+        "title": "创建新的zk账户",
+        "description": "选择将与您的zk账户连接的钱包"
+      },
+      "createWithSecret": {
+        "title": "创建新的zk账户",
+        "description": "请按正确的顺序抄写或复制助记词，并妥善保存",
+        "warning": "请勿与任何人分享您的助记词，<br/>请妥善保存！",
+        "copy": "复制助记词"
+      },
+      "restoreWithWallet": {
+        "title": "登入zk账户",
+        "description": "请选择您用于创建zk账户的钱包地址"
+      },
+      "restoreWithSecret": {
+        "title": "恢复zk账户",
+        "description": "输入助记词以恢复已有帐户"
+      },
+      "confirmSecret": {
+        "title": "确认助记词",
+        "description": "请输入您的助记词并进行验证。<br/>点击某个单词即可将其删除"
+      },
+      "signMessageToCreate": {
+        "title": "完成签名，创建您的zk账户",
+        "description": "您正在使用已连接的钱包创建zk账户。"
+      },
+      "signMessageToRestore": {
+        "title": "完成签名，登入您的zk账户",
+        "description": "使用已连接的钱包登入您的zk账户。"
+      },
+      "createPasswordPrompt": {
+        "title": "设置密码？",
+        "description": "您可以创建安全密码。每当您登录zk账户时，我们都会向您询问该密码。"
+      },
+      "createPassword": {
+        "title": "创建密码",
+        "description": "为增强安全性，每次重新加载页面时都需要您重新输入密码。"
+      }
+    },
+    "password": {
+      "placeholder1": "密码需6位或以上字符",
+      "placeholder2": "确认密码",
+      "rule1": "请输入6位或以上字符",
+      "rule2": "两次输入的密码需匹配"
+    },
+    "enterPasswordModal": {
+      "title": "输入密码",
+      "description": "$t(accountSetupModal.createPassword.description)",
+      "lostPassword": "忘记密码？点击此处恢复"
+    },
+    "setPasswordModal": {
+      "title": "设置密码"
+    },
+    "confirmLogoutModal": {
+      "title": "登出并清除浏览记录",
+      "description": "登出后，您的zk账户信息将从缓存中移除，您将无法使用密码再次访问，请使用助记词和新密码以恢复账户和显示余额。"
+    },
+    "disablePasswordModal": {
+      "title": "停用密码",
+      "description": "请输入现用密码"
+    },
+    "demoCard": {
+      "title": "测试版",
+      "description1": "此zkBob版本仅为测试私密，小额转账功能使用（不适用于存入/取款）。",
+      "description2": "<0>如需使用全功能版本，</0><1>请在此处免费创建zkBob帐户。</1>"
+    },
+    "increasedLimitsBanner": {
+      "inactive": "提高存款限额？",
+      "active": "存款限额已提高",
+      "resync": "如需恢复已提高的存款限额 - <1>请重新同步您的BAB代币</1>"
+    },
+    "increasedLimitsModal": {
+      "title": "提高限额",
+      "paragraph1": "若需提高个人存款限额，您需要在BNB Smart Chain上拥有BAB代币。什么是BAB代币？ <1>点击了解。</1>",
+      "paragraph2": "验证您的BAB代币：",
+      "step1": "请将持有BAB代币的Metamask或WalletConnect钱包连接到zkBob。无需切换网络，请继续使用Polygon。",
+      "step2": "点击下方 验证我的BAB代币。",
+      "paragraph3": "已完成！如果您连接的地址持有BAB代币，您的存款限额将自动提升。",
+      "button": "验证我的BAB代币"
+    },
+    "more": {
+      "title": "了解更多关于zkBob的资讯",
+      "dune": "Dune Analytics",
+      "docs": "文档",
+      "linktree": "Linktree"
+    },
+    "networks": {
+      "title": "网络"
+    },
+    "pagination": {
+      "first": "首页",
+      "last": "尾页",
+      "current": "第 {{current}} 页，共 {{total}} 页"
+    },
+    "paymentLinkModal": {
+      "title": "生成支付链接",
+      "description": "如需进行私密支付，请分享此链接。<br />发送人可以选择并发送任何代币。代币将转换为 {{symbol}} 并存入您的zk账户。<br /><br /><strong>请注意：</strong>私密支付链接将只在生成它们的区块链网络上生效。",
+      "copyAndShare": "复制并分享您的支付链接",
+      "getMoreInfo": "了解更多有关支付链接的资讯"
+    },
+    "reedeemGifCardModal": {
+      "loading": {
+        "title": "正在准备您的礼品卡"
+      },
+      "start": {
+        "title": "恭喜您！",
+        "description": "您将获得礼品卡",
+        "button": "领取 {{symbol}}"
+      },
+      "createAccount": {
+        "title": "在兑换<br />礼品卡之前",
+        "description": "如需兑换礼品卡，您需要一个zkBob zk账户！请创建帐户，或登入现有帐户，以领取您的 {{symbol}} 代币。",
+        "button": "登入或创建zk账户"
+      },
+      "switchNetwork": {
+        "title": "需要切换网络",
+        "description": "礼品卡仅在 {{network}} 网络上可用。请切换网络以兑换礼品卡。"
+      },
+      "inProgress": {
+        "title": "转账至您的zk账户",
+        "description": "本次交易过程将用时更长。若该笔交易在几秒钟内未完成，请联系我们的<1>支缓团队</1>"
+      },
+      "completed": {
+        "title": "您的 {{symbol}} 正在路上",
+        "description": "您的代币将在接下来的1-2分钟内到账。点击“历史记录”以查看交易完成状态"
+      },
+      "failed": {
+        "error": "该礼品卡已被使用",
+        "otherError": "出错了",
+        "description": "请联系我们的支缓团队以解决该问题，并在客服请求中输入您的Support ID"
+      }
+    },
+    "restrictionModal": {
+      "title": "该国家或地区暂不支缓zkBob业务",
+      "description": "{{country}} 暂不支缓zkBob业务。您需要在受支缓的国家或地区使用该应用。"
+    },
+    "secretPhraseModal": {
+      "title": "显示助记词",
+      "warning": "请勿与任何人分享您的助记词，<br/>请妥善保管！",
+      "description": "若他人掌握您的助记词，他们将完全掌握您钱包的控制权。",
+      "copy": "复制助记词"
+    },
+    "transactionModal": {
+      "titles": {
+        "approveTokens": "请允许代币交易",
+        "approved": "代币已被允许交易",
+        "signMessage": "请在钱包中签名",
+        "confirmTransaction": "请确认交易",
+        "waitingForTransaction": "等待交易",
+        "generatingProof": "生成证明",
+        "waitingForRelayer": "等待中继器完成",
+        "deposited": "正在存入",
+        "transferred": "正在转账",
+        "transferredMulti": "正在转账至多地址",
+        "withdrawn": "正在提款",
+        "rejected": "交易已被拒绝",
+        "signatureExpired": "签名超时",
+        "suspiciousAccountDeposit": "连接到可疑钱包",
+        "suspiciousAccountWithdrawal": "可疑的收款地址",
+        "wrongNetwork": "网络错误",
+        "switchNetwork": "请切换网络",
+        "sent": "支付已发送",
+        "preparingTransaction": "正在准备交易"
+      },
+      "descriptions": {
+        "deposited": "您的<strong>{{amount}} {{symbol}}</strong>正在存入零知识池。<br /><br />为了提高隐私程度，请考虑将代币保存在零知识池中一段时间，再执行提款。",
+        "transferred": "正在进行零知识池内的<strong>{{amount}} {{symbol}}</strong>代币转账。",
+        "transferredMulti": "正在进行零知识池内的<strong>{{amount}} {{symbol}}</strong>多地址转账。",
+        "withdrawn": "正在进行零知识池内的<strong>{{amount}} {{symbol}}</strong>代币提款。",
+        "signatureExpired": "签名超时，请重试。",
+        "suspiciousAccountDeposit": "您的钱包地址可能涉及可疑活动。您无法在zkBob上使用该钱包地址，请使用另一个地址。",
+        "suspiciousAccountWithdrawal": "收款人的钱包地址可能涉及可疑活动，您无法将资金提取到该地址。",
+        "wrongNetwork": "切换网络失败。请将您的钱包连接到{{network}}，然后重试。",
+        "approved": "Approval已完成。您现在可以存入代币。",
+        "sent": "处理付款可能需要最多10分钟。<br /><1>查看交易记录</1><br /><br /> 或 下载<br /><2><3></3>交易明细< /2>",
+        "signMessage": "您需要在钱包中签名，并允许合约存入您的代币。"
+      }
+    },
+    "maxButton": {
+      "tooltip": "点击“最大”以设置您可以发送的最大金额{{symbol}}，已包括所有费用和限额"
+    },
+    "connectWalletModal": {
+      "title": "连接Web3钱包",
+      "description": "连接您的钱包，并将{{symbol}}存入您的zk账户。若您正在创建新的zk账户，当前连接的钱包将被用于为zkBob应用程序生成私密的加密密钥。",
+      "note": "点击连接钱包即表示您同意zkBob<br /><1>服务条款</1>"
+    },
+    "qrCode": {
+      "title": "二维码地址",
+      "description": "若要接收来自其他zk账户的私密转账，转账人可以从他们的应用中扫描此二维码。<br />其他用户只需在转账页面上扫描您的二维码"
+    },
+    "zkAccount": {
+      "addressDescription": "使用该地址接收代币至您的zkBob帐户。每次连接钱包时都将自动创建一个新地址，您可以使用该地址或之前生成的地址接收代币。"
+    },
+    "paymentStatement": {
+      "amount": "{{symbol}}金额",
+      "fee": "{{symbol}}费用"
+    },
+    "glossary": {
+      "rows": "行",
+      "rows_other": "行",
+      "addresses": "地址",
+      "addresses_other": "地址",
+      "issues": "问题",
+      "issues_other": "问题",
+      "transactions": "交易",
+      "transactions_other": "交易",
+      "statuses": "状态",
+      "statuses_other": "状态"
+    }
+}  

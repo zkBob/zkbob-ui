@@ -29,9 +29,6 @@ const Tabs = styled.div`
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
-  & > * {
-    flex: 1;
-  }
   @media only screen and (max-width: 400px) {
     width: 100%;
   }
@@ -65,4 +62,9 @@ const Tab = styled.div`
     height: 6px;
     border-radius: 50%;
     background-color: #E53E3E;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
 `;
