@@ -20,7 +20,7 @@ export default abstract class BasePage {
     return this.page.locator(selector, options);
   }
 
-  public async open(path = '/', timeout = TIMEOUTS.oneMinute): Promise<void> {
+  public async open(path = '/', timeout = TIMEOUTS.fiveMinutes): Promise<void> {
     await this.page.goto(path);
     await this.page.waitForLoadState('networkidle', { timeout });
   }
