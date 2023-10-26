@@ -29,8 +29,8 @@ Follow these steps to deploy:
 
 ## Contributing to zkBob
 
-For the contributing to zkBob you can use our [Contributing Guidline](https://github.com/zkBob/zkbob-ui/blob/main/CONTRIBUTING.md)
+To contribute to zkBob use our [Contribution Guidline](https://github.com/zkBob/zkbob-ui/blob/main/CONTRIBUTING.md)
 
 ## License
-This project is licensed under the [MIT License](https://github.com/zkBob/zkbob-ui/blob/main/LICENSE_MIT) and [Apache-2.0 Licence](https://github.com/zkBob/zkbob-ui/blob/main/LICENSE_APACHE).
+This project is licensed under the [MIT License](https://github.com/zkBob/zkbob-ui/blob/main/LICENSE_MIT) and [Apache-2.0 License](https://github.com/zkBob/zkbob-ui/blob/main/LICENSE_APACHE).
 
