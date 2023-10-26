@@ -28,8 +28,6 @@ jobs:
       ZKBOB_ADDRESS_USDC_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDC_GOERLI }}
       ZKBOB_ADDRESS_ETH_GOERLI: ${{ secrets.ZKBOB_ADDRESS_ETH_GOERLI }}
       WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
-      CI: true
-
 
 
     steps:
@@ -49,8 +47,10 @@ jobs:
           npx playwright install
   
       - name: Sepolia network
-        run: |
-          cd e2e-ci-cd/ && yarn test sepolia.test.ts
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: |
+            cd e2e-ci-cd/ && yarn test sepolia.test.ts
       
       - name: Goerli Optimism network
         if: always()

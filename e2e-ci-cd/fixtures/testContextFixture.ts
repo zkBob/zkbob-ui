@@ -25,7 +25,7 @@ export const test = base.extend<TestContextFixture>({
       );
 
       const context = await chromium.launchPersistentContext(userDataDir, {
-        headless: true,
+        headless: false,
         viewport: { width: 1280, height: 1280 },
         args: [
           `--disable-extensions-except=${pathToExtension}`,
