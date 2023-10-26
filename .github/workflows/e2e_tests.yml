@@ -50,7 +50,8 @@ jobs:
         uses: coactions/setup-xvfb@v1
         with:
           run: |
-            cd e2e-ci-cd/ && yarn test sepolia.test.ts
+            yarn test sepolia.test.ts
+          working-directory: ./e2e-ci-cd/
       
       - name: Goerli Optimism network
         if: always()
