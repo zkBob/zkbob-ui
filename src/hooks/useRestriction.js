@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 
 async function getUserCountry() {
   const apis = [
-    fetch('https://ipapi.co/country').then(res => res.text()),
-    fetch('https://api.country.is').then(res => res.json()).then(data => data.country),
+    'https://ipapi.co/json',
+    'https://api.country.is',
   ];
 
   let country;
   for (const api of apis) {
     try {
-      country = await api;
+      const res = await fetch(api);
+      const data = await res.json();
+      country = data.country;
       break;
     } catch (error) {
       console.error(error);
@@ -22,6 +24,7 @@ async function getUserCountry() {
 
 export default () => {
   const [isRestricted, setIsRestricted] = useState(false);
+  const [country, setCountry] = useState(null);
 
   useEffect(() => {
     async function check() {
@@ -32,6 +35,7 @@ export default () => {
         const country = await getUserCountry();
         if (RESTRICTED_COUNTRIES.includes(country)) {
           setIsRestricted(true);
+          setCountry(country);
         }
       } catch (error) {
         console.error('Failed to get country by IP.');
@@ -40,5 +44,5 @@ export default () => {
     check();
   }, []);
 
-  return isRestricted;
+  return { isRestricted, country };
 };
