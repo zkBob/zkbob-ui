@@ -20,7 +20,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 
 
 test.describe('BOB pool', () => {
-    test.only('Deposit BOB', async ({ OperationsWithToken }) => {
+    test('Deposit BOB', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToDepositTab()
         await OperationsWithToken.SelectSepoliaNetwork()
         await OperationsWithToken.SelectBOBSepolia()

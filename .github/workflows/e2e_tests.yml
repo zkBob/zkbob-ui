@@ -3,32 +3,79 @@ name: E2E tests
 on:
   pull_request:
     branches:
-      - staging
+      - 'staging'
+  
   push:
     branches:
-      - staging
-      - e2e-tests
+      - 'staging'
+      - 'e2e-tests'
+  
+  schedule:
+    - cron: '0 8 * * 1'
         
 env:
   ENV: local
+  BASE_URL: ${{ secrets.BASE_URL }}
+  ZKACCOUNT_PASSWORD: ${{ secrets.ZKACCOUNT_PASSWORD }}
+  ZKACCOUNT_SEED_PHRASE: ${{ secrets.ZKACCOUNT_SEED_PHRASE }}
+  ZKBOB_RECEIVER_ADDRESS: ${{ secrets.ZKBOB_RECEIVER_ADDRESS }}
+  METAMASK_PASSWORD: ${{ secrets.METAMASK_PASSWORD }}
+  METAMASK_SEED_PHRASE: ${{ secrets.METAMASK_SEED_PHRASE }}
+  ZKBOB_ADDRESS_BOB_SEPOLIA: ${{ secrets.ZKBOB_ADDRESS_BOB_SEPOLIA }}
+  ZKBOB_ADDRESS_BOB_OP_GOERLI: ${{ secrets.ZKBOB_ADDRESS_BOB_OP_GOERLI }}
+  ZKBOB_ADDRESS_USDM_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDM_GOERLI }}
+  ZKBOB_ADDRESS_USDC_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDC_GOERLI }}
+  ZKBOB_ADDRESS_ETH_GOERLI: ${{ secrets.ZKBOB_ADDRESS_ETH_GOERLI }}
+  WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
+
 jobs:
+  schedule_tests:
+    if: github.event.schedule == '0 8 * * 1'   
+    name: E2E tests every Monday
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@v3
+      
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: v16.14.2
+      
+      - name: Install Playwright
+        run: |
+          cd e2e-ci-cd/
+          npm install --global yarn
+          yarn
+          npx playwright install
+
+      - name: zkAccount
+        run: |
+          cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
+          
+      - name: Sepolia network
+        run: |
+          cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
+      
+      - name: Goerli Optimism network
+        if: always()
+        run: |
+          cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
+
+      - name: Goerli
+        if: always()
+        run: |
+          cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: report
+          path: e2e-ci-cd/test-results/
   test:
     name: E2E tests
-    runs-on: ubuntu-latest
-    env:
-      BASE_URL: ${{ secrets.BASE_URL }}
-      ZKACCOUNT_PASSWORD: ${{ secrets.ZKACCOUNT_PASSWORD }}
-      ZKACCOUNT_SEED_PHRASE: ${{ secrets.ZKACCOUNT_SEED_PHRASE }}
-      ZKBOB_RECEIVER_ADDRESS: ${{ secrets.ZKBOB_RECEIVER_ADDRESS }}
-      METAMASK_PASSWORD: ${{ secrets.METAMASK_PASSWORD }}
-      METAMASK_SEED_PHRASE: ${{ secrets.METAMASK_SEED_PHRASE }}
-      ZKBOB_ADDRESS_BOB_SEPOLIA: ${{ secrets.ZKBOB_ADDRESS_BOB_SEPOLIA }}
-      ZKBOB_ADDRESS_BOB_OP_GOERLI: ${{ secrets.ZKBOB_ADDRESS_BOB_OP_GOERLI }}
-      ZKBOB_ADDRESS_USDM_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDM_GOERLI }}
-      ZKBOB_ADDRESS_USDC_GOERLI: ${{ secrets.ZKBOB_ADDRESS_USDC_GOERLI }}
-      ZKBOB_ADDRESS_ETH_GOERLI: ${{ secrets.ZKBOB_ADDRESS_ETH_GOERLI }}
-      WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
-
+    runs-on: ubuntu-latest   
 
     steps:
       - name: Check out this repo
@@ -47,11 +94,8 @@ jobs:
           npx playwright install
   
       - name: Sepolia network
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: |
-            yarn test sepolia.test.ts
-          working-directory: ./e2e-ci-cd/
+        run: |
+          cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
       
       - name: Goerli Optimism network
         if: always()
