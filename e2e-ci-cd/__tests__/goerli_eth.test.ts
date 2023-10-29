@@ -56,7 +56,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
     
     
     test.describe('USDC pool', () => {
-        test('Deposit USDC', async ({ OperationsWithToken }) => {
+        test.only('Deposit USDC', async ({ OperationsWithToken }) => {
             await OperationsWithToken.GoToDepositTab()
             await OperationsWithToken.SelectGoerliNetwork()
             await OperationsWithToken.SelectUSDCGoerli()

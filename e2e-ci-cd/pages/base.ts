@@ -22,7 +22,7 @@ export default abstract class BasePage {
 
   public async open(path = '/', timeout = TIMEOUTS.fiveMinutes): Promise<void> {
     await this.page.goto(path);
-    await this.page.waitForLoadState('networkidle', { timeout });
+    await this.page.waitForLoadState();
   }
 
   async delay(time: number): Promise<void> {
