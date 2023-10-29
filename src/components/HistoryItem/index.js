@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
 import Spinner from 'components/Spinner';
@@ -10,9 +13,8 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { useDateFromNow } from 'hooks';
-import { HISTORY_ACTION_TYPES } from 'constants';
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
 import { ReactComponent as WithdrawIcon } from 'assets/withdraw.svg';
@@ -20,48 +22,130 @@ import { ReactComponent as TransferIcon } from 'assets/transfer.svg';
 import { ReactComponent as IncognitoAvatar } from 'assets/incognito-avatar.svg';
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-const { DEPOSIT, TRANSFER_IN, TRANSFER_OUT, WITHDRAWAL, TRANSFER_SELF } = HISTORY_ACTION_TYPES;
+const {
+  Deposit,
+  TransferIn,
+  TransferOut,
+  Withdrawal,
+  DirectDeposit,
+} = HistoryTransactionType;
 
 const actions = {
-  [DEPOSIT]: {
+  [Deposit]: {
     name: 'Deposit',
     icon: DepositIcon,
     sign: '+',
   },
-  [TRANSFER_IN]: {
+  [TransferIn]: {
     name: 'Transfer',
     icon: TransferIcon,
     sign: '+',
   },
-  [TRANSFER_OUT]: {
+  [TransferOut]: {
     name: 'Transfer',
     icon: TransferIcon,
     sign: '-',
   },
-  [WITHDRAWAL]: {
+  [Withdrawal]: {
     name: 'Withdrawal',
     icon: WithdrawIcon,
     sign: '-',
   },
-  [TRANSFER_SELF]: {
+  [DirectDeposit]: {
+    name: 'Deposit',
+    icon: DepositIcon,
+    sign: '+',
+  },
+  5: { // old transfer self
     name: 'Transfer',
     icon: TransferIcon,
     sign: '',
-  }
+  },
 };
 
-const AddressLink = ({ action }) => {
-  const address = action.type === DEPOSIT ? action.actions[0].from : action.actions[0].to;
+function getSign(item) {
+  if (item.actions?.length === 1 && item.actions[0].isLoopback) {
+    return '';
+  }
+  return actions[item.type].sign;
+}
+
+const AddressLink = ({ action, isMobile, currentChainId }) => {
+  const address = action.type === Deposit ? action.actions[0].from : action.actions[0].to;
   return (
-    <Link size={16} href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}>
-      {shortAddress(address, 22)}
+    <Link
+      size={16}
+      href={NETWORKS[currentChainId].blockExplorerUrls.address.replace('%s', address)}
+    >
+      {shortAddress(address, isMobile ? 10 : 22)}
     </Link>
   );
 };
 
-export default ({ item, zkAccountId }) => {
-  const date = useDateFromNow(item.timestamp);
+const Fee = ({ fee, highFee, isMobile, tokenSymbol, tokenDecimals }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {!fee.isZero() && (
+        <FeeText>
+          {t('history.fee', {
+            amount: formatNumber(fee, tokenDecimals),
+            symbol: tokenSymbol,
+          })}
+        </FeeText>
+      )}
+      {highFee && (
+        <Tooltip
+          content={
+            <span>
+              {t('history.highFee')}{' '}
+              <Link href="https://docs.zkbob.com/zkbob-overview/fees/unspent-note-handling">
+                {t('common.learnMore')}
+              </Link>
+            </span>
+          }
+          placement={isMobile ? 'bottom' : 'right'}
+          delay={0}
+          width={200}
+        >
+          <InfoIcon />
+        </Tooltip>
+      )}
+    </>
+  );
+};
+
+const Date = ({ timestamp }) => {
+  const date = useDateFromNow(timestamp);
+  return <DateText>{date}</DateText>;
+};
+
+export default ({ item, zkAccount, currentPool, isMobile }) => {
+  const { t } = useTranslation();
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const currentChainId = currentPool.chainId;
+  const tokenSymbol = useMemo(() => {
+    if (item.timestamp <= currentPool.migration?.timestamp) {
+      return currentPool.migration?.prevTokenSymbol;
+    }
+    const isWrapped = currentPool.isNative && item.type === HistoryTransactionType.Deposit;
+    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
+  }, [currentPool, item.type, item.timestamp]);
+
+  const onCopy = useCallback((text, result) => {
+    if (result) {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+  }, []);
+
+  const isPending = [0, 1].includes(item.state);
+  const isPaymentLabelShown = item.type === DirectDeposit && (
+    (item.sender && item.sender === currentPool.paymentContractAddress?.toLowerCase()) ||
+    (item.actions[0]?.from && item.actions[0].from === currentPool.paymentContractAddress?.toLowerCase())
+  );
+
   return (
     <Container>
       <Tooltip content={actions[item.type].name} delay={0.3}>
@@ -72,42 +156,65 @@ export default ({ item, zkAccountId }) => {
       <Column>
         <RowSpaceBetween>
           <Row>
-            <TokenIcon src={tokenIcon()} />
-            <Text $error={item.failed}>
-              {actions[item.type].sign}{' '}
-              {(() => {
-                const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
-                return (
-                  <Tooltip content={formatNumber(total, 18)} placement="top">
-                    <span>{formatNumber(total, 18)}</span>
-                  </Tooltip>
-                );
-              })()}
-              {' '}{tokenSymbol()}
-            </Text>
+            <Row>
+              <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
+              <Text $error={item.failed}>
+                {getSign(item)}{' '}
+                {(() => {
+                  const total = item.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+                  return (
+                    <Tooltip content={formatNumber(total, currentPool.tokenDecimals, 18)} placement="top">
+                      <span>{formatNumber(total, currentPool.tokenDecimals, 4)}</span>
+                    </Tooltip>
+                  );
+                })()}
+                {' '}{tokenSymbol}
+              </Text>
+            </Row>
+            {item.fee && (
+              <FeeDesktop>
+                <Fee
+                  fee={item.fee}
+                  highFee={item.highFee}
+                  tokenSymbol={tokenSymbol}
+                  tokenDecimals={currentPool.tokenDecimals}
+                />
+              </FeeDesktop>
+            )}
           </Row>
           <Row>
-            <Date>{date}</Date>
-            {item.state === 1 && <SpinnerSmall size={22} />}
+            {item.timestamp && <Date timestamp={item.timestamp} />}
+            {isPending && <SpinnerSmall size={22} />}
             {item.failed && (
               <>
-                <Text $error style={{ marginLeft: 10 }}>failed</Text>
-                <Tooltip content={item.failureReason || 'No description'} placement="right" delay={0} width={180}>
+                <Text $error style={{ marginLeft: 10 }}>{t('history.failed')}</Text>
+                <Tooltip content={item.failureReason || t('history.noDescription')} placement="right" delay={0} width={180}>
                   <InfoIcon />
                 </Tooltip>
               </>
             )}
           </Row>
         </RowSpaceBetween>
+        {item.fee && (
+          <FeeMobile>
+            <Fee
+              fee={item.fee}
+              highFee={item.highFee}
+              tokenSymbol={tokenSymbol}
+              tokenDecimals={currentPool.tokenDecimals}
+              isMobile
+            />
+          </FeeMobile>
+        )}
         <RowSpaceBetween>
           <Row>
             <Text style={{ margin: '0 10px 0 2px' }}>
-              {item.type === DEPOSIT ? 'From' : 'To'}
+              {item.type === Deposit ? t('common.from') : t('common.to')}
             </Text>
-            {[DEPOSIT, WITHDRAWAL].includes(item.type) ? (
-              <AddressLink action={item} />
+            {[Deposit, Withdrawal].includes(item.type) ? (
+              <AddressLink action={item} isMobile={isMobile} currentChainId={currentChainId} />
             ) : (
-              item.actions.length === 1 ? (
+              item.actions?.length === 1 ? (
                 <Tooltip
                   content={item.actions[0].to}
                   delay={0.3}
@@ -118,20 +225,27 @@ export default ({ item, zkAccountId }) => {
                     textAlign: 'center',
                   }}
                 >
-                  <ZkAddress>
-                    {item.type === TRANSFER_OUT ? (
-                      <IncognitoAvatar />
-                    ) : (
-                      <ZkAvatar seed={zkAccountId} size={16} />
-                    )}
-                    <Text style={{ marginLeft: 5 }}>
-                      {shortAddress(item.actions[0].to, 22)}
-                    </Text>
-                  </ZkAddress>
+                  <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
+                    <CopyToClipboard text={item.actions[0].to} onCopy={onCopy}>
+                      <ZkAddress>
+                        {(item.type === TransferOut && !item.actions[0].isLoopback) ? (
+                          <IncognitoAvatar />
+                        ) : (
+                          <ZkAvatar seed={zkAccount} size={16} />
+                        )}
+                        <Text style={{ marginLeft: 5 }}>
+                          {shortAddress(
+                            item.actions[0].to,
+                            isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
+                          )}
+                        </Text>
+                      </ZkAddress>
+                    </CopyToClipboard>
+                  </Tooltip>
                 </Tooltip>
               ) : (
                 <ZkAddress>
-                  {item.type === TRANSFER_OUT ? (
+                  {item.type === TransferOut ? (
                     <>
                       <IncognitoAvatar />
                       <Button
@@ -139,14 +253,17 @@ export default ({ item, zkAccountId }) => {
                         onClick={() => setIsDetailsModalOpen(true)}
                         style={{ marginLeft: 5, fontSize: 16 }}
                       >
-                        {item.actions.length} addresses
+                        {item.actions?.length} {t('glossary.addresses', { count: item.actions?.length })}
                       </Button>
                     </>
                   ) : (
                     <>
-                      <ZkAvatar seed={zkAccountId} size={16} />
+                      <ZkAvatar seed={zkAccount} size={16} />
                       <Text style={{ marginLeft: 5 }}>
-                        {shortAddress(item.actions[0].to, 22)}
+                        {shortAddress(
+                          item.actions[0].to,
+                          isMobile ? 10 : (isPaymentLabelShown ? 16 : 22)
+                        )}
                       </Text>
                     </>
                   )}
@@ -155,12 +272,37 @@ export default ({ item, zkAccountId }) => {
             )}
           </Row>
           <Row>
-            {item.actions.length > 1 && item.type === TRANSFER_OUT && (
-              <Label>Multitransfer</Label>
+            {item.actions?.length > 1 && item.type === TransferOut && (
+              <MultitransferLabel>
+                {t('multitransfer.title')}
+              </MultitransferLabel>
+            )}
+            {isPaymentLabelShown && (
+              <DirectDepositLabel style={{ marginRight: isPending ? 0 : 10 }}>
+                {t('common.payment')}
+                {/* {isPending && (
+                  <Tooltip
+                    content={
+                      <span>
+                        Either a deposit sent via a 3rd party platform or a native token (ETH) deposit.{' '}
+                        Direct deposits can take up to 10 minutes.{' '}
+                        <Link href="https://docs.zkbob.com">
+                          Learn more
+                        </Link>
+                      </span>
+                    }
+                    placement={isMobile ? 'bottom' : 'right'}
+                    delay={0}
+                    width={200}
+                  >
+                    <InfoIcon />
+                  </Tooltip>
+                )} */}
+              </DirectDepositLabel>
             )}
             {(item.txHash && item.txHash !== '0') ? (
-              <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', item.txHash)}>
-                View tx
+              <Link size={16} href={NETWORKS[currentChainId].blockExplorerUrls.tx.replace('%s', item.txHash)}>
+                {t('history.viewTx')}
               </Link>
             ) : (
               <span></span>
@@ -168,12 +310,14 @@ export default ({ item, zkAccountId }) => {
           </Row>
         </RowSpaceBetween>
       </Column>
-      {item.actions.length > 1 && (
+      {item.actions?.length > 1 && (
         <MultitransferDetailsModal
-          transfers={item.actions.map(action => ({ address: action.to, amount: action.amount }))}
+          transfers={item.actions.map(action => ({ address: action.to, ...action }))}
           isOpen={isDetailsModalOpen}
           onClose={() => setIsDetailsModalOpen(false)}
+          zkAccount={zkAccount}
           isSent={true}
+          currentPool={currentPool}
         />
       )}
     </Container>
@@ -233,11 +377,13 @@ const Text = styled.span`
   color: ${props => props.theme.text.color[props.$error ? 'error' : 'primary']};
 `;
 
-const Date = styled.span`
+const DateText = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.secondary};
   opacity: 60%;
 `;
+
+const FeeText = styled(DateText)``;
 
 const SpinnerSmall = styled(Spinner)`
   margin-left: 10px;
@@ -255,7 +401,7 @@ const ZkAddress = styled(Row)`
   cursor: pointer;
 `;
 
-const Label = styled.div`
+const MultitransferLabel = styled.div`
   background: #E6FFFA;
   border-radius: 4px;
   font-size: 14px;
@@ -263,14 +409,35 @@ const Label = styled.div`
   color: #319795;
   padding: 0 8px;
   margin-right: 10px;
+  font-weight: ${props => props.theme.text.weight.bold};
+  display: flex;
+  align-items: center;
+`;
+
+const DirectDepositLabel = styled(MultitransferLabel)`
+  background: #FFFAF0;
+  color: #DD6B20;
 `;
 
 const InfoIcon = styled(InfoIconDefault)`
-  margin-bottom: -2px;
   margin-left: 3px;
   &:hover {
     & > path {
       fill: ${props => props.theme.color.purple};
     }
+  }
+`;
+
+const FeeDesktop = styled(Row)`
+  margin-left: 5px;
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
+`;
+
+const FeeMobile = styled(Row)`
+  display: none;
+  @media only screen and (max-width: 500px) {
+    display: flex;
   }
 `;

@@ -1,29 +1,24 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 
-import { ZkAccountContext } from 'contexts';
-
 import { minBigNumber } from 'utils';
 
-export const useDepositLimit = () => {
-  const { limits } = useContext(ZkAccountContext);
+export const useDepositLimit = (limits, isNative) => {
   const [depositLimit, setDepositLimit] = useState(ethers.constants.Zero);
 
   useEffect(() => {
+    let minLimit = ethers.constants.Zero;
     try {
-      const minLimit = minBigNumber(
-        limits.singleDepositLimit,
-        limits.dailyDepositLimitPerAddress.available,
-        limits.dailyDepositLimit.available,
-        limits.poolSizeLimit.available,
+      minLimit = minBigNumber(
+        limits[isNative ? 'singleDirectDepositLimit': 'singleDepositLimit'],
+        limits[isNative ? 'dailyDirectDepositLimitPerAddress' : 'dailyDepositLimitPerAddress']?.available,
+        limits.dailyDepositLimit?.available,
+        limits.poolSizeLimit?.available,
       );
-      setDepositLimit(minLimit);
-    } catch (error) {
-      console.error(error);
-      Sentry.captureException(error, { tags: { method: 'Deposit.useDepositLimit' } });
-    }
-  }, [limits]);
+    } catch (error) {}
+    setDepositLimit(minLimit);
+  }, [limits, isNative]);
 
   return depositLimit;
 };

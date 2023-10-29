@@ -1,123 +1,155 @@
-import React, { useState, useCallback, useContext } from 'react';
-import styled from 'styled-components';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { TxType } from 'zkbob-client-js';
+import { HistoryTransactionType } from 'zkbob-client-js';
+import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext, WalletContext } from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Input from 'components/Input';
+import ButtonLoading from 'components/ButtonLoading';
+import MultilineInput from 'components/MultilineInput';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
-import Tooltip from 'components/Tooltip';
+import DemoCard from 'components/DemoCard';
+import ConvertOptions from 'components/ConvertOptions';
 
-import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
-import { ReactComponent as BobIconDefault } from 'assets/bob.svg';
+import { useFee, useParsedAmount, useLatestAction, useMaxTransferable } from 'hooks';
 
-import { useFee, useParsedAmount, useLatestAction } from 'hooks';
-
-import { tokenSymbol } from 'utils/token';
 import { formatNumber, minBigNumber } from 'utils';
 
-import { NETWORKS, HISTORY_ACTION_TYPES } from 'constants';
-import { useMaxAmountExceeded } from './hooks';
-
-const note = `${tokenSymbol()} will be withdrawn from the zero knowledge pool and deposited into the selected account.`;
+import { NETWORKS } from 'constants';
+import { useMaxAmountExceeded, useConvertion } from './hooks';
 
 export default () => {
+  const { t } = useTranslation();
   const {
     zkAccount, balance, withdraw, isLoadingState,
-    isPending, maxTransferable,
-    limits, isLoadingLimits, minTxAmount,
+    isPending, isDemo, limits, isLoadingLimits, minTxAmount,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
+  const { isAddress } = useContext(WalletContext);
   const [displayAmount, setDisplayAmount] = useState('');
-  const amount = useParsedAmount(displayAmount);
+  const amount = useParsedAmount(displayAmount, currentPool.tokenDecimals);
   const [receiver, setReceiver] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.WITHDRAWAL);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Withdraw);
-  const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable, limits.dailyWithdrawalLimit.available);
-
-  const handleReceiverChange = useCallback(e => {
-    setReceiver(e.target.value);
-  }, []);
+  const [amountToConvert, setAmountToConvert] = useState(ethers.constants.Zero);
+  const latestAction = useLatestAction(HistoryTransactionType.Withdrawal);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Withdraw, amountToConvert);
+  const maxWithdrawable = useMaxTransferable(TxType.Withdraw, relayerFee, amountToConvert);
+  const maxAmountExceeded = useMaxAmountExceeded(amount, maxWithdrawable, limits.dailyWithdrawalLimit?.available);
+  const convertionDetails = useConvertion(currentPool);
 
   const onWihdrawal = useCallback(() => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    withdraw(receiver, amount);
-  }, [receiver, amount, withdraw]);
+    const _amountToConvert = currentPool.isNative ? amount : amountToConvert;
+    withdraw(receiver, amount, _amountToConvert, relayerFee);
+  }, [receiver, amount, amountToConvert, withdraw, relayerFee, currentPool]);
 
   const setMax = useCallback(async () => {
-    const max = minBigNumber(maxTransferable, limits.dailyWithdrawalLimit.available);
-    setDisplayAmount(ethers.utils.formatEther(max));
-  }, [maxTransferable, limits]);
+    const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
+    setDisplayAmount(ethers.utils.formatUnits(max, currentPool.tokenDecimals));
+  }, [maxWithdrawable, limits, currentPool.tokenDecimals]);
+
+  useEffect(() => {
+    setDisplayAmount('');
+    setAmountToConvert(ethers.constants.Zero);
+    setReceiver('');
+  }, [currentPool.alias]);
+
+  if (isDemo) return <DemoCard />;
 
   let button = null;
   if (zkAccount) {
     if (isLoadingState || isLoadingLimits) {
-      button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
+      button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
+      const minAmount = formatNumber(minTxAmount, currentPool.tokenDecimals);
+      button = <Button disabled>{t('buttonText.minAmount', { amount: minAmount, symbol: currentPool.tokenSymbol })}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
-    } else if (amount.gt(maxTransferable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>;
+      button = <Button disabled>{t('buttonText.insufficientBalance', { symbol: currentPool.tokenSymbol })}</Button>;
+    } else if (amount.gt(maxWithdrawable)) {
+      button = <Button disabled>{t('buttonText.reduceAmount', { fee: formatNumber(fee, currentPool.tokenDecimals)})}</Button>;
     } else if (amount.gt(limits.dailyWithdrawalLimit.available)) {
-      button = <Button disabled>Amount exceeds daily limit</Button>;
+      button = <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
     } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
-    } else if (!ethers.utils.isAddress(receiver)) {
-      button = <Button disabled>Invalid address</Button>;
+      button = <Button disabled>{t('buttonText.enterAddress')}</Button>;
+    } else if (!isAddress(receiver)) {
+      button = <Button disabled>{t('buttonText.invalidAddress')}</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Withdraw</Button>;
+      button = (
+        <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-withdraw">
+          {t('buttonText.withdraw')}
+        </Button>
+      );
     }
   } else {
     button = <AccountSetUpButton />;
   }
   return isPending ? <PendingAction /> : (
     <>
-      <Card title="Withdraw" note={note}>
+      <Card
+        title={t('withdraw.title')}
+        note={t('withdraw.note', { symbol: currentPool.tokenSymbol })}
+      >
         <TransferInput
-          balance={balance}
+          balance={zkAccount ? balance : null}
+          isLoadingBalance={isLoadingState}
           amount={displayAmount}
           onChange={setDisplayAmount}
           shielded={true}
           fee={fee}
           setMax={setMax}
           maxAmountExceeded={maxAmountExceeded}
+          isLoadingFee={isLoadingFee}
+          currentPool={currentPool}
+          gaIdPostfix="withdraw"
         />
-        <Input
-          placeholder={`Enter ${NETWORKS[process.env.REACT_APP_NETWORK].name} address of receiver`}
+        {convertionDetails.exist && (
+          <ConvertOptions
+            amountToConvert={amountToConvert}
+            setAmountToConvert={setAmountToConvert}
+            amountToWithdraw={amount}
+            maxAmountToWithdraw={maxWithdrawable}
+            details={convertionDetails}
+            currentPool={currentPool}
+          />
+        )}
+        <MultilineInput
+          placeholder={t('withdraw.addressInputPlaceholder', { network: NETWORKS[currentPool.chainId].name })}
           secondary
           value={receiver}
-          onChange={handleReceiverChange}
+          onChange={setReceiver}
         />
+        {!amountToConvert.isZero() && (
+          <Text>
+            <Trans
+              i18nKey="withdraw.convertionDetails"
+              values={{
+                amount1: formatNumber(amount.sub(amountToConvert), currentPool.tokenDecimals),
+                symbol1: currentPool.tokenSymbol,
+                amount2: formatNumber(
+                  amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)),
+                  currentPool.tokenDecimals
+                ),
+                symbol2: convertionDetails.toTokenSymbol,
+              }}
+            />
+          </Text>
+        )}
         {button}
-        <MessageContainer>
-          <Text>Withdraw at least</Text>
-          <BobIcon />
-          <Text><b>10 BOB</b> and receive an additional <b>0.1 MATIC *</b></Text>
-          <Tooltip
-            content={<span>* only addresses with<br />a 0 MATIC balance receive additional MATIC</span>}
-            placement="right"
-            delay={0}
-            width={180}
-          >
-            <InfoIcon />
-          </Tooltip>
-        </MessageContainer>
         <ConfirmTransactionModal
-          title="Withdrawal confirmation"
           isOpen={isConfirmModalOpen}
           onClose={() => setIsConfirmModalOpen(false)}
           onConfirm={onWihdrawal}
@@ -125,53 +157,40 @@ export default () => {
           receiver={receiver}
           shielded={true}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
-          type="withdrawal"
+          type="withdraw"
+          amountToConvert={amountToConvert}
+          convertionDetails={convertionDetails}
+          currentPool={currentPool}
         />
       </Card>
       <Limits
-        limits={[
-          { prefix: "Daily withdrawal", suffix: "limit", value: limits.dailyWithdrawalLimit },
-        ]}
+        loading={isLoadingLimits}
+        limits={[{
+          name: <Trans i18nKey="limits.withdraw.daily" />,
+          value: limits.dailyWithdrawalLimit,
+        }]}
+        currentPool={currentPool}
       />
       {latestAction && (
         <LatestAction
-          type="Withdrawal"
+          type="withdraw"
           shielded={true}
-          actions={latestAction.actions}
-          txHash={latestAction.txHash}
+          data={latestAction}
+          currentPool={currentPool}
         />
       )}
     </>
   );
 };
 
-const MessageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 34px;
-  background: #FBEED0;
-  border-radius: 10px;
-`;
-
 const Text = styled.span`
-  font-size: 13px;
-  color: ${({ theme }) => theme.text.color.secondary};
-`;
-
-const InfoIcon = styled(InfoIconDefault)`
-  margin-left: 2px;
-  margin-right: -2px;
-  &:hover {
-    & > path {
-      fill: ${props => props.theme.color.purple};
-    }
+  font-size: 14px;
+  line-height: 20px;
+  color: ${props => props.theme.text.color.primary};
+  text-align: center;
+  & > b, & > strong {
+    font-weight: 600;
   }
-`;
-
-const BobIcon = styled(BobIconDefault)`
-  width: 20px;
-  height: 20px;
-  margin: 0 5px;
 `;

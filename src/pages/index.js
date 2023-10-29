@@ -1,32 +1,38 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Router, Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { isMobile } from 'react-device-detect';
-import { toast } from 'react-toastify';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { useIdleTimer } from 'react-idle-timer';
 
-import Header from 'containers/Header';
 import Tabs from 'containers/Tabs';
 import TransactionModal from 'containers/TransactionModal';
 import WalletModal from 'containers/WalletModal';
 import AccountSetUpModal from 'containers/AccountSetUpModal';
 import PasswordModal from 'containers/PasswordModal';
-import TermsModal from 'containers/TermsModal';
 import SwapModal from 'containers/SwapModal';
-import SwapOptionsModal from 'containers/SwapOptionsModal';
 import ConfirmLogoutModal from 'containers/ConfirmLogoutModal';
+import SeedPhraseModal from 'containers/SeedPhraseModal';
+import IncreasedLimitsModal from 'containers/IncreasedLimitsModal';
+import RedeemGiftCardModal from 'containers/RedeemGiftCardModal';
 
+import Header from 'components/Header';
 import ChangePasswordModal from 'components/ChangePasswordModal';
+import DisablePasswordModal from 'components/DisablePasswordModal';
 import ToastContainer from 'components/ToastContainer';
 import Footer from 'components/Footer';
+import DemoBanner from 'components/DemoBanner';
+import RestrictionModal from 'components/RestrictionModal';
+import Layout from 'components/Layout';
+import PaymentLinkModal from 'components/PaymentLinkModal';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
 import Transfer from 'pages/Transfer';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
+import Payment from 'pages/Payment';
 
 import aliceImage from 'assets/alice.webp';
 import bobImage from 'assets/bob.webp';
@@ -34,7 +40,7 @@ import robot1Image from 'assets/robot-1.webp';
 import robot2Image from 'assets/robot-2.webp';
 import robot3Image from 'assets/robot-3.webp';
 
-import { ZkAccountContext } from 'contexts';
+import ContextsProvider, { ZkAccountContext } from 'contexts';
 
 import { useRestriction } from 'hooks';
 
@@ -42,8 +48,18 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 
 const history = createBrowserHistory();
 
+const PUBLIC_KEY = process.env.REACT_APP_SENTRY_PUBLIC_KEY;
+const PRIVATE_KEY = process.env.REACT_APP_SENTRY_PRIVATE_KEY;
+const PROJECT_ID = process.env.REACT_APP_SENTRY_PROJECT_ID;
+
+let sentryDsn;
+if (PUBLIC_KEY && PRIVATE_KEY && PROJECT_ID) {
+  sentryDsn = `https://${PUBLIC_KEY}@${PRIVATE_KEY}.ingest.sentry.io/${PROJECT_ID}`;
+}
+
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: sentryDsn,
+  tunnel: '/telemetry',
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
@@ -53,9 +69,21 @@ Sentry.init({
     }),
   ],
   tracesSampleRate: 1.0,
+  beforeBreadcrumb: breadcrumb => {
+    if (breadcrumb.category === 'navigation' && breadcrumb.data) {
+      try {
+        ['from', 'to'].forEach(param => {
+          if (breadcrumb.data[param].includes('?gift-code')) {
+            breadcrumb.data[param] = breadcrumb.data[param].split('?')[0] + '?gift-code=XXX';
+          }
+        });
+      } catch (error) {}
+    }
+    return breadcrumb;
+  }
 });
 
-const Routes = ({ showWelcome }) => (
+const Routes = ({ showWelcome, params }) => (
   <Switch>
     {showWelcome && (
       <SentryRoute exact strict path="/">
@@ -74,27 +102,24 @@ const Routes = ({ showWelcome }) => (
     <SentryRoute exact strict path="/history">
       <History />
     </SentryRoute>
-    <Redirect to="/deposit" />
+    <Redirect to={'/transfer' + params} />
   </Switch>
 );
 
-const Content = () => {
-  const { zkAccount, isLoadingZkAccount } = useContext(ZkAccountContext);
+const MainApp = () => {
+  const { zkAccount, isLoadingZkAccount, isDemo, lockAccount } = useContext(ZkAccountContext);
   const location = useLocation();
-  const showWelcome = !zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed');
+  const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
   const isRestricted = useRestriction();
-  useEffect(() => {
-    if (!isMobile) return;
-    toast.warn(
-      `We're sorry, but the mobile version of zkBob is not yet ready. The app may not work correctly.`,
-      { autoClose: false },
-    );
-  }, []);
+  useIdleTimer({
+    timeout: Number(process.env.REACT_APP_LOCK_TIMEOUT) || (1000 * 60 * 15),
+    onIdle: () => lockAccount(),
+  });
+
   if (isRestricted) {
     return (
-      <Layout>
-        <Header empty />
-        <ErrorText>451: We're sorry, but zkBob is unavailable in your country.</ErrorText>
+      <Layout header={<Header empty />}>
+        <RestrictionModal />
       </Layout>
     );
   }
@@ -107,63 +132,42 @@ const Content = () => {
         <Robot2Image src={robot2Image} />
         <Robot3Image src={robot3Image} />
       </BackgroundImages>
-      <Layout>
-        <Gradient />
-        <Header />
-        <PageContainer>
-          <Tabs />
-          <Routes showWelcome={showWelcome} />
-        </PageContainer>
-        <Footer />
-        <TransactionModal />
-        <WalletModal />
-        <AccountSetUpModal />
-        <PasswordModal />
-        <ChangePasswordModal />
-        <TermsModal />
-        <ToastContainer />
-        <SwapModal />
-        <SwapOptionsModal />
-        <ConfirmLogoutModal />
+      {isDemo && <DemoBanner />}
+      <Layout header={<Header />} footer={<Footer />}>
+        <Tabs />
+        <Routes showWelcome={showWelcome} params={location.search} />
       </Layout>
+      <TransactionModal />
+      <WalletModal />
+      <AccountSetUpModal />
+      <RedeemGiftCardModal />
+      <PasswordModal />
+      <ChangePasswordModal />
+      <ToastContainer />
+      <SwapModal />
+      <ConfirmLogoutModal />
+      <SeedPhraseModal />
+      <IncreasedLimitsModal />
+      <DisablePasswordModal />
+      <PaymentLinkModal />
     </>
   );
 }
 
 export default () => (
   <Router history={history}>
-    <Content />
+    <Switch>
+      <SentryRoute exact strict path="/payment/:address">
+        <Payment />
+      </SentryRoute>
+      <SentryRoute>
+        <ContextsProvider>
+          <MainApp />
+        </ContextsProvider>
+      </SentryRoute>
+    </Switch>
   </Router>
 );
-
-const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding: 14px 40px 40px;
-  background: linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%);
-`;
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  margin: 80px 0;
-  position: relative;
-`;
-
-const Gradient = styled.div`
-  position: absolute;
-  width: 544px;
-  height: 585.08px;
-  left: calc(50% - 270px);
-  top: 100px;
-  background: linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%);
-  filter: blur(250px);
-  transform: rotate(27.74deg);
-`;
 
 const BackgroundImages = styled.div`
   position: absolute;
@@ -173,6 +177,9 @@ const BackgroundImages = styled.div`
   visibility: ${props => props.$show ? 'visible' : 'hidden'};
   opacity: ${props => props.$show ? 1 : 0};
   transition: visibility 0.05s linear 0.05s, opacity 0.05s linear 0.05s;
+  @media only screen and (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const AliceImage = styled.img`
@@ -219,13 +226,4 @@ const Robot3Image = styled.img`
   right: 23%;
   opacity: 0.2;
   filter: blur(2px);
-`;
-
-const ErrorText = styled.span`
-  font-size: 16px;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%);
 `;

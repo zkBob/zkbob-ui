@@ -1,1 +1,8 @@
 name: netlify-env
+inputs:
+  - name: source
+    description: The source filename of redirects (default is _redirects)
+    default: _redirects
+  - name: base
+    description: Base path to look for _redirects file
+    default: .

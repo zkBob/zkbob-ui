@@ -1,42 +1,54 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
+import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
-import { tokenSymbol, tokenIcon } from 'utils/token';
+import { NETWORKS, TOKENS_ICONS } from 'constants';
 
-export default ({ type, shielded, actions, txHash }) => {
+export default ({ type, data, currentPool }) => {
+  const { t } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+  const tokenSymbol = useMemo(() => {
+    if (data.timestamp <= currentPool.migration?.timestamp) {
+      return currentPool.migration?.prevTokenSymbol;
+    }
+    const isWrapped = currentPool.isNative && data.type === HistoryTransactionType.Deposit;
+    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
+  }, [currentPool, data.type, data.timestamp]);
+
   return (
     <Row>
       <InnerRow>
-        <Action>Latest {type}:</Action>
-        <TokenIcon src={tokenIcon(shielded)} />
+        <Action>{t(`latestAction.${type}`)}:</Action>
+        <TokenIcon src={TOKENS_ICONS[tokenSymbol]} />
         <Amount>
           {(() => {
-            const total = actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
+            const total = data.actions.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero);
             return (
-              <Tooltip content={formatNumber(total, 18)} placement="top">
-                <span>{formatNumber(total, 2)}</span>
+              <Tooltip content={formatNumber(total, currentPool.tokenDecimals, 18)} placement="top">
+                <span>{formatNumber(total, currentPool.tokenDecimals, 2)}</span>
               </Tooltip>
             );
           })()}
-          {' '}{tokenSymbol(shielded)}
+          {' '}{tokenSymbol}
         </Amount>
-        <Link size={16} href={process.env.REACT_APP_EXPLORER_TX_TEMPLATE.replace('%s', txHash)}>
-          {shortAddress(txHash)}
-        </Link>
+        <TxLink size={16} href={NETWORKS[currentPool.chainId].blockExplorerUrls.tx.replace('%s', data.txHash)}>
+          {shortAddress(data.txHash)}
+        </TxLink>
       </InnerRow>
       <HistoryButton
         type="link"
-        onClick={() => history.push('/history')}
+        onClick={() => history.push('/history' + location.search)}
       >
-        View History
+        {t('latestAction.viewHistory')}
       </HistoryButton>
     </Row>
   );
@@ -45,8 +57,11 @@ export default ({ type, shielded, actions, txHash }) => {
 const Row = styled.div`
   display: flex;
   align-items: center;
-  width: 456px;
+  width: 480px;
+  max-width: 100%;
+  padding: 0 12px;
   margin-top: 25px;
+  box-sizing: border-box;
 `;
 
 const InnerRow = styled.div`
@@ -78,4 +93,10 @@ const Amount = styled.span`
 
 const HistoryButton = styled(Button)`
   justify-self: flex-end;
+`;
+
+const TxLink = styled(Link)`
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
 `;

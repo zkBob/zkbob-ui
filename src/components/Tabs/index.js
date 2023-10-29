@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-export default ({ tabs, activeTab, onTabClick }) => {
+export default ({ tabs, activeTab, onTabClick, showBadge }) => {
+  const { t } = useTranslation();
   return (
     <Tabs>
       {tabs.map((tab, index) =>
@@ -9,7 +11,9 @@ export default ({ tabs, activeTab, onTabClick }) => {
           key={index}
           active={activeTab === index}
           onClick={() => onTabClick(index)}
-        >{tab}</Tab>
+          $showBadge={showBadge && tab.badge}
+          data-ga-id={`tab-${tab.name.toLowerCase()}`}
+        >{t(tab.i18nKey)}</Tab>
       )}
     </Tabs>
   );
@@ -28,9 +32,16 @@ const Tabs = styled.div`
   & > * {
     flex: 1;
   }
+  @media only screen and (max-width: 400px) {
+    width: 100%;
+  }
+  @media only screen and (max-width: 560px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const Tab = styled.div`
+  position: relative;
   border-radius: 10px;
   padding: 8px 16px;
   background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
@@ -40,4 +51,18 @@ const Tab = styled.div`
   &:hover {
     color: ${props => props.theme.text.color.primary};
   }
+  @media only screen and (max-width: 400px) {
+    padding: 8px 10px;
+    text-align: center;
+  }
+  &::after {
+    content: '';
+    display: ${props => props.$showBadge ? 'block' : 'none'};
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #E53E3E;
 `;

@@ -1,23 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 
 export default ({ isOpen, onClose, onConfirm }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Log out and clear browsing data"
+      title={t('confirmLogoutModal.title')}
     >
       <Container>
         <Description>
-          When you log out your zkAccount information is erased from
-          the data cache and is no longer accessible with your password.
-          Restore the account and balance using your seed phrase and a new password.
+          {t('confirmLogoutModal.description')}
         </Description>
-        <Button onClick={onConfirm}>Log out</Button>
+        <Button onClick={onConfirm}>{t('buttonText.logout')}</Button>
       </Container>
     </Modal>
   );

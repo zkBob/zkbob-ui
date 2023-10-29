@@ -29,13 +29,74 @@ export const ModalContextProvider = ({ children }) => {
   const openSwapModal = () => setIsSwapModalOpen(true);
   const closeSwapModal = () => setIsSwapModalOpen(false);
 
-  const [isSwapOptionsModalOpen, setIsSwapOptionsModalOpen] = useState(false);
-  const openSwapOptionsModal = () => setIsSwapOptionsModalOpen(true);
-  const closeSwapOptionsModal = () => setIsSwapOptionsModalOpen(false);
-
   const [isConfirmLogoutModalOpen, setIsConfirmLogoutModalOpen] = useState(false);
   const openConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(true);
   const closeConfirmLogoutModal = () => setIsConfirmLogoutModalOpen(false);
+
+  const [isSeedPhraseModalOpen, setIsSeedPhraseModalOpen] = useState(false);
+  const openSeedPhraseModal = () => setIsSeedPhraseModalOpen(true);
+  const closeSeedPhraseModal = () => setIsSeedPhraseModalOpen(false);
+
+  const [isIncreasedLimitsModalOpen, setIsIncreasedLimitsModalOpen] = useState(false);
+  const openIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(true);
+  const closeIncreasedLimitsModal = () => setIsIncreasedLimitsModalOpen(false);
+
+  const [isRedeemGiftCardModalOpen, setIsRedeemGiftCardModalOpen] = useState(false);
+  const openRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(true);
+  const closeRedeemGiftCardModal = () => setIsRedeemGiftCardModalOpen(false);
+
+  const [isDisablePasswordModalOpen, setIsDisablePasswordModalOpen] = useState(false);
+  const openDisablePasswordModal = () => setIsDisablePasswordModalOpen(true);
+  const closeDisablePasswordModal = () => setIsDisablePasswordModalOpen(false);
+
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const openNetworkDropdown = () => setIsNetworkDropdownOpen(true);
+  const closeNetworkDropdown = () => setIsNetworkDropdownOpen(false);
+
+  const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState(false);
+  const openWalletDropdown = () => setIsWalletDropdownOpen(true);
+  const closeWalletDropdown = () => setIsWalletDropdownOpen(false);
+
+  const [isZkAccountDropdownOpen, setIsZkAccountDropdownOpen] = useState(false);
+  const openZkAccountDropdown = () => setIsZkAccountDropdownOpen(true);
+  const closeZkAccountDropdown = () => setIsZkAccountDropdownOpen(false);
+
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
+  const openMoreDropdown = () => setIsMoreDropdownOpen(true);
+  const closeMoreDropdown = () => setIsMoreDropdownOpen(false);
+
+  const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState(false);
+  const openTokenSelector = () => setIsTokenSelectorOpen(true);
+  const closeTokenSelector = () => setIsTokenSelectorOpen(false);
+
+  const [isTokenListModalOpen, setIsTokenListModalOpen] = useState(false);
+  const openTokenListModal = () => setIsTokenListModalOpen(true);
+  const closeTokenListModal = () => setIsTokenListModalOpen(false);
+
+  const [isPaymentLinkModalOpen, setIsPaymentLinkModalOpen] = useState(false);
+  const openPaymentLinkModal = () => setIsPaymentLinkModalOpen(true);
+  const closePaymentLinkModal = () => setIsPaymentLinkModalOpen(false);
+
+  const [isPaymentConfirmationModalOpen, setIsPaymentConfirmationModalOpen] = useState(false);
+  const openPaymentConfirmationModal = () => setIsPaymentConfirmationModalOpen(true);
+  const closePaymentConfirmationModal = () => setIsPaymentConfirmationModalOpen(false);
+
+  const closeAllModals = () => {
+    closeWalletModal();
+    closeAccountSetUpModal();
+    closeChangePasswordModal();
+    closeSwapModal();
+    closeConfirmLogoutModal();
+    closeSeedPhraseModal();
+    closeIncreasedLimitsModal();
+    closeNetworkDropdown();
+    closeWalletDropdown();
+    closeZkAccountDropdown();
+    closeMoreDropdown();
+    closeTokenSelector();
+    closePaymentLinkModal();
+    closePaymentConfirmationModal();
+  };
 
   return (
     <ModalContext.Provider
@@ -46,8 +107,20 @@ export const ModalContextProvider = ({ children }) => {
         isChangePasswordModalOpen, openChangePasswordModal, closeChangePasswordModal,
         isTermsModalOpen, openTermsModal, closeTermsModal,
         isSwapModalOpen, openSwapModal, closeSwapModal,
-        isSwapOptionsModalOpen, openSwapOptionsModal, closeSwapOptionsModal,
         isConfirmLogoutModalOpen, openConfirmLogoutModal, closeConfirmLogoutModal,
+        isSeedPhraseModalOpen, openSeedPhraseModal, closeSeedPhraseModal,
+        isIncreasedLimitsModalOpen, openIncreasedLimitsModal, closeIncreasedLimitsModal,
+        isRedeemGiftCardModalOpen, openRedeemGiftCardModal, closeRedeemGiftCardModal,
+        isDisablePasswordModalOpen, openDisablePasswordModal, closeDisablePasswordModal,
+        isNetworkDropdownOpen, openNetworkDropdown, closeNetworkDropdown,
+        isWalletDropdownOpen, openWalletDropdown, closeWalletDropdown,
+        isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
+        isMoreDropdownOpen, openMoreDropdown, closeMoreDropdown,
+        isTokenSelectorOpen, openTokenSelector, closeTokenSelector,
+        isTokenListModalOpen, openTokenListModal, closeTokenListModal,
+        isPaymentLinkModalOpen, openPaymentLinkModal, closePaymentLinkModal,
+        isPaymentConfirmationModalOpen, openPaymentConfirmationModal, closePaymentConfirmationModal,
+        closeAllModals,
       }}
     >
       {children}

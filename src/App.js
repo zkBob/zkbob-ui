@@ -1,14 +1,17 @@
 import { createGlobalStyle } from 'styled-components';
-import { Web3ReactProvider } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import { WalletProvider as TronWalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks';
 
-import ContextsProvider from 'contexts';
+import ThemeProvider from 'providers/ThemeProvider';
+import Web3Provider from 'providers/Web3Provider';
 
 import Pages from 'pages';
-import ThemeProvider from 'providers/ThemeProvider';
+
+import 'services';
+
 import GilroyRegular from 'fonts/Gilroy-Regular.woff';
 import GilroyMedium from 'fonts/Gilroy-Medium.woff';
 import GilroyBold from 'fonts/Gilroy-Bold.woff';
+import GilroyExtraBold from 'fonts/Gilroy-ExtraBold.woff';
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -26,6 +29,14 @@ const GlobalStyle = createGlobalStyle`
     src: url(${GilroyBold}) format('woff');
     font-weight: 700;
   }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url(${GilroyExtraBold}) format('woff');
+    font-weight: 800;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     margin: 0;
     font-family: 'Gilroy';
@@ -38,6 +49,8 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
     min-height: 100vh;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     background-image: ${props => props.theme.background};
   }
   input::-webkit-outer-spin-button,
@@ -50,17 +63,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-function getLibrary(provider) {
-  return new Web3Provider(provider);
-}
-
 export default () => (
   <ThemeProvider>
     <GlobalStyle />
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <ContextsProvider>
+    <Web3Provider>
+      <TronWalletProvider autoConnect={false}>
         <Pages />
-      </ContextsProvider>
-    </Web3ReactProvider>
+      </TronWalletProvider>
+    </Web3Provider>
   </ThemeProvider>
 );

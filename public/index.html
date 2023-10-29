@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','%REACT_APP_GTM_ID%');
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>zkBob - Private Stable Transfers</title>
-    <meta content="zkBob enables secure and anonymous stablecoin transfers with a limited value between users." name="description" />
-    <meta content="zkBob - Private Stable Transfers" property="og:title" />
-    <meta content="zkBob enables secure and anonymous stablecoin transfers with a limited value between users." property="og:description" />
-    <meta content="https://uploads-ssl.webflow.com/62596d94c1f87b865a97e621/638f596b6076f3eee5148cb1_metatags.io_%20cover_1200%E2%95%A4%C3%A0628.jpg" property="og:image">
-    <meta content="zkBob - Private Stable Transfers" property="twitter:title">
-    <meta content="zkBob enables secure and anonymous stablecoin transfers with a limited value between users." property="twitter:description">
-    <meta content="https://uploads-ssl.webflow.com/62596d94c1f87b865a97e621/638f596b6076f3eee5148cb1_metatags.io_%20cover_1200%E2%95%A4%C3%A0628.jpg" property="twitter:image:src">
+    <title>zkBob - Your web3 wallet with privacy option for everyday use</title>
+    <meta content="A Web3 crypto privacy wallet based on ZKP technology. zkBob could be used for regular transfers, payments, and much more. Compliance features backed in!" name="description" />
+    <meta content="zkBob - Your web3 wallet with privacy option for everyday use" property="og:title" />
+    <meta content="A Web3 crypto privacy wallet based on ZKP technology. zkBob could be used for regular transfers, payments, and much more. Compliance features backed in!" property="og:description" />
+    <meta content="https://uploads-ssl.webflow.com/642ef9bf2b8c72448377e95d/64c3e8b24cce13f41f0d5c7e_metatags.io_%20cover_1200%D1%85628-1.jpg" property="og:image">
+    <meta content="zkBob - Your web3 wallet with privacy option for everyday use" property="twitter:title">
+    <meta content="A Web3 crypto privacy wallet based on ZKP technology. zkBob could be used for regular transfers, payments, and much more. Compliance features backed in!" property="twitter:description">
+    <meta content="https://uploads-ssl.webflow.com/642ef9bf2b8c72448377e95d/64c3e8b24cce13f41f0d5c7e_metatags.io_%20cover_1200%D1%85628-1.jpg" property="twitter:image:src">
     <meta property="og:type" content="website">
     <meta content="summary_large_image" name="twitter:card">
     <link href="%PUBLIC_URL%/logo32.png" rel="shortcut icon" type="image/x-icon">
@@ -29,6 +38,18 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script>
+      !function(d,w){var t="%REACT_APP_CHAMELEON_TOKEN%",c="chmln",i=d.createElement("script");if(w[c]||(w[c]={}),!w[c].root){w[c].accountToken=t,w[c].location=w.location.href.toString(),w[c].now=new Date,w[c].fastUrl='https://fast.chameleon.io/';var m="identify alias track clear set show on off custom help _data".split(" ");for(var s=0;s<m.length;s++){!function(){var t=w[c][m[s]+"_a"]=[];w[c][m[s]]=function(){t.push(arguments);};}();}i.src=w[c].fastUrl+"messo/"+t+"/messo.min.js",i.async=!0,i.crossOrigin="anonymous",d.head.appendChild(i);}}(document,window);
+    </script>
+    <script>
+      (function(apiKey){
+          (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
+          v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
+              o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
+              y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
+              z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
+      })('%REACT_APP_PENDO_API_KEY%');
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

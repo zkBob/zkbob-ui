@@ -1,59 +1,83 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import styled from 'styled-components';
-import OutsideClickHandler from 'react-outside-click-handler';
+
+import OptionButtonDefault from 'components/OptionButton';
+import Dropdown from 'components/Dropdown';
 
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 
-export default ({ tokens, selectedToken, onTokenSelect }) => {
-  const [showList, setShowList] = useState(false);
-  const toggleSelect = useCallback(() => {
-    setShowList(!showList);
-  }, [showList]);
-  const onSelect = useCallback(index => {
-    onTokenSelect(index);
-    toggleSelect();
-  }, [onTokenSelect, toggleSelect]);
+import { TOKENS_ICONS } from 'constants';
+
+import { ModalContext } from 'contexts';
+
+const getTokenSymbol = (tokenSymbol, isNative) => (isNative ? '' : 'W') + tokenSymbol;
+
+const Content = ({ tokenSymbol, isNativeSelected, onTokenSelect, close }) => {
+  const onSelect = useCallback(isNative => {
+    onTokenSelect(isNative);
+    close();
+  }, [onTokenSelect, close]);
+
   return (
-    <OutsideClickHandler onOutsideClick={() => setShowList(false)} display="flex">
-      <Select>
-        <SelectedItemContainer onClick={toggleSelect}>
-          <ItemIcon src={tokens[selectedToken].icon} />
-          {tokens[selectedToken].name}
-          <DropdownIcon />
-        </SelectedItemContainer>
-        {showList &&
-          <List>
-            {tokens.map(({ name, icon }, index) =>
-              <ItemContainer key={name} onClick={() => onSelect(index)} >
-                <ItemIcon src={icon} />
-                {name}
-              </ItemContainer>
-            )}
-          </List>
-        }
-      </Select>
-    </OutsideClickHandler>
+    <Container>
+      {[true, false].map((isNative, index) =>
+        <OptionButton
+          key={index}
+          onClick={() => onSelect(isNative)}
+          className={isNativeSelected === isNative ? 'active' : ''}
+        >
+          <Row>
+            <ItemIcon
+              src={TOKENS_ICONS[getTokenSymbol(tokenSymbol, isNative)]}
+              style={{ marginRight: 4 }}
+            />
+            {getTokenSymbol(tokenSymbol, isNative)}
+          </Row>
+        </OptionButton>
+      )}
+    </Container>
   );
-}
+};
 
-const Select = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-`;
+export default ({ tokenSymbol, isNativeSelected, onTokenSelect }) => {
+  const { isTokenSelectorOpen, openTokenSelector, closeTokenSelector } = useContext(ModalContext);
+  return (
+    <Dropdown
+      width={120}
+      style={{ padding: '12px' }}
+      isOpen={isTokenSelectorOpen}
+      open={openTokenSelector}
+      close={closeTokenSelector}
+      fullscreen={false}
+      content={() => (
+        <Content
+          tokenSymbol={tokenSymbol}
+          isNativeSelected={isNativeSelected}
+          onTokenSelect={onTokenSelect}
+          close={closeTokenSelector}
+        />
+      )}
+    >
+      <SelectedItemContainer>
+        <ItemIcon src={TOKENS_ICONS[getTokenSymbol(tokenSymbol, isNativeSelected)]} />
+        {getTokenSymbol(tokenSymbol, isNativeSelected)}
+        <DropdownIcon />
+      </SelectedItemContainer>
+    </Dropdown>
+  );
+};
 
-const List = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #fff;
-  border-radius: 4px;
-  margin-top: 7px;
-  padding: 10px 15px;
-  position: absolute;
-  top: 35px;
-  left: -15px;
-  width: 100%;
+  & > :last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const ItemIcon = styled.img`
@@ -66,16 +90,21 @@ const SelectedItemContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
-
-const ItemContainer = styled(SelectedItemContainer)`
-  margin-bottom: 10px;
-  &:last-child {
-    margin-bottom: 0;
-  }
+  position: relative;
+  margin-left: 15px;
 `;
 
 const DropdownIcon = styled(DropdownIconDefault)`
-  margin-left: 8px;
+  margin-left: 2px;
   margin-top: 1px;
+`;
+
+const OptionButton = styled(OptionButtonDefault)`
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid ${props => props.theme.walletConnectorOption.background.default};
+  &.active {
+    background-color: ${props => props.theme.walletConnectorOption.background.hover};
+    border: 1px solid ${props => props.theme.walletConnectorOption.border.hover};
+  }
 `;

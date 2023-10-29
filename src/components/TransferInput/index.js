@@ -1,23 +1,38 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
+import Skeleton from 'components/Skeleton';
+import Select from './Select';
+
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
 
-export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExceeded }) => {
+import { TOKENS_ICONS } from 'constants';
+
+export default ({
+  amount, onChange, balance, nativeBalance, isLoadingBalance, fee,
+  shielded, setMax, maxAmountExceeded, isLoadingFee, currentPool,
+  isNativeSelected, setIsNativeSelected, isNativeTokenUsed, gaIdPostfix,
+}) => {
+  const { t } = useTranslation();
+  const displayedFee = useDisplayedFee(currentPool, fee);
   const [showTooltip, setShowTooltip] = useState(false);
+
   const handleAmountChange = useCallback(value => {
     if (!value || /^\d*(?:[.]\d*)?$/.test(value)) {
       onChange(value);
     }
   }, [onChange]);
+
   useEffect(() => {
     setShowTooltip(maxAmountExceeded);
   }, [maxAmountExceeded]);
+
   return (
     <Container>
       <Row>
@@ -26,39 +41,64 @@ export default ({ amount, onChange, balance, fee, shielded, setMax, maxAmountExc
           value={amount}
           onChange={e => handleAmountChange(e.target.value)}
         />
-        <TokenContainer>
-          <TokenIcon src={tokenIcon(shielded)} />
-          {tokenSymbol(shielded)}
-        </TokenContainer>
-
+        {(!shielded && currentPool.isNative) ? (
+          <Select
+            tokenSymbol={currentPool.tokenSymbol}
+            isNativeSelected={isNativeSelected}
+            onTokenSelect={setIsNativeSelected}
+          />
+        ) : (
+          <TokenContainer>
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
+            {currentPool.tokenSymbol}
+          </TokenContainer>
+        )}
       </Row>
       <Row>
-        <SmallText>
-          Relayer fee: {formatNumber(fee)} {tokenSymbol(shielded)}
-        </SmallText>
-        <Row>
-          <SmallText>
-            {shielded ? 'Pool balance' : 'Balance'}: {formatNumber(balance)} {tokenSymbol(shielded)}
-          </SmallText>
-          <MaxButton
-            type="link"
-            onClick={setMax}
-            tabIndex="-1"
-          >
-            Max
-          </MaxButton>
-          <Tooltip
-            content={`Click Max to set the maximum amount of ${tokenSymbol()} you can send including all fees and limits`}
-            placement="right"
-            delay={0}
-            width={180}
-            visible={showTooltip}
-            onVisibleChange={setShowTooltip}
-            trigger="hover"
-          >
-            <InfoIcon />
-          </Tooltip>
-        </Row>
+        <RowWrap style={{ marginRight: 20 }}>
+          <Text style={{ marginRight: 4 }}>{t('common.relayerFee')}:</Text>
+          {isLoadingFee ? (
+            <Skeleton width={40} />
+          ) : (
+            <Text>{displayedFee}</Text>
+          )}
+        </RowWrap>
+        {(balance || isLoadingBalance) && (
+          <RowFlexEnd>
+            <Text style={{ marginRight: 4 }}>
+              {shielded ? t('common.poolBalance') : t('common.balance')}:
+            </Text>
+            {isLoadingBalance ? (
+              <Skeleton width={80} />
+            ) : (
+              <Row>
+                <Text>
+                  {formatNumber(isNativeTokenUsed ? nativeBalance : balance, currentPool.tokenDecimals)}{' '}
+                  {currentPool.tokenSymbol}
+                </Text>
+                <MaxButton
+                  type="link"
+                  onClick={setMax}
+                  tabIndex="-1"
+                  data-ga-id={`max-${gaIdPostfix}`}
+                >
+                  {t('buttonText.max')}
+                </MaxButton>
+                <Tooltip
+                  content={t('maxButton.tooltip', { symbol: currentPool.tokenSymbol })}
+                  placement="right"
+                  delay={0}
+                  width={180}
+                  visible={showTooltip}
+                  onVisibleChange={setShowTooltip}
+                  trigger="hover"
+                >
+                  <InfoIcon />
+                </Tooltip>
+              </Row>
+            )}
+          </RowFlexEnd>
+        )}
       </Row>
     </Container>
   );
@@ -85,6 +125,15 @@ const Row = styled.div`
   align-items: center;
 `;
 
+const RowWrap = styled(Row)`
+  flex-wrap: wrap;
+  line-height: 20px;
+`;
+
+const RowFlexEnd = styled(RowWrap)`
+  justify-content: flex-end;
+`;
+
 const Input = styled.input`
   border: 0;
   background: transparent;
@@ -94,6 +143,7 @@ const Input = styled.input`
   width: 100%;
   flex: 1;
   outline: none;
+  padding: 0;
   &::placeholder {
     color: ${props => props.theme.transferInput.text.color.placeholder};
   }
@@ -102,7 +152,7 @@ const Input = styled.input`
   }
 `;
 
-const SmallText = styled.span`
+const Text = styled.span`
   font-size: 14px;
   color: ${props => props.theme.text.color.secondary};
   font-weight: ${props => props.theme.transferInput.text.weight.small};
@@ -123,6 +173,7 @@ const TokenContainer = styled.div`
   display: flex;
   align-items: center;
   font-size: 16px;
+  color: ${props => props.theme.text.color.primary};
   padding: 10px 0;
   margin-left: 15px;
 `;

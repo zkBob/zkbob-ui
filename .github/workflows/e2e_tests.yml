@@ -63,7 +63,7 @@ jobs:
         run: |
           cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
 
-      - name: Goerli
+      - name: Goerli network
         if: always()
         run: |
           cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  
@@ -102,7 +102,7 @@ jobs:
         run: |
           cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
 
-      - name: Goerli
+      - name: Goerli network
         if: always()
         run: |
           cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  

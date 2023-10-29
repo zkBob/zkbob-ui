@@ -1,61 +1,97 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import Modal from 'components/Modal';
+import Skeleton from 'components/Skeleton';
 
-import { tokenSymbol, tokenIcon } from 'utils/token';
 import { formatNumber } from 'utils';
+import { useDisplayedFee } from 'hooks';
+import { TOKENS_ICONS } from 'constants';
 
 export default ({
-  isOpen, onClose, onConfirm, title, amount, receiver,
-  shielded, isZkAddress, fee, numberOfTxs, type,
-  isMultitransfer, transfers, openDetails,
+  isOpen, onClose, onConfirm, amount, receiver,
+  isZkAddress, fee, numberOfTxs, type, isLoadingFee,
+  isMultitransfer, transfers, openDetails, currentPool,
+  amountToConvert = ethers.constants.Zero, convertionDetails,
 }) => {
+  const { t } = useTranslation();
+  const displayedFee = useDisplayedFee(currentPool, fee);
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={t(`confirmTransaction.titles.${type}`)}
       width={460}
     >
       <Container>
         <DetailsContainer>
           <AmountContainer>
-            <TokenIcon src={tokenIcon(shielded)} />
+            <TokenIcon src={TOKENS_ICONS[currentPool.tokenSymbol]} />
             <Amount>
-              {formatNumber(isMultitransfer
-                ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
-                : amount, 18
+              {formatNumber(
+                isMultitransfer
+                  ? transfers.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero)
+                  : amount.sub(amountToConvert),
+                currentPool.tokenDecimals,
+                18
               )}{' '}
             </Amount>
-            <TokenSymbol>{tokenSymbol(shielded)}</TokenSymbol>
+            <TokenSymbol>{currentPool.tokenSymbol}</TokenSymbol>
           </AmountContainer>
+          {!amountToConvert.isZero() && (
+            <ConvertedAmount>
+              + {formatNumber(
+                  amountToConvert.mul(convertionDetails.price).div(ethers.utils.parseUnits('1', convertionDetails.decimals)),
+                  currentPool.tokenDecimals
+                )}{' '}
+              {convertionDetails.toTokenSymbol}
+            </ConvertedAmount>
+          )}
           {isMultitransfer ? (
             <>
-              <MediumTextMulti>will be transferred to {transfers.length} zkBob addresses</MediumTextMulti>
-              <ViewAllButton type="link" onClick={openDetails}>view all</ViewAllButton>
+              <MediumTextMulti>{t('confirmTransaction.sendToMultiple', { count: transfers.length })}</MediumTextMulti>
+              <ViewAllButton type="link" onClick={openDetails}>{t('confirmTransaction.viewAll')}</ViewAllButton>
             </>
           ) : (
             <>
               <SmallText>
-                send to {isZkAddress ? 'zkBob address' : ''}
+                {isZkAddress ? t('confirmTransaction.sendToZk') : t('confirmTransaction.sendTo')}
               </SmallText>
               <MediumText>{receiver}</MediumText>
             </>
           )}
-          <SmallText>{type} details</SmallText>
+          <SmallText>{t(`confirmTransaction.details.${type}`)}</SmallText>
+          {!amountToConvert.isZero() && (
+            <Row>
+              <MediumText>{t('confirmTransaction.withdrawAmount')}:</MediumText>
+              <MediumText>{formatNumber(amount, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</MediumText>
+            </Row>
+          )}
+          {numberOfTxs > 1 && (
+            <Row>
+              <MediumText>{t('confirmTransaction.numberOfTransactions')}:</MediumText>
+              <MediumText>{numberOfTxs}</MediumText>
+            </Row>
+          )}
           <Row>
-            <MediumText>Number of transactions:</MediumText>
-            <MediumText>{numberOfTxs}</MediumText>
-          </Row>
-          <Row>
-            <MediumText>Relayer fee:</MediumText>
-            <MediumText>{formatNumber(fee)} {tokenSymbol(shielded)}</MediumText>
+            <MediumText>{t('common.relayerFee')}:</MediumText>
+            {isLoadingFee ? (
+              <Skeleton width={60} />
+            ) : (
+              <MediumText>{displayedFee}</MediumText>
+            )}
           </Row>
         </DetailsContainer>
-        <Button onClick={onConfirm}>Confirm {isMultitransfer && 'multitransfer'}</Button>
+        <Button
+          onClick={onConfirm}
+          data-ga-id="confirm-operation"
+        >
+          {t('buttonText.confirm')}
+        </Button>
       </Container>
     </Modal>
   );
@@ -137,5 +173,10 @@ const ViewAllButton = styled(Button)`
 
 const MediumTextMulti = styled(MediumText)`
   margin-bottom: 0;
+  margin-top: 10px;
+`;
+
+const ConvertedAmount = styled(MediumText)`
+  font-weight: ${props => props.theme.text.weight.bold};
   margin-top: 10px;
 `;

@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
 import Dropdown from 'components/Dropdown';
 import Tooltip from 'components/Tooltip';
@@ -11,10 +12,31 @@ import { ReactComponent as CopyIconDefault } from 'assets/copy.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg';
 
 import { formatNumber } from 'utils';
-import { tokenIcon, tokenSymbol } from 'utils/token';
+
+import { CONNECTORS_ICONS, NETWORKS, TOKENS_ICONS } from 'constants';
+
+import { ModalContext, TokenBalanceContext, PoolContext, WalletContext } from 'contexts';
 
 
-const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
+const Balance = ({ tokenSymbol, balance, isWrapped, isNative, tokenDecimals }) => (
+  <Row>
+    <TokenIcon
+      src={TOKENS_ICONS[(isWrapped ? 'W' : '') + tokenSymbol]}
+      style={{ marginRight: isWrapped || isNative ? 4 : 8 }}
+    />
+    <Tooltip content={formatNumber(balance, tokenDecimals, 18)} placement="bottom">
+      <Text>{formatNumber(balance, tokenDecimals, isWrapped || isNative ? 4 : 6)}</Text>
+    </Tooltip>
+    <Text style={{ marginLeft: 5 }}>{isWrapped ? 'W' : ''}{tokenSymbol}</Text>
+  </Row>
+);
+
+
+const Content = ({
+  address, balance, nativeBalance, connector, changeWallet,
+  disconnect, close, currentPool,
+}) => {
+  const { t } = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopy = useCallback((text, result) => {
@@ -25,57 +47,99 @@ const Content = ({ address, balance, connector, changeWallet, buttonRef }) => {
   }, []);
 
   const onChangeWallet = useCallback(() => {
-    buttonRef.current.click();
+    close();
     changeWallet();
-  }, [changeWallet, buttonRef]);
+  }, [changeWallet, close]);
+
+  const onDisconnect = useCallback(() => {
+    close();
+    disconnect();
+  }, [disconnect, close]);
 
   return (
     <Container>
       <RowSpaceBetween>
-        <SmallText>Wallet</SmallText>
-        <Row>
-          <TokenIcon src={tokenIcon()} />
-          <Tooltip content={formatNumber(balance, 18)} placement="bottom">
-            <Balance>{formatNumber(balance, 6)}</Balance>
-          </Tooltip>
-          <Balance style={{ marginLeft: 5 }}>{tokenSymbol()}</Balance>
-        </Row>
+        <SmallText>{t('common.wallet')}</SmallText>
+        {currentPool && (
+          <Row>
+            {currentPool.isNative && (
+              <>
+                <Balance
+                  tokenSymbol={currentPool.tokenSymbol}
+                  tokenDecimals={currentPool.tokenDecimals}
+                  balance={nativeBalance}
+                  isNative
+                />
+                <Text style={{ margin: '0 4px' }}>+</Text>
+              </>
+            )}
+            <Balance
+              tokenSymbol={currentPool.tokenSymbol}
+              tokenDecimals={currentPool.tokenDecimals}
+              balance={balance}
+              isWrapped={currentPool.isNative}
+            />
+          </Row>
+        )}
       </RowSpaceBetween>
       <CopyToClipboard text={address} onCopy={onCopy}>
         <AddressContainer>
-          {connector?.icon && <Icon src={connector.icon} />}
+          {connector && <Icon src={CONNECTORS_ICONS[connector.name]} />}
           <ShortAddress address={address} />
-          <Tooltip content="Copied" placement="right" visible={isCopied}>
+          <Tooltip content={t('common.copied')} placement="right" visible={isCopied}>
             {isCopied ? <CheckIcon /> : <CopyIcon />}
           </Tooltip>
         </AddressContainer>
       </CopyToClipboard>
-      <OptionButton
-        type="link"
-        href={process.env.REACT_APP_EXPLORER_ADDRESS_TEMPLATE.replace('%s', address)}
-      >
-        View in Explorer
+      {currentPool && (
+        <OptionButton
+          type="link"
+          href={NETWORKS[currentPool.chainId].blockExplorerUrls.address.replace('%s', address)}
+        >
+          {t('common.viewInExplorer')}
+        </OptionButton>
+      )}
+      <OptionButton onClick={onChangeWallet}>
+        {t('buttonText.changeWallet')}
       </OptionButton>
-      <OptionButton onClick={onChangeWallet}>Change wallet</OptionButton>
+      <OptionButton onClick={onDisconnect}>
+        {t('buttonText.disconnect')}
+      </OptionButton>
     </Container>
   );
 };
 
-export default ({ address, balance, connector, changeWallet, buttonRef, children }) => (
-  <Dropdown
-    content={() => (
-      <Content
-        address={address}
-        balance={balance}
-        connector={connector}
-        changeWallet={changeWallet}
-        buttonRef={buttonRef}
-      />
-    )}
-  >
-    {children}
-  </Dropdown>
-);
+export default ({ children }) => {
+  const { address, connector, disconnect } = useContext(WalletContext);
+  const { balance, nativeBalance, isLoadingBalance } = useContext(TokenBalanceContext);
+  const {
+    openWalletModal, isWalletDropdownOpen,
+    openWalletDropdown, closeWalletDropdown,
+  } = useContext(ModalContext);
+  const { currentPool } = useContext(PoolContext);
+  return (
+    <Dropdown
+      disabled={isLoadingBalance}
+      isOpen={isWalletDropdownOpen}
+      open={openWalletDropdown}
+      close={closeWalletDropdown}
+      content={() => (
+        <Content
+          address={address}
+          balance={balance}
+          nativeBalance={nativeBalance}
+          connector={connector}
+          changeWallet={openWalletModal}
+          disconnect={disconnect}
+          currentPool={currentPool}
+          close={closeWalletDropdown}
+        />
+      )}
+    >
+      {children}
+    </Dropdown>
+  );
+};
 
 const Container = styled.div`
   display: flex;
@@ -95,7 +159,7 @@ const SmallText = styled.span`
   color: ${({ theme }) => theme.text.color.secondary};
 `;
 
-const Balance = styled.span`
+const Text = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.primary};
 `;
@@ -107,7 +171,6 @@ const RowSpaceBetween = styled(Row)`
 const TokenIcon = styled.img`
   width: 24px;
   height: 24px;
-  margin-right: 8px;
 `;
 
 const Icon = styled.img`

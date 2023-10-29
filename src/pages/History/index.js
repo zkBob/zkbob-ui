@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTranslation, Trans } from 'react-i18next';
 
 import Card from 'components/Card';
 import Spinner from 'components/Spinner';
@@ -8,20 +9,31 @@ import HistoryItem from 'components/HistoryItem';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
+import { useWindowDimensions } from 'hooks';
 
 export default () => {
+  const { t } = useTranslation();
   const {
-    history, zkAccount, zkAccountId,
+    history, zkAccount, pendingDirectDeposits,
     isLoadingZkAccount, isLoadingHistory,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 500;
 
   const pageSize = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
   const isLoading = isLoadingZkAccount || isLoadingHistory;
-  const isHistoryEmpty = !(history?.length > 0);
-  const title = 'History';
+  const title = t('history.title');
+
+  const items = pendingDirectDeposits.concat(history);
+  const isHistoryEmpty = items.length === 0;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [zkAccount, currentPool]);
 
   return (
     <Card title={!isHistoryEmpty ? title : null} titleStyle={{ marginBottom: 22 }}>
@@ -33,8 +45,7 @@ export default () => {
       )}
       {(!isLoading && isHistoryEmpty) && (
         <Description>
-          Make your first Deposit, Transfer or Withdrawal<br/>
-          to create your History.
+          <Trans i18nKey="history.empty" />
         </Description>
       )}
       {(!isLoading && !zkAccount) && (
@@ -42,13 +53,13 @@ export default () => {
       )}
       {!isHistoryEmpty && (
         <>
-          {history.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
-            <HistoryItem key={index} item={item} zkAccountId={zkAccountId} />
+          {items.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) =>
+            <HistoryItem key={index} item={item} zkAccount={zkAccount} currentPool={currentPool} isMobile={isMobile} />
           )}
-          {history.length > pageSize && (
+          {items.length > pageSize && (
             <Pagination
               currentPage={currentPage}
-              numberOfPages={Math.ceil(history.length / pageSize)}
+              numberOfPages={Math.ceil(items.length / pageSize)}
               setCurrentPage={setCurrentPage}
             />
           )}

@@ -1,30 +1,33 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Card from 'components/Card';
 import HistoryItem from 'components/HistoryItem';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
+import { useWindowDimensions } from 'hooks';
 
 export default () => {
-  const { pendingActions } = useContext(ZkAccountContext);
-  const multi = pendingActions.length > 1;
+  const { t } = useTranslation();
+  const { pendingActions, zkAccount } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 500;
   return (
     <Card
-      note={
-      `Do not refresh the page for at least 30 seconds! Transaction status${multi ? 'es' : ''} will update automatically.`
-      }
+      note={t('pendingAction.note', { count: pendingActions.length })}
     >
       <Title>
-        Please wait for your transaction{multi ? 's' : ''} to finalize
+      {t('pendingAction.title', { count: pendingActions.length })}
       </Title>
       <Description>
-        You can deposit, transfer or withdraw funds once the<br /> transaction{multi ? 's are' : ' is'} complete.
+      {t('pendingAction.description', { count: pendingActions.length })}
       </Description>
       <ListContainer>
         {pendingActions.map((action, index) =>
           <HistoryItemContainer key={index}>
-            <HistoryItem item={action} />
+            <HistoryItem item={action} currentPool={currentPool} zkAccount={zkAccount} isMobile={isMobile} />
           </HistoryItemContainer>
         )}
       </ListContainer>

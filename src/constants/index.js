@@ -1,7 +1,9 @@
 export const TX_STATUSES = {
   APPROVE_TOKENS: 'approve_tokens',
+  APPROVED: 'approved',
   SIGN_MESSAGE: 'sign_message',
-  WAITING_FOR_APPROVAL: 'waiting_for_approval',
+  CONFIRM_TRANSACTION: 'confirm_transaction',
+  WAITING_FOR_TRANSACTION: 'waiting_for_transaction',
   GENERATING_PROOF: 'generating_proof',
   WAITING_FOR_RELAYER: 'waiting_for_relayer',
   DEPOSITED: 'deposited',
@@ -9,38 +11,87 @@ export const TX_STATUSES = {
   TRANSFERRED_MULTI: 'transferred_multi',
   WITHDRAWN: 'withdrawn',
   REJECTED: 'rejected',
+  SUSPICIOUS_ACCOUNT_DEPOSIT: 'suspicious_account_deposit',
+  SUSPICIOUS_ACCOUNT_WITHDRAWAL: 'suspicious_account_withdrawal',
+  WRONG_NETWORK: 'wrong_network',
+  SWITCH_NETWORK: 'switch_network',
+  SENT: 'sent',
+  PREPARING_TRANSACTION: 'preparing_transaction',
 };
 
 export const NETWORKS = {
-  42: {
-    name: 'Kovan',
-    tokenName: 'Ether',
-    tokenSymbol: 'ETH',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
-  },
   11155111: {
     name: 'Sepolia',
-    tokenName: 'SEP',
-    tokenSymbol: 'SEP',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+    icon: require('assets/sepolia.svg').default,
+    blockExplorerUrls: {
+      address: 'https://sepolia.etherscan.io/address/%s',
+      tx: 'https://sepolia.etherscan.io/tx/%s',
+    },
   },
   137: {
     name: 'Polygon',
-    tokenName: 'MATIC',
-    tokenSymbol: 'MATIC',
-    rpcUrl: process.env.REACT_APP_RPC_URL,
-    blockExplorerUrl: process.env.REACT_APP_EXPLORER_URL,
+    icon: require('assets/polygon.svg').default,
+    blockExplorerUrls: {
+      address: 'https://polygonscan.com/address/%s',
+      tx: 'https://polygonscan.com/tx/%s',
+    },
   },
+  5: {
+    name: 'Goerli',
+    icon: require('assets/goerli.svg').default,
+    blockExplorerUrls: {
+      address: 'https://eth-goerli.blockscout.com/address/%s',
+      tx: 'https://eth-goerli.blockscout.com/tx/%s',
+    },
+  },
+  420: {
+    name: 'Goerli Optimism',
+    icon: require('assets/optimism.svg').default,
+    blockExplorerUrls: {
+      address: 'https://optimism-goerli.blockscout.com/address/%s',
+      tx: 'https://optimism-goerli.blockscout.com/tx/%s',
+    },
+  },
+  10: {
+    name: 'Optimism',
+    icon: require('assets/optimism.svg').default,
+    blockExplorerUrls: {
+      address: 'https://optimism.blockscout.com/address/%s',
+      tx: 'https://optimism.blockscout.com/tx/%s',
+    },
+  },
+  2494104990: {
+    name: 'Shasta',
+    icon: require('assets/tron.png'),
+    blockExplorerUrls: {
+      address: 'https://shasta.tronscan.org/#/address/%s',
+      tx: 'https://shasta.tronscan.org/#/transaction/%s',
+    },
+  }
 };
 
-export const TOKEN_SYMBOL = process.env.REACT_APP_TOKEN_SYMBOL || 'BOB';
-
-export const HISTORY_ACTION_TYPES = {
-  DEPOSIT: 1,
-  TRANSFER_IN: 2,
-  TRANSFER_OUT: 3,
-  WITHDRAWAL: 4,
-  TRANSFER_SELF: 5,
+export const TOKENS_ICONS = {
+  'ETH': require('assets/eth.svg').default,
+  'WETH': require('assets/weth.png'),
+  'BOB': require('assets/bob.svg').default,
+  'USDM': require('assets/usdc.svg').default,
+  'USDC': require('assets/usdc.svg').default,
+  'USDT': require('assets/usdt.png'),
 };
+
+export const CONNECTORS_ICONS = {
+  'MetaMask': require('assets/metamask.svg').default,
+  'WalletConnect': require('assets/walletconnect.svg').default,
+  'WalletConnectLegacy': require('assets/walletconnect.svg').default,
+  'TronLink': require('assets/tronlink.png'),
+};
+
+export const INCREASED_LIMITS_STATUSES = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  RESYNC: 'resync',
+};
+
+export const PERMIT2_CONTRACT_ADDRESS = '0x000000000022D473030F116dDEE9F6B43aC78BA3';
+
+export const SUPPORT_URL = 'https://discord.com/channels/1095673887389392916/1112786753133220042';

@@ -1,38 +1,47 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 import Tooltip from 'components/Tooltip';
+import Skeleton from 'components/Skeleton';
 
 import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 
-export default ({ limits }) => {
+const Limit = ({ value, loading, currentPool, qty }) => {
+  const { t } = useTranslation();
+  if (!value || loading) {
+    return <Skeleton width={80} />
+  }
+  return !!value.total ? (
+    <>
+      <Value>{formatNumber(value.available, currentPool.tokenDecimals)} {currentPool.tokenSymbol}</Value>
+      <Tooltip
+        content={t('limits.total', {
+          amount: formatNumber(value.total, currentPool.tokenDecimals),
+          symbol: currentPool.tokenSymbol,
+        })}
+        placement="right"
+        delay={0}
+      >
+        <InfoIcon />
+      </Tooltip>
+    </>
+  ) : (
+    <Value style={{ marginRight: qty > 1 ? 23 : 0 }}>
+      {formatNumber(value, currentPool.tokenDecimals)} {currentPool.tokenSymbol}
+    </Value>
+  );
+}
+
+export default ({ limits, loading, currentPool }) => {
   return (
     <Container>
-      {limits.map(({ prefix, suffix, value }, index) => (
+      {limits.map(({ name, value }, index) => (
         <Row key={index}>
-          <Name>
-            {prefix}{' '}
-            <NameSuffix>{suffix}</NameSuffix>
-          </Name>
-          {!!value.total ? (
-            <>
-              <Value>{formatNumber(value.available)} {tokenSymbol()}</Value>
-              <Tooltip
-                content={`out of ${formatNumber(value.total)} ${tokenSymbol()} total`}
-                placement="right"
-                delay={0}
-              >
-                <InfoIcon />
-              </Tooltip>
-            </>
-          ) : (
-            <Value style={{ marginRight: 23 }}>
-              {formatNumber(value)} {tokenSymbol()}
-            </Value>
-          )}
+          <Name>{name}</Name>
+          <Limit value={value} loading={loading} currentPool={currentPool} qty={limits.length} />
         </Row>
       ))}
     </Container>
@@ -47,6 +56,7 @@ const Container = styled.div`
   margin-top: 20px;
   padding: 12px;
   width: 480px;
+  max-width: 100%;
   box-sizing: border-box;
   & > * {
     margin-bottom: 6px;
@@ -60,23 +70,23 @@ const Row = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  line-height: 18px;
 `;
 
 const Name = styled.span`
   color: ${props => props.theme.text.color.primary};
-  font-weight: ${props => props.theme.text.weight.bold};
   font-size: 14px;
   flex: 1;
-`;
-
-const NameSuffix = styled(Name)`
-  font-weight: ${props => props.theme.text.weight.normal};
+  & > strong {
+    font-weight: ${props => props.theme.text.weight.bold};
+  }
 `;
 
 const Value = styled.span`
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.bold};
   font-size: 14px;
+  margin-left: 10px;
 `;
 
 const InfoIcon = styled(InfoIconDefault)`

@@ -1,5 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { HistoryTransactionType } from 'zkbob-client-js';
+import { useTranslation } from 'react-i18next';
 
 import PendingAction from 'containers/PendingAction';
 
@@ -13,36 +15,38 @@ import { ReactComponent as InfoIconDefault } from 'assets/info.svg';
 import SingleTransfer from './SingleTransfer';
 import MultiTransfer from './MultiTransfer';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
 import { useLatestAction } from 'hooks';
 
-import { HISTORY_ACTION_TYPES } from 'constants';
-
-const note = 'The transfer will be performed privately within the zero knowledge pool. Sender, recipient and amount are never disclosed.';
-const tooltipText = 'Click Upload CSV to add a prepared .csv file from your machine. Each row should contain: zkAddress, amount';
 
 export default () => {
+  const { t } = useTranslation();
   const { isPending } = useContext(ZkAccountContext);
-  const latestAction = useLatestAction(HISTORY_ACTION_TYPES.TRANSFER_OUT);
+  const latestAction = useLatestAction(HistoryTransactionType.TransferOut);
   const [isMulti, setIsMulti] = useState(false);
   const multitransferRef = useRef(null);
   const fileInputRef = useRef(null);
+  const { currentPool } = useContext(PoolContext);
 
   return isPending ? <PendingAction /> : (
     <>
-      <Card note={note}>
+      <Card note={t('transfer.note')}>
         <TitleRow>
-          <Title>Transfer</Title>
+          <Title>{t('transfer.title')}</Title>
           <Row>
-            <Text>Multitransfer</Text>
-            <Switch checked={isMulti} onChange={setIsMulti} />
+            <Text>{t('multitransfer.title')}</Text>
+            <Switch
+              checked={isMulti}
+              onChange={setIsMulti}
+              data-ga-id={`turn-${isMulti ? 'off' : 'on'}-multitransfer`}
+            />
             <CsvButtonContainer disabled={!isMulti}>
               <Button
                 type="link"
                 onClick={() => fileInputRef?.current?.click()}
               >
-                Upload CSV
+                {t('multitransfer.uploadCSV')}
               </Button>
               <input
                 type="file"
@@ -51,7 +55,7 @@ export default () => {
                 onChange={e => multitransferRef?.current?.handleFileUpload(e)}
                 style={{ display: 'none' }}
               />
-              <Tooltip content={tooltipText} placement="right" delay={0} width={180}>
+              <Tooltip content={t('multitransfer.uploadCSVHint')} placement="right" delay={0} width={180}>
                 <InfoIcon />
               </Tooltip>
             </CsvButtonContainer>
@@ -61,10 +65,10 @@ export default () => {
       </Card>
       {latestAction && (
         <LatestAction
-          type="Transfer"
+          type="transfer"
           shielded={true}
-          actions={latestAction.actions}
-          txHash={latestAction.txHash}
+          data={latestAction}
+          currentPool={currentPool}
         />
       )}
     </>

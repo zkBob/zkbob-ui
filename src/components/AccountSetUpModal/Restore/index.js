@@ -1,16 +1,18 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
 import Button from 'components/Button';
 import TextAreaDefault from 'components/TextArea';
 
 export default ({ restore }) => {
-  const [mnemonic, setMnemonic] = useState();
+  const { t } = useTranslation();
+  const [mnemonic, setMnemonic] = useState('');
   const [error, setError] = useState(false);
 
   const onRestore = useCallback(() => {
-    const preparedMnemonic = mnemonic.replace(/\s+/g, ' ').trim();
+    const preparedMnemonic = mnemonic.toLowerCase().replace(/\s+/g, ' ').trim();
     const isValid = ethers.utils.isValidMnemonic(preparedMnemonic);
     if (isValid) {
       restore(preparedMnemonic);
@@ -27,10 +29,12 @@ export default ({ restore }) => {
   return (
     <Container>
       <Description>
-        Input your saved seed phrase to restore an existing account
+        {t('accountSetupModal.restoreWithSecret.description')}
       </Description>
       <TextArea value={mnemonic} onChange={onChange} $error={error} />
-      <Button onClick={onRestore}>Restore account</Button>
+      <Button onClick={onRestore} data-ga-id="login-secret-phrase-confirm">
+        {t('buttonText.restoreAccount')}
+      </Button>
     </Container>
   );
 };

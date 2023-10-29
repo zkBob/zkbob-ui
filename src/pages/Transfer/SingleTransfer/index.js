@@ -1,51 +1,51 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
+import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
 import TransferInput from 'components/TransferInput';
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import MultilineInput from 'components/MultilineInput';
 
-import { ZkAccountContext } from 'contexts';
+import { ZkAccountContext, PoolContext } from 'contexts';
 
-import { useFee, useParsedAmount } from 'hooks';
+import { useFee, useParsedAmount, useMaxTransferable } from 'hooks';
 
-import { tokenSymbol } from 'utils/token';
 import { formatNumber } from 'utils';
 import { useMaxAmountExceeded } from './hooks';
 
 export default () => {
+  const { t } = useTranslation();
   const {
     zkAccount, balance, transfer, isLoadingState,
-    isPending, maxTransferable, minTxAmount,
-    verifyShieldedAddress,
+    isPending, minTxAmount, verifyShieldedAddress,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [displayAmount, setDisplayAmount] = useState('');
-  const amount = useParsedAmount(displayAmount);
+  const amount = useParsedAmount(displayAmount, currentPool.tokenDecimals);
   const [receiver, setReceiver] = useState('');
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const { fee, numberOfTxs } = useFee(amount, TxType.Transfer);
+  const { fee, relayerFee, numberOfTxs, isLoadingFee } = useFee(amount, TxType.Transfer);
+  const maxTransferable = useMaxTransferable(TxType.Transfer, relayerFee, amount);
   const maxAmountExceeded = useMaxAmountExceeded(amount, maxTransferable);
-
-  const handleReceiverChange = useCallback(e => {
-    setReceiver(e.target.value);
-  }, []);
 
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    transfer(receiver, amount);
-  }, [receiver, amount, transfer]);
+    transfer(receiver, amount, relayerFee);
+  }, [receiver, amount, transfer, relayerFee]);
 
   const setMax = useCallback(async () => {
-    setDisplayAmount(ethers.utils.formatEther(maxTransferable));
-  }, [maxTransferable]);
+    setDisplayAmount(ethers.utils.formatUnits(maxTransferable, currentPool.tokenDecimals));
+  }, [maxTransferable, currentPool.tokenDecimals]);
 
   useEffect(() => {
     async function checkAddress(address) {
@@ -56,24 +56,34 @@ export default () => {
     checkAddress(receiver);
   }, [receiver, verifyShieldedAddress]);
 
+  useEffect(() => {
+    setDisplayAmount('');
+    setReceiver('');
+  }, [currentPool.alias]);
+
   let button = null;
   if (zkAccount) {
     if (isLoadingState) {
-      button = <Button $loading $contrast disabled>Updating zero pool state...</Button>;
+      button = <ButtonLoading />;
     } else if (amount.isZero()) {
-      button = <Button disabled>Enter an amount</Button>;
+      button = <Button disabled>{t('buttonText.enterAmount')}</Button>;
     } else if (amount.lt(minTxAmount)) {
-      button = <Button disabled>Min amount is {formatNumber(minTxAmount)} {tokenSymbol()}</Button>
+      const minAmount = formatNumber(minTxAmount, currentPool.tokenDecimals);
+      button = <Button disabled>{t('buttonText.minAmount', { amount: minAmount, symbol: currentPool.tokenSymbol })}</Button>
     } else if (amount.gt(balance)) {
-      button = <Button disabled>Insufficient {tokenSymbol(true)} balance</Button>;
+      button = <Button disabled>{t('buttonText.insufficientBalance', { symbol: currentPool.tokenSymbol })}</Button>;
     } else if (amount.gt(maxTransferable)) {
-      button = <Button disabled>Reduce amount to include {formatNumber(fee)} fee</Button>
+      button = <Button disabled>{t('buttonText.reduceAmount', { fee: formatNumber(fee, currentPool.tokenDecimals)})}</Button>
     } else if (!receiver) {
-      button = <Button disabled>Enter an address</Button>;
+      button = <Button disabled>{t('buttonText.enterAddress')}</Button>;
     } else if (!isAddressValid) {
-      button = <Button disabled>Invalid address</Button>;
+      button = <Button disabled>{t('buttonText.invalidAddress')}</Button>;
     } else {
-      button = <Button onClick={() => setIsConfirmModalOpen(true)}>Transfer</Button>;
+      button = (
+        <Button onClick={() => setIsConfirmModalOpen(true)} data-ga-id="initiate-operation-transfer">
+          {t('buttonText.transfer')}
+        </Button>
+      );
     }
   } else {
     button = <AccountSetUpButton />;
@@ -81,23 +91,27 @@ export default () => {
   return isPending ? <PendingAction /> : (
     <>
       <TransferInput
-        balance={balance}
+        balance={zkAccount ? balance : null}
+        isLoadingBalance={isLoadingState}
         amount={displayAmount}
         onChange={setDisplayAmount}
         shielded={true}
         fee={fee}
         setMax={setMax}
         maxAmountExceeded={maxAmountExceeded}
+        isLoadingFee={isLoadingFee}
+        currentPool={currentPool}
+        gaIdPostfix="transfer"
       />
       <MultilineInput
-        placeholder="Enter address of zkBob receiver"
-        hint="The address can be generated in the account modal window"
+        placeholder={t('transfer.addressInputPlaceholder')}
+        hint={t('transfer.addressInputHint')}
         value={receiver}
-        onChange={handleReceiverChange}
+        onChange={setReceiver}
+        qrCode={isMobile}
       />
       {button}
       <ConfirmTransactionModal
-        title="Transfer confirmation"
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={onTransfer}
@@ -106,8 +120,10 @@ export default () => {
         shielded={true}
         isZkAddress={true}
         fee={fee}
+        isLoadingFee={isLoadingFee}
         numberOfTxs={numberOfTxs}
         type="transfer"
+        currentPool={currentPool}
       />
     </>
   );

@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
-import Button from 'components/Button';
+import WalletConnectors from 'components/WalletConnectors';
 
-export default ({ generate, account, connectWallet }) => {
+import { PoolContext } from 'contexts';
+
+export default ({ next, isCreation }) => {
+  const { t } = useTranslation();
+  const { currentPool } = useContext(PoolContext);
+
   return (
     <Container>
-      <Description>
-        Your key identifies your account on Layer 2 and is saved locally on your browser.
-      </Description>
-      {account ? (
-        <Button onClick={generate}>Generate key</Button>
-      ) : (
-        <Button onClick={connectWallet}>Connect wallet</Button>
+      {!isCreation && (
+        <Warning>
+          {t(`accountSetupModal.restoreWithWallet.warning${currentPool.isTron ? '_tron' : ''}`)}
+        </Warning>
       )}
-      <Note>
-        Signing is free and will not send a transaction. You can recover your key at any time with your wallet.
-      </Note>
+      <Description>
+        {isCreation
+          ? t('accountSetupModal.createWithWallet.description')
+          : t('accountSetupModal.restoreWithWallet.description')
+        }
+      </Description>
+      <WalletConnectors
+        callback={next}
+        gaIdPrefix={(isCreation ? 'signup-' : 'login-')}
+        showAll={!isCreation}
+      />
     </Container>
   );
 };
@@ -41,6 +52,15 @@ const Description = styled.span`
   text-align: center;
 `;
 
-const Note = styled(Description)`
-  color: ${({ theme }) => theme.text.color.secondary};
+const Warning = styled.div`
+  background: ${({ theme }) => theme.warning.background};
+  border: 1px solid ${({ theme }) => theme.warning.border};
+  color: ${({ theme }) => theme.warning.text.color};
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-size: 14px;
+  line-height: 20px;
+  margin-left: -7px;
+  margin-right: -7px;
+  text-align: center;
 `;

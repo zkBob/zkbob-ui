@@ -1,37 +1,42 @@
-import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useCallback, useContext, forwardRef, useImperativeHandle, useEffect } from 'react';
 import styled from 'styled-components';
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
+import { useTranslation } from 'react-i18next';
 
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 
 import Button from 'components/Button';
+import ButtonLoading from 'components/ButtonLoading';
 import TextEditor from 'components/TextEditor';
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 
 import { ReactComponent as CrossIcon } from 'assets/red-cross.svg';
 
-import { ZkAccountContext } from 'contexts';
+import { PoolContext, ZkAccountContext } from 'contexts';
 
 import { formatNumber } from 'utils';
-import { tokenSymbol } from 'utils/token';
+import { useFee } from 'hooks';
 
 export default forwardRef((props, ref) => {
+  const { t } = useTranslation();
   const {
     zkAccount, isLoadingState, transferMulti,
     estimateFee, verifyShieldedAddress,
   } = useContext(ZkAccountContext);
+  const { currentPool } = useContext(PoolContext);
   const [data, setData] = useState('');
   const [parsedData, setParsedData] = useState([]);
   const [errors, setErrors] = useState([]);
   const [errorType, setErrorType] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [fee, setFee] = useState(ethers.constants.Zero);
-  const [numberOfTxs, setNumberOfTxs] = useState(ethers.constants.Zero);
   const [totalAmount, setTotalAmount] = useState(ethers.constants.Zero);
+  const {
+    fee, relayerFee, numberOfTxs, isLoadingFee,
+  } = useFee(parsedData, TxType.Transfer);
 
   const validate = useCallback(async () => {
     try {
@@ -41,14 +46,14 @@ export default forwardRef((props, ref) => {
       const rows = data.split('\n');
       const parsedData = await Promise.all(rows.map(async (row, index) => {
         try {
-          const rowData = row.replace(/\s/g, '').split(',');
+          const rowData = row.replace(/\s/g, '').replace(/^,+|,+$/g, '').split(',');
           const [address, amount] = rowData;
           if (!address || !amount || rowData.length !== 2) throw Error;
 
           const isValidAddress = await verifyShieldedAddress(address);
           if (!isValidAddress || !(Number(amount) > 0)) throw Error;
 
-          return { address, amount: ethers.utils.parseEther(amount) };
+          return { address, amount: ethers.utils.parseUnits(amount, currentPool.tokenDecimals) };
         } catch (err) {
           errors.push(index);
           return null;
@@ -72,10 +77,10 @@ export default forwardRef((props, ref) => {
         return;
       }
 
-      const { fee, numberOfTxs, insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
-      setFee(fee);
-      setNumberOfTxs(numberOfTxs);
+      const { insufficientFunds } = await estimateFee(parsedData.map(item => item.amount), TxType.Transfer);
+
       setTotalAmount(parsedData.reduce((acc, curr) => acc.add(curr.amount), ethers.constants.Zero));
+
       if (insufficientFunds) {
         setErrorType('insufficient_funds');
         return;
@@ -87,7 +92,7 @@ export default forwardRef((props, ref) => {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'MultiTransfer.validate' } });
     }
-  }, [data, estimateFee, verifyShieldedAddress]);
+  }, [data, estimateFee, verifyShieldedAddress, currentPool.tokenDecimals]);
 
   useImperativeHandle(ref, () => ({
     handleFileUpload(event) {
@@ -108,8 +113,8 @@ export default forwardRef((props, ref) => {
   const onTransfer = useCallback(() => {
     setIsConfirmModalOpen(false);
     setData('');
-    transferMulti(parsedData);
-  }, [parsedData, transferMulti]);
+    transferMulti(parsedData, relayerFee);
+  }, [parsedData, transferMulti, relayerFee]);
 
   const openDetailsModal = useCallback(() => {
     setIsConfirmModalOpen(false);
@@ -121,13 +126,20 @@ export default forwardRef((props, ref) => {
     setIsDetailsModalOpen(false);
   }, []);
 
+  useEffect(() => {
+    setData('');
+    setParsedData([]);
+    setErrors([]);
+    setErrorType(null);
+  }, [currentPool.alias]);
+
   return (
     <>
-      <Text>Add zkAddress, Amount of BOB to transfer. 1 address per line.</Text>
+      <Text>{t('multitransfer.instruction', { symbol: currentPool.tokenSymbol })}</Text>
       <TextEditor
         value={data}
         onChange={setData}
-        placeholder="M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75"
+        placeholder={`${currentPool.addressPrefix}:M7dg2KkZuuSK8CU7N5pLMyuSCc1RoagsRWhH5yux1thVyUk57mpYrT2k6jh21cB, 100.75`}
         errorLines={errors}
         error={errorType}
       />
@@ -137,14 +149,15 @@ export default forwardRef((props, ref) => {
           <Error>
             {(() => {
               if (errorType === 'syntax') {
-                return `${errors.length} rows with incorrect addresses or formatting issues.`;
+                return t('multitransfer.errors.syntax', { count: errors.length });
               } else if (errorType === 'duplicates') {
-                return 'Duplicate addresses found.'
+                return t('multitransfer.errors.duplicates');
               } else if (errorType === 'insufficient_funds') {
-                return `
-                  Insufficient balance: ${formatNumber(totalAmount.add(fee), 9)} ${tokenSymbol()}
-                  (${formatNumber(fee)} fee) is required.
-                `;
+                return t('multitransfer.errors.insufficientBalance', {
+                  amount: formatNumber(totalAmount.add(fee), currentPool.tokenDecimals, 9),
+                  symbol: currentPool.tokenSymbol,
+                  fee: formatNumber(fee, currentPool.tokenDecimals),
+                });
               }
             })()}
           </Error>
@@ -152,12 +165,11 @@ export default forwardRef((props, ref) => {
       }
       {(() => {
           if (!zkAccount) return <AccountSetUpButton />
-          else if (isLoadingState) return <Button $loading $contrast disabled>Updating zero pool state...</Button>
-          else if (!data) return <Button disabled>Proceed</Button>
-          else return <Button onClick={validate}>Proceed</Button>;
+          else if (isLoadingState) return <ButtonLoading />
+          else if (!data) return <Button disabled>{t('buttonText.proceed')}</Button>
+          else return <Button onClick={validate} data-ga-id="initiate-operation-multitransfer">{t('buttonText.proceed')}</Button>;
         })()}
         <ConfirmTransactionModal
-          title="Multitransfer confirmation"
           isOpen={isConfirmModalOpen}
           onClose={() => setIsConfirmModalOpen(false)}
           onConfirm={onTransfer}
@@ -165,14 +177,17 @@ export default forwardRef((props, ref) => {
           transfers={parsedData}
           openDetails={openDetailsModal}
           fee={fee}
+          isLoadingFee={isLoadingFee}
           numberOfTxs={numberOfTxs}
-          type="transfer"
+          type="multitransfer"
+          currentPool={currentPool}
         />
         <MultitransferDetailsModal
-          title="Multitransfer"
           isOpen={isDetailsModalOpen}
           onBack={closeDetailsModal}
           transfers={parsedData}
+          zkAccount={zkAccount}
+          currentPool={currentPool}
         />
     </>
   );

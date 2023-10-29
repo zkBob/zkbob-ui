@@ -1,39 +1,56 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
-import { ethers, Contract } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 
-const TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS;
+import { PoolContext, WalletContext } from 'contexts';
+
+import { showLoadingError } from 'utils';
+import tokenAbi from 'abis/token.json';
 
 const TokenBalanceContext = createContext({ balance: null });
 
 export default TokenBalanceContext;
 
 export const TokenBalanceContextProvider = ({ children }) => {
-  const { library, account } = useWeb3React();
+  const { address: account, getBalance, callContract } = useContext(WalletContext);
+  const { currentPool } = useContext(PoolContext);
   const [balance, setBalance] = useState(ethers.constants.Zero);
+  const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
   const updateBalance = useCallback(async () => {
+    setIsLoadingBalance(true);
     let balance = ethers.constants.Zero;
+    let nativeBalance = ethers.constants.Zero;
     if (account) {
       try {
-        const tokenABI = ['function balanceOf(address) pure returns (uint256)'];
-        const token = new Contract(TOKEN_ADDRESS, tokenABI, library);
-        balance = await token.balanceOf(account);
+        [balance, nativeBalance] = await Promise.all([
+          callContract(currentPool.tokenAddress, tokenAbi, 'balanceOf', [account]),
+          getBalance(),
+        ]);
       } catch (error) {
         console.error(error);
         Sentry.captureException(error, { tags: { method: 'TokenBalanceContext.updateBalance' } });
+        showLoadingError('walletBalance');
       }
     }
     setBalance(balance);
-  }, [library, account]);
+    setNativeBalance(nativeBalance);
+    setIsLoadingBalance(false);
+  }, [account, getBalance, callContract, currentPool.tokenAddress]);
 
   useEffect(() => {
     updateBalance();
   }, [updateBalance]);
 
   return (
-    <TokenBalanceContext.Provider value={{ balance, updateBalance }}>
+    <TokenBalanceContext.Provider
+      value={{
+        balance,
+        nativeBalance,
+        updateBalance,
+        isLoadingBalance: isLoadingBalance,
+      }}>
       {children}
     </TokenBalanceContext.Provider>
   );
