@@ -2,7 +2,7 @@ name: E2E tests
 
 on:
   schedule:
-    - cron: '0 14 * * 1'
+    - cron: '50 11 * * 1'
 
   pull_request:
     branches:
@@ -30,7 +30,8 @@ env:
   WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
 
 jobs:
-  schedule_tests:   
+  schedule_tests:
+    if: github.event.schedule == '50 11 * * 1' 
     name: E2E tests every Monday
     runs-on: ubuntu-latest
 
