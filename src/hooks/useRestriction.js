@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 
 async function getUserCountry() {
   const apis = [
-    fetch('https://ipapi.co/country').then(res => res.text()),
-    fetch('https://api.country.is').then(res => res.json()).then(data => data.country),
+    'https://ipapi.co/json',
+    'https://api.country.is',
   ];
 
   let country;
   for (const api of apis) {
     try {
-      country = await api;
+      const res = await fetch(api);
+      const data = await res.json();
+      country = data.country;
       break;
     } catch (error) {
       console.error(error);

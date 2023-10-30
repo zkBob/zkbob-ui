@@ -59,7 +59,7 @@ if (PUBLIC_KEY && PRIVATE_KEY && PROJECT_ID) {
 
 Sentry.init({
   dsn: sentryDsn,
-  tunnel: '/telemetry',
+  tunnel: process.env.REACT_APP_HOSTING === 'netlify' ? '/telemetry' : undefined,
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),

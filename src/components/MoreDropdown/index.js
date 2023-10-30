@@ -19,6 +19,8 @@ const links = [
 const languages = {
   en: 'English',
   pt: 'Português',
+  ru: 'Русский',
+  zh: '中文',
 };
 
 const Content = ({ close }) => {
