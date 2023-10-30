@@ -32,7 +32,7 @@ env:
 
 jobs:
   schedule_tests:
-    if: github.event.schedule == '50 11 * * 1' 
+    if: github.event.schedule == '0 12 * * 1' 
     name: E2E tests every Monday
     runs-on: ubuntu-latest
 
