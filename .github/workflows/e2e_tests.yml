@@ -2,7 +2,7 @@ name: E2E tests
 
 on:
   schedule:
-    - cron: '0 12 * * 1'
+    - cron: '0 8 * * 1'
   workflow_dispatch:
 
   pull_request:
@@ -32,7 +32,7 @@ env:
 
 jobs:
   schedule_tests:
-    if: github.event.schedule == '0 12 * * 1' 
+    if: github.event.schedule == '0 8 * * 1' 
     name: E2E tests every Monday
     runs-on: ubuntu-latest
 
