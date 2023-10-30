@@ -1,6 +1,9 @@
 name: E2E tests
 
 on:
+  schedule:
+    - cron: '45 11 * * 1'
+
   pull_request:
     branches:
       - 'staging'
@@ -9,9 +12,7 @@ on:
     branches:
       - 'staging'
       - 'e2e-tests'
-  
-  schedule:
-    - cron: '0 8 * * 1'
+
         
 env:
   ENV: local
@@ -29,8 +30,7 @@ env:
   WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
 
 jobs:
-  schedule_tests:
-    if: github.event.schedule == '0 8 * * 1'   
+  schedule_tests:   
     name: E2E tests every Monday
     runs-on: ubuntu-latest
 
