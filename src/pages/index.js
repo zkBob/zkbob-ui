@@ -110,7 +110,7 @@ const MainApp = () => {
   const { zkAccount, isLoadingZkAccount, isDemo, lockAccount } = useContext(ZkAccountContext);
   const location = useLocation();
   const showWelcome = (!zkAccount && !isLoadingZkAccount && !window.localStorage.getItem('seed')) || isDemo;
-  const { isRestricted, country } = useRestriction();
+  const isRestricted = useRestriction();
   useIdleTimer({
     timeout: Number(process.env.REACT_APP_LOCK_TIMEOUT) || (1000 * 60 * 15),
     onIdle: () => lockAccount(),
@@ -119,7 +119,7 @@ const MainApp = () => {
   if (isRestricted) {
     return (
       <Layout header={<Header empty />}>
-        <RestrictionModal country={country} />
+        <RestrictionModal />
       </Layout>
     );
   }
