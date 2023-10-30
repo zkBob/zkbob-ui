@@ -24,7 +24,6 @@ async function getUserCountry() {
 
 export default () => {
   const [isRestricted, setIsRestricted] = useState(false);
-  const [country, setCountry] = useState(null);
 
   useEffect(() => {
     async function check() {
@@ -35,7 +34,6 @@ export default () => {
         const country = await getUserCountry();
         if (RESTRICTED_COUNTRIES.includes(country)) {
           setIsRestricted(true);
-          setCountry(country);
         }
       } catch (error) {
         console.error('Failed to get country by IP.');
@@ -44,5 +42,5 @@ export default () => {
     check();
   }, []);
 
-  return { isRestricted, country };
+  return isRestricted;
 };

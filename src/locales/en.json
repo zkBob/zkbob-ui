@@ -345,7 +345,7 @@
   },
   "restrictionModal": {
     "title": "zkBob is not supported in this country or region",
-    "description": "zkBob is not supported in {{country}}. You will be able to use the application from supported country or region."
+    "description": "zkBob is not supported in your country. You will be able to use the application from supported country or region."
   },
   "secretPhraseModal": {
     "title": "Show secret phrase",

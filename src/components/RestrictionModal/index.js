@@ -6,7 +6,7 @@ import Link from 'components/Link';
 
 import image from 'assets/bob-earth.png';
 
-export default ({ country }) => {
+export default () => {
   const { t } = useTranslation();
   return (
     <Container>
@@ -15,7 +15,7 @@ export default ({ country }) => {
         {t('restrictionModal.title')}
       </Title>
       <Description>
-        {t('restrictionModal.description', { country })}
+        {t('restrictionModal.description')}
         <Link
           href="https://docs.zkbob.com/zkbob-overview/compliance-and-security#geo-restrictions"
           style={{ marginLeft: 5 }}

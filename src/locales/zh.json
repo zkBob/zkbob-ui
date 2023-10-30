@@ -345,7 +345,7 @@
     },
     "restrictionModal": {
       "title": "该国家或地区暂不支缓zkBob业务",
-      "description": "{{country}} 暂不支缓zkBob业务。您需要在受支缓的国家或地区使用该应用。"
+      "description": "您的国家不支持zkBob。您需要在受支缓的国家或地区使用该应用。"
     },
     "secretPhraseModal": {
       "title": "显示助记词",
@@ -420,4 +420,4 @@
       "statuses": "状态",
       "statuses_other": "状态"
     }
-}  
+}
