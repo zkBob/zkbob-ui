@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 async function getUserCountry() {
   const apis = [
@@ -23,6 +24,7 @@ async function getUserCountry() {
 }
 
 export default () => {
+  const { i18n } = useTranslation();
   const [isRestricted, setIsRestricted] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export default () => {
         const RESTRICTED_COUNTRIES = process.env.REACT_APP_RESTRICTED_COUNTRIES.split(',');
         const country = await getUserCountry();
         if (RESTRICTED_COUNTRIES.includes(country)) {
+          i18n.changeLanguage('zh');
           setIsRestricted(true);
         }
       } catch (error) {

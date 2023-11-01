@@ -18,7 +18,7 @@ export default () => {
         {t('restrictionModal.description')}
         <Link
           href="https://docs.zkbob.com/zkbob-overview/compliance-and-security#geo-restrictions"
-          style={{ marginLeft: 5 }}
+          style={{ marginLeft: 5, whiteSpace: 'nowrap' }}
         >
           {t('common.learnMore')}
         </Link>
