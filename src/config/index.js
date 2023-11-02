@@ -178,6 +178,21 @@ const config = {
         addressPrefix: 'zkbob_shasta',
         isTron: true,
       },
+      'USDT-nile': {
+        chainId: 3448148188,
+        poolAddress: 'TT8GgygLhEDh88kYwY8mYz38iEpJWw1YLG',
+        tokenAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
+        relayerUrls: ['https://tron-nile-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDT',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'approve',
+        minTxAmount: 50000n, // 0.05 USDT
+        addressPrefix: 'zkbob_nile',
+        isTron: true,
+      },
     },
     chains: {
       '11155111': {
@@ -191,7 +206,10 @@ const config = {
       },
       '2494104990': {
         rpcUrls: ['https://api.shasta.trongrid.io']
-      }
+      },
+      '3448148188': {
+        rpcUrls: ['https://nile.trongrid.io']
+      },
     },
     snarkParams: {
       transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
