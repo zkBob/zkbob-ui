@@ -46,7 +46,7 @@ const Payment = () => {
   if (!pool.paymentContractAddress) {
     history.push('/');
   }
-  const currency = ['USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
+  const currency = ['USDC.e', 'USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
 
   const { address: account } = useAccount();
   const [displayedAmount, setDisplayedAmount] = useState('');
