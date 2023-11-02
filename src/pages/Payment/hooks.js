@@ -45,9 +45,18 @@ export function useTokensBalances(tokenList, chainId) {
           abi: TOKEN_ABI,
           calls: [{ reference: token.address, methodName: 'balanceOf', methodParameters: [account] }],
         }));
+        const chunks = contractCallContext.reduce((acc, item) => {
+          const last = acc[acc.length - 1];
+          if (last.length < 1000) {
+            last.push(item);
+          } else {
+            acc.push([item]);
+          }
+          return acc;
+        }, [[]]);
         const data = await Promise.all([
           provider.getBalance(account),
-          multicall.call(contractCallContext),
+          ...chunks.map(chunk => multicall.call(chunk)),
         ]);
         balances[ethers.constants.AddressZero] = data[0];
         delete data[1].results[ethers.constants.AddressZero];
