@@ -12,6 +12,8 @@ import { useWallet } from '@tronweb3/tronwallet-adapter-react-hooks';
 
 import PoolContext from 'contexts/PoolContext';
 
+import config from 'config';
+
 const WalletContext = createContext({});
 
 export default WalletContext;
@@ -81,12 +83,21 @@ const useTronWallet = pool => {
 
   const [chainId, setChainId] = useState(null);
 
+  const tronWeb = useMemo(() =>
+    new TronWeb({ fullHost: config.chains[pool.chainId].rpcUrls[0] }),
+    [pool]
+  );
+
   useEffect(() => {
     async function updateChainId() {
       const { chainId } = await wallet.adapter.network();
       setChainId(BigNumber.from(chainId).toNumber());
     }
-    if (wallet) updateChainId();
+    if (wallet) {
+      updateChainId();
+      wallet.adapter.on('chainChanged', updateChainId);
+      return () => wallet.adapter.removeAllListeners();
+    }
   }, [wallet]);
 
   const selectWalletAndConnect = useCallback(async ({ connector }) => {
@@ -100,27 +111,29 @@ const useTronWallet = pool => {
 
   const getBalance = useCallback(async () => {
     let balance = ethers.constants.Zero;
-    if (address && window.tronWeb) {
+    if (address && tronWeb) {
       try {
-        const result = await window.tronWeb.trx.getBalance(address);
+        const result = await tronWeb.trx.getBalance(address);
         balance = BigNumber.from(result);
       } catch (error) {
         console.error(error);
       }
     }
     return balance;
-  }, [address]);
+  }, [address, tronWeb]);
 
-  const callContract = async (address, abi, method, params = [], isSend = false) => {
-    if (!window.tronWeb) throw new Error('TronWeb not found');
-    const contract = await window.tronWeb.contract(abi, address);
+  const callContract = async (contractAddress, abi, method, params = [], isSend = false) => {
+    const tronWebInstance = isSend ? window.tronWeb : tronWeb;
+    if (!tronWebInstance) throw new Error('TronWeb not found');
+    if (!isSend) tronWebInstance.setAddress(address);
+    const contract = await tronWebInstance.contract(abi, contractAddress);
     return contract[method](...params)[isSend ? 'send' : 'call']();
   }
 
   const waitForTx = async tx => {
-    if (!window.tronWeb) throw new Error('TronWeb not found');
+    if (!tronWeb) throw new Error('TronWeb not found');
     async function wait(attempt = 0) {
-      const response = await window.tronWeb.trx.getTransactionInfo(tx);
+      const response = await tronWeb.trx.getTransactionInfo(tx);
       if (!response.receipt) {
         if (attempt > 60) throw new Error('Response timeout');
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -143,6 +156,12 @@ const useTronWallet = pool => {
     return window.tronWeb.trx.sign(message);
   }
 
+  const switchNetwork = useCallback(async () => {
+    const chainIdHex = ethers.utils.hexValue(pool.chainId);
+    await wallet.adapter.switchChain(chainIdHex);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }, [pool, wallet]);
+
   return {
     address,
     chain: { id: chainId },
@@ -154,6 +173,7 @@ const useTronWallet = pool => {
     signMessage,
     signTypedData,
     sendTransaction: () => {},
+    switchNetwork,
     getBalance,
     callContract,
     waitForTx,

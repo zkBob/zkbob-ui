@@ -67,6 +67,14 @@ export const NETWORKS = {
       address: 'https://shasta.tronscan.org/#/address/%s',
       tx: 'https://shasta.tronscan.org/#/transaction/%s',
     },
+  },
+  3448148188: {
+    name: 'Nile',
+    icon: require('assets/tron.png'),
+    blockExplorerUrls: {
+      address: 'https://nile.tronscan.org/#/address/%s',
+      tx: 'https://nile.tronscan.org/#/transaction/%s',
+    },
   }
 };
 
