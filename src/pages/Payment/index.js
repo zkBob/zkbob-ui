@@ -42,7 +42,7 @@ const Payment = ({ pool }) => {
   const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const params = useParams();
-  const currency = ['USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
+  const currency = ['USDC.e', 'USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
 
   const { address: account } = useContext(WalletContext);
   const [displayedAmount, setDisplayedAmount] = useState('');

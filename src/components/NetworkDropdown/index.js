@@ -99,7 +99,7 @@ export default ({ children }) => {
   const { currentPool } = useContext(PoolContext);
   return (
     <Dropdown
-      width={288}
+      width={310}
       placement="bottomLeft"
       disabled={isPoolSwitching || isLoadingState}
       isOpen={isNetworkDropdownOpen}

@@ -13,7 +13,7 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
-        tokenSymbol: 'USDC',
+        tokenSymbol: 'USDC.e',
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
