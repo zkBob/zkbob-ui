@@ -310,7 +310,7 @@ export const ZkAccountContextProvider = ({ children }) => {
     openTxModal();
     setTxAmount(amount);
     try {
-      if (chain.id !== currentPool.chainId) {
+      if (chain.id !== currentPool.chainId && !currentPool.isTron) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
           await switchNetwork();
