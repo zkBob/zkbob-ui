@@ -67,7 +67,7 @@ export default () => (
   <ThemeProvider>
     <GlobalStyle />
     <Web3Provider>
-      <TronWalletProvider autoConnect={false}>
+      <TronWalletProvider autoConnect>
         <Pages />
       </TronWalletProvider>
     </Web3Provider>

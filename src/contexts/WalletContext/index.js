@@ -76,7 +76,7 @@ const convertWalletToConnector = wallet => ({
 });
 
 const useTronWallet = pool => {
-  const { address, connect, disconnect, select, wallet, wallets, signMessage } = useWallet();
+  const { address, disconnect, select, wallet, wallets, signMessage } = useWallet();
 
   const connector = useMemo(() => wallet ? convertWalletToConnector(wallet) : null, [wallet]);
   const connectors = useMemo(() => wallets.map(convertWalletToConnector), [wallets]);
@@ -99,15 +99,6 @@ const useTronWallet = pool => {
       return () => wallet.adapter.removeAllListeners();
     }
   }, [wallet]);
-
-  const selectWalletAndConnect = useCallback(async ({ connector }) => {
-    try {
-      select(connector.name);
-      await connect();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [select, connect]);
 
   const getBalance = useCallback(async () => {
     let balance = ethers.constants.Zero;
@@ -167,7 +158,7 @@ const useTronWallet = pool => {
     chain: { id: chainId },
     connector,
     connectors,
-    connect: selectWalletAndConnect,
+    connect: ({ connector }) => select(connector.name),
     disconnect,
     sign,
     signMessage,
