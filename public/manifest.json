@@ -1,6 +1,7 @@
 {
   "short_name": "zkBob",
-  "name": "zkBob - Your web3 wallet with privacy option for everyday use",
+  "name": "zkBob",
+  "description": "Your web3 wallet with privacy option for everyday use",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,5 +12,6 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "iconPath": "logo256.png"
 }
