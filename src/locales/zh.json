@@ -223,7 +223,9 @@
       },
       "restoreWithWallet": {
         "title": "登入zk账户",
-        "description": "请选择您用于创建zk账户的钱包地址"
+        "description": "请选择您用于创建zk账户的钱包地址",
+        "warning": "TronLink钱包仅用于恢复对您之前的zkBob账户的访问权限",
+        "warning_tron": "MetaMask和Wallet Connect钱包仅用于恢复对您之前的zkBob账户的访问权限"
       },
       "restoreWithSecret": {
         "title": "恢复zk账户",
@@ -395,7 +397,15 @@
     "connectWalletModal": {
       "title": "连接Web3钱包",
       "description": "连接您的钱包，并将{{symbol}}存入您的zk账户。若您正在创建新的zk账户，当前连接的钱包将被用于为zkBob应用程序生成私密的加密密钥。",
-      "note": "点击连接钱包即表示您同意zkBob<br /><1>服务条款</1>"
+      "note": "点击连接钱包即表示您同意zkBob<br /><1>服务条款</1>",
+      "noWalletTitle": "未找到{{wallet}}钱包",
+      "noWalletDescription": "确保已安装{{wallet}}钱包扩展。",
+      "noWalletDescriptionWithDeposit": "确保已安装{{wallet}}钱包扩展。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
+      "install": "安装{{wallet}}钱包",
+      "tronlinkMobileDescription": "要在TronLink中使用zkBob，您需要在TronLink钱包的浏览器中打开我们的应用。",
+      "tronlinkMobileDescriptionWithDeposit": "要在TronLink中使用zkBob，您需要在TronLink钱包的浏览器中打开我们的应用。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
+      "open": "打开{{wallet}}钱包",
+      "downloadQuestion": "如果应用程序没有打开，您想从商店下载它吗？"
     },
     "qrCode": {
       "title": "二维码地址",

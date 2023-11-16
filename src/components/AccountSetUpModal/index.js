@@ -102,7 +102,7 @@ const PasswordPrompt = ({ setStep, close }) => {
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { t } = useTranslation();
-  const { tronWallet, evmWallet } = useContext(WalletContext);
+  const { tronWallet, evmWallet, noWalletInstalled } = useContext(WalletContext);
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
@@ -188,10 +188,13 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       prevStep = STEP.START;
       break;
     case STEP.CREATE_WITH_WALLET:
-      title = t('accountSetupModal.createWithWallet.title');
+      title = noWalletInstalled
+        ? t('connectWalletModal.noWalletTitle', { wallet: 'TronLink' })
+        : t('accountSetupModal.createWithWallet.title');
       component = (
         <Generate
           isCreation
+          noWalletInstalled={noWalletInstalled}
           next={connector => {
             setIsTronWalletSelected(connector.isTron);
             setStep(STEP.SING_MESSAGE_TO_CREATE);

@@ -1,5 +1,6 @@
 import { createContext, useContext, useCallback, useMemo, useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
+import { isMobile } from 'react-device-detect';
 
 import {
   useAccount, useSignMessage, useConnect, useDisconnect,
@@ -181,8 +182,15 @@ export const WalletContextProvider = ({ children }) => {
 
   const wallet = currentPool.isTron ? tronWallet : evmWallet;
 
+  const noWalletInstalled = useMemo(() =>
+    currentPool.isTron && tronWallet.connectors.length === 1 && !tronWallet.connectors[0].ready,
+    [currentPool, tronWallet.connectors]
+  );
+
+  const isMobileTronLink = useMemo(() => isMobile && currentPool.isTron, [currentPool.isTron]);
+
   return (
-    <WalletContext.Provider value={{ ...wallet, evmWallet, tronWallet }}>
+    <WalletContext.Provider value={{ ...wallet, noWalletInstalled, isMobileTronLink, evmWallet, tronWallet }}>
       {children}
     </WalletContext.Provider>
   );
