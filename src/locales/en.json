@@ -397,7 +397,15 @@
   "connectWalletModal": {
     "title": "Connect web3 wallet",
     "description": "Connect your wallet to deposit {{symbol}} into your zkAccount. If you are creating a new zkAccount, your wallet is used to derive a private encryption key for the zkBob application.",
-    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>"
+    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>",
+    "noWalletTitle": "{{wallet}} wallet is not found",
+    "noWalletDescription": "Ensure that the {{wallet}} wallet extension is installed.",
+    "noWalletDescriptionWithDeposit": "Ensure that the {{wallet}} wallet extension is installed. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
+    "install": "Install {{wallet}} wallet",
+    "tronlinkMobileDescription": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet.",
+    "tronlinkMobileDescriptionWithDeposit": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
+    "open": "Open {{wallet}} wallet",
+    "downloadQuestion": "If the app did not open, would you like to download it from the store?"
   },
   "qrCode": {
     "title": "QR code address",

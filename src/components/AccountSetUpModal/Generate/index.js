@@ -4,11 +4,24 @@ import { useTranslation } from 'react-i18next';
 
 import WalletConnectors from 'components/WalletConnectors';
 
-import { PoolContext } from 'contexts';
+import { PoolContext, WalletContext } from 'contexts';
 
 export default ({ next, isCreation }) => {
   const { t } = useTranslation();
   const { currentPool } = useContext(PoolContext);
+  const { noWalletInstalled, isMobileTronLink } = useContext(WalletContext);
+
+  let description;
+  if (isCreation) {
+    description = t('accountSetupModal.createWithWallet.description');
+    if (isMobileTronLink) {
+      description = t('connectWalletModal.tronlinkMobileDescription');
+    } else if (noWalletInstalled) {
+      description = t('connectWalletModal.noWalletDescription', { wallet: 'TronLink' });
+    }
+  } else {
+    description = t('accountSetupModal.restoreWithWallet.description');
+  }
 
   return (
     <Container>
@@ -18,10 +31,7 @@ export default ({ next, isCreation }) => {
         </Warning>
       )}
       <Description>
-        {isCreation
-          ? t('accountSetupModal.createWithWallet.description')
-          : t('accountSetupModal.restoreWithWallet.description')
-        }
+        {description}
       </Description>
       <WalletConnectors
         callback={next}
