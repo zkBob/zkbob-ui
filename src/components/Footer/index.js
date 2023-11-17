@@ -30,9 +30,6 @@ export default () => {
     <Column>
       <Row>
         <InnerRow>
-          <CustomLink href="https://bob.zkbob.com">
-            bob.zkbob.com
-          </CustomLink>
           {resources.map((resource, index) => (
             <CustomLink key={index} href={resource.href} target="">
               {React.createElement(resource.icon, {})}
