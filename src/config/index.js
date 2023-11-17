@@ -19,10 +19,10 @@ const config = {
         depositScheme: 'usdc-polygon',
         minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
-        migration: {
+        migrations: [{
           timestamp: 1689689468,
           prevTokenSymbol: 'BOB',
-        },
+        }],
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
       },
@@ -39,10 +39,10 @@ const config = {
         depositScheme: 'usdc',
         minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-bob-optimism',
-        migration: {
+        migrations: [{
           timestamp: 1696854269,
           prevTokenSymbol: 'BOB',
-        },
+        }],
         addressPrefix: 'zkbob_optimism',
         paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
       },
@@ -115,10 +115,10 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
         ddSubgraph: 'zkbob-bob-goerli',
-        migration: {
+        migrations: [{
           timestamp: 1688651376,
           prevTokenSymbol: 'BOB',
-        },
+        }],
         addressPrefix: 'zkbob_goerli',
       },
       'USDC-goerli': {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -13,7 +13,7 @@ import MultitransferDetailsModal from 'components/MultitransferDetailsModal';
 import { ZkAvatar } from 'components/ZkAccountIdentifier';
 
 import { formatNumber, shortAddress } from 'utils';
-import { useDateFromNow } from 'hooks';
+import { useDateFromNow, useHistoricalTokenSymbol } from 'hooks';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
 
 import { ReactComponent as DepositIcon } from 'assets/deposit.svg';
@@ -125,13 +125,7 @@ export default ({ item, zkAccount, currentPool, isMobile }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const currentChainId = currentPool.chainId;
-  const tokenSymbol = useMemo(() => {
-    if (item.timestamp <= currentPool.migration?.timestamp) {
-      return currentPool.migration?.prevTokenSymbol;
-    }
-    const isWrapped = currentPool.isNative && item.type === HistoryTransactionType.Deposit;
-    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
-  }, [currentPool, item.type, item.timestamp]);
+  const tokenSymbol = useHistoricalTokenSymbol(currentPool, item);
 
   const onCopy = useCallback((text, result) => {
     if (result) {
