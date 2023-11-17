@@ -115,11 +115,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   }, [onClose]);
 
   const setNextStep = useCallback(nextStep => {
-    let newMnemonic = null;
     if (nextStep === STEP.CREATE_WITH_SECRET) {
+      let newMnemonic = null;
       newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+      setNewMnemonic(newMnemonic);
+      setConfirmedMnemonic(newMnemonic);
+      setStep(STEP.CREATE_PASSWORD_PROMPT);
+      return;
     }
-    setNewMnemonic(newMnemonic);
     setStep(nextStep);
   }, []);
 
