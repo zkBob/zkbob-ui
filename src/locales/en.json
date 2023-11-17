@@ -204,7 +204,7 @@
       "title": "Choose how you would like to create your account",
       "description": "By creating zkAccount, you hereby agree to and accept zkBob <1>Terms of Service</1>",
       "button1": "Use my Web3 wallet",
-      "button2": "Use instant wallet"
+      "button2": "Instant zkBob account"
     },
     "restoreOptions": {
       "title": "How did you create your account?",

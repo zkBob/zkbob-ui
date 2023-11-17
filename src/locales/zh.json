@@ -204,7 +204,7 @@
         "title": "选择您创建账户的方式",
         "description": "创建zk账户，即表示您同意并接受zkBob<1>服务条款</1>",
         "button1": "使用Web3钱包",
-        "button2": "使用即时钱包"
+        "button2": "即时zkBob账户"
       },
       "restoreOptions": {
         "title": "您通过何种方式创建账户？",
