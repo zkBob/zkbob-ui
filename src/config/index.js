@@ -189,9 +189,6 @@ const config = {
       '420': {
         rpcUrls: ['https://goerli.optimism.io']
       },
-      '2494104990': {
-        rpcUrls: ['https://api.shasta.trongrid.io']
-      },
       '3448148188': {
         rpcUrls: ['https://nile.trongrid.io']
       },
