@@ -16,7 +16,7 @@ const config = {
         tokenSymbol: 'USDC',
         tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'usdc-polygon',
+        depositScheme: 'usdc',
         minTxAmount: 50000000n, // 0.05 USDC
         ddSubgraph: 'zkbob-usdc-polygon',
         migrations: [{
