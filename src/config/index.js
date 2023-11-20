@@ -5,7 +5,7 @@ const config = {
       'BOB2USDC-polygon': {
         chainId: 137,
         poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
-        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        tokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
         relayerUrls: ['https://relayer-mvp.zkbob.com'],
         delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
         coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
@@ -13,7 +13,7 @@ const config = {
           status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
           homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
         },
-        tokenSymbol: 'USDC.e',
+        tokenSymbol: 'USDC',
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'usdc-polygon',
@@ -22,6 +22,9 @@ const config = {
         migrations: [{
           timestamp: 1689689468,
           prevTokenSymbol: 'BOB',
+        }, {
+          timestamp: 1700481600,
+          prevTokenSymbol: 'USDC.e',
         }],
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
