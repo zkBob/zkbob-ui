@@ -3,7 +3,8 @@ import { ethers, BigNumber } from 'ethers';
 import { PERMIT2_CONTRACT_ADDRESS } from 'constants';
 
 export function getPermitType(token, chainId) {
-  if (token?.symbol === 'USDC') return chainId === 137 ? 'permit-usdc-polygon' : 'permit-usdc';
+  if (token?.symbol === 'USDC.e' && chainId === 137) return 'permit-usdc-polygon';
+  if (token?.symbol === 'USDC') return 'permit-usdc';
   if (token?.eip2612) return 'permit';
   return 'permit2';
 }
