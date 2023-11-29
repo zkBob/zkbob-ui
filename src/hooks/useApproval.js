@@ -47,7 +47,7 @@ export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
         }
       }
       setTxStatus(TX_STATUSES.APPROVE_TOKENS);
-      const tx = await callContract(tokenAddress, tokenAbi, 'approve', [contractForApproval, ethers.constants.MaxUint256], true);
+      const tx = await callContract(tokenAddress, tokenAbi, 'approve', [contractForApproval, amount], true);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await waitForTx(tx);
       closeTxModal();
@@ -63,7 +63,7 @@ export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
   }, [
     openTxModal, setTxStatus, setTxError, switchNetwork, chain,
     waitForTx, updateAllowance, pool.chainId, tokenAddress, closeTxModal,
-    callContract, contractForApproval,
+    callContract, contractForApproval, amount,
   ]);
 
   return { isApproved, approve, updateAllowance };
