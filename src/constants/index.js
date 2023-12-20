@@ -86,6 +86,7 @@ export const TOKENS_ICONS = {
   'USDC': require('assets/usdc.svg').default,
   'USDC.e': require('assets/usdc.svg').default,
   'USDT': require('assets/usdt.png'),
+  'USDT*': require('assets/usdt.png'),
 };
 
 export const CONNECTORS_ICONS = {
