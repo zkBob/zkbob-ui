@@ -178,6 +178,21 @@ const config = {
         addressPrefix: 'zkbob_nile',
         isTron: true,
       },
+      'USDT-nile-guard': {
+        chainId: 3448148188,
+        poolAddress: 'TJp4J3M2rEZ5euswTpGzUaVVEJxkXX66mL',
+        tokenAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
+        relayerUrls: ['https://tron-nile-mpc-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDT*',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'approve',
+        minTxAmount: 50000n, // 0.05 USDT
+        addressPrefix: 'zkbob_nile_g',
+        isTron: true,
+      },
     },
     chains: {
       '11155111': {
@@ -197,6 +212,13 @@ const config = {
       transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
       transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
     },
+    extraPrefixes: [
+      {
+        poolId: 16776968,
+        prefix: 'zkbob_nile_g',
+        name: 'USDT on Nile testnet (MPC guard contracts)',
+      },
+    ],
   }
 };
 
