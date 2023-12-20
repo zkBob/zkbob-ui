@@ -12,6 +12,7 @@ const createClient = (currentPoolAlias, supportId, callback) => {
       pools: config.pools,
       chains: config.chains,
       snarkParams: config.snarkParams,
+      extraPrefixes: config.extraPrefixes,
       supportId,
     },
     currentPoolAlias,
