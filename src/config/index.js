@@ -180,7 +180,7 @@ const config = {
       },
       'USDT-nile-guard': {
         chainId: 3448148188,
-        poolAddress: 'TJp4J3M2rEZ5euswTpGzUaVVEJxkXX66mL',
+        poolAddress: 'TQyuLqz9xWieAGNPi2tzQvnRYD6U98XLP2',
         tokenAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
         relayerUrls: ['https://tron-nile-mpc-relayer.thgkjlr.website'],
         delegatedProverUrls: [],
