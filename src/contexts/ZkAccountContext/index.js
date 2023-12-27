@@ -433,7 +433,7 @@ export const ZkAccountContextProvider = ({ children }) => {
       try {
         directDepositFee = await fromShieldedAmount(await zkClient.directDepositFee());
       } catch (error) {
-        if (!error.message.includes('No direct deposit processer initialized')) throw error;
+        if (!error?.message?.includes('No direct deposit processer initialized')) throw error;
       }
       if (!zkAccount) {
         let atomicTxFee = await zkClient.atomicTxFee(txType);
