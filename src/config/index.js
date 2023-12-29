@@ -83,12 +83,12 @@ const config = {
       },
     },
     chains: {
-      '137': {
-        rpcUrls: ['https://polygon-rpc.com'],
-      },
-      '10': {
-        rpcUrls: ['https://rpc.ankr.com/optimism'],
-      },
+      // '137': {
+      //   rpcUrls: ['https://polygon-rpc.com'],
+      // },
+      // '10': {
+      //   rpcUrls: ['https://rpc.ankr.com/optimism'],
+      // },
       '728126428': {
         rpcUrls: ['https://api.trongrid.io']
       },
