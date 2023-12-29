@@ -12,7 +12,7 @@ export default ({
   maxAmountToWithdraw, details, currentPool,
 }) => {
   const { t } = useTranslation();
-  const options = ['1', '5', '10'].map(opt => ethers.utils.parseUnits(opt, currentPool.tokenDecimals));
+  const options = ['5', '10', '25'].map(opt => ethers.utils.parseUnits(opt, currentPool.tokenDecimals));
   const [isConverting, setIsConverting] = useState(false);
 
   useEffect(() => {
