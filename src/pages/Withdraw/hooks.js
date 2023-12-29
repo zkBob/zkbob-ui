@@ -4,6 +4,9 @@ import { ethers } from 'ethers';
 
 import WalletContext from 'contexts/WalletContext';
 
+import poolABI from 'abis/pool.json';
+import swapABI from 'abis/swap.json';
+
 export const useMaxAmountExceeded = (amount, maxWithdrawable, limit = ethers.constants.Zero) => {
   const [maxAmountExceeded, setMaxAmountExceeded] = useState(false);
 
@@ -23,10 +26,8 @@ const NATIVE_TOKENS = {
   'BOB2USDC-optimism': 'ETH',
   'BOB2USDC-goerli': 'ETH',
   'BOB2USDC-polygon': 'MATIC',
+  'USDT-tron': 'TRX',
 };
-
-const POOL_CONTRACT_ABI = ['function tokenSeller() pure returns (address)'];
-const SWAP_CONTRACT_ABI = ['function quoteSellForETH(uint256) pure returns (uint256)'];
 
 export const useConvertion = (currentPool) => {
   const { callContract, isTron } = useContext(WalletContext);
@@ -35,16 +36,15 @@ export const useConvertion = (currentPool) => {
 
   useEffect(() => {
     async function getPrice() {
-      if (isTron) return;
       try {
         let swapContractAddress = ethers.constants.AddressZero;
         try {
-          swapContractAddress = await callContract(currentPool.poolAddress, POOL_CONTRACT_ABI, 'tokenSeller');
+          swapContractAddress = await callContract(currentPool.poolAddress, poolABI, 'tokenSeller');
         } catch (error) {}
         const exist = swapContractAddress !== ethers.constants.AddressZero;
         setExist(exist);
         if (!exist) return;
-        const price = await callContract(swapContractAddress, SWAP_CONTRACT_ABI, 'quoteSellForETH', [
+        const price = await callContract(swapContractAddress, swapABI, 'quoteSellForETH', [
           ethers.utils.parseUnits('1', currentPool.tokenDecimals),
         ]);
         setPrice(price);
@@ -60,5 +60,5 @@ export const useConvertion = (currentPool) => {
     return () => clearInterval(interval);
   }, [callContract, currentPool, isTron]);
 
-  return { exist, price, decimals: 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
+  return { exist, price, decimals: isTron ? 6 : 18, toTokenSymbol: NATIVE_TOKENS[currentPool.alias] };
 };
