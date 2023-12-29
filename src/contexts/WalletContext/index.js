@@ -85,9 +85,12 @@ const useTronWallet = pool => {
   const [chainId, setChainId] = useState(null);
 
   const tronWeb = useMemo(() =>
-    new TronWeb({ fullHost: config.chains[pool.chainId].rpcUrls[0] }),
-    [pool]
-  );
+    new TronWeb({
+      fullHost: config.chains[pool.chainId].rpcUrls[0],
+      privateKey: '01',
+      headers: { 'TRON-PRO-API-KEY': process.env.REACT_APP_TRONGRID_PRIVATE_KEY },
+    }),
+  [pool]);
 
   useEffect(() => {
     async function updateChainId() {
@@ -117,7 +120,6 @@ const useTronWallet = pool => {
   const callContract = async (contractAddress, abi, method, params = [], isSend = false) => {
     const tronWebInstance = isSend ? window.tronWeb : tronWeb;
     if (!tronWebInstance) throw new Error('TronWeb not found');
-    if (!isSend) tronWebInstance.setAddress(address);
     const contract = await tronWebInstance.contract(abi, contractAddress);
     return contract[method](...params)[isSend ? 'send' : 'call']();
   }
