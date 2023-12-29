@@ -1,70 +1,85 @@
 const config = {
   prod: {
-    defaultPool: 'BOB2USDC-polygon',
+    defaultPool: 'USDT-tron',
     pools: {
-      'BOB2USDC-polygon': {
-        chainId: 137,
-        poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
-        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        relayerUrls: ['https://relayer-mvp.zkbob.com'],
-        delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
-        coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
-        kycUrls: {
-          status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
-          homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
-        },
-        tokenSymbol: 'USDC.e',
-        tokenDecimals: 6,
-        feeDecimals: 2,
-        depositScheme: 'usdc-polygon',
-        minTxAmount: 50000000n, // 0.05 USDC
-        ddSubgraph: 'zkbob-usdc-polygon',
-        migration: {
-          timestamp: 1689689468,
-          prevTokenSymbol: 'BOB',
-        },
-        addressPrefix: 'zkbob_polygon',
-        paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
-      },
-      'BOB2USDC-optimism': {
-        chainId: 10,
-        poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
-        tokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-        relayerUrls: ['https://relayer-optimism.zkbob.com/'],
+      // 'BOB2USDC-polygon': {
+      //   chainId: 137,
+      //   poolAddress: '0x72e6B59D4a90ab232e55D4BB7ed2dD17494D62fB',
+      //   tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+      //   relayerUrls: ['https://relayer-mvp.zkbob.com'],
+      //   delegatedProverUrls: ['https://remoteprover-mvp.zkbob.com/'],
+      //   coldStorageConfigPath: 'https://r2.zkbob.com/coldstorage/coldstorage.cfg',
+      //   kycUrls: {
+      //     status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+      //     homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB',
+      //   },
+      //   tokenSymbol: 'USDC.e',
+      //   tokenDecimals: 6,
+      //   feeDecimals: 2,
+      //   depositScheme: 'usdc-polygon',
+      //   minTxAmount: 50000000n, // 0.05 USDC
+      //   ddSubgraph: 'zkbob-usdc-polygon',
+      //   migration: {
+      //     timestamp: 1689689468,
+      //     prevTokenSymbol: 'BOB',
+      //   },
+      //   addressPrefix: 'zkbob_polygon',
+      //   paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
+      // },
+      // 'BOB2USDC-optimism': {
+      //   chainId: 10,
+      //   poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
+      //   tokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+      //   relayerUrls: ['https://relayer-optimism.zkbob.com/'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   tokenSymbol: 'USDC',
+      //   tokenDecimals: 6,
+      //   feeDecimals: 2,
+      //   depositScheme: 'usdc',
+      //   minTxAmount: 50000000n, // 0.05 USDC
+      //   ddSubgraph: 'zkbob-bob-optimism',
+      //   migration: {
+      //     timestamp: 1696854269,
+      //     prevTokenSymbol: 'BOB',
+      //   },
+      //   addressPrefix: 'zkbob_optimism',
+      //   paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
+      // },
+      // 'WETH-optimism': {
+      //   chainId: 10,
+      //   poolAddress:'0x58320A55bbc5F89E5D0c92108F762Ac0172C5992',
+      //   tokenAddress:'0x4200000000000000000000000000000000000006',
+      //   relayerUrls:['https://relayer-eth-opt-mvp.zkbob.com/'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   kycUrls: {
+      //     status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+      //     homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB/10',
+      //   },
+      //   tokenSymbol: 'ETH',
+      //   tokenDecimals: 18,
+      //   isNative: true,
+      //   depositScheme: 'permit2',
+      //   minTxAmount: 1000000n, // 0.001 ETH
+      //   ddSubgraph: 'zkbob-eth-optimism',
+      //   addressPrefix: 'zkbob_optimism_eth',
+      //   paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
+      // },
+      'USDT-tron': {
+        chainId: 728126428,
+        poolAddress: 'TXViaNRhEugXpAZApviBqBnbTSKUgejnR9',
+        tokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        relayerUrls: ['https://relayer-tron-mpc.zkbob.com'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
-        tokenSymbol: 'USDC',
+        tokenSymbol: 'USDT',
         tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'usdc',
-        minTxAmount: 50000000n, // 0.05 USDC
-        ddSubgraph: 'zkbob-bob-optimism',
-        migration: {
-          timestamp: 1696854269,
-          prevTokenSymbol: 'BOB',
-        },
-        addressPrefix: 'zkbob_optimism',
-        paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
-      },
-      'WETH-optimism': {
-        chainId: 10,
-        poolAddress:'0x58320A55bbc5F89E5D0c92108F762Ac0172C5992',
-        tokenAddress:'0x4200000000000000000000000000000000000006',
-        relayerUrls:['https://relayer-eth-opt-mvp.zkbob.com/'],
-        delegatedProverUrls: [],
-        coldStorageConfigPath: '',
-        kycUrls: {
-          status: 'https://api.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
-          homepage: 'https://knowyourcat.id/address/%s/BABTokenBOB/10',
-        },
-        tokenSymbol: 'ETH',
-        tokenDecimals: 18,
-        isNative: true,
-        depositScheme: 'permit2',
-        minTxAmount: 1000000n, // 0.001 ETH
-        ddSubgraph: 'zkbob-eth-optimism',
-        addressPrefix: 'zkbob_optimism_eth',
-        paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
+        depositScheme: 'approve',
+        minTxAmount: 50000n, // 0.05 USDT
+        addressPrefix: 'zkbob_tron',
+        isTron: true,
       },
     },
     chains: {
@@ -73,6 +88,9 @@ const config = {
       },
       '10': {
         rpcUrls: ['https://rpc.ankr.com/optimism'],
+      },
+      '728126428': {
+        rpcUrls: ['https://api.trongrid.io']
       },
     },
     snarkParams: process.env.REACT_APP_HOSTING === 'netlify' ? {
