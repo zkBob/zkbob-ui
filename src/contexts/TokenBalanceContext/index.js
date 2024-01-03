@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 
@@ -18,7 +18,7 @@ export const TokenBalanceContextProvider = ({ children }) => {
   const [nativeBalance, setNativeBalance] = useState(ethers.constants.Zero);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
-  const updateBalance = useCallback(async () => {
+  const updateBalance = async () => {
     setIsLoadingBalance(true);
     let balance = ethers.constants.Zero;
     let nativeBalance = ethers.constants.Zero;
@@ -37,11 +37,11 @@ export const TokenBalanceContextProvider = ({ children }) => {
     setBalance(balance);
     setNativeBalance(nativeBalance);
     setIsLoadingBalance(false);
-  }, [account, getBalance, callContract, currentPool.tokenAddress]);
+  }
 
   useEffect(() => {
     updateBalance();
-  }, [updateBalance]);
+  }, [account, currentPool.tokenAddress]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <TokenBalanceContext.Provider

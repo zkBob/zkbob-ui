@@ -104,7 +104,7 @@ const useTronWallet = pool => {
     }
   }, [wallet]);
 
-  const getBalance = useCallback(async () => {
+  const getBalance = async () => {
     let balance = ethers.constants.Zero;
     if (address && tronWeb) {
       try {
@@ -115,7 +115,7 @@ const useTronWallet = pool => {
       }
     }
     return balance;
-  }, [address, tronWeb]);
+  }
 
   const callContract = async (contractAddress, abi, method, params = [], isSend = false) => {
     const tronWebInstance = isSend ? window.tronWeb : tronWeb;
