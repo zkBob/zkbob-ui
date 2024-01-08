@@ -77,12 +77,15 @@ const convertWalletToConnector = wallet => ({
 });
 
 const useTronWallet = pool => {
-  const { address, disconnect, select, wallet, wallets, signMessage } = useWallet();
+  const { address, connect, disconnect, select, wallet, wallets, signMessage, connected } = useWallet();
 
   const connector = useMemo(() => wallet ? convertWalletToConnector(wallet) : null, [wallet]);
   const connectors = useMemo(() => wallets.map(convertWalletToConnector), [wallets]);
 
   const [chainId, setChainId] = useState(null);
+
+  const [waitingForReconnect, setWaitingForReconnect] = useState(false);
+  const [connectorToReconnect, setConnectorToReconnect] = useState(null);
 
   const tronWeb = useMemo(() =>
     new TronWeb({
@@ -156,12 +159,33 @@ const useTronWallet = pool => {
     await new Promise(resolve => setTimeout(resolve, 1000));
   }, [pool, wallet]);
 
+  const connectWallet = useCallback(async ({ connector: c }) => {
+    if (c?.name === connector?.name) {
+      if (connected) {
+        await disconnect();
+        setWaitingForReconnect(true);
+        setConnectorToReconnect(c);
+      } else {
+        await connect();
+      }
+    } else {
+      select(c.name);
+    }
+  }, [connected, connect, disconnect, select, connector?.name]);
+
+  useEffect(() => {
+    if (waitingForReconnect && !connected) {
+      connectWallet({ connector: connectorToReconnect });
+      setWaitingForReconnect(false);
+    }
+  }, [connected, waitingForReconnect, connectWallet, connectorToReconnect]);
+
   return {
     address,
     chain: { id: chainId },
     connector,
     connectors,
-    connect: ({ connector }) => select(connector.name),
+    connect: connectWallet,
     disconnect,
     sign,
     signMessage,
