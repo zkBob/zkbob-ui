@@ -73,7 +73,8 @@
   "deposit": {
     "title": "Пополнение",
     "note": "{{symbol}} будет внесен на ваш zk-Аккаунт. После получения, вы сможете переводить {{symbol}} конфиденциально.",
-    "ddNote": "Пополнение {{symbol}} может занять до 10 минут."
+    "ddNote": "Пополнение {{symbol}} может занять до 10 минут.",
+    "useInfiniteAllowance":"CHANGE_ME use infinite allowance on deposit"
   },
   "transfer": {
     "title": "Перевод",

@@ -16,7 +16,9 @@ export const PoolContextProvider = ({ children }) => {
     const alias = config.pools[savedPoolAlias] ? savedPoolAlias : config.defaultPool;
     return { ...config.pools[alias], alias };
   });
-
+  const [useInfiniteAllowance, setUseInfiniteAllowance] = useState(() => {
+    return window.localStorage.getItem('useInfiniteAllowance')??false;
+  });
   const setCurrentPool = alias => {
     setPool({ ...config.pools[alias], alias });
     localStorage.setItem('pool', alias);
@@ -25,6 +27,11 @@ export const PoolContextProvider = ({ children }) => {
     });
   };
 
+  const storeUseInfiniteAllowance = (value) => {
+    setUseInfiniteAllowance(value);
+    localStorage.setItem('useInfiniteAllowance', value)
+  }
+  
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const poolInParams = queryParams.get('pool');
@@ -36,7 +43,10 @@ export const PoolContextProvider = ({ children }) => {
   }, [location.search]);
 
   return (
-    <PoolContext.Provider value={{ currentPool, setCurrentPool }}>
+    <PoolContext.Provider value={{ currentPool,
+     setCurrentPool,
+     useInfiniteAllowance,
+     setUseInfiniteAllowance:storeUseInfiniteAllowance }}>
       {children}
     </PoolContext.Provider>
   );

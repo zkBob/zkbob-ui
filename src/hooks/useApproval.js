@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 
-import { TransactionModalContext, WalletContext } from 'contexts';
+import { TransactionModalContext, WalletContext, PoolContext } from 'contexts';
 
 import { TX_STATUSES, PERMIT2_CONTRACT_ADDRESS } from 'constants';
 import tokenAbi from 'abis/token.json';
@@ -11,6 +11,7 @@ import tokenAbi from 'abis/token.json';
 export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
   const { openTxModal, closeTxModal, setTxStatus, setTxError } = useContext(TransactionModalContext);
   const { address: account, chain, switchNetwork, callContract, waitForTx } = useContext(WalletContext);
+  const {useInfiniteAllowance} = useContext(PoolContext);
   const [allowance, setAllowance] = useState(ethers.constants.Zero);
 
   const contractForApproval = useMemo(() =>
@@ -47,7 +48,10 @@ export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
         }
       }
       setTxStatus(TX_STATUSES.APPROVE_TOKENS);
-      const tx = await callContract(tokenAddress, tokenAbi, 'approve', [contractForApproval, amount], true);
+      const tx = await callContract(tokenAddress,
+        tokenAbi,
+        'approve',
+        [contractForApproval, useInfiniteAllowance? ethers.constants.MaxUint256 : amount], true);
       setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
       await waitForTx(tx);
       closeTxModal();
@@ -63,7 +67,7 @@ export default (pool, tokenAddress, amount, balance, type = 'permit2') => {
   }, [
     openTxModal, setTxStatus, setTxError, switchNetwork, chain,
     waitForTx, updateAllowance, pool.chainId, tokenAddress, closeTxModal,
-    callContract, contractForApproval, amount,
+    callContract, contractForApproval, amount,useInfiniteAllowance
   ]);
 
   return { isApproved, approve, updateAllowance };

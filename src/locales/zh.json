@@ -73,7 +73,8 @@
     "deposit": {
       "title": "存入",
       "note": "{{symbol}}将会被存入您的zk账户。成功收款后，您可以进行{{symbol}}的隐私转账。",
-      "ddNote": "存入{{symbol}}最多需要10分钟。"
+      "ddNote": "存入{{symbol}}最多需要10分钟。",
+      "useInfiniteAllowance":"CHANGE_ME use infinite allowance on deposit"
     },
     "transfer": {
       "title": "转账",

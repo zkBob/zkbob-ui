@@ -73,7 +73,8 @@
   "deposit": {
     "title": "Deposit",
     "note": "{{symbol}} will be deposited to your zkAccount. Once received, you can transfer {{symbol}} privately.",
-    "ddNote": "{{symbol}} depositing can take up to 10 minutes."
+    "ddNote": "{{symbol}} depositing can take up to 10 minutes.",
+    "useInfiniteAllowance":"use infinite allowance on deposit"
   },
   "transfer": {
     "title": "Transfer",
