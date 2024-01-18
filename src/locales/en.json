@@ -197,8 +197,9 @@
     "start": {
       "title": "zkAccount",
       "description": "To start working with zkBob you need a zkAccount",
-      "button1": "Create new zkAccount",
-      "button2": "I already have a zkAccount"
+      "button1": "Create zkAccount with TronLink",
+      "button2": "Get instant ZkAccount",
+      "button3": "I already have a zkAccount"
     },
     "createOptions": {
       "title": "Choose how you would like to create your account",

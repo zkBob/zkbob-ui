@@ -197,8 +197,9 @@
       "start": {
         "title": "zk账户",
         "description": "您需要一个zk账户以开始使用zkBob",
-        "button1": "创建新的zk账户",
-        "button2": "已有zk账户"
+        "button1": "创建新的zk账户 TODO with TronLink",
+        "button2": "即时zkBob账户",
+        "button3": "已有zk账户"
       },
       "createOptions": {
         "title": "选择您创建账户的方式",

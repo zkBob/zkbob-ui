@@ -39,32 +39,15 @@ const Start = ({ setStep }) => {
       <Description>
         {t('accountSetupModal.start.description')}
       </Description>
-      <Button onClick={() => setStep(STEP.CREATE_OPTIONS)} data-ga-id="signup-start">
+      <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)} data-ga-id="signup-start">
         {t('accountSetupModal.start.button1')}
       </Button>
-      <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)} data-ga-id="login-start">
-        {t('accountSetupModal.start.button2')}
-      </SecondButton>
-    </Container>
-  );
-};
-
-const CreateOptions = ({ setStep }) => {
-  const { t } = useTranslation();
-  return (
-    <Container>
-      <Button onClick={() => setStep(STEP.CREATE_WITH_WALLET)} data-ga-id="signup-web3-wallet">
-        {t('accountSetupModal.createOptions.button1')}
-      </Button>
-      <SecondButton onClick={() => setStep(STEP.CREATE_WITH_SECRET)} data-ga-id="signup-secret-phrase">
+      <Button onClick={() => (setStep(STEP.CREATE_WITH_SECRET))} data-ga-id="signup-secret-phrase">
         {t('accountSetupModal.createOptions.button2')}
+      </Button>
+      <SecondButton onClick={() => setStep(STEP.RESTORE_OPTIONS)} data-ga-id="login-start">
+        {t('accountSetupModal.start.button3')}
       </SecondButton>
-      <Description>
-        <Trans
-          i18nKey="accountSetupModal.createOptions.description"
-          components={{ 1: <Link href="https://docs.zkbob.com/zkbob-overview/compliance-and-security" /> }}
-        />
-      </Description>
     </Container>
   );
 };
@@ -113,18 +96,6 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     setNewMnemonic(null);
     onClose();
   }, [onClose]);
-
-  const setNextStep = useCallback(nextStep => {
-    if (nextStep === STEP.CREATE_WITH_SECRET) {
-      let newMnemonic = null;
-      newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
-      setNewMnemonic(newMnemonic);
-      setConfirmedMnemonic(newMnemonic);
-      setStep(STEP.CREATE_PASSWORD_PROMPT);
-      return;
-    }
-    setStep(nextStep);
-  }, []);
 
   const confirmMnemonic = useCallback(() => {
     setConfirmedMnemonic(newMnemonic);
@@ -180,11 +151,6 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       component = <Start setStep={setStep} />;
       prevStep = null;
       break;
-    case STEP.CREATE_OPTIONS:
-      title = t('accountSetupModal.createOptions.title');
-      component = <CreateOptions setStep={setNextStep} />;
-      prevStep = STEP.START;
-      break;
     case STEP.RESTORE_OPTIONS:
       title = t('accountSetupModal.restoreOptions.title');
       component = <RestoreOptions setStep={setStep} />;
@@ -204,12 +170,16 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
           }}
         />
       );
-      prevStep = STEP.CREATE_OPTIONS;
+      prevStep = STEP.START;
       break;
     case STEP.CREATE_WITH_SECRET:
       title = t('accountSetupModal.createWithSecret.title');
-      component = <Create mnemonic={newMnemonic} next={() => setStep(STEP.CONFIRM_SECRET)} />;
-      prevStep = STEP.CREATE_OPTIONS;
+      let newMnemonic = null;
+      newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+      setNewMnemonic(newMnemonic);
+      setConfirmedMnemonic(newMnemonic);
+      setStep(STEP.CREATE_PASSWORD_PROMPT);
+      prevStep = STEP.START;
       break;
     case STEP.RESTORE_WITH_WALLET:
       title = t('accountSetupModal.restoreWithWallet.title');

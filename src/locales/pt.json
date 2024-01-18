@@ -197,8 +197,9 @@
     "start": {
       "title": "zkAccount",
       "description": "Para começar a usar o zkBob, você precisa de uma conta zkAccount",
-      "button1": "Criar nova conta zkAccount",
-      "button2": "Já tenho uma conta zkAccount"
+      "button1": "Criar nova conta zkAccount TODO with Tronlink",
+      "button2": "Conta instantânea zkBob",
+      "button3": "Já tenho uma conta zkAccount"
     },
     "createOptions": {
       "title": "Escolha como você deseja criar sua conta",
