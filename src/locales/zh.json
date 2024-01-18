@@ -74,7 +74,7 @@
       "title": "存入",
       "note": "{{symbol}}将会被存入您的zk账户。成功收款后，您可以进行{{symbol}}的隐私转账。",
       "ddNote": "存入{{symbol}}最多需要10分钟。",
-      "useInfiniteAllowance":"CHANGE_ME use infinite allowance on deposit"
+      "useInfiniteAllowance":"在存款中使用无限制的授权"
     },
     "transfer": {
       "title": "转账",
@@ -198,7 +198,7 @@
       "start": {
         "title": "zk账户",
         "description": "您需要一个zk账户以开始使用zkBob",
-        "button1": "创建新的zk账户 CHANGE_ME with TronLink",
+        "button1": "使用 TronLink 创建新的 zk 账户 ",
         "button2": "即时zkBob账户",
         "button3": "已有zk账户"
       },
