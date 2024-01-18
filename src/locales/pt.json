@@ -73,7 +73,8 @@
   "deposit": {
     "title": "Depositar",
     "note": "{{symbol}} será depositado em sua conta zkAccount. Uma vez recebido, você pode transferir {{symbol}} de forma privada.",
-    "ddNote": "O depósito de {{symbol}} pode levar até 10 minutos."
+    "ddNote": "O depósito de {{symbol}} pode levar até 10 minutos.",
+    "useInfiniteAllowance":"CHANGE_ME use infinite allowance on deposit"
   },
   "transfer": {
     "title": "Transferir",
@@ -197,7 +198,7 @@
     "start": {
       "title": "zkAccount",
       "description": "Para começar a usar o zkBob, você precisa de uma conta zkAccount",
-      "button1": "Criar nova conta zkAccount TODO with Tronlink",
+      "button1": "Criar nova conta zkAccount CHANGE_ME with Tronlink",
       "button2": "Conta instantânea zkBob",
       "button3": "Já tenho uma conta zkAccount"
     },
