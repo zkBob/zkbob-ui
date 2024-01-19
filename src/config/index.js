@@ -102,7 +102,7 @@ const config = {
     },
   },
   dev: {
-    defaultPool: 'USDC-goerli',
+    defaultPool: 'USDT-nile-guard',
     pools: {
       // 'BOB-sepolia': {
       //   chainId: 11155111,
