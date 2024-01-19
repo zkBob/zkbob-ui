@@ -213,15 +213,15 @@ const config = {
       },
     },
     chains: {
-      '11155111': {
-        rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-      },
-      '5': {
-        rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
-      },
-      '420': {
-        rpcUrls: ['https://goerli.optimism.io']
-      },
+      // '11155111': {
+      //   rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+      // },
+      // '5': {
+      //   rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
+      // },
+      // '420': {
+      //   rpcUrls: ['https://goerli.optimism.io']
+      // },
       '3448148188': {
         rpcUrls: ['https://nile.trongrid.io']
       },
