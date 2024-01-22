@@ -91,16 +91,19 @@ export default class OperationsWithTokenPages extends BasePage{
     }  
 
     async SelectUSDMGoerli():Promise<void> {
+      await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
       await this.locator('//button[@data-ga-id="pool-bob2usdc-goerli"]').click();
       await this.sleep(TIMEOUTS.medium);
     }
 
     async SelectUSDCGoerli():Promise<void> {
+      await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
       await this.locator('//button[@data-ga-id="pool-usdc-goerli"]').click();
       await this.sleep(TIMEOUTS.medium);
     }
 
     async SelectETHGoerli():Promise<void> {
+      await this.locator('//div[@id="root"]/div[3]/div[1]/div[2]/div[1]').click();
       await this.locator('//button[@data-ga-id="pool-weth-goerli"]').click();
       await this.sleep(TIMEOUTS.medium);
     }
@@ -129,6 +132,11 @@ export default class OperationsWithTokenPages extends BasePage{
     async InputAmount():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
       await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1', {delay: 100});
+    }
+
+    async InputETHAmount():Promise<void> {
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('0.001', {delay: 100});
     }
 
     async InputAmountTransferTab():Promise<void> {

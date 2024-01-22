@@ -26,7 +26,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
         await OperationsWithToken.SelectGoerliNetwork()
         await OperationsWithToken.SelectETHGoerli()
         await OperationsWithToken.SelectWETHToken()
-        await OperationsWithToken.InputAmount()
+        await OperationsWithToken.InputETHAmount()
         await OperationsWithToken.button_Deposit()
         await OperationsWithToken.TheCheckingTheDepositSent()
         });
@@ -42,10 +42,10 @@ test.beforeEach(async ({metamask, zkAccount}) => {
         await OperationsWithToken.CheckTransfer()
         });
   
-      test('Withdraw ETH', async ({ OperationsWithToken }) => {
+      test.only('Withdraw ETH', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToWithdrawTab()
-        await OperationsWithToken.SelectSepoliaNetwork()
-        await OperationsWithToken.SelectBOBSepolia()
+        await OperationsWithToken.SelectGoerliNetwork()
+        await OperationsWithToken.SelectETHGoerli()
         await OperationsWithToken.InputAmountWithdrawTab()
         await OperationsWithToken.EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS)
         await OperationsWithToken.button_Withdraw()
@@ -78,8 +78,8 @@ test.beforeEach(async ({metamask, zkAccount}) => {
 
         test('Withdraw USDC', async ({ OperationsWithToken }) => {
             await OperationsWithToken.GoToWithdrawTab()
-            await OperationsWithToken.SelectSepoliaNetwork()
-            await OperationsWithToken.SelectBOBSepolia()
+            await OperationsWithToken.SelectGoerliNetwork()
+            await OperationsWithToken.SelectUSDCGoerli()
             await OperationsWithToken.InputAmountWithdrawTab()
             await OperationsWithToken.EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS)
             await OperationsWithToken.button_Withdraw()
@@ -89,7 +89,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
     });
 
         test.describe('USDM pool', () => {
-            test('Deposit USDM', async ({ OperationsWithToken }) => {
+            test.only('Deposit USDM', async ({ OperationsWithToken }) => {
                 await OperationsWithToken.GoToDepositTab()
                 await OperationsWithToken.SelectGoerliNetwork()
                 await OperationsWithToken.SelectUSDMGoerli()
@@ -109,10 +109,10 @@ test.beforeEach(async ({metamask, zkAccount}) => {
                 await OperationsWithToken.CheckTransfer()
             });
         
-            test('Withdraw USDM', async ({ OperationsWithToken }) => {
+            test.only('Withdraw USDM', async ({ OperationsWithToken }) => {
                 await OperationsWithToken.GoToWithdrawTab()
-                await OperationsWithToken.SelectSepoliaNetwork()
-                await OperationsWithToken.SelectBOBSepolia()
+                await OperationsWithToken.SelectGoerliNetwork()
+                await OperationsWithToken.SelectUSDMGoerli()
                 await OperationsWithToken.InputAmountWithdrawTab()
                 await OperationsWithToken.EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS)
                 await OperationsWithToken.button_Withdraw()
