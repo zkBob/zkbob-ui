@@ -1,9 +1,9 @@
 name: E2E tests
 
 on:
-  schedule:
-    - cron: '0 8 * * 1'
-  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 8 * * 1'
+  # workflow_dispatch:
 
   pull_request:
     branches:
@@ -31,50 +31,50 @@ env:
   WEB3_WALLET_ADDRESS: ${{ secrets.WEB3_WALLET_ADDRESS }}
 
 jobs:
-  schedule_tests:
-    if: github.event.schedule == '0 8 * * 1' 
-    name: E2E tests every Monday
-    runs-on: ubuntu-latest
+#   schedule_tests:
+#     if: github.event.schedule == '0 8 * * 1' 
+#     name: E2E tests every Monday
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out this repo
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Check out this repo
+#         uses: actions/checkout@v3
       
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: v16.14.2
+#       - name: Setup node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: v16.14.2
       
-      - name: Install Playwright
-        run: |
-          cd e2e-ci-cd/
-          npm install --global yarn
-          yarn
-          npx playwright install
+#       - name: Install Playwright
+#         run: |
+#           cd e2e-ci-cd/
+#           npm install --global yarn
+#           yarn
+#           npx playwright install
 
-      - name: zkAccount
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
+#       - name: zkAccount
+#         run: |
+#           cd e2e-ci-cd/ && xvfb-run yarn test zkaccount.test.ts
           
-      - name: Sepolia network
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
+#       - name: Sepolia network
+#         run: |
+#           cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
       
-      - name: Goerli Optimism network
-        if: always()
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
+#       - name: Goerli Optimism network
+#         if: always()
+#         run: |
+#           cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
 
-      - name: Goerli network
-        if: always()
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  
+#       - name: Goerli network
+#         if: always()
+#         run: |
+#           cd e2e-ci-cd/ && xvfb-run yarn test goerli_eth.test.ts  
 
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: report
-          path: e2e-ci-cd/test-results/
+#       - uses: actions/upload-artifact@v3
+#         if: always()
+#         with:
+#           name: report
+#           path: e2e-ci-cd/test-results/
   test:
     name: E2E tests
     runs-on: ubuntu-latest   
