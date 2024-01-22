@@ -17,7 +17,7 @@ export const PoolContextProvider = ({ children }) => {
     return { ...config.pools[alias], alias };
   });
   const [useInfiniteAllowance, setUseInfiniteAllowance] = useState(() => {
-    return window.localStorage.getItem('useInfiniteAllowance')??false;
+    return window.localStorage.getItem('useInfiniteAllowance') !== "false" ;
   });
   const setCurrentPool = alias => {
     setPool({ ...config.pools[alias], alias });

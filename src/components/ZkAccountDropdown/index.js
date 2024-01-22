@@ -107,7 +107,7 @@ const Content = ({
           </OptionButton>
         )}
         <Checkbox label={t('deposit.useInfiniteAllowance')} checked={useInfiniteAllowance} onChange={(event) => { 
-          setUseInfiniteAllowance(useInfiniteAllowance || event.target.checked);
+          setUseInfiniteAllowance(event.target.checked);
           }}/>
       </Container>
     )
