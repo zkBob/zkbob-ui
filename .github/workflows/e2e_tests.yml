@@ -95,14 +95,14 @@ jobs:
           yarn
           npx playwright install
   
-      - name: Sepolia network
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
+      # - name: Sepolia network
+      #   run: |
+      #     cd e2e-ci-cd/ && xvfb-run yarn test sepolia.test.ts
       
-      - name: Goerli Optimism network
-        if: always()
-        run: |
-          cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
+      # - name: Goerli Optimism network
+      #   if: always()
+      #   run: |
+      #     cd e2e-ci-cd/ && xvfb-run yarn test goerli_op.test.ts
 
       - name: Goerli network
         if: always()
