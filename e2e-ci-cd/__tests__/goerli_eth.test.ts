@@ -42,7 +42,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
         await OperationsWithToken.CheckTransfer()
         });
   
-      test.only('Withdraw ETH', async ({ OperationsWithToken }) => {
+      test('Withdraw ETH', async ({ OperationsWithToken }) => {
         await OperationsWithToken.GoToWithdrawTab()
         await OperationsWithToken.SelectGoerliNetwork()
         await OperationsWithToken.SelectETHGoerli()
@@ -89,7 +89,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
     });
 
         test.describe('USDM pool', () => {
-            test.only('Deposit USDM', async ({ OperationsWithToken }) => {
+            test('Deposit USDM', async ({ OperationsWithToken }) => {
                 await OperationsWithToken.GoToDepositTab()
                 await OperationsWithToken.SelectGoerliNetwork()
                 await OperationsWithToken.SelectUSDMGoerli()
@@ -108,8 +108,8 @@ test.beforeEach(async ({metamask, zkAccount}) => {
                 await OperationsWithToken.button_Confirm()
                 await OperationsWithToken.CheckTransfer()
             });
-        
-            test.only('Withdraw USDM', async ({ OperationsWithToken }) => {
+    
+            test('Withdraw USDM', async ({ OperationsWithToken }) => {
                 await OperationsWithToken.GoToWithdrawTab()
                 await OperationsWithToken.SelectGoerliNetwork()
                 await OperationsWithToken.SelectUSDMGoerli()

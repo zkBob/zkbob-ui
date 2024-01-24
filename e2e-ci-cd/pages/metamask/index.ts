@@ -30,6 +30,10 @@ export default class Metamask extends BasePage implements MetamaskMethods {
   }
 
   private async AgreeToTermsOfUse() {
+    await this.page.waitForTimeout(2000);
+    await this.page.locator('//div[@class="dropdown"]').click();
+    await this.page.waitForTimeout(2000);
+    await this.page.locator('//select[@class="dropdown__select"]').selectOption('English');
     await this.page.locator('//input[@data-testid="onboarding-terms-checkbox"]').click();
     // const getStartedBtn = this.page.locator(welcomePageElements.confirmButton);
     // await getStartedBtn.click();
