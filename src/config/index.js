@@ -139,20 +139,20 @@ const config = {
       //   },
       //   addressPrefix: 'zkbob_goerli',
       // },
-      // 'USDC-goerli': {
-      //   chainId: 5,
-      //   poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
-      //   tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
-      //   relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
-      //   delegatedProverUrls: [],
-      //   coldStorageConfigPath: '',
-      //   tokenSymbol: 'USDC',
-      //   tokenDecimals: 6,
-      //   feeDecimals: 2,
-      //   depositScheme: 'usdc-polygon',
-      //   minTxAmount: 50000n, // 0.05 USDC
-      //   addressPrefix: 'zkbob_goerli_usdc',
-      // },
+      'USDC-goerli': {
+        chainId: 5,
+        poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
+        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
+        relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDC',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'usdc-polygon',
+        minTxAmount: 50000n, // 0.05 USDC
+        addressPrefix: 'zkbob_goerli_usdc',
+      },
       // 'BOB-op-goerli': {
       //   chainId: 420,
       //   poolAddress:'0x55B81b0730399974Ccad8AC858e766Cf54126596',
@@ -216,9 +216,10 @@ const config = {
       // '11155111': {
       //   rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
       // },
-      // '5': {
-      //   rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
-      // },
+      '5': {
+        rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+        external: 'https://staging--zkbob.netlify.app/transfer'
+      },
       // '420': {
       //   rpcUrls: ['https://goerli.optimism.io']
       // },
