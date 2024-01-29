@@ -50,10 +50,10 @@ const Content = ({ switchToPool, currentPool, close }) => {
   return (
     <Container>
       <Title>{t('networks.title')}</Title>
-      {poolsByChainId.map(({ chainId, pools }, index) =>
+      {poolsByChainId.map(({ chainId, pools,external }, index) =>
         <React.Fragment key={index}>
           <OptionButton
-            onClick={() => showPools(chainId)}
+            onClick={() => showPools(chainId,external)}
             className={openedChainId === chainId ? 'active' : ''}
           >
             <RowSpaceBetween>
