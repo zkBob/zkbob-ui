@@ -34,6 +34,7 @@ const Content = ({ switchToPool, currentPool, close }) => {
   const showPools = useCallback((chainId,external) => {
     if(external) {
       window.open(external);
+      return;
     }
     if (openedChainId === chainId) {
       setOpenedChainId(null);
