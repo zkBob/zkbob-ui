@@ -66,21 +66,21 @@ const config = {
       //   addressPrefix: 'zkbob_optimism_eth',
       //   paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
       // },
-      // 'USDT-tron': {
-      //   chainId: 728126428,
-      //   poolAddress: 'TXViaNRhEugXpAZApviBqBnbTSKUgejnR9',
-      //   tokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-      //   relayerUrls: ['https://relayer-tron-mpc.zkbob.com'],
-      //   delegatedProverUrls: [],
-      //   coldStorageConfigPath: '',
-      //   tokenSymbol: 'USDT',
-      //   tokenDecimals: 6,
-      //   feeDecimals: 2,
-      //   depositScheme: 'approve',
-      //   minTxAmount: 50000n, // 0.05 USDT
-      //   addressPrefix: 'zkbob_tron',
-      //   isTron: true,
-      // },
+      'USDT-tron': {
+        chainId: 728126428,
+        poolAddress: 'TXViaNRhEugXpAZApviBqBnbTSKUgejnR9',
+        tokenAddress: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        relayerUrls: ['https://relayer-tron-mpc.zkbob.com'],
+        delegatedProverUrls: [],
+        coldStorageConfigPath: '',
+        tokenSymbol: 'USDT',
+        tokenDecimals: 6,
+        feeDecimals: 2,
+        depositScheme: 'approve',
+        minTxAmount: 50000n, // 0.05 USDT
+        addressPrefix: 'zkbob_tron',
+        isTron: true,
+      },
     },
     chains: {
       // '137': {
