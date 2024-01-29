@@ -205,7 +205,8 @@ const config = {
         rpcUrls: ['https://goerli.optimism.io']
       },
       '3448148188': {
-        rpcUrls: ['https://nile.trongrid.io']
+        rpcUrls: ['https://nile.trongrid.io'],
+        external: "https://deploy-preview-250--shimmering-douhua-023cc6.netlify.app"
       },
     },
     snarkParams: {

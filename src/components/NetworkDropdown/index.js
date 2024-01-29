@@ -23,6 +23,7 @@ const poolsByChainId = chainIds.map(chainId => {
   return {
     chainId,
     pools: Object.values(poolsWithAliases).filter(pool => pool.chainId === chainId),
+    external: Object.entries(config.chains).find(([k,_]) => Number(k) === chainId)[1]["external"]
   };
 });
 
@@ -30,7 +31,10 @@ const Content = ({ switchToPool, currentPool, close }) => {
   const { t } = useTranslation();
   const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
 
-  const showPools = useCallback(chainId => {
+  const showPools = useCallback((chainId,external) => {
+    if(external) {
+      window.open(external);
+    }
     if (openedChainId === chainId) {
       setOpenedChainId(null);
     } else {
