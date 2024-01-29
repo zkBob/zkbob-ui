@@ -23,6 +23,7 @@ const poolsByChainId = chainIds.map(chainId => {
   return {
     chainId,
     pools: Object.values(poolsWithAliases).filter(pool => pool.chainId === chainId),
+    external: Object.entries(config.chains).find(([k,_]) => Number(k) === chainId)[1]["external"]
   };
 });
 
@@ -30,7 +31,11 @@ const Content = ({ switchToPool, currentPool, close }) => {
   const { t } = useTranslation();
   const [openedChainId, setOpenedChainId] = useState(currentPool.chainId);
 
-  const showPools = useCallback(chainId => {
+  const showPools = useCallback((chainId,external) => {
+    if(external) {
+      window.open(external);
+      return;
+    }
     if (openedChainId === chainId) {
       setOpenedChainId(null);
     } else {
@@ -46,10 +51,10 @@ const Content = ({ switchToPool, currentPool, close }) => {
   return (
     <Container>
       <Title>{t('networks.title')}</Title>
-      {poolsByChainId.map(({ chainId, pools }, index) =>
+      {poolsByChainId.map(({ chainId, pools,external }, index) =>
         <React.Fragment key={index}>
           <OptionButton
-            onClick={() => showPools(chainId)}
+            onClick={() => showPools(chainId,external)}
             className={openedChainId === chainId ? 'active' : ''}
           >
             <RowSpaceBetween>

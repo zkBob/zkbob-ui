@@ -75,6 +75,14 @@ export const NETWORKS = {
       address: 'https://nile.tronscan.org/#/address/%s',
       tx: 'https://nile.tronscan.org/#/transaction/%s',
     },
+  },
+  728126428: {
+    name: 'Tron',
+    icon: require('assets/tron.png'),
+    blockExplorerUrls: {
+      address: 'https://tronscan.org/#/address/%s',
+      tx: 'https://tronscan.org/#/transaction/%s',
+    },
   }
 };
 
