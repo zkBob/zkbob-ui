@@ -16,6 +16,8 @@ export default class OperationsWithTokenPages extends BasePage{
     this.ZKACCOUNT_PASSWORD = process.env.ZKACCOUNT_PASSWORD as string;
     this.ZKBOB_ADDRESS_BOB_SEPOLIA = process.env.ZKBOB_ADDRESS_BOB_SEPOLIA as string;
     this.ZKACCOUNT_SEED_PHRASE = process.env.ZKACCOUNT_SEED_PHRASE as string;
+  
+    
   }
 
     async ReloadPage(): Promise<void> {
@@ -126,17 +128,26 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async GoToWithdrawTab():Promise<void> {
       await this.locator(OperationsWithTokenElementsLocators.tab_withdraw).click();
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
       expect(this.page.url()).toContain('/withdraw');
     }
 
     async InputAmount():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('1', {delay: 100});
+      await this.sleep(TIMEOUTS.medium);
+      let balance_text = await(this.locator('//div[@data-ga-id="zkaccount-profile"]//span[2]')).textContent();
+      
+      let balance_before = balance_text.split(" ")[0];
+      globalThis.deposit_balance_before = parseFloat(balance_before.replace(',', ''));
+      globalThis.amount = '1';
+
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type(globalThis.amount, {delay: 100});
     }
 
     async InputETHAmount():Promise<void> {
+      globalThis.amount = '0.001'
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type('0.001', {delay: 100});
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_deposit_tab).type(globalThis.amount, {delay: 100});
     }
 
     async InputAmountTransferTab():Promise<void> {
@@ -171,11 +182,31 @@ export default class OperationsWithTokenPages extends BasePage{
       await popupConfirm.locator('//button[text()="Confirm"]').click();
     }
 
-    async TheCheckingTheDepositSent():Promise<void> {
+    async CheckDeposit():Promise<void> {
       await expect(this.locator('//span[text()="Generating a proof"]')).not.toBeVisible({timeout: TIMEOUTS.fiveMinutes});
       await expect(this.locator('//span[text()="Deposit is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute});
       await this.locator('//button[text()="Got it"]').click();
-      await expect(this.locator('//span[text()="Please wait for your transaction"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
+      await expect(this.locator('//span[text()="Please wait for your transaction to finalize"]')).not.toBeVisible({timeout: TIMEOUTS.oneMinute});
+      await this.page.waitForTimeout(5000);
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await this.page.waitForTimeout(5000);
+      let balance_text = await(this.locator('//div[@data-ga-id="zkaccount-profile"]//span[2]')).textContent();
+      
+      let balance_after = balance_text.split(" ")[0];
+      const balanceBefore = globalThis.deposit_balance_before;
+      const amount =  parseFloat(globalThis.amount);
+      const balanceAfter = parseFloat(balance_after.replace(',', ''));
+      
+     
+  
+      if (balanceBefore + amount == balanceAfter) {
+          console.log('The balance has increased')
+      } 
+      else{
+        throw new Error('Incorrect balance');
+      }
+
+      
     }
 
     //Transfer
@@ -190,6 +221,9 @@ export default class OperationsWithTokenPages extends BasePage{
     }
 
     async button_Confirm():Promise<void> {
+      let fee_text =  await(this.locator('//div[16]/div/div/div/div/div/div[2]/span[2]')).textContent();
+      let fee = fee_text.split(" ")[0];
+      globalThis.fee = parseFloat(fee);
       await this.locator(OperationsWithTokenElementsLocators.button_confirm).click();
     }
 
@@ -202,7 +236,21 @@ export default class OperationsWithTokenPages extends BasePage{
 
     async InputAmountWithdrawTab():Promise<void> {
       await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
-      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab ).type('1', { delay: 100 });
+      await this.sleep(TIMEOUTS.medium);
+      let balance_text = await(this.locator('//div[@data-ga-id="zkaccount-profile"]//span[2]')).textContent();
+      
+      let withdraw_balance_before = balance_text.split(" ")[0];
+      globalThis.withdraw_balance_before = parseFloat(withdraw_balance_before.replace(',', ''));
+      
+      if (await (this.locator('//div[text()="ETH"]')).isVisible()){
+        globalThis.amount = '0.001';
+      }
+
+      else{
+        globalThis.amount = '1';
+      }
+
+      await this.locator(OperationsWithTokenElementsLocators.input_amount_in_withdraw_tab ).type(globalThis.amount, { delay: 100 });
     }
 
     async EnterWeb3WalletAddress(WEB3_WALLET_ADDRESS: string):Promise<void> {
@@ -217,6 +265,26 @@ export default class OperationsWithTokenPages extends BasePage{
     async CheckWithdraw():Promise<void> {
       await expect(this.locator('//span[text()="Generating a proof"]')).not.toBeVisible({timeout: TIMEOUTS.tenMinutes});
       await expect(this.locator('//span[text()="Withdrawal is in progress"]')).toBeVisible({timeout: TIMEOUTS.oneMinute}); 
+      await this.page.waitForTimeout(30000);
+      await this.ReloadPage();
+      await expect(this.locator('//button[text()="Enter amount"]')).toBeVisible({timeout: TIMEOUTS.fiveMinutes});
+      await this.page.waitForTimeout(5000);
+      let balance_text = await(this.locator('//div[@data-ga-id="zkaccount-profile"]//span[2]')).textContent();
+      
+      let balance_after = balance_text.split(" ")[0];
+      const balanceBefore = globalThis.withdraw_balance_before;
+      const amount =  parseFloat(globalThis.amount);
+      const balanceAfter = parseFloat(balance_after.replace(',', ''));
+      const fee = parseFloat(globalThis.fee);
+         
+  
+      if (balanceBefore - amount - fee == balanceAfter) {
+          console.log('Balance decreased')
+      } 
+      else{
+        console.log(balanceBefore, amount, fee, balanceAfter)
+        throw new Error('Incorrect balance');
+      }
     }    
 
     

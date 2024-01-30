@@ -28,7 +28,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
         await OperationsWithToken.SelectWETHToken()
         await OperationsWithToken.InputETHAmount()
         await OperationsWithToken.button_Deposit()
-        await OperationsWithToken.TheCheckingTheDepositSent()
+        await OperationsWithToken.CheckDeposit()
         });
     
       test('Transfer ETH', async ({ OperationsWithToken }) => {
@@ -62,7 +62,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
             await OperationsWithToken.SelectUSDCGoerli()
             await OperationsWithToken.InputAmount()
             await OperationsWithToken.button_Deposit()
-            await OperationsWithToken.TheCheckingTheDepositSent()
+            await OperationsWithToken.CheckDeposit()
         });
         
         test('Transfer USDC', async ({ OperationsWithToken }) => {
@@ -95,7 +95,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
                 await OperationsWithToken.SelectUSDMGoerli()
                 await OperationsWithToken.InputAmount()
                 await OperationsWithToken.button_Deposit()
-                await OperationsWithToken.TheCheckingTheDepositSent()
+                await OperationsWithToken.CheckDeposit()
             });
           
             test('Transfer USDM', async ({ OperationsWithToken }) => {
@@ -109,7 +109,7 @@ test.beforeEach(async ({metamask, zkAccount}) => {
                 await OperationsWithToken.CheckTransfer()
             });
     
-            test('Withdraw USDM', async ({ OperationsWithToken }) => {
+            test.only('Withdraw USDM', async ({ OperationsWithToken }) => {
                 await OperationsWithToken.GoToWithdrawTab()
                 await OperationsWithToken.SelectGoerliNetwork()
                 await OperationsWithToken.SelectUSDMGoerli()
