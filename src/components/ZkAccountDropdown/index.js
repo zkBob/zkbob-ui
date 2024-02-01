@@ -9,6 +9,7 @@ import OptionButton from 'components/OptionButton';
 import Button from 'components/Button';
 import PrivateAddress from 'components/PrivateAddress';
 import QRCodeReader from 'components/QRCodeReader';
+import Checkbox from 'components/Checkbox';
 
 import { ReactComponent as BackIconDefault } from 'assets/back.svg';
 
@@ -22,7 +23,7 @@ const Content = ({
   balance, generateAddress, getSeed, setPassword,
   removePassword, logout, close, showSeedPhrase,
   isLoadingState, initializeGiftCard, currentPool,
-  generatePaymentLink, isTron,
+  generatePaymentLink, isTron,useInfiniteAllowance,setUseInfiniteAllowance
 }) => {
   const { t } = useTranslation();
   const [privateAddress, setPrivateAddress] = useState(null);
@@ -105,6 +106,9 @@ const Content = ({
             {item.text}
           </OptionButton>
         )}
+        <Checkbox label={t('deposit.useInfiniteAllowance')} checked={useInfiniteAllowance} onChange={(event) => { 
+          setUseInfiniteAllowance(event.target.checked);
+          }}/>
       </Container>
     )
   }
@@ -175,7 +179,7 @@ export default ({ children }) => {
     openConfirmLogoutModal, openDisablePasswordModal, openPaymentLinkModal,
     isZkAccountDropdownOpen, openZkAccountDropdown, closeZkAccountDropdown,
   } = useContext(ModalContext);
-  const { currentPool } = useContext(PoolContext);
+  const { currentPool, useInfiniteAllowance, setUseInfiniteAllowance } = useContext(PoolContext);
   const { isTron } = useContext(WalletContext);
   return (
     <Dropdown
@@ -200,6 +204,8 @@ export default ({ children }) => {
           close={closeZkAccountDropdown}
           generatePaymentLink={openPaymentLinkModal}
           isTron={isTron}
+          useInfiniteAllowance = {useInfiniteAllowance}
+          setUseInfiniteAllowance={setUseInfiniteAllowance}
         />
       )}
     >

@@ -102,7 +102,7 @@ const config = {
     },
   },
   dev: {
-    defaultPool: 'USDC-goerli',
+    defaultPool: 'USDT-nile-guard',
     pools: {
       // 'BOB-sepolia': {
       //   chainId: 11155111,
@@ -121,38 +121,38 @@ const config = {
       //   depositScheme: 'permit',
       //   addressPrefix: 'zkbob_sepolia',
       // },
-      'BOB2USDC-goerli': {
-        chainId: 5,
-        poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
-        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
-        relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
-        delegatedProverUrls: [],
-        coldStorageConfigPath: '',
-        tokenSymbol: 'USDM',
-        tokenDecimals: 6,
-        feeDecimals: 2,
-        depositScheme: 'usdc-polygon',
-        ddSubgraph: 'zkbob-bob-goerli',
-        migration: {
-          timestamp: 1688651376,
-          prevTokenSymbol: 'BOB',
-        },
-        addressPrefix: 'zkbob_goerli',
-      },
-      'USDC-goerli': {
-        chainId: 5,
-        poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
-        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
-        relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
-        delegatedProverUrls: [],
-        coldStorageConfigPath: '',
-        tokenSymbol: 'USDC',
-        tokenDecimals: 6,
-        feeDecimals: 2,
-        depositScheme: 'usdc-polygon',
-        minTxAmount: 50000n, // 0.05 USDC
-        addressPrefix: 'zkbob_goerli_usdc',
-      },
+      // 'BOB2USDC-goerli': {
+      //   chainId: 5,
+      //   poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
+      //   tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
+      //   relayerUrls: ['https://dev-relayer.thgkjlr.website/'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   tokenSymbol: 'USDM',
+      //   tokenDecimals: 6,
+      //   feeDecimals: 2,
+      //   depositScheme: 'usdc-polygon',
+      //   ddSubgraph: 'zkbob-bob-goerli',
+      //   migration: {
+      //     timestamp: 1688651376,
+      //     prevTokenSymbol: 'BOB',
+      //   },
+      //   addressPrefix: 'zkbob_goerli',
+      // },
+      // 'USDC-goerli': {
+      //   chainId: 5,
+      //   poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
+      //   tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
+      //   relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   tokenSymbol: 'USDC',
+      //   tokenDecimals: 6,
+      //   feeDecimals: 2,
+      //   depositScheme: 'usdc-polygon',
+      //   minTxAmount: 50000n, // 0.05 USDC
+      //   addressPrefix: 'zkbob_goerli_usdc',
+      // },
       // 'BOB-op-goerli': {
       //   chainId: 420,
       //   poolAddress:'0x55B81b0730399974Ccad8AC858e766Cf54126596',
@@ -166,36 +166,36 @@ const config = {
       //   depositScheme: 'permit',
       //   addressPrefix: 'zkbob_goerli_optimism',
       // },
-      'WETH-goerli': {
-        chainId: 5,
-        poolAddress:'0xf9dbCF4005497e042838dE9082C817fCa790e945',
-        tokenAddress:'0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
-        relayerUrls:['https://goerli-weth-relayer.thgkjlr.website/'],
-        delegatedProverUrls: [],
-        coldStorageConfigPath: '',
-        tokenSymbol: 'ETH',
-        tokenDecimals: 18,
-        isNative: true,
-        depositScheme: 'permit2',
-        minTxAmount: 1000000n, // 0.001 ETH
-        ddSubgraph: 'zkbob-eth-goerli',
-        addressPrefix: 'zkbob_goerli_eth',
-      },
-      'USDT-nile': {
-        chainId: 3448148188,
-        poolAddress: 'TT8GgygLhEDh88kYwY8mYz38iEpJWw1YLG',
-        tokenAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
-        relayerUrls: ['https://tron-nile-relayer.thgkjlr.website'],
-        delegatedProverUrls: [],
-        coldStorageConfigPath: '',
-        tokenSymbol: 'USDT',
-        tokenDecimals: 6,
-        feeDecimals: 2,
-        depositScheme: 'approve',
-        minTxAmount: 50000n, // 0.05 USDT
-        addressPrefix: 'zkbob_nile',
-        isTron: true,
-      },
+      // 'WETH-goerli': {
+      //   chainId: 5,
+      //   poolAddress:'0xf9dbCF4005497e042838dE9082C817fCa790e945',
+      //   tokenAddress:'0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+      //   relayerUrls:['https://goerli-weth-relayer.thgkjlr.website/'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   tokenSymbol: 'ETH',
+      //   tokenDecimals: 18,
+      //   isNative: true,
+      //   depositScheme: 'permit2',
+      //   minTxAmount: 1000000n, // 0.001 ETH
+      //   ddSubgraph: 'zkbob-eth-goerli',
+      //   addressPrefix: 'zkbob_goerli_eth',
+      // },
+      // 'USDT-nile': {
+      //   chainId: 3448148188,
+      //   poolAddress: 'TT8GgygLhEDh88kYwY8mYz38iEpJWw1YLG',
+      //   tokenAddress: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
+      //   relayerUrls: ['https://tron-nile-relayer.thgkjlr.website'],
+      //   delegatedProverUrls: [],
+      //   coldStorageConfigPath: '',
+      //   tokenSymbol: 'USDT',
+      //   tokenDecimals: 6,
+      //   feeDecimals: 2,
+      //   depositScheme: 'approve',
+      //   minTxAmount: 50000n, // 0.05 USDT
+      //   addressPrefix: 'zkbob_nile',
+      //   isTron: true,
+      // },
       'USDT-nile-guard': {
         chainId: 3448148188,
         poolAddress: 'TVbFjwMgDuzVYqTmMMzrkGQxZkaTfDZ1Gn',
@@ -203,7 +203,7 @@ const config = {
         relayerUrls: ['https://tron-nile-mpc-relayer.thgkjlr.website'],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
-        tokenSymbol: 'USDT*',
+        tokenSymbol: 'USDT',
         tokenDecimals: 6,
         feeDecimals: 2,
         depositScheme: 'approve',
@@ -213,15 +213,15 @@ const config = {
       },
     },
     chains: {
-      '11155111': {
-        rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-      },
-      '5': {
-        rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
-      },
-      '420': {
-        rpcUrls: ['https://goerli.optimism.io']
-      },
+      // '11155111': {
+      //   rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+      // },
+      // '5': {
+      //   rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
+      // },
+      // '420': {
+      //   rpcUrls: ['https://goerli.optimism.io']
+      // },
       '3448148188': {
         rpcUrls: ['https://nile.trongrid.io']
       },
