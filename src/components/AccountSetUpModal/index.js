@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
-import { useSignMessage } from 'wagmi';
 import md5 from 'js-md5';
 import { useTranslation, Trans } from 'react-i18next';
 
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Link from 'components/Link';
+
+import { WalletContext } from 'contexts';
 
 import Create from './Create';
 import Confirm from './Confirm';
@@ -101,10 +102,11 @@ const PasswordPrompt = ({ setStep, close }) => {
 
 export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) => {
   const { t } = useTranslation();
-  const { signMessageAsync } = useSignMessage();
+  const { tronWallet, evmWallet, noWalletInstalled } = useContext(WalletContext);
   const [step, setStep] = useState(STEP.START);
   const [newMnemonic, setNewMnemonic] = useState();
   const [confirmedMnemonic, setConfirmedMnemonic] = useState();
+  const [isTronWalletSelected, setIsTronWalletSelected] = useState(false);
 
   const closeModal = useCallback(() => {
     setStep(STEP.START);
@@ -113,11 +115,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   }, [onClose]);
 
   const setNextStep = useCallback(nextStep => {
-    let newMnemonic = null;
     if (nextStep === STEP.CREATE_WITH_SECRET) {
+      let newMnemonic = null;
       newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+      setNewMnemonic(newMnemonic);
+      setConfirmedMnemonic(newMnemonic);
+      setStep(STEP.CREATE_PASSWORD_PROMPT);
+      return;
     }
-    setNewMnemonic(newMnemonic);
     setStep(nextStep);
   }, []);
 
@@ -132,8 +137,9 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
   }, []);
 
   const generate = useCallback(async () => {
+    const { signMessage } = isTronWalletSelected ? tronWallet : evmWallet;
     const message = 'Access zkBob account.\n\nOnly sign this message for a trusted client!';
-    let signedMessage = await signMessageAsync({ message });
+    let signedMessage = await signMessage(message);
     if (!window.location.host.includes(process.env.REACT_APP_LEGACY_SIGNATURE_DOMAIN)) {
       // Metamask with ledger returns V=0/1 here too, we need to adjust it to be ethereum's valid value (27 or 28)
       const MIN_VALID_V_VALUE = 27;
@@ -146,7 +152,7 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
     const newMnemonic = ethers.utils.entropyToMnemonic(md5.array(signedMessage));
     setConfirmedMnemonic(newMnemonic);
     setStep(STEP.CREATE_PASSWORD_PROMPT);
-  }, [signMessageAsync]);
+  }, [isTronWalletSelected, tronWallet, evmWallet]);
 
   const confirmPassword = useCallback(password => {
     const isNewAccount = !!newMnemonic;
@@ -185,8 +191,19 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       prevStep = STEP.START;
       break;
     case STEP.CREATE_WITH_WALLET:
-      title = t('accountSetupModal.createWithWallet.title');
-      component = <Generate isCreation next={() => setStep(STEP.SING_MESSAGE_TO_CREATE)} />;
+      title = noWalletInstalled
+        ? t('connectWalletModal.noWalletTitle', { wallet: 'TronLink' })
+        : t('accountSetupModal.createWithWallet.title');
+      component = (
+        <Generate
+          isCreation
+          noWalletInstalled={noWalletInstalled}
+          next={connector => {
+            setIsTronWalletSelected(connector.isTron);
+            setStep(STEP.SING_MESSAGE_TO_CREATE);
+          }}
+        />
+      );
       prevStep = STEP.CREATE_OPTIONS;
       break;
     case STEP.CREATE_WITH_SECRET:
@@ -196,7 +213,14 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       break;
     case STEP.RESTORE_WITH_WALLET:
       title = t('accountSetupModal.restoreWithWallet.title');
-      component = <Generate next={() => setStep(STEP.SING_MESSAGE_TO_RESTORE)} />;
+      component = (
+        <Generate
+          next={connector => {
+            setIsTronWalletSelected(connector.isTron);
+            setStep(STEP.SING_MESSAGE_TO_RESTORE);
+          }}
+        />
+      );
       prevStep = STEP.RESTORE_OPTIONS;
       break;
     case STEP.RESTORE_WITH_SECRET:

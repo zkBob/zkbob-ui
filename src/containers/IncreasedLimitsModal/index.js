@@ -1,14 +1,16 @@
 import { useContext, useEffect } from 'react';
-import { useAccount } from 'wagmi'
 
 import IncreasedLimitsModal from 'components/IncreasedLimitsModal';
 
-import { ModalContext, IncreasedLimitsContext, ZkAccountContext, PoolContext } from 'contexts';
+import {
+  ModalContext, IncreasedLimitsContext,
+  ZkAccountContext, PoolContext, WalletContext,
+} from 'contexts';
 
 import { INCREASED_LIMITS_STATUSES } from 'constants';
 
 export default () => {
-  const { address: account } = useAccount();
+  const { adrress: account } = useContext(WalletContext);
   const {
     isIncreasedLimitsModalOpen, closeIncreasedLimitsModal,
     isWalletModalOpen, openWalletModal,

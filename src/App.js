@@ -1,4 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
+import { WalletProvider as TronWalletProvider } from '@tronweb3/tronwallet-adapter-react-hooks';
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapters';
 
 import ThemeProvider from 'providers/ThemeProvider';
 import Web3Provider from 'providers/Web3Provider';
@@ -62,11 +64,18 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const tronLinkAdapter = new TronLinkAdapter({
+  openUrlWhenWalletNotFound: false,
+  openTronLinkAppOnMobile: false,
+});
+
 export default () => (
   <ThemeProvider>
     <GlobalStyle />
     <Web3Provider>
-      <Pages />
+      <TronWalletProvider autoConnect adapters={[tronLinkAdapter]}>
+        <Pages />
+      </TronWalletProvider>
     </Web3Provider>
   </ThemeProvider>
 );

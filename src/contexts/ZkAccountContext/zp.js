@@ -12,6 +12,7 @@ const createClient = (currentPoolAlias, supportId, callback) => {
       pools: config.pools,
       chains: config.chains,
       snarkParams: config.snarkParams,
+      extraPrefixes: config.extraPrefixes,
       supportId,
     },
     currentPoolAlias,
@@ -33,7 +34,7 @@ const createAccount = async (zkClient, secretKey, birthIndex, useDelegatedProver
   });
 };
 
-const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
+const deposit = async (from, sign, signTypedData, zkClient, amount, fee, setTxStatus) => {
   setTxStatus(TX_STATUSES.GENERATING_PROOF);
   const signFunction = async ({ type, data }) => {
     setTxStatus(TX_STATUSES.SIGN_MESSAGE);
@@ -41,28 +42,28 @@ const deposit = async (signer, zkClient, amount, fee, setTxStatus) => {
     if (type === SignatureType.TypedDataV4) {
       const { domain, types, message } = data;
       delete types.EIP712Domain;
-      signature = await signer._signTypedData(domain, types, message);
+      signature = await signTypedData(domain, types, message);
+    } else if (type === SignatureType.PersonalSign) {
+      signature = await sign(data);
     }
     setTxStatus(TX_STATUSES.GENERATING_PROOF);
     return signature;
   };
-  const myAddress = await signer.getAddress();
-  const jobId = await zkClient.deposit(amount, signFunction, myAddress, fee);
+  const jobId = await zkClient.deposit(amount, signFunction, from, fee);
   setTxStatus(TX_STATUSES.WAITING_FOR_RELAYER);
   await zkClient.waitJobTxHash(jobId);
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 
-const directDeposit = async (signer, zkClient, amount, setTxStatus) => {
+const directDeposit = async (from, sendTransaction, zkClient, amount, setTxStatus) => {
   setTxStatus(TX_STATUSES.CONFIRM_TRANSACTION);
   const sendFunction = async ({ to, amount, data }) => {
-    const tx = await signer.sendTransaction({ to, value: amount, data });
+    const tx = await sendTransaction({ to, value: amount, data });
     setTxStatus(TX_STATUSES.WAITING_FOR_TRANSACTION);
     const receipt = await tx.wait();
     return receipt.transactionHash;
   };
-  const myAddress = await signer.getAddress();
-  await zkClient.directDeposit(DirectDepositType.Native, myAddress, amount, sendFunction);
+  await zkClient.directDeposit(DirectDepositType.Native, from, amount, sendFunction);
   setTxStatus(TX_STATUSES.DEPOSITED);
 };
 

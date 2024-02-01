@@ -204,7 +204,7 @@
       "title": "Escolha como você deseja criar sua conta",
       "description": "Ao criar uma conta zkAccount, você concorda e aceita os <1>Termos de Serviço</1> do zkBob",
       "button1": "Usar minha carteira Web3",
-      "button2": "Usar a frase secreta do zkBob"
+      "button2": "Conta instantânea zkBob"
     },
     "restoreOptions": {
       "title": "Como você criou sua conta?",
@@ -223,7 +223,9 @@
     },
     "restoreWithWallet": {
       "title": "Acessar sua conta zkAccount",
-      "description": "Selecione a carteira que você usou para criar sua conta zkAccount"
+      "description": "Selecione a carteira que você usou para criar sua conta zkAccount",
+      "warning": "A carteira TronLink será usada apenas para restaurar o acesso à sua conta anterior zkBob",
+      "warning_tron": "As carteiras MetaMask e Wallet Connect serão usadas apenas para restaurar o acesso à sua conta anterior zkBob"
     },
     "restoreWithSecret": {
       "title": "Restaurar conta zkAccount",
@@ -395,7 +397,15 @@
   "connectWalletModal": {
     "title": "Conectar carteira Web3",
     "description": "Conecte sua carteira para depositar {{symbol}} em sua conta zkAccount. Se você estiver criando uma nova conta zkAccount, sua carteira será usada para derivar uma chave de criptografia privada para o aplicativo zkBob.",
-    "note": "Ao conectar uma carteira, você concorda com os <1>Termos de Serviço</1> do zkBob"
+    "note": "Ao conectar uma carteira, você concorda com os <1>Termos de Serviço</1> do zkBob",
+    "noWalletTitle": "Carteira {{wallet}} não encontrada",
+    "noWalletDescription": "Certifique-se de que a extensão da carteira {{wallet}} está instalada.",
+    "noWalletDescriptionWithDeposit": "Certifique-se de que a extensão da carteira {{wallet}} está instalada. Conecte uma carteira Web3 para depositar {{symbol}} na sua zkAccount.",
+    "install": "Instalar carteira {{wallet}}",
+    "tronlinkMobileDescription": "Para usar o zkBob com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink.",
+    "tronlinkMobileDescriptionWithDeposit": "Para usar o zkBob com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink. Conecte uma carteira Web3 para depositar {{symbol}} na sua zkAccount.",
+    "open": "Abrir carteira {{wallet}}",
+    "downloadQuestion": "Se o aplicativo não abrir, você gostaria de baixá-lo da loja?"
   },
   "qrCode": {
     "title": "Endereço do código QR",

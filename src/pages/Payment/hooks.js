@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { ethers, BigNumber } from 'ethers';
-import { useAccount, useSigner, useNetwork, useSwitchNetwork, useProvider } from 'wagmi';
 import { LiFi } from '@lifi/sdk';
 import { Multicall } from 'ethereum-multicall';
 import { useTranslation } from 'react-i18next';
 
 import SupportIdContext from 'contexts/SupportIdContext';
 import TransactionModalContext from 'contexts/TransactionModalContext';
+import WalletContext from 'contexts/WalletContext';
 
 import zp from 'contexts/ZkAccountContext/zp';
 
@@ -27,9 +27,8 @@ const MAX_DIFF = BigNumber.from('10000'); // 1.0%
 
 const TOKEN_ABI = ['function balanceOf(address) pure returns (uint256)'];
 
-export function useTokensBalances(tokenList, chainId) {
-  const { address: account } = useAccount();
-  const provider = useProvider({ chainId });
+export function useTokensBalances(tokenList) {
+  const { address: account, provider } = useContext(WalletContext);
   const [balances, setBalances] = useState({});
   const [isLoadingBalances, setIsLoadingBalances] = useState(true);
 
@@ -278,14 +277,7 @@ export function useLimitsAndFees(pool) {
 export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liFiRoute, currency) {
   const { openTxModal, setTxStatus, setTxHash, setTxError, setCsvLink } = useContext(TransactionModalContext);
   const { t } = useTranslation();
-  const { address: account } = useAccount();
-  const { chain } = useNetwork();
-  const { data: signer } = useSigner({ chainId: pool.chainId });
-  const provider = useProvider({ chainId: pool.chainId });
-  const { switchNetworkAsync } = useSwitchNetwork({
-    chainId: pool.chainId,
-    throwForSwitchChainNotSupported: true,
-  });
+  const { address: account, chain, provider, signer, switchNetwork } = useContext(WalletContext);
 
   const send = useCallback(async () => {
     openTxModal();
@@ -293,7 +285,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
       if (chain.id !== pool.chainId) {
         setTxStatus(TX_STATUSES.SWITCH_NETWORK);
         try {
-          await switchNetworkAsync();
+          await switchNetwork();
         } catch (error) {
           console.error(error);
           Sentry.captureException(error, { tags: { method: 'ZkAccountContext.deposit.switchNetwork' } });
@@ -402,7 +394,7 @@ export function usePayment(token, tokenAmount, amount, fee, pool, zkAddress, liF
     }
   }, [
     chain, pool, token, tokenAmount, account, provider, signer,
-    openTxModal, setTxStatus, setTxError, switchNetworkAsync,
+    openTxModal, setTxStatus, setTxError, switchNetwork,
     zkAddress, fee, amount, setTxHash, liFiRoute, t, setCsvLink,
     currency,
   ]);

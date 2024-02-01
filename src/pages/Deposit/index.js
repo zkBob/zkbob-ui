@@ -1,5 +1,4 @@
 import React, { useState, useContext, useCallback, useMemo, useEffect } from 'react';
-import { useAccount } from 'wagmi'
 import { TxType } from 'zkbob-client-js';
 import { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
@@ -10,7 +9,10 @@ import { useTranslation, Trans } from 'react-i18next';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
 import PendingAction from 'containers/PendingAction';
 
-import { ZkAccountContext, TokenBalanceContext, ModalContext, IncreasedLimitsContext, PoolContext } from 'contexts';
+import {
+  ZkAccountContext, TokenBalanceContext, ModalContext,
+  IncreasedLimitsContext, PoolContext, WalletContext,
+} from 'contexts';
 
 import TransferInput from 'components/TransferInput';
 import Card from 'components/Card';
@@ -31,7 +33,7 @@ import { formatNumber, minBigNumber } from 'utils';
 
 export default () => {
   const { t } = useTranslation();
-  const { address: account } = useAccount();
+  const { address: account } = useContext(WalletContext);
   const {
       zkAccount, isLoadingZkAccount, deposit,
       isLoadingState, isPending, isDemo,
@@ -58,7 +60,7 @@ export default () => {
     () => isNativeTokenUsed ? directDepositFee : fee,
     [isNativeTokenUsed, directDepositFee, fee],
   );
-  const { isApproved, approve } = useApproval(currentPool.chainId, currentPool.tokenAddress, amount.add(fee), balance);
+  const { isApproved, approve } = useApproval(currentPool, currentPool.tokenAddress, amount.add(fee), balance, currentPool.depositScheme);
   const depositLimit = useDepositLimit(limits, isNativeTokenUsed);
   const maxAmountExceeded = useMaxAmountExceeded(amount, usedBalance, usedFee, depositLimit);
 
@@ -138,7 +140,7 @@ export default () => {
           else if (amount.gt(depositLimit)) {
             return <Button disabled>{t('buttonText.amountExceedsLimit')}</Button>;
           }
-          else if (currentPool.isNative && !isNativeSelected && !isApproved) {
+          else if (['permit2', 'approve'].includes(currentPool.depositScheme) && !isNativeTokenUsed && !isApproved) {
             return <Button onClick={approve}>{t('buttonText.approveTokens')}</Button>;
           }
           else {

@@ -204,7 +204,7 @@
       "title": "Choose how you would like to create your account",
       "description": "By creating zkAccount, you hereby agree to and accept zkBob <1>Terms of Service</1>",
       "button1": "Use my Web3 wallet",
-      "button2": "Use zkBob secret phrase"
+      "button2": "Instant zkBob account"
     },
     "restoreOptions": {
       "title": "How did you create your account?",
@@ -223,7 +223,9 @@
     },
     "restoreWithWallet": {
       "title": "Login to your zkAccount",
-      "description": "Select the wallet you used to create your zkAccount"
+      "description": "Select the wallet you used to create your zkAccount",
+      "warning": "TronLink wallet will be used only for restoring access to your previous zkBob account",
+      "warning_tron": "MetaMask and Wallet Connect wallets will be used only for restoring access to your previous zkBob account"
     },
     "restoreWithSecret": {
       "title": "Restore zkAccount",
@@ -395,7 +397,15 @@
   "connectWalletModal": {
     "title": "Connect web3 wallet",
     "description": "Connect your wallet to deposit {{symbol}} into your zkAccount. If you are creating a new zkAccount, your wallet is used to derive a private encryption key for the zkBob application.",
-    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>"
+    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>",
+    "noWalletTitle": "{{wallet}} wallet is not found",
+    "noWalletDescription": "Ensure that the {{wallet}} wallet extension is installed.",
+    "noWalletDescriptionWithDeposit": "Ensure that the {{wallet}} wallet extension is installed. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
+    "install": "Install {{wallet}} wallet",
+    "tronlinkMobileDescription": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet.",
+    "tronlinkMobileDescriptionWithDeposit": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
+    "open": "Open {{wallet}} wallet",
+    "downloadQuestion": "If the app did not open, would you like to download it from the store?"
   },
   "qrCode": {
     "title": "QR code address",

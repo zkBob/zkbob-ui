@@ -34,7 +34,8 @@ The issues with the bug report should be well-described. It should include at le
   - Be specific!
 - Any references regarding a bug (screenshots with errors, etc)
 - Your machine info (platform, what wallet do you use etc)
-- zkBob UI details: your Support ID, Library, Web and Relayer versions. You can find this information at the bottom of the app page.
+
+- zkBob UI details: your support ID, Library, Web and Relayer versions. You can find this informatio at the buttom of the UI page
 
 
 ## License
