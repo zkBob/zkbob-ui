@@ -1,6 +1,6 @@
 {
   "name": "zkbob-ui",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "private": true,
   "dependencies": {
     "@dicebear/avatars": "^4.10.2",
@@ -54,7 +54,7 @@
     "wagmi": "^0.12.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "5.5.1-beta1"
+    "zkbob-client-js": "5.5.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
