@@ -42,11 +42,7 @@ const Payment = ({ pool }) => {
   const { supportId } = useContext(SupportIdContext);
   const history = useHistory();
   const params = useParams();
-  const addressPrefix = params.address.split(':')[0];
-  const pool = Object.values(pools).find(pool => pool.addressPrefix === addressPrefix);
-  if (!pool.paymentContractAddress) {
-    history.push('/');
-  }
+  const currency = ['USDC.e', 'USDC', 'BOB'].includes(pool.tokenSymbol) ? 'USD' : pool.tokenSymbol;
 
   const { address: account } = useContext(WalletContext);
   const [displayedAmount, setDisplayedAmount] = useState('');
