@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import zkBobLibPackage from 'zkbob-client-js/package.json';
 import { useTranslation } from 'react-i18next';
+import zkBobLibPackage from 'zkbob-client-js/package.json';
+import appPackage from '../../../package.json';
 
 import { SupportIdContext, ZkAccountContext } from 'contexts';
 
@@ -29,9 +30,6 @@ export default () => {
     <Column>
       <Row>
         <InnerRow>
-          <CustomLink href="https://bob.zkbob.com">
-            bob.zkbob.com
-          </CustomLink>
           {resources.map((resource, index) => (
             <CustomLink key={index} href={resource.href} target="">
               {React.createElement(resource.icon, {})}
@@ -41,7 +39,7 @@ export default () => {
       </Row>
       <Row>
         <InnerRow>
-          <Text>{t('common.web')}: v{process.env.REACT_APP_VERSION}</Text>
+          <Text>{t('common.web')}: v{appPackage.version}</Text>
           <Text>{t('common.library')}: v{zkBobLibPackage.version}</Text>
           <Text>{t('common.relayer')}: {relayerVersion || 'N/A'}</Text>
           <TextRow>

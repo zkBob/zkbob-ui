@@ -406,6 +406,7 @@
       "tronlinkMobileDescriptionWithDeposit": "要在TronLink中使用zkBob，您需要在TronLink钱包的浏览器中打开我们的应用。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
       "open": "打开{{wallet}}钱包",
       "downloadQuestion": "如果应用程序没有打开，您想从商店下载它吗？"
+
     },
     "qrCode": {
       "title": "二维码地址",

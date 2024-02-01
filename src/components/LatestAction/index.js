@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ethers } from 'ethers';
-import { HistoryTransactionType } from 'zkbob-client-js';
 import { useTranslation } from 'react-i18next';
 
 import Link from 'components/Link';
@@ -11,18 +10,13 @@ import Tooltip from 'components/Tooltip';
 
 import { shortAddress, formatNumber } from 'utils';
 import { NETWORKS, TOKENS_ICONS } from 'constants';
+import { useHistoricalTokenSymbol } from 'hooks';
 
 export default ({ type, data, currentPool }) => {
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  const tokenSymbol = useMemo(() => {
-    if (data.timestamp <= currentPool.migration?.timestamp) {
-      return currentPool.migration?.prevTokenSymbol;
-    }
-    const isWrapped = currentPool.isNative && data.type === HistoryTransactionType.Deposit;
-    return (isWrapped ? 'W' : '') + currentPool.tokenSymbol;
-  }, [currentPool, data.type, data.timestamp]);
+  const tokenSymbol = useHistoricalTokenSymbol(currentPool, data);
 
   return (
     <Row>

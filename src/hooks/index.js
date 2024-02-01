@@ -8,6 +8,7 @@ import usePrevious from 'hooks/usePrevious';
 import useDisplayedFee from 'hooks/useDisplayedFee';
 import useMaxTransferable from './useMaxTransferable';
 import useApproval from './useApproval';
+import useHistoricalTokenSymbol from './useHistoricalTokenSymbol';
 
 export {
   useDateFromNow,
@@ -20,4 +21,5 @@ export {
   useDisplayedFee,
   useMaxTransferable,
   useApproval,
+  useHistoricalTokenSymbol,
 };
