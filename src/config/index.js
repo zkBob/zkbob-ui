@@ -107,25 +107,25 @@ const config = {
     },
   },
   dev: {
-    defaultPool: 'USDC-goerli',
+    defaultPool: 'dec-sep',
     pools: {
-      // 'BOB-sepolia': {
-      //   chainId: 11155111,
-      //   poolAddress: '0x3bd088C19960A8B5d72E4e01847791BD0DD1C9E6',
-      //   tokenAddress: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
-      //   relayerUrls: ['https://relayer.thgkjlr.website/'],
-      //   delegatedProverUrls: ['https://prover-staging.thgkjlr.website/'],
-      //   coldStorageConfigPath: 'https://r2-staging.zkbob.com/coldstorage/coldstorage.cfg',
-      //   kycUrls: {
-      //     status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
-      //     homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenBOB',
-      //   },
-      //   tokenSymbol: 'BOB',
-      //   tokenDecimals: 18,
-      //   feeDecimals: 2,
-      //   depositScheme: 'permit',
-      //   addressPrefix: 'zkbob_sepolia',
-      // },
+      'dec-sep': {
+        chainId: 11155111,
+        poolAddress: '0x77f3D9Fb578a0F2B300347fb3Cd302dFd7eedf93',
+        tokenAddress: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
+        proxyUrls: ['https://sepolia-decentralized-relayer.thgkjlr.website'],
+        delegatedProverUrls: ['https://prover-staging.thgkjlr.website/'],
+        coldStorageConfigPath: 'https://r2-staging.zkbob.com/coldstorage/coldstorage.cfg',
+        kycUrls: {
+          status: 'https://api-stage.knowyourcat.id/v1/%s/categories?category=BABTokenBOB',
+          homepage: 'https://stage.knowyourcat.id/address/%s/BABTokenBOB',
+        },
+        tokenSymbol: 'BOB',
+        tokenDecimals: 18,
+        feeDecimals: 2,
+        depositScheme: 'permit',
+        addressPrefix: 'zkbob_sepolia',
+      },
       'BOB2USDC-goerli': {
         chainId: 5,
         poolAddress: '0x49661694a71B3Dab9F25E86D5df2809B170c56E6',
@@ -219,7 +219,7 @@ const config = {
     },
     chains: {
       '11155111': {
-        rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+        rpcUrls: ['https://sepolia.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
       },
       '5': {
         rpcUrls: ['https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161']
@@ -241,6 +241,11 @@ const config = {
         poolId: 16776968,
         prefix: 'zkbob_nile_g',
         name: 'USDT on Nile testnet (MPC guard contracts)',
+      },
+      {
+        poolId: 16776969,
+        prefix: 'zkbob_sepolia',
+        name: 'Bob Pool on Sepolia with decentralized relayer',
       },
     ],
   }
