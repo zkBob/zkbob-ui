@@ -107,9 +107,9 @@ const config = {
     },
   },
   dev: {
-    defaultPool: 'dec-sep',
+    defaultPool: 'zkbob_sepolia',
     pools: {
-      'dec-sep': {
+      'zkbob_sepolia': {
         chainId: 11155111,
         poolAddress: '0x77f3D9Fb578a0F2B300347fb3Cd302dFd7eedf93',
         tokenAddress: '0x2C74B18e2f84B78ac67428d0c7a9898515f0c46f',
