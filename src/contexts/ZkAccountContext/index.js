@@ -290,8 +290,8 @@ export const ZkAccountContextProvider = ({ children }) => {
     if (!zkClient) return;
     let version = null;
     try {
-      const data = await zkClient.getRelayerVersion();
-      version = data.ref;
+      // const data = await zkClient.getRelayerVersion();
+      version = "TODO";
     } catch (error) {
       console.error(error);
       Sentry.captureException(error, { tags: { method: 'ZkAccountContext.loadRelayerVersion' } });
@@ -437,19 +437,19 @@ export const ZkAccountContextProvider = ({ children }) => {
       }
       if (!zkAccount) {
         let atomicTxFee = await zkClient.atomicTxFee(txType);
-        atomicTxFee = await fromShieldedAmount(atomicTxFee);
+        atomicTxFee = await fromShieldedAmount(atomicTxFee.total);
         return { fee: atomicTxFee, numberOfTxs: 1, insufficientFunds: false, directDepositFee };
       }
       const shieldedAmounts = await Promise.all(amounts.map(async amount => await toShieldedAmount(amount)));
       const shieldedAmountToConvert = await toShieldedAmount(amountToConvert);
       const {
-        total,
+        fee,
         txCnt,
         insufficientFunds,
         relayerFee,
-      } = await zkClient.feeEstimate(shieldedAmounts, txType, shieldedAmountToConvert, false);
+      } = await zkClient.feeEstimate(shieldedAmounts, txType, shieldedAmountToConvert, false); 
       return {
-        fee: await fromShieldedAmount(total),
+        fee: await fromShieldedAmount(fee.total),
         numberOfTxs: txCnt,
         insufficientFunds,
         relayerFee,
