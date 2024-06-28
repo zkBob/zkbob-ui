@@ -17,6 +17,9 @@ const { chains, provider, webSocketProvider } = configureChains(
         if (chain.id === sepolia.id) {
           return ({ http: 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161' });
         }
+        if (chain.id === polygon.id) {
+          return ({ http: 'https://rpc.ankr.com/polygon' });
+        }
         return null;
       }
     }),
