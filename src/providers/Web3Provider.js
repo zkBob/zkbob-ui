@@ -24,6 +24,18 @@ const { chains, provider, webSocketProvider } = configureChains(
       }
     }),
     publicProvider({ priority: 1 }),
+    jsonRpcProvider({priority:2,
+      rpc: chain => {
+        if (chain.id == optimism.id) {
+          return ({http: 'https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'})
+        }
+      } }),
+    jsonRpcProvider({priority:3,
+      rpc: chain => {
+        if (chain.id == optimism.id) {
+          return ({http: 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'})
+        }
+      } }),
   ],
 );
 

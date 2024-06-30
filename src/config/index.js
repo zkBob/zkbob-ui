@@ -90,7 +90,7 @@ const config = {
         rpcUrls: ['https://rpc.ankr.com/polygon', 'https://polygon-rpc.com', 'https://polygon-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'],
       },
       '10': {
-        rpcUrls: ['https://rpc.ankr.com/optimism'],
+        rpcUrls: ['https://rpc.ankr.com/optimism', 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n','https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
       },
 
       '728126428': {
