@@ -43,8 +43,25 @@ const useEvmWallet = pool => {
   }, [refetch]);
 
   const callContract = useCallback(async (address, abi, method, params = [], isSend = false) => {
-    const contract = new ethers.Contract(address, abi, isSend ? signer : provider);
-    return contract[method](...params);
+    if (isSend) {
+      const contract = new ethers.Contract(address, abi, signer);
+      return contract[method](...params);
+    }
+
+    async function call(index = 0) {
+      if (index >= provider.providerConfigs.length) {
+        throw new Error('Error calling contract');
+      }
+      try {
+        const providerConfigs = [...provider.providerConfigs].sort((a, b) => a.priority - b.priority);
+        const contract = new ethers.Contract(address, abi, providerConfigs[index].provider);
+        return await contract[method](...params);
+      } catch (error) {
+        console.error(error);
+        return call(index + 1);
+      }
+    }
+    return call();
   }, [provider, signer]);
 
   return {
