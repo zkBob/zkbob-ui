@@ -47,21 +47,20 @@ const useEvmWallet = pool => {
       const contract = new ethers.Contract(address, abi, signer);
       return contract[method](...params);
     }
-
-    async function call(index = 0) {
+    const providerConfigs = [...provider.providerConfigs].sort((a, b) => a.priority - b.priority);
+    async function call(index,providerConfigs) {
       if (index >= provider.providerConfigs.length) {
         throw new Error('Error calling contract');
       }
       try {
-        const providerConfigs = [...provider.providerConfigs].sort((a, b) => a.priority - b.priority);
         const contract = new ethers.Contract(address, abi, providerConfigs[index].provider);
         return await contract[method](...params);
       } catch (error) {
         console.error(error);
-        return call(index + 1);
+        return call(index + 1,providerConfigs);
       }
     }
-    return call();
+    return call(0, providerConfigs);
   }, [provider, signer]);
 
   return {
