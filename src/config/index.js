@@ -92,7 +92,7 @@ const config = {
       },
       '10': {
         // rpcUrls: ['https://rpc.ankr.com/optimism', 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n','https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
-        rpcUrls:["https://virtual.optimism.rpc.tenderly.co/cf23b470-a370-4ebd-8be1-67ced3d49177"]
+        rpcUrls:["https://virtual.optimism.rpc.tenderly.co/fb1a77c3-e7f5-4622-aee5-85025a99a658"]
       },
 
       '728126428': {
