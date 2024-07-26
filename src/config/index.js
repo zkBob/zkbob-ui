@@ -33,7 +33,8 @@ const config = {
         chainId: 10,
         poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
         tokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-        relayerUrls: ['https://relayer-optimism.zkbob.com/'],
+        // relayerUrls: ['https://relayer-optimism.zkbob.com/'],
+        "proxyUrls": ["https://sepolia-proxy.zkbob.evgen.space", "https://sepolia-decentralized-relayer.thgkjlr.website"],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
         tokenSymbol: 'USDC',
@@ -87,10 +88,11 @@ const config = {
     },
     chains: {
       '137': {
-        rpcUrls: ['https://polygon-rpc.com'],
+        rpcUrls: ['https://rpc.ankr.com/polygon', 'https://polygon-rpc.com', 'https://polygon-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'],
       },
       '10': {
-        rpcUrls: ['https://rpc.ankr.com/optimism'],
+        // rpcUrls: ['https://rpc.ankr.com/optimism', 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n','https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
+        rpcUrls:["https://virtual.optimism.rpc.tenderly.co/cf23b470-a370-4ebd-8be1-67ced3d49177"]
       },
 
       '728126428': {
