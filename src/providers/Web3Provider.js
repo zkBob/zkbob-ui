@@ -24,7 +24,7 @@ const getRpcByPriority = (priority) => {
 
 }
 
-const networks = process.env.REACT_APP_CONFIG === 'dev' ? [sepolia, goerli, optimismGoerli] : [polygon, optimism];
+const networks = process.env.REACT_APP_CONFIG === 'dev' ? [sepolia, goerli, optimismGoerli, optimism] : [polygon, optimism];
 console.log('networks', networks)
 const { chains, provider, webSocketProvider } = configureChains(
   networks,
