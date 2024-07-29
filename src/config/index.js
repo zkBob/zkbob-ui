@@ -28,6 +28,7 @@ const config = {
         }],
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
+        parameters:'prod'
       },
       'BOB2USDC-optimism': {
         chainId: 10,
@@ -49,6 +50,7 @@ const config = {
         }],
         addressPrefix: 'zkbob_optimism',
         paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
+        parameters:'prod'
       },
       'WETH-optimism': {
         chainId: 10,
@@ -69,6 +71,7 @@ const config = {
         ddSubgraph: 'zkbob-eth-optimism',
         addressPrefix: 'zkbob_optimism_eth',
         paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
+        parameters:'prod'
       },
       'USDT-tron': {
         chainId: 728126428,
@@ -84,6 +87,7 @@ const config = {
         minTxAmount: 50000n, // 0.05 USDT
         addressPrefix: 'zkbob_tron',
         isTron: true,
+        parameters:'prod'
       },
     },
     chains: {
@@ -91,8 +95,7 @@ const config = {
         rpcUrls: ['https://rpc.ankr.com/polygon', 'https://polygon-rpc.com', 'https://polygon-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'],
       },
       '10': {
-        // rpcUrls: ['https://rpc.ankr.com/optimism', 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n','https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
-        rpcUrls:["https://virtual.optimism.rpc.tenderly.co/fb1a77c3-e7f5-4622-aee5-85025a99a658"]
+        rpcUrls: ['https://rpc.ankr.com/optimism', 'https://opt-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n','https://optimism-mainnet.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
       },
 
       '728126428': {
@@ -100,14 +103,15 @@ const config = {
         external: "https://tron.zkbob.com/"
       },
     },
-    snarkParams: process.env.REACT_APP_HOSTING === 'netlify' ? {
-      transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
-      transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json',
-    } : {
-      transferParamsUrl: 'https://5tqpkqtbrkd5ookgni4yydvxgsnaazxl53pdgymjgkiaqwb56lzq.arweave.net/7OD1QmGKh9c5Rmo5jA63NJoAZuvu3jNhiTKQCFg98vM',
-      transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY',
-    },
   },
+  //   snarkParams: process.env.REACT_APP_HOSTING === 'netlify' ? {
+  //     transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
+  //     transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json',
+  //   } : {
+  //     transferParamsUrl: 'https://5tqpkqtbrkd5ookgni4yydvxgsnaazxl53pdgymjgkiaqwb56lzq.arweave.net/7OD1QmGKh9c5Rmo5jA63NJoAZuvu3jNhiTKQCFg98vM',
+  //     transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY',
+  //   },
+  // },
   dev: {
     defaultPool: 'zkbob_sepolia',
     pools: {
@@ -127,6 +131,7 @@ const config = {
         feeDecimals: 2,
         depositScheme: 'permit',
         addressPrefix: 'zkbob_sepolia',
+        parameters:'staging'
       },
       'BOB2USDC-goerli': {
         chainId: 5,
@@ -145,18 +150,21 @@ const config = {
           prevTokenSymbol: 'BOB',
         }],
         addressPrefix: 'zkbob_goerli',
+        parameters:'staging'
       },
-      'USDC-goerli': {
-        chainId: 5,
-        poolAddress: '0xCF6446Deb67b2b56604657C67DAF54f884412531',
-        tokenAddress: '0x28B531401Ee3f17521B3772c13EAF3f86C2Fe780',
-        relayerUrls: ['https://goerli-usdc-relayer.thgkjlr.website'],
+      'USDC-OP-tenderly': {
+        chainId: 10,
+        parameters: "prod",
+        poolAddress: "0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C",
+        tokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
         delegatedProverUrls: [],
+        "proxyUrls": ["https://sepolia-proxy.zkbob.evgen.space", "https://sepolia-decentralized-relayer.thgkjlr.website"],
         coldStorageConfigPath: '',
         tokenSymbol: 'USDC',
         tokenDecimals: 6,
         feeDecimals: 2,
-        depositScheme: 'usdc-polygon',
+        depositScheme: 'usdc',
+        parameters: 'prod',
         minTxAmount: 50000n, // 0.05 USDC
         addressPrefix: 'zkbob_goerli_usdc',
       },
@@ -187,6 +195,7 @@ const config = {
         minTxAmount: 1000000n, // 0.001 ETH
         ddSubgraph: 'zkbob-eth-goerli',
         addressPrefix: 'zkbob_goerli_eth',
+        parameters:'staging'
       },
       'USDT-nile': {
         chainId: 3448148188,
@@ -202,6 +211,7 @@ const config = {
         minTxAmount: 50000n, // 0.05 USDT
         addressPrefix: 'zkbob_nile',
         isTron: true,
+        parameters:'staging'
       },
       'USDT-nile-guard': {
         chainId: 3448148188,
@@ -217,8 +227,22 @@ const config = {
         minTxAmount: 50000n, // 0.05 USDT
         addressPrefix: 'zkbob_nile_g',
         isTron: true,
+        parameters:'staging'
       },
     },
+    "snarkParamsSet": {
+      "prod": process.env.REACT_APP_HOSTING === 'netlify' ? {
+        transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
+        transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json',
+      } : {
+        transferParamsUrl: 'https://5tqpkqtbrkd5ookgni4yydvxgsnaazxl53pdgymjgkiaqwb56lzq.arweave.net/7OD1QmGKh9c5Rmo5jA63NJoAZuvu3jNhiTKQCFg98vM',
+        transferVkUrl: 'https://rhm3gvehfvhrnll2cuuem2s77hruahjgifqctaw7ld2z37ehpcta.arweave.net/idmzVIctTxatehUoRmpf-eNAHSZBYCmC31j1nfyHeKY',
+      },
+      "staging": {
+        transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
+        transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
+      }
+  },
     chains: {
       '11155111': {
         rpcUrls: ['https://sepolia.infura.io/v3/9a94d181b23846209f01161dcd0f9ad6'],
@@ -233,11 +257,14 @@ const config = {
         rpcUrls: ['https://nile.trongrid.io'],
         external: "https://deploy-preview-250--shimmering-douhua-023cc6.netlify.app"
       },
+      '10': {
+        rpcUrls:["https://virtual.optimism.rpc.tenderly.co/fb1a77c3-e7f5-4622-aee5-85025a99a658"]
+      },
     },
-    snarkParams: {
-      transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
-      transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
-    },
+    // snarkParams: {
+    //   transferParamsUrl: 'https://r2-staging.zkbob.com/transfer_params_20022023.bin',
+    //   transferVkUrl: 'https://r2-staging.zkbob.com/transfer_verification_key_20022023.json'
+    // },
     extraPrefixes: [
       {
         poolId: 16776968,
@@ -251,6 +278,7 @@ const config = {
       },
     ],
   }
+
 };
 
 export default config[process.env.REACT_APP_CONFIG || 'dev'];
