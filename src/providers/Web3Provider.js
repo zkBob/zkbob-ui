@@ -1,5 +1,6 @@
 import { WagmiConfig, configureChains, createClient } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { publicProvider } from '@wagmi/core/providers/public'
 import { sepolia, polygon, goerli, optimism, optimismGoerli } from 'wagmi/chains';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
@@ -8,16 +9,19 @@ import config from  '../config'
 
 const getRpcByPriority = (priority) => {
 
-  return ({id}) => {
-    const allChains = Array.from(Object.entries(config.chains));
-    const [_, selectedChain] = allChains.find(([chainId, _ ]) => chainId == id);
+  return (chain) => {
+    if(!Object.keys(config.chains).find((chainId) => chainId == chain.id)){
+      return publicProvider(chain);
+    }
+    
+    const selectedChain = config.chains[chain.id];
     const len = selectedChain?.rpcUrls.length;
     let res;
     if (len > priority-1)
      {
        res =  ({http: selectedChain.rpcUrls[priority]})
     } else {
-       res = ({http: selectedChain.rpcUrls[priority%len]})
+       res = ({http: selectedChain.rpcUrls[priority%len]}) //if config is shorter than current prioirity (up to 3) , we just wrap and start from the beginning
     };
     return res;
   }
