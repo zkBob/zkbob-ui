@@ -91,7 +91,7 @@ const useTronWallet = pool => {
     new TronWeb({
       fullHost: config.chains[pool.chainId].rpcUrls[0],
       privateKey: '01',
-      // headers: { 'TRON-PRO-API-KEY': process.env.REACT_APP_TRONGRID_API_KEY },
+      headers: { 'TRON-PRO-API-KEY': process.env.REACT_APP_TRONGRID_API_KEY },
     }),
   [pool]);
 

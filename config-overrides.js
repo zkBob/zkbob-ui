@@ -42,6 +42,7 @@ module.exports = {
       https: require.resolve('https-browserify'),
       os: require.resolve('os-browserify/browser'),
       url: require.resolve('url/'),
+      zlib: require.resolve("browserify-zlib")
     };
     config.plugins = [
       ...config.plugins,

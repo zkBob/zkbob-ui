@@ -90,7 +90,7 @@ const config = {
       //   rpcUrls: ['https://rpc.ankr.com/optimism'],
       // },
       '728126428': {
-        rpcUrls: ['https://few-methodical-breeze.tron-mainnet.quiknode.pro/c9e0de7204463ff25a6ca3afd1bd32caf880561e', 'https://api.trongrid.io']
+        rpcUrls: ['https://api.trongrid.io']
       },
     },
     snarkParams: process.env.REACT_APP_HOSTING === 'netlify' ? {
