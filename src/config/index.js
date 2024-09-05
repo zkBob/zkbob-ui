@@ -28,6 +28,7 @@ const config = {
         }],
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
+        closingDate: '2025-02-01T00:00:00Z',
       },
       'BOB2USDC-optimism': {
         chainId: 10,
