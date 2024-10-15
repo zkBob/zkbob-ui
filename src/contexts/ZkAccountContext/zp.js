@@ -14,6 +14,7 @@ const createClient = (currentPoolAlias, supportId, callback) => {
       snarkParams: config.snarkParams,
       extraPrefixes: config.extraPrefixes,
       supportId,
+      snarkParamsSet:config.snarkParamsSet
     },
     currentPoolAlias,
     callback,
