@@ -54,7 +54,7 @@
     "wagmi": "^0.12.1",
     "web-vitals": "^1.0.1",
     "webpack": "^5.70.0",
-    "zkbob-client-js": "6.0.0-beta10"
+    "zkbob-client-js": "6.0.0-beta11"
   },
   "scripts": {
     "start": "react-app-rewired start",
