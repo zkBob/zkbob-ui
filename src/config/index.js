@@ -36,7 +36,7 @@ const config = {
         poolAddress: '0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C',
         tokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
         // relayerUrls: ['https://relayer-optimism.zkbob.com/'],
-        "proxyUrls": ["https://sepolia-proxy.zkbob.evgen.space", "https://sepolia-decentralized-relayer.thgkjlr.website"],
+        proxyUrls: ["https://proxy1.zkbob.com", "https://proxy2.zkbob.com"],
         delegatedProverUrls: [],
         coldStorageConfigPath: '',
         tokenSymbol: 'USDC',
@@ -96,7 +96,7 @@ const config = {
         rpcUrls: ['https://rpc.ankr.com/polygon', 'https://polygon-rpc.com', 'https://polygon-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'],
       },
       '10': {
-        rpcUrls: ['https://virtual.optimism.rpc.tenderly.co/fb1a77c3-e7f5-4622-aee5-85025a99a658'],
+        rpcUrls: ['https://virtual.optimism.rpc.tenderly.co/977f39f0-6cfc-474d-a237-835f1e475ff1'],
       },
 
       '728126428': {
@@ -172,7 +172,7 @@ const config = {
         poolAddress: "0x1CA8C2B9B20E18e86d5b9a72370fC6c91814c97C",
         tokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
         delegatedProverUrls: [],
-        "proxyUrls": ["https://sepolia-proxy.zkbob.evgen.space", "https://sepolia-decentralized-relayer.thgkjlr.website"],
+        proxyUrls: ["https://sepolia-proxy.zkbob.evgen.space", "https://sepolia-decentralized-relayer.thgkjlr.website"],
         coldStorageConfigPath: '',
         tokenSymbol: 'USDC',
         tokenDecimals: 6,
