@@ -96,7 +96,7 @@ const config = {
         rpcUrls: ['https://rpc.ankr.com/polygon', 'https://polygon-rpc.com', 'https://polygon-mainnet.g.alchemy.com/v2/fnUqqB1tThPuSpM33VFm26wqXISKPS2n'],
       },
       '10': {
-        rpcUrls: ['https://virtual.optimism.rpc.tenderly.co/977f39f0-6cfc-474d-a237-835f1e475ff1'],
+        rpcUrls: ['https://mainnet.optimism.io','https://optimism.llamarpc.com','https://optimism.gateway.tenderly.co'],
       },
 
       '728126428': {
