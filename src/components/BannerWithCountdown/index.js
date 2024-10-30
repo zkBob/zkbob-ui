@@ -34,7 +34,6 @@ const Countdown = ({ endDate }) => {
 export default ({ children, endDate }) => (
   <BannerWithCountdown>
     <Text>{children}</Text>
-    <Countdown endDate={endDate} />
   </BannerWithCountdown>
 );
 

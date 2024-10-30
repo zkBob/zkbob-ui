@@ -135,7 +135,7 @@ const MainApp = () => {
       </BackgroundImages>
       {isDemo && <DemoBanner />}
       <BannerWithCountdown endDate="2024-10-29T00:00:00Z">
-        The Tron pool will close on October 29, 2024. Please withdraw all funds before then
+        The Tron Pool has been deactivated on October 30th 2024. No transaction requests will be processed.
       </BannerWithCountdown>
       <Layout header={<Header />} footer={<Footer />}>
         <Tabs />
