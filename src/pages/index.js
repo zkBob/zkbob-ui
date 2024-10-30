@@ -135,7 +135,8 @@ const MainApp = () => {
       </BackgroundImages>
       {isDemo && <DemoBanner />}
       <BannerWithCountdown endDate="2024-10-29T00:00:00Z">
-        The Tron Pool has been deactivated on October 30th 2024. No transaction requests will be processed.
+        The Tron pool has been deactivated on October 30th 2024. No transaction requests will be processed. 
+        <a style={{'padding':'5px','color':'white'}}href='https://x.com/zkBob_/status/1818316709599568247'>Details</a>
       </BannerWithCountdown>
       <Layout header={<Header />} footer={<Footer />}>
         <Tabs />
