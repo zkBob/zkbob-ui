@@ -120,8 +120,6 @@ export default ({ isOpen, onClose, saveZkAccountMnemonic, closePasswordModal }) 
       newMnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
       setNewMnemonic(newMnemonic);
       setConfirmedMnemonic(newMnemonic);
-      setStep(STEP.CREATE_PASSWORD_PROMPT);
-      return;
     }
     setStep(nextStep);
   }, []);
