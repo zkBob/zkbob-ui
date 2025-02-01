@@ -39,13 +39,21 @@ export default () => {
 
   if (!currentPool?.closingDate) {
     return null;
+  } else if (moment(currentPool.closingDate).isBefore(moment.utc())) {
+
+    return <BannerWithCountdown>
+    <Text>
+      The {currentPool.tokenSymbol} pool on {NETWORKS[currentPool.chainId].name} was closed on{' '}
+      {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Deposits have been disabled. Direct deposits via smart contract can be refunded.Please withdraw all funds before then
+    </Text>
+  </BannerWithCountdown>
   }
 
   return (
     <BannerWithCountdown>
       <Text>
         The {currentPool.tokenSymbol} pool on {NETWORKS[currentPool.chainId].name} will close on{' '}
-        {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Please withdraw all funds before then
+        {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Please withdraw all funds ASAP
       </Text>
       <Countdown endDate={currentPool.closingDate} />
     </BannerWithCountdown>
