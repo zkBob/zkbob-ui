@@ -30,7 +30,7 @@ const {
   DirectDeposit,
 } = HistoryTransactionType;
 
-const actions = {
+export const actions = {
   [Deposit]: {
     name: 'Deposit',
     icon: DepositIcon,
@@ -63,7 +63,7 @@ const actions = {
   },
 };
 
-function getSign(item) {
+export function getSign(item) {
   if (item.actions?.length === 1 && item.actions[0].isLoopback) {
     return '';
   }
