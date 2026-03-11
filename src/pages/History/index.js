@@ -9,6 +9,7 @@ import HistoryItem from 'components/HistoryItem';
 import { actions, getSign } from 'components/HistoryItem';
 import Button from 'components/Button';
 import AccountSetUpButton from 'containers/AccountSetUpButton';
+import { ReactComponent as CsvFileIcon} from 'assets/csv-file.svg';
 
 import { PoolContext, ZkAccountContext } from 'contexts';
 import { useWindowDimensions } from 'hooks';
@@ -72,9 +73,18 @@ export default () => {
   }
   return (
     <div>
-      <Card title={!isHistoryEmpty ? title : null} titleStyle={{ marginBottom: 22 }}>
+      <Card titleStyle={{ marginBottom: 22 }}>
         {((isLoading && isHistoryEmpty) || isHistoryEmpty || !zkAccount) && (
-          <Title>{title}</Title>
+          <CustomTitle>{title}</CustomTitle>
+        )}
+        {!isHistoryEmpty && (
+          <TitleRow>
+            <Title>{title}</Title>
+            <ExportButton type="link" onClick={exportData}>
+              <CsvFileIcon />
+              Download history
+            </ExportButton>
+          </TitleRow>
         )}
         {(isLoading && isHistoryEmpty) && (
           <Spinner size={60} />
@@ -102,21 +112,30 @@ export default () => {
           </>
         )}
       </Card>
-      {!isHistoryEmpty &&
-        <ExportButtonContainer>
-          <ExportButton onClick={exportData}>
-            Export to CSV
-          </ExportButton>
-        </ExportButtonContainer>}
     </div>
   );
 };
 
-const Title = styled.span`
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-bottom: 22px;
+`;
+
+const CustomTitle = styled.span`
   font-size: 16px;
   color: ${({ theme }) => theme.text.color.primary};
   font-weight: ${({ theme }) => theme.text.weight.bold};
   text-align: center;
+`;
+
+const Title = styled.span`
+  color: ${props => props.theme.card.title.color};
+  font-size: 16px;
+  font-weight: ${props => props.theme.text.weight.normal};
+  flex: 1;
 `;
 
 const Description = styled.span`
@@ -127,13 +146,8 @@ const Description = styled.span`
 `;
 
 const ExportButton = styled(Button)`
-  width: 100%;
-  padding: 10px 20px;
-`;
-
-const ExportButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding-top: 5px;
+  justify-content: center;
+  gap: 8px;
 `;

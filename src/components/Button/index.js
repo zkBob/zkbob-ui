@@ -58,6 +58,10 @@ const TransparentButton = styled.button`
   font-weight: 400;
   cursor: pointer;
   color: ${props => props.theme.button.link.text.color};
+  transition: background 0.2s ease;
+  &:hover:not(:disabled) {
+    color: ${props => props.theme.button.primary.background.hover};
+  }
 `;
 
 const Spinner = styled(SpinnerDefault)`
