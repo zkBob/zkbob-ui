@@ -103,7 +103,7 @@ const InfoIcon = styled(InfoIconDefault)`
   cursor: default;
   &:hover {
     & > path {
-      fill: ${props => props.theme.color.purple};
+      fill: ${props => props.theme.color.blue};
     }
   }
 `;

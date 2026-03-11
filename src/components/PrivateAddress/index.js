@@ -54,7 +54,7 @@ const PrivateAddressContainer = styled.div`
   }
   &:hover ${CopyIcon} {
     path {
-      fill: ${props => props.theme.color.purple};
+      fill: ${props => props.theme.color.blue};
     }
   }
 `;

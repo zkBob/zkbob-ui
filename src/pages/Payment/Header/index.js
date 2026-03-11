@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Button from 'components/Button';
 import WalletDropdown from 'components/WalletDropdown';
 
-import { ReactComponent as Logo } from 'assets/logo-beta.svg';
+import { ReactComponent as Logo } from 'assets/logo.svg';
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 
 import { shortAddress } from 'utils';

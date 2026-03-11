@@ -78,7 +78,7 @@
     "transfer": {
       "title": "转账",
       "note": "转账将会以隐私的方式完成。发送人，收款人，及转账金额将不会被公开。",
-      "addressInputPlaceholder": "请输入zkBob收款人地址",
+      "addressInputPlaceholder": "请输入Blockscout Pay收款人地址",
       "addressInputHint": "地址可以在账户模态窗口中生成"
     },
     "multitransfer": {
@@ -92,12 +92,12 @@
         "insufficientBalance": "余额不足：需要{{amount}} {{symbol}} ({{fee}} 作为手续费。"
       },
       "addressesList": "地址列表",
-      "willBeTransferredTo": "将发送至 {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })",
-      "hasBeenTransferredTo": "已发送至{{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+      "willBeTransferredTo": "将发送至 {{count}} Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })",
+      "hasBeenTransferredTo": "已发送至{{count}} Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })"
     },
     "withdraw": {
       "title": "提现",
-      "note": "{{symbol}}将会从zkBob中取出并存入到您提供的钱包地址",
+      "note": "{{symbol}}将会从Blockscout Pay中取出并存入到您提供的钱包地址",
       "addressInputPlaceholder": "输入收款人的{{network}}地址",
       "convertion": "提款时将一部分 {{from}} 转化为 {{to}}",
       "convertionDetails": " 您将收到 <strong>{{amount1}} {{symbol1}}</strong> 和 <strong>~ {{amount2}} {{symbol2}}</strong>"
@@ -132,7 +132,7 @@
         "multitransfer": "多地址转账详情"
       },
       "sendTo": "发送至",
-      "sendToZk": "发送至zkBob地址",
+      "sendToZk": "发送至Blockscout Pay地址",
       "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
       "viewAll": "显示全部",
       "withdrawAmount": "提款金额",
@@ -140,11 +140,11 @@
       "senderAddress": "发送人地址"
     },
     "welcome": {
-      "title": "欢迎来到zkBob！",
+      "title": "欢迎来到Blockscout Pay！",
       "description": "创建专属于您的zk账户，以安全私密的方式转账给您的家人及朋友。",
-      "titleDemo": "欢迎来到zkBob测试版！",
+      "titleDemo": "欢迎来到Blockscout Pay测试版！",
       "descriptionDemo": "以安全私密的方式转账BOB给朋友、购买合作的产品、或转账至您的私人zk账户。",
-      "bannerDemo": " 在<1>此处创建zkBob帐户</1>, 解锁安全私密的存取款方式，获得全方位隐私"
+      "bannerDemo": " 在<1>此处创建Blockscout Pay帐户</1>, 解锁安全私密的存取款方式，获得全方位隐私"
     },
     "payment": {
       "title": "输入 {{symbol}} 金额并选择代币种类",
@@ -196,20 +196,20 @@
     "accountSetupModal": {
       "start": {
         "title": "zk账户",
-        "description": "您需要一个zk账户以开始使用zkBob",
+        "description": "您需要一个zk账户以开始使用Blockscout Pay",
         "button1": "创建新的zk账户",
         "button2": "已有zk账户"
       },
       "createOptions": {
         "title": "选择您创建账户的方式",
-        "description": "创建zk账户，即表示您同意并接受zkBob<1>服务条款</1>",
+        "description": "创建zk账户，即表示您同意并接受Blockscout Pay<1>服务条款</1>",
         "button1": "使用Web3钱包",
-        "button2": "即时zkBob账户"
+        "button2": "即时Blockscout Pay账户"
       },
       "restoreOptions": {
         "title": "您通过何种方式创建账户？",
         "button1": "我用的是Web3钱包",
-        "button2": "我用的是zkBob助记词"
+        "button2": "我用的是Blockscout Pay助记词"
       },
       "createWithWallet": {
         "title": "创建新的zk账户",
@@ -224,8 +224,8 @@
       "restoreWithWallet": {
         "title": "登入zk账户",
         "description": "请选择您用于创建zk账户的钱包地址",
-        "warning": "TronLink钱包仅用于恢复对您之前的zkBob账户的访问权限",
-        "warning_tron": "MetaMask和Wallet Connect钱包仅用于恢复对您之前的zkBob账户的访问权限"
+        "warning": "TronLink钱包仅用于恢复对您之前的Blockscout Pay账户的访问权限",
+        "warning_tron": "MetaMask和Wallet Connect钱包仅用于恢复对您之前的Blockscout Pay账户的访问权限"
       },
       "restoreWithSecret": {
         "title": "恢复zk账户",
@@ -276,8 +276,8 @@
     },
     "demoCard": {
       "title": "测试版",
-      "description1": "此zkBob版本仅为测试私密，小额转账功能使用（不适用于存入/取款）。",
-      "description2": "<0>如需使用全功能版本，</0><1>请在此处免费创建zkBob帐户。</1>"
+      "description1": "此Blockscout Pay版本仅为测试私密，小额转账功能使用（不适用于存入/取款）。",
+      "description2": "<0>如需使用全功能版本，</0><1>请在此处免费创建Blockscout Pay帐户。</1>"
     },
     "increasedLimitsBanner": {
       "inactive": "提高存款限额？",
@@ -288,13 +288,13 @@
       "title": "提高限额",
       "paragraph1": "若需提高个人存款限额，您需要在BNB Smart Chain上拥有BAB代币。什么是BAB代币？ <1>点击了解。</1>",
       "paragraph2": "验证您的BAB代币：",
-      "step1": "请将持有BAB代币的Metamask或WalletConnect钱包连接到zkBob。无需切换网络，请继续使用Polygon。",
+      "step1": "请将持有BAB代币的Metamask或WalletConnect钱包连接到Blockscout Pay。无需切换网络，请继续使用Polygon。",
       "step2": "点击下方 验证我的BAB代币。",
       "paragraph3": "已完成！如果您连接的地址持有BAB代币，您的存款限额将自动提升。",
       "button": "验证我的BAB代币"
     },
     "more": {
-      "title": "了解更多关于zkBob的资讯",
+      "title": "了解更多关于Blockscout Pay的资讯",
       "dune": "Dune Analytics",
       "docs": "文档",
       "linktree": "Linktree"
@@ -324,7 +324,7 @@
       },
       "createAccount": {
         "title": "在兑换<br />礼品卡之前",
-        "description": "如需兑换礼品卡，您需要一个zkBob zk账户！请创建帐户，或登入现有帐户，以领取您的 {{symbol}} 代币。",
+        "description": "如需兑换礼品卡，您需要一个Blockscout Pay zk账户！请创建帐户，或登入现有帐户，以领取您的 {{symbol}} 代币。",
         "button": "登入或创建zk账户"
       },
       "switchNetwork": {
@@ -346,8 +346,8 @@
       }
     },
     "restrictionModal": {
-      "title": "该国家或地区暂不支缓zkBob业务",
-      "description": "您的国家不支持zkBob。您需要在受支缓的国家或地区使用该应用。"
+      "title": "该国家或地区暂不支缓Blockscout Pay业务",
+      "description": "您的国家不支持Blockscout Pay。您需要在受支缓的国家或地区使用该应用。"
     },
     "secretPhraseModal": {
       "title": "显示助记词",
@@ -383,7 +383,7 @@
         "transferredMulti": "正在进行零知识池内的<strong>{{amount}} {{symbol}}</strong>多地址转账。",
         "withdrawn": "正在进行零知识池内的<strong>{{amount}} {{symbol}}</strong>代币提款。",
         "signatureExpired": "签名超时，请重试。",
-        "suspiciousAccountDeposit": "您的钱包地址可能涉及可疑活动。您无法在zkBob上使用该钱包地址，请使用另一个地址。",
+        "suspiciousAccountDeposit": "您的钱包地址可能涉及可疑活动。您无法在Blockscout Pay上使用该钱包地址，请使用另一个地址。",
         "suspiciousAccountWithdrawal": "收款人的钱包地址可能涉及可疑活动，您无法将资金提取到该地址。",
         "wrongNetwork": "切换网络失败。请将您的钱包连接到{{network}}，然后重试。",
         "approved": "Approval已完成。您现在可以存入代币。",
@@ -396,14 +396,14 @@
     },
     "connectWalletModal": {
       "title": "连接Web3钱包",
-      "description": "连接您的钱包，并将{{symbol}}存入您的zk账户。若您正在创建新的zk账户，当前连接的钱包将被用于为zkBob应用程序生成私密的加密密钥。",
-      "note": "点击连接钱包即表示您同意zkBob<br /><1>服务条款</1>",
+      "description": "连接您的钱包，并将{{symbol}}存入您的zk账户。若您正在创建新的zk账户，当前连接的钱包将被用于为Blockscout Pay应用程序生成私密的加密密钥。",
+      "note": "点击连接钱包即表示您同意Blockscout Pay<br /><1>服务条款</1>",
       "noWalletTitle": "未找到{{wallet}}钱包",
       "noWalletDescription": "确保已安装{{wallet}}钱包扩展。",
       "noWalletDescriptionWithDeposit": "确保已安装{{wallet}}钱包扩展。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
       "install": "安装{{wallet}}钱包",
-      "tronlinkMobileDescription": "要在TronLink中使用zkBob，您需要在TronLink钱包的浏览器中打开我们的应用。",
-      "tronlinkMobileDescriptionWithDeposit": "要在TronLink中使用zkBob，您需要在TronLink钱包的浏览器中打开我们的应用。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
+      "tronlinkMobileDescription": "要在TronLink中使用Blockscout Pay，您需要在TronLink钱包的浏览器中打开我们的应用。",
+      "tronlinkMobileDescriptionWithDeposit": "要在TronLink中使用Blockscout Pay，您需要在TronLink钱包的浏览器中打开我们的应用。连接Web3钱包以将{{symbol}}存入您的zkAccount。",
       "open": "打开{{wallet}}钱包",
       "downloadQuestion": "如果应用程序没有打开，您想从商店下载它吗？"
 
@@ -413,7 +413,7 @@
       "description": "若要接收来自其他zk账户的私密转账，转账人可以从他们的应用中扫描此二维码。<br />其他用户只需在转账页面上扫描您的二维码"
     },
     "zkAccount": {
-      "addressDescription": "使用该地址接收代币至您的zkBob帐户。每次连接钱包时都将自动创建一个新地址，您可以使用该地址或之前生成的地址接收代币。"
+      "addressDescription": "使用该地址接收代币至您的Blockscout Pay帐户。每次连接钱包时都将自动创建一个新地址，您可以使用该地址或之前生成的地址接收代币。"
     },
     "paymentStatement": {
       "amount": "{{symbol}}金额",

@@ -50,7 +50,7 @@ const InfoIcon = styled(InfoIconDefault)`
   transform: translateY(-50%);
   &:hover {
     & > path {
-      fill: ${props => props.theme.color.purple};
+      fill: ${props => props.theme.color.blue};
     }
   }
 `;

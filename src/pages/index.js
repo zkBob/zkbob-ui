@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { HashRouter, Switch, Route, Redirect, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
 import { createBrowserHistory } from 'history';
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
@@ -26,7 +25,6 @@ import DemoBanner from 'components/DemoBanner';
 import RestrictionModal from 'components/RestrictionModal';
 import Layout from 'components/Layout';
 import PaymentLinkModal from 'components/PaymentLinkModal';
-import BannerWithCountdown from 'components/BannerWithCountdown';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -34,12 +32,6 @@ import Transfer from 'pages/Transfer';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
 import Payment from 'pages/Payment';
-
-import aliceImage from 'assets/alice.webp';
-import bobImage from 'assets/bob.webp';
-import robot1Image from 'assets/robot-1.webp';
-import robot2Image from 'assets/robot-2.webp';
-import robot3Image from 'assets/robot-3.webp';
 
 import ContextsProvider, { ZkAccountContext } from 'contexts';
 
@@ -126,15 +118,7 @@ const MainApp = () => {
   }
   return (
     <>
-      <BackgroundImages $show={showWelcome && location.pathname === '/'}>
-        <AliceImage src={aliceImage} />
-        <BobImage src={bobImage} />
-        <Robot1Image src={robot1Image} />
-        <Robot2Image src={robot2Image} />
-        <Robot3Image src={robot3Image} />
-      </BackgroundImages>
       {isDemo && <DemoBanner />}
-      <BannerWithCountdown />
       <Layout header={<Header />} footer={<Footer />}>
         <Tabs />
         <Routes showWelcome={showWelcome} params={location.search} />
@@ -170,62 +154,3 @@ export default () => (
     </Switch>
   </HashRouter>
 );
-
-const BackgroundImages = styled.div`
-  position: absolute;
-  width: 100vw;
-  height: 800px;
-  mix-blend-mode: darken;
-  visibility: ${props => props.$show ? 'visible' : 'hidden'};
-  opacity: ${props => props.$show ? 1 : 0};
-  transition: visibility 0.05s linear 0.05s, opacity 0.05s linear 0.05s;
-  @media only screen and (max-width: 1000px) {
-    display: none;
-  }
-`;
-
-const AliceImage = styled.img`
-  width: 798px;
-  height: 649px;
-  position: absolute;
-  left: 0;
-  top: 22%;
-`;
-
-const BobImage = styled.img`
-  width: 459px;
-  height: 439px;
-  position: absolute;
-  right: 0;
-  top: 21%;
-`;
-
-const Robot1Image = styled.img`
-  width: 207px;
-  height: 168px;
-  position: absolute;
-  top: 60px;
-  right: 25%;
-  opacity: 0.4;
-  filter: blur(4px);
-`;
-
-const Robot2Image = styled.img`
-  width: 316px;
-  height: 251px;
-  position: absolute;
-  top: 117px;
-  left: 15%;
-  opacity: 0.6;
-  filter: blur(3px);
-`;
-
-const Robot3Image = styled.img`
-  width: 320px;
-  height: 246px;
-  position: absolute;
-  bottom: 77px;
-  right: 23%;
-  opacity: 0.2;
-  filter: blur(2px);
-`;

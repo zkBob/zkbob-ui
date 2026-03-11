@@ -78,7 +78,7 @@
   "transfer": {
     "title": "Transferir",
     "note": "A transferência será realizada de forma privada. Remetente, destinatário e valor nunca são revelados.",
-    "addressInputPlaceholder": "Inserir endereço do destinatário zkBob",
+    "addressInputPlaceholder": "Inserir endereço do destinatário Blockscout Pay",
     "addressInputHint": "O endereço pode ser gerado na janela de modal da conta"
   },
   "multitransfer": {
@@ -92,12 +92,12 @@
       "insufficientBalance": "Saldo insuficiente: é necessária uma quantia de {{amount}} {{symbol}} (taxa de {{fee}})."
     },
     "addressesList": "Lista de endereços",
-    "willBeTransferredTo": "será transferido para {{count}} endereço zkBob $t(glossary.addresses, {\"count\": {{count}} })",
-    "hasBeenTransferredTo": "foi transferido para {{count}} endereço zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+    "willBeTransferredTo": "será transferido para {{count}} endereço Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })",
+    "hasBeenTransferredTo": "foi transferido para {{count}} endereço Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })"
   },
   "withdraw": {
     "title": "Sacar",
-    "note": "{{symbol}} será retirado do zkBob e depositado no endereço da carteira fornecido.",
+    "note": "{{symbol}} será retirado do Blockscout Pay e depositado no endereço da carteira fornecido.",
     "addressInputPlaceholder": "Inserir endereço {{network}} do destinatário",
     "convertion": "Converter parte de {{from}} para {{to}} na retirada",
     "convertionDetails": "Você receberá <strong>{{amount1}} {{symbol1}}</strong> e <strong>~ {{amount2}} {{symbol2}}</strong>"
@@ -132,7 +132,7 @@
       "multitransfer": "detalhes da multitransferência"
     },
     "sendTo": "enviar para",
-    "sendToZk": "enviar para endereço zkBob",
+    "sendToZk": "enviar para endereço Blockscout Pay",
     "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
     "viewAll": "ver todos",
     "withdrawAmount": "Quantidade a ser retirada",
@@ -140,11 +140,11 @@
     "senderAddress": "Endereço do remetente"
   },
   "welcome": {
-    "title": "Bem-vindo ao zkBob!",
-    "description": "Crie uma conta zkBob para transferir tokens de forma privada com seus amigos e colegas.",
-    "titleDemo": "Bem-vindo à Versão de Demonstração do zkBob!",
-    "descriptionDemo": "Transfira BOB de forma privada para amigos, use para comprar itens patrocinados ou transfira para sua própria conta privada zkBob.",
-    "bannerDemo": "Para depósitos seguros, retiradas e privacidade completa, crie uma <1>conta zkBob aqui</1>"
+    "title": "Bem-vindo ao Blockscout Pay!",
+    "description": "Crie uma conta Blockscout Pay para transferir tokens de forma privada com seus amigos e colegas.",
+    "titleDemo": "Bem-vindo à Versão de Demonstração do Blockscout Pay!",
+    "descriptionDemo": "Transfira BOB de forma privada para amigos, use para comprar itens patrocinados ou transfira para sua própria conta privada Blockscout Pay.",
+    "bannerDemo": "Para depósitos seguros, retiradas e privacidade completa, crie uma <1>conta Blockscout Pay aqui</1>"
   },
   "payment": {
     "title": "Insira o valor em {{symbol}} e escolha um token",
@@ -181,7 +181,7 @@
   },
   "successNotification": {
     "title": "A operação foi concluída.",
-    "description": "Verifique a guia de histórico ou o saldo da sua conta zkBob para obter mais informações."
+    "description": "Verifique a guia de histórico ou o saldo da sua conta Blockscout Pay para obter mais informações."
   },
   "pendingAction": {
     "title": "Aguarde suas $t(glossary.transactions, {\"count\": {{count}} }) serem finalizadas",
@@ -196,20 +196,20 @@
   "accountSetupModal": {
     "start": {
       "title": "zkAccount",
-      "description": "Para começar a usar o zkBob, você precisa de uma conta zkAccount",
+      "description": "Para começar a usar o Blockscout Pay, você precisa de uma conta zkAccount",
       "button1": "Criar nova conta zkAccount",
       "button2": "Já tenho uma conta zkAccount"
     },
     "createOptions": {
       "title": "Escolha como você deseja criar sua conta",
-      "description": "Ao criar uma conta zkAccount, você concorda e aceita os <1>Termos de Serviço</1> do zkBob",
+      "description": "Ao criar uma conta zkAccount, você concorda e aceita os <1>Termos de Serviço</1> do Blockscout Pay",
       "button1": "Usar minha carteira Web3",
-      "button2": "Conta instantânea zkBob"
+      "button2": "Conta instantânea Blockscout Pay"
     },
     "restoreOptions": {
       "title": "Como você criou sua conta?",
       "button1": "Usei uma carteira Web3",
-      "button2": "Usei a frase secreta do zkBob"
+      "button2": "Usei a frase secreta do Blockscout Pay"
     },
     "createWithWallet": {
       "title": "Criar nova conta zkAccount",
@@ -224,8 +224,8 @@
     "restoreWithWallet": {
       "title": "Acessar sua conta zkAccount",
       "description": "Selecione a carteira que você usou para criar sua conta zkAccount",
-      "warning": "A carteira TronLink será usada apenas para restaurar o acesso à sua conta anterior zkBob",
-      "warning_tron": "As carteiras MetaMask e Wallet Connect serão usadas apenas para restaurar o acesso à sua conta anterior zkBob"
+      "warning": "A carteira TronLink será usada apenas para restaurar o acesso à sua conta anterior Blockscout Pay",
+      "warning_tron": "As carteiras MetaMask e Wallet Connect serão usadas apenas para restaurar o acesso à sua conta anterior Blockscout Pay"
     },
     "restoreWithSecret": {
       "title": "Restaurar conta zkAccount",
@@ -276,8 +276,8 @@
   },
   "demoCard": {
     "title": "Versão de demonstração",
-    "description1": "Esta versão do zkBob é projetada apenas para transferências privadas de pequeno valor (não para depósitos ou retiradas).",
-    "description2": "<0>Para uma versão completa,</0><1>crie uma conta gratuita do zkBob aqui.</1>"
+    "description1": "Esta versão do Blockscout Pay é projetada apenas para transferências privadas de pequeno valor (não para depósitos ou retiradas).",
+    "description2": "<0>Para uma versão completa,</0><1>crie uma conta gratuita do Blockscout Pay aqui.</1>"
   },
   "increasedLimitsBanner": {
     "inactive": "Deseja aumentar seus limites de depósito?",
@@ -288,13 +288,13 @@
     "title": "Limites estendidos",
     "paragraph1": "Para aumentar os limites de depósito pessoal, você precisa possuir um token BAB na BNB Smart Chain. O que é um token BAB? <1>Descubra agora.</1>",
     "paragraph2": "Verifique seu token BAB:",
-    "step1": "Conecte a carteira Metamask ou WalletConnect que contém seu token BAB ao zkBob. Você NÃO precisa mudar de rede, permaneça na Polygon.",
+    "step1": "Conecte a carteira Metamask ou WalletConnect que contém seu token BAB ao Blockscout Pay. Você NÃO precisa mudar de rede, permaneça na Polygon.",
     "step2": "Clique em Verificar meu token BAB abaixo.",
     "paragraph3": "É isso aí. Seus limites de depósito aumentarão automaticamente se sua carteira conectada contiver um token BAB.",
     "button": "Verificar meu token BAB"
   },
   "more": {
-    "title": "Mais sobre o zkBob",
+    "title": "Mais sobre o Blockscout Pay",
     "dune": "Dune Analytics",
     "docs": "Documentação",
     "linktree": "Linktree"
@@ -324,7 +324,7 @@
     },
     "createAccount": {
       "title": "Antes de poder resgatar<br /> um cartão presente",
-      "description": "Para resgatar um cartão presente, você precisa de uma conta zkBob zkAccount! Crie uma conta ou faça login em uma conta existente para reivindicar seus tokens {{symbol}}.",
+      "description": "Para resgatar um cartão presente, você precisa de uma conta Blockscout Pay zkAccount! Crie uma conta ou faça login em uma conta existente para reivindicar seus tokens {{symbol}}.",
       "button": "Faça login ou crie uma conta zkAccount"
     },
     "switchNetwork": {
@@ -346,8 +346,8 @@
     }
   },
   "restrictionModal": {
-    "title": "zkBob não é suportado neste país ou região",
-    "description": "zkBob não é suportado no seu país. Você poderá usar o aplicativo em um país ou região suportados."
+    "title": "Blockscout Pay não é suportado neste país ou região",
+    "description": "Blockscout Pay não é suportado no seu país. Você poderá usar o aplicativo em um país ou região suportados."
   },
   "secretPhraseModal": {
     "title": "Mostrar frase secreta",
@@ -383,7 +383,7 @@
       "transferredMulti": "Sua multitransferência de <strong>{{amount}} {{symbol}}</strong> dentro da piscina de conhecimento zero está em andamento.",
       "withdrawn": "Sua retirada de <strong>{{amount}} {{symbol}}</strong> da piscina de conhecimento zero está em andamento.",
       "signatureExpired": "Sua assinatura expirou. Por favor, tente novamente.",
-      "suspiciousAccountDeposit": "Descobrimos que sua carteira esteve envolvida em atividades suspeitas. Por causa disso, você não pode usar esta carteira no zkBob. Por favor, tente outra carteira.",
+      "suspiciousAccountDeposit": "Descobrimos que sua carteira esteve envolvida em atividades suspeitas. Por causa disso, você não pode usar esta carteira no Blockscout Pay. Por favor, tente outra carteira.",
       "suspiciousAccountWithdrawal": "Descobrimos que o endereço do destinatário esteve envolvido em atividades suspeitas. Por causa disso, você não pode sacar fundos para este endereço.",
       "wrongNetwork": "Falha ao mudar de rede. Por favor, conecte sua carteira à {{network}} e tente novamente.",
       "approved": "Sua aprovação foi bem-sucedida. Agora você pode depositar seus tokens.",
@@ -396,14 +396,14 @@
   },
   "connectWalletModal": {
     "title": "Conectar carteira Web3",
-    "description": "Conecte sua carteira para depositar {{symbol}} em sua conta zkAccount. Se você estiver criando uma nova conta zkAccount, sua carteira será usada para derivar uma chave de criptografia privada para o aplicativo zkBob.",
-    "note": "Ao conectar uma carteira, você concorda com os <1>Termos de Serviço</1> do zkBob",
+    "description": "Conecte sua carteira para depositar {{symbol}} em sua conta zkAccount. Se você estiver criando uma nova conta zkAccount, sua carteira será usada para derivar uma chave de criptografia privada para o aplicativo Blockscout Pay.",
+    "note": "Ao conectar uma carteira, você concorda com os <1>Termos de Serviço</1> do Blockscout Pay",
     "noWalletTitle": "Carteira {{wallet}} não encontrada",
     "noWalletDescription": "Certifique-se de que a extensão da carteira {{wallet}} está instalada.",
     "noWalletDescriptionWithDeposit": "Certifique-se de que a extensão da carteira {{wallet}} está instalada. Conecte uma carteira Web3 para depositar {{symbol}} na sua zkAccount.",
     "install": "Instalar carteira {{wallet}}",
-    "tronlinkMobileDescription": "Para usar o zkBob com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink.",
-    "tronlinkMobileDescriptionWithDeposit": "Para usar o zkBob com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink. Conecte uma carteira Web3 para depositar {{symbol}} na sua zkAccount.",
+    "tronlinkMobileDescription": "Para usar o Blockscout Pay com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink.",
+    "tronlinkMobileDescriptionWithDeposit": "Para usar o Blockscout Pay com o TronLink, você precisa abrir nosso aplicativo dentro do navegador da carteira TronLink. Conecte uma carteira Web3 para depositar {{symbol}} na sua zkAccount.",
     "open": "Abrir carteira {{wallet}}",
     "downloadQuestion": "Se o aplicativo não abrir, você gostaria de baixá-lo da loja?"
   },
@@ -412,7 +412,7 @@
     "description": "Para receber uma transferência privada de outra conta zkAccount, seu amigo pode escanear este código no aplicativo dele.<br />O outro usuário só precisa escanear seu código QR na página de Transferência"
   },
   "zkAccount": {
-    "addressDescription": "Use este endereço para receber tokens em sua conta zkBob. Você cria um novo endereço cada vez que se conecta. Receba tokens neste endereço ou em um endereço gerado anteriormente."
+    "addressDescription": "Use este endereço para receber tokens em sua conta Blockscout Pay. Você cria um novo endereço cada vez que se conecta. Receba tokens neste endereço ou em um endereço gerado anteriormente."
   },
   "paymentStatement": {
     "amount": "Valor em {{symbol}}",

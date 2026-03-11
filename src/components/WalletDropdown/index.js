@@ -187,7 +187,7 @@ const AddressContainer = styled(Row)`
   align-self: flex-start;
   &:hover ${CopyIcon} {
     path {
-      fill: ${props => props.theme.color.purple};
+      fill: ${props => props.theme.color.blue};
     }
   }
 `;

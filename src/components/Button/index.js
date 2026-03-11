@@ -39,6 +39,10 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s ease;
+  &:hover:not(:disabled) {
+    background: ${props => props.theme.button.primary.background.hover};
+  }
   @media only screen and (max-width: 1000px) {
     height: ${props => props.small ? '30px' : '60px'};
     padding: ${props => props.small ? '8px 12px' : '0'};

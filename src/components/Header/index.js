@@ -12,7 +12,7 @@ import MoreDropdown from 'components/MoreDropdown';
 import SpinnerDefault from 'components/Spinner';
 import Skeleton from 'components/Skeleton';
 
-import { ReactComponent as LogoDefault } from 'assets/logo-beta.svg';
+import { ReactComponent as LogoDefault } from 'assets/logo.svg';
 import { ReactComponent as RefreshIcon } from 'assets/refresh.svg';
 import { ReactComponent as DropdownIconDefault } from 'assets/dropdown.svg';
 import { ReactComponent as DotsIcon } from 'assets/dots.svg';
@@ -228,9 +228,11 @@ const LogoSection = styled(Row)`
 `;
 
 const Logo = styled(LogoDefault)`
-  @media only screen and (max-width: 1000px) {
+  width: 83px;
+  height: 30px;
+  @media only screen and (max-width: 800px) {
     height: 20px;
-    width: 100px;
+    width: 55px;
     margin-left: 10px;
   }
 `;
@@ -252,7 +254,7 @@ const AccountSection = styled(Row)`
 `;
 
 const DropdownButton = styled(Row)`
-  background-color: ${props => props.theme.networkLabel.background};
+  background-color: ${props => props.theme.color.white};
   color: ${props => props.theme.text.color.primary};
   font-weight: ${props => props.theme.text.weight.normal};
   padding: 0 8px;
@@ -344,7 +346,7 @@ const Spinner = styled(SpinnerDefault)`
 `;
 
 const RefreshButtonContainer = styled(Row)`
-  background-color: ${props => props.theme.networkLabel.background};
+  background-color: ${props => props.theme.color.white};
   padding: 8px 12px;
   border-radius: 18px;
   height: 36px;
@@ -365,7 +367,13 @@ const Button = styled(ButtonDefault)`
 `;
 
 const BridgeButton = styled(Button)`
-  background: ${props => props.theme.button.link.text.color};
+  background: rgba(37, 45, 67, 0.90);
+  &:hover:not(:disabled) {
+    background: rgba(37, 45, 67, 1);
+  }
+  &:disabled {
+    background: rgba(37, 45, 67, 0.10);
+  }
   @media only screen and (max-width: 800px) {
     padding: 8px 12px;
   }

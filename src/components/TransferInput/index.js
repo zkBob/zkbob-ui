@@ -138,7 +138,7 @@ const Input = styled.input`
   border: 0;
   background: transparent;
   font-size: 36px;
-  color: ${props => props.theme.transferInput.text.color.placeholder};
+  color: ${props => props.theme.transferInput.text.color.default};
   font-weight: ${props => props.theme.transferInput.text.weight.default};
   width: 100%;
   flex: 1;
@@ -183,7 +183,7 @@ const InfoIcon = styled(InfoIconDefault)`
   margin-right: -2px;
   &:hover {
     & > path {
-      fill: ${props => props.theme.color.purple};
+      fill: ${props => props.theme.color.blue};
     }
   }
 `;

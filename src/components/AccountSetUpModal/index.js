@@ -289,4 +289,9 @@ const SecondButton = styled(Button)`
   background: transparent;
   border: 1px solid ${props => props.theme.button.primary.background.default};
   color: ${props => props.theme.button.primary.background.default};
+  &:hover {
+    background: transparent !important;
+    border: 1px solid ${props => props.theme.button.primary.background.hover};
+    color: ${props => props.theme.button.primary.background.hover};
+  }
 `;

@@ -57,7 +57,7 @@ const walletConnect = new WalletConnectConnector({
   options: {
     qrcode: true,
     projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID,
-    name: 'zkBob',
+    name: 'Blockscout Pay',
     relayUrl: 'wss://relay.walletconnect.org'
   },
 });

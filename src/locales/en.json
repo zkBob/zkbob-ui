@@ -78,7 +78,7 @@
   "transfer": {
     "title": "Transfer",
     "note": "The transfer will be performed privately. Sender, recipient and amount are never disclosed.",
-    "addressInputPlaceholder": "Enter address of zkBob receiver",
+    "addressInputPlaceholder": "Enter address of Blockscout Pay receiver",
     "addressInputHint": "The address can be generated in the account modal window"
   },
   "multitransfer": {
@@ -92,12 +92,12 @@
       "insufficientBalance": "Insufficient balance: {{amount}} {{symbol}} ({{fee}} fee) is required."
     },
     "addressesList": "Addresses list",
-    "willBeTransferredTo": "will be transferred to {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })",
-    "hasBeenTransferredTo": "has been transferred to {{count}} zkBob $t(glossary.addresses, {\"count\": {{count}} })"
+    "willBeTransferredTo": "will be transferred to {{count}} Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })",
+    "hasBeenTransferredTo": "has been transferred to {{count}} Blockscout Pay $t(glossary.addresses, {\"count\": {{count}} })"
   },
   "withdraw": {
     "title": "Withdraw",
-    "note": "{{symbol}} will be withdrawn from zkBob and deposited into the provided wallet address.",
+    "note": "{{symbol}} will be withdrawn from Blockscout Pay and deposited into the provided wallet address.",
     "addressInputPlaceholder": "Enter {{network}} address of receiver",
     "convertion": "Convert some {{from}} to {{to}} on withdrawal",
     "convertionDetails": "You will get <strong>{{amount1}} {{symbol1}}</strong> and <strong>~ {{amount2}} {{symbol2}}</strong>"
@@ -132,7 +132,7 @@
       "multitransfer": "multitransfer details"
     },
     "sendTo": "send to",
-    "sendToZk": "send to zkBob address",
+    "sendToZk": "send to Blockscout Pay address",
     "sendToMultiple": "$t(multitransfer.willBeTransferredTo)",
     "viewAll": "view all",
     "withdrawAmount": "Withdraw amount",
@@ -140,11 +140,11 @@
     "senderAddress": "Sender address"
   },
   "welcome": {
-    "title": "Welcome to zkBob!",
+    "title": "Welcome to Blockscout Pay!",
     "description": "Create a zkAccount to transfer tokens privately with your friends and colleagues.",
-    "titleDemo": "Welcome to zkBob Demo Version!",
+    "titleDemo": "Welcome to Blockscout Pay Demo Version!",
     "descriptionDemo": "Transfer BOB privately to friends, use to purchase sponsored items, or transfer to your own private zkAccount.",
-    "bannerDemo": "For secure deposits, withdrawals and full-featured privacy, create a <1>zkBob account here</1>"
+    "bannerDemo": "For secure deposits, withdrawals and full-featured privacy, create a <1>Blockscout Pay account here</1>"
   },
   "payment": {
     "title": "Enter {{symbol}} value and choose a token",
@@ -196,20 +196,20 @@
   "accountSetupModal": {
     "start": {
       "title": "zkAccount",
-      "description": "To start working with zkBob you need a zkAccount",
+      "description": "To start working with Blockscout Pay you need a zkAccount",
       "button1": "Create new zkAccount",
       "button2": "I already have a zkAccount"
     },
     "createOptions": {
       "title": "Choose how you would like to create your account",
-      "description": "By creating zkAccount, you hereby agree to and accept zkBob <1>Terms of Service</1>",
+      "description": "By creating zkAccount, you hereby agree to and accept Blockscout Pay <1>Terms of Service</1>",
       "button1": "Use my Web3 wallet",
-      "button2": "Instant zkBob account"
+      "button2": "Instant Blockscout Pay account"
     },
     "restoreOptions": {
       "title": "How did you create your account?",
       "button1": "I used a Web3 wallet",
-      "button2": "I used zkBob secret phrase"
+      "button2": "I used Blockscout Pay secret phrase"
     },
     "createWithWallet": {
       "title": "Create new zkAccount",
@@ -224,8 +224,8 @@
     "restoreWithWallet": {
       "title": "Login to your zkAccount",
       "description": "Select the wallet you used to create your zkAccount",
-      "warning": "TronLink wallet will be used only for restoring access to your previous zkBob account",
-      "warning_tron": "MetaMask and Wallet Connect wallets will be used only for restoring access to your previous zkBob account"
+      "warning": "TronLink wallet will be used only for restoring access to your previous Blockscout Pay account",
+      "warning_tron": "MetaMask and Wallet Connect wallets will be used only for restoring access to your previous Blockscout Pay account"
     },
     "restoreWithSecret": {
       "title": "Restore zkAccount",
@@ -276,8 +276,8 @@
   },
   "demoCard": {
     "title": "Demo version",
-    "description1": "This zkBob version is designed for private, small-value transfers only (not for deposits/withdrawals).",
-    "description2": "<0>For a full-featured version,</0><1>create a free zkBob account here.</1>"
+    "description1": "This Blockscout Pay version is designed for private, small-value transfers only (not for deposits/withdrawals).",
+    "description2": "<0>For a full-featured version,</0><1>create a free Blockscout Pay account here.</1>"
   },
   "increasedLimitsBanner": {
     "inactive": "Want to increase your deposit limits?",
@@ -288,13 +288,13 @@
     "title": "Extended limits",
     "paragraph1": "To increase personal deposit limits you need to own a BAB token on the BNB Smart chain. What's a BAB token? <1>Find out now.</1>",
     "paragraph2": "Verify your BAB:",
-    "step1": "Connect the Metamask or WalletConnect wallet containing your BAB token to zkBob. You DO NOT need to switch networks, stay on Polygon.",
+    "step1": "Connect the Metamask or WalletConnect wallet containing your BAB token to Blockscout Pay. You DO NOT need to switch networks, stay on Polygon.",
     "step2": "Click Verify my BAB token below.",
     "paragraph3": "That's it. Your deposit limits will automatically increase if your connected wallet contains a BAB token.",
     "button": "Verify my BAB token"
   },
   "more": {
-    "title": "More about zkBob",
+    "title": "More about Blockscout Pay",
     "dune": "Dune Analytics",
     "docs": "Documentation",
     "linktree": "Linktree"
@@ -324,7 +324,7 @@
     },
     "createAccount": {
       "title": "Before you can redeem<br /> a gift card",
-      "description": "To redeem a gift card you need a zkBob zkAccount! Create an account, or login into an existing account to claim your {{symbol}} tokens.",
+      "description": "To redeem a gift card you need a Blockscout Pay zkAccount! Create an account, or login into an existing account to claim your {{symbol}} tokens.",
       "button": "Log in or create zkAccount"
     },
     "switchNetwork": {
@@ -346,8 +346,8 @@
     }
   },
   "restrictionModal": {
-    "title": "zkBob is not supported in this country or region",
-    "description": "zkBob is not supported in your country. You will be able to use the application from supported country or region."
+    "title": "Blockscout Pay is not supported in this country or region",
+    "description": "Blockscout Pay is not supported in your country. You will be able to use the application from supported country or region."
   },
   "secretPhraseModal": {
     "title": "Show secret phrase",
@@ -383,7 +383,7 @@
       "transferredMulti": "Your <strong>{{amount}} {{symbol}}</strong> multitransfer within the zero knowledge pool is in progress.",
       "withdrawn": "Your <strong>{{amount}} {{symbol}}</strong> withdrawal from the zero knowledge pool is in progress.",
       "signatureExpired": "Your signature has expired. Please try again.",
-      "suspiciousAccountDeposit": "We found that your wallet was involved in suspicious activities. Because of this, you can't use this wallet at zkBob. Please, try another wallet.",
+      "suspiciousAccountDeposit": "We found that your wallet was involved in suspicious activities. Because of this, you can't use this wallet at Blockscout Pay. Please, try another wallet.",
       "suspiciousAccountWithdrawal": "We found that the recipient's address was involved in suspicious activities. Because of this, you can't withdraw funds to this address.",
       "wrongNetwork": "Failed to switch the network. Please connect your wallet to {{network}} and try again.",
       "approved": "Your approval was successful. Now you can deposit your tokens.",
@@ -396,14 +396,14 @@
   },
   "connectWalletModal": {
     "title": "Connect web3 wallet",
-    "description": "Connect your wallet to deposit {{symbol}} into your zkAccount. If you are creating a new zkAccount, your wallet is used to derive a private encryption key for the zkBob application.",
-    "note": "By connecting a wallet, you agree to zkBob<br /><1>Terms of Service</1>",
+    "description": "Connect your wallet to deposit {{symbol}} into your zkAccount. If you are creating a new zkAccount, your wallet is used to derive a private encryption key for the Blockscout Pay application.",
+    "note": "By connecting a wallet, you agree to Blockscout Pay<br /><1>Terms of Service</1>",
     "noWalletTitle": "{{wallet}} wallet is not found",
     "noWalletDescription": "Ensure that the {{wallet}} wallet extension is installed.",
     "noWalletDescriptionWithDeposit": "Ensure that the {{wallet}} wallet extension is installed. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
     "install": "Install {{wallet}} wallet",
-    "tronlinkMobileDescription": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet.",
-    "tronlinkMobileDescriptionWithDeposit": "To use zkBob with TronLink you need to open our app inside the browser of TronLink wallet. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
+    "tronlinkMobileDescription": "To use Blockscout Pay with TronLink you need to open our app inside the browser of TronLink wallet.",
+    "tronlinkMobileDescriptionWithDeposit": "To use Blockscout Pay with TronLink you need to open our app inside the browser of TronLink wallet. Connect a Web3 wallet to deposit {{symbol}} into your zkAccount.",
     "open": "Open {{wallet}} wallet",
     "downloadQuestion": "If the app did not open, would you like to download it from the store?"
   },
@@ -412,7 +412,7 @@
     "description": "To receive a private transfer from another zkAccount, your friend can scan this code from their app.<br />The other user just has to scan your QR code on the Transfer page"
   },
   "zkAccount": {
-    "addressDescription": "Use this address to receive tokens to your zkBob account. You create a new address each time you connect. Receive tokens to this address or a previously generated address."
+    "addressDescription": "Use this address to receive tokens to your Blockscout Pay account. You create a new address each time you connect. Receive tokens to this address or a previously generated address."
   },
   "paymentStatement": {
     "amount": "Amount in {{symbol}}",

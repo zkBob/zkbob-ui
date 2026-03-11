@@ -4,10 +4,11 @@ import { ThemeProvider } from 'styled-components';
 const white = '#FFFFFF';
 const grey = '#F4F3F8';
 const darkGrey = '#DCD8EA';
-const purple = '#754CFF';
+const blue = 'rgba(83, 83, 211, 0.90)';
+const blueDisabled = 'rgba(83, 83, 211, 0.10)';
+const blueHover = 'rgba(83, 83, 211, 1)';
 const purpleLight = '#8052E0';
 const purpleExtraLight = '#B96BCD';
-const blue = '#1B4DEB';
 const blueLight = '#1B87EB';
 const blueExtraLight = '#E4EBFF';
 const textNormal = '#6D6489';
@@ -23,9 +24,10 @@ const light = {
     white,
     grey,
     darkGrey,
-    purple,
-    purpleLight,
     blue,
+    blueDisabled,
+    blueHover,
+    purpleLight,
     blueLight,
     darkPurple,
     orange,
@@ -51,8 +53,9 @@ const light = {
     primary: {
       background: {
         default: blue,
-        disabled: 'rgba(27, 77, 235, 0.2)',
-        contrast: 'rgba(27, 77, 235, 0.1)',
+        disabled: blueDisabled,
+        contrast: blueDisabled,
+        hover: blueHover,
       },
       border: {
         color: darkGrey,
@@ -74,14 +77,14 @@ const light = {
     },
     link: {
       text: {
-        color: purple,
+        color: blue,
       },
     },
   },
   tab: {
     background: {
       default: white,
-      active: orangeLight,
+      active: blueDisabled,
     },
   },
   networkLabel: {
@@ -100,12 +103,12 @@ const light = {
     background: {
       primary: grey,
       secondary: white,
-      checked: purple,
+      checked: blue,
     },
     border: {
       color: {
         default: darkGrey,
-        focus: blue,
+        focus: 'rgba(22, 67, 206, 0.90)',
         error: red,
       },
     },
@@ -136,11 +139,11 @@ const light = {
   walletConnectorOption: {
     background: {
       default: grey,
-      hover: 'rgba(117, 76, 255, 0.1)',
+      hover: blueDisabled,
     },
     border: {
       default: darkGrey,
-      hover: purple,
+      hover: blue,
       light: grey,
     },
   },
@@ -167,7 +170,7 @@ const light = {
       },
     },
   },
-  background: 'linear-gradient(180deg, #FBEED0 0%, #FAFAF9 78.71%)',
+  background: 'linear-gradient(284deg, #DBE1FF 10.09%, #FAFAF9 100%)',
   background2: 'linear-gradient(211.28deg, #F7C23B 19.66%, rgba(232, 110, 255, 0.5) 57.48%, rgba(255, 255, 255, 0.5) 97.74%)'
 };
 
