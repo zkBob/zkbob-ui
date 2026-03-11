@@ -32,8 +32,8 @@ export const NETWORKS = {
     name: 'Polygon',
     icon: require('assets/polygon.svg').default,
     blockExplorerUrls: {
-      address: 'https://polygonscan.com/address/%s',
-      tx: 'https://polygonscan.com/tx/%s',
+      address: 'https://polygon.blockscout.com/address/%s',
+      tx: 'https://polygon.blockscout.com/tx/%s',
     },
   },
   5: {
