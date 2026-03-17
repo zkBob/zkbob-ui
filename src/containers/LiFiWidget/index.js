@@ -23,7 +23,7 @@ export default () => {
         fontFamily: 'Gilroy'
       },
       palette: {
-        primary: { main: '#1B4DEB' },
+        primary: { main: '#5353D3' },
         secondary: { main: '#754CFF' },
       },
       components: {

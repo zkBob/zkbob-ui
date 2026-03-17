@@ -91,7 +91,9 @@ const TextRow = styled.div`
 `;
 
 const CustomLink = styled(Link)`
-  color: #A7A2B8;
   font-size: 14px;
   font-weight: ${props => props.theme.text.weight.bold};
+  &:hover {
+    opacity: 0.8;
+  }
 `;

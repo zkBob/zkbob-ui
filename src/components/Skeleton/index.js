@@ -4,8 +4,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 export default ({ width, style }) => (
   <SkeletonTheme
-    baseColor="#eae0df"
-    highlightColor="#c9c8cc"
+    baseColor="rgba(83, 83, 211, 0.1)"
+    highlightColor="rgba(83, 83, 211, 0.2)"
     width={width}
     height={6}
   >
