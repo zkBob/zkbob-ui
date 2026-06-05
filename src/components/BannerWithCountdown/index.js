@@ -40,27 +40,28 @@ export default () => {
   if (!currentPool?.closingDate) {
     return null;
   } else if (moment(currentPool.closingDate).isBefore(moment.utc())) {
-
-    return <BannerWithCountdown>
-    <Text>
-      The {currentPool.tokenSymbol} pool on {NETWORKS[currentPool.chainId].name} was closed on{' '}
-      {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Deposits have been disabled. Direct deposits via smart contract can be refunded.Please withdraw all funds before then
-    </Text>
-  </BannerWithCountdown>
+    return (
+      <Banner>
+        <BannerText>
+          The {currentPool.tokenSymbol} pool on {NETWORKS[currentPool.chainId].name} was closed on{' '}
+          {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Deposits have been disabled. Direct deposits via smart contract can be refunded.Please withdraw all funds before then
+        </BannerText>
+      </Banner>
+    );
   }
 
   return (
-    <BannerWithCountdown>
-      <Text>
+    <Banner>
+      <BannerText>
         The {currentPool.tokenSymbol} pool on {NETWORKS[currentPool.chainId].name} will close on{' '}
         {moment(currentPool.closingDate).format('MMMM D, YYYY')}. Please withdraw all funds ASAP
-      </Text>
+      </BannerText>
       <Countdown endDate={currentPool.closingDate} />
-    </BannerWithCountdown>
+    </Banner>
   );
 };
 
-const BannerWithCountdown = styled.div`
+export const Banner = styled.div`
   width: 100%;
   min-height: 40px;
   box-sizing: border-box;
@@ -85,7 +86,7 @@ const BannerWithCountdown = styled.div`
   }
 `;
 
-const Text = styled.span`
+export const BannerText = styled.span`
   font-size: 16px;
   font-weight: ${props => props.theme.text.weight.bold};
 `;

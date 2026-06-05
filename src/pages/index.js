@@ -27,6 +27,7 @@ import RestrictionModal from 'components/RestrictionModal';
 import Layout from 'components/Layout';
 import PaymentLinkModal from 'components/PaymentLinkModal';
 import BannerWithCountdown from 'components/BannerWithCountdown';
+import PoolPausedBanner from 'components/PoolPausedBanner';
 
 import Welcome from 'pages/Welcome';
 import Deposit from 'pages/Deposit';
@@ -134,6 +135,7 @@ const MainApp = () => {
         <Robot3Image src={robot3Image} />
       </BackgroundImages>
       {isDemo && <DemoBanner />}
+      <PoolPausedBanner />
       <BannerWithCountdown />
       <Layout header={<Header />} footer={<Footer />}>
         <Tabs />
