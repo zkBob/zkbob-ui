@@ -97,7 +97,7 @@
     },
     "withdraw": {
       "title": "提现",
-      "note": "{{symbol}}将会从zkBob中取出并存入到您提供的钱包地址",
+      "note": "{{symbol}}提现请求将被记录在链上，并在1-2周内人工处理。资金将自动转入您的钱包地址。",
       "addressInputPlaceholder": "输入收款人的{{network}}地址",
       "convertion": "提款时将一部分 {{from}} 转化为 {{to}}",
       "convertionDetails": " 您将收到 <strong>{{amount1}} {{symbol1}}</strong> 和 <strong>~ {{amount2}} {{symbol2}}</strong>"

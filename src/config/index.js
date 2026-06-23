@@ -28,7 +28,7 @@ const config = {
         }],
         addressPrefix: 'zkbob_polygon',
         paymentContractAddress: '0x76a911E76fC78F39e73cE0c532F8866ac28Dfe43',
-        parameters:'prod',
+        parameters:'prod-v2',
         closingDate: '2025-02-01T00:00:00Z',
       },
       'BOB2USDC-optimism': {
@@ -51,7 +51,7 @@ const config = {
         }],
         addressPrefix: 'zkbob_optimism',
         paymentContractAddress: '0x860513FbdC4B6B2B210e1D393BE244F1d0b1Babd',
-        parameters:'prod'
+        parameters:'prod-v2'
       },
       'WETH-optimism': {
         chainId: 10,
@@ -72,7 +72,7 @@ const config = {
         ddSubgraph: 'zkbob-eth-optimism',
         addressPrefix: 'zkbob_optimism_eth',
         paymentContractAddress: '0x7a8006Ea0Dda93C56E60187Bd55109AbfF486c6F',
-        parameters:'prod'
+        parameters:'prod-v2'
       },
     },
     chains: {
@@ -84,6 +84,10 @@ const config = {
       },
     },
     "snarkParamsSet": {
+      "prod-v2": {
+        transferParamsUrl: 'https://console.ar.io/Yairy8qH38trMTp2fo-e-VoFWgH7bZUOPAI0WCl2tGA',
+        transferVkUrl: 'https://console.ar.io/QcUsFA1mBDo7BgTi8q3RJGwr-07SrGfDtk6ZDn-Ivvo',
+      },
       "prod": process.env.REACT_APP_HOSTING === 'netlify' ? {
         transferParamsUrl: 'https://r2.zkbob.com/transfer_params_22022023.bin',
         transferVkUrl: 'https://r2.zkbob.com/transfer_verification_key_22022023.json',

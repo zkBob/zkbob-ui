@@ -97,7 +97,7 @@
   },
   "withdraw": {
     "title": "Withdraw",
-    "note": "{{symbol}} will be withdrawn from zkBob and deposited into the provided wallet address.",
+    "note": "{{symbol}} withdrawal claim will be recorded on-chain and will be processed manually within 1-2 weeks. Funds will be automatically credited to your wallet address.",
     "addressInputPlaceholder": "Enter {{network}} address of receiver",
     "convertion": "Convert some {{from}} to {{to}} on withdrawal",
     "convertionDetails": "You will get <strong>{{amount1}} {{symbol1}}</strong> and <strong>~ {{amount2}} {{symbol2}}</strong>"
