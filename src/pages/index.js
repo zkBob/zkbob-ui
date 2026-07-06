@@ -26,12 +26,9 @@ import DemoBanner from 'components/DemoBanner';
 import RestrictionModal from 'components/RestrictionModal';
 import Layout from 'components/Layout';
 import PaymentLinkModal from 'components/PaymentLinkModal';
-import BannerWithCountdown from 'components/BannerWithCountdown';
 import PoolPausedBanner from 'components/PoolPausedBanner';
 
 import Welcome from 'pages/Welcome';
-import Deposit from 'pages/Deposit';
-import Transfer from 'pages/Transfer';
 import Withdraw from 'pages/Withdraw';
 import History from 'pages/History';
 import Payment from 'pages/Payment';
@@ -92,19 +89,15 @@ const Routes = ({ showWelcome, params }) => (
         <Welcome />
       </SentryRoute>
     )}
-    <SentryRoute exact strict path="/deposit">
-      <Deposit />
-    </SentryRoute>
-    <SentryRoute exact strict path="/transfer">
-      <Transfer />
-    </SentryRoute>
+    <Redirect from="/deposit" to={'/withdraw' + params} />
+    <Redirect from="/transfer" to={'/withdraw' + params} />
     <SentryRoute exact strict path="/withdraw">
       <Withdraw />
     </SentryRoute>
     <SentryRoute exact strict path="/history">
       <History />
     </SentryRoute>
-    <Redirect to={'/transfer' + params} />
+    <Redirect to={'/withdraw' + params} />
   </Switch>
 );
 
@@ -136,7 +129,6 @@ const MainApp = () => {
       </BackgroundImages>
       {isDemo && <DemoBanner />}
       <PoolPausedBanner />
-      <BannerWithCountdown />
       <Layout header={<Header />} footer={<Footer />}>
         <Tabs />
         <Routes showWelcome={showWelcome} params={location.search} />

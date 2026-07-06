@@ -97,7 +97,7 @@
   },
   "withdraw": {
     "title": "Sacar",
-    "note": "{{symbol}} será retirado do zkBob e depositado no endereço da carteira fornecido.",
+    "note": "A solicitação de saque de {{symbol}} será registrada on-chain e processada manualmente em 1 a 2 semanas. Os fundos serão creditados automaticamente no endereço da sua carteira.",
     "addressInputPlaceholder": "Inserir endereço {{network}} do destinatário",
     "convertion": "Converter parte de {{from}} para {{to}} na retirada",
     "convertionDetails": "Você receberá <strong>{{amount1}} {{symbol1}}</strong> e <strong>~ {{amount2}} {{symbol2}}</strong>"

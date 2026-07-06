@@ -10,6 +10,7 @@ export default ({ tabs, activeTab, onTabClick, showBadge }) => {
         <Tab
           key={index}
           active={activeTab === index}
+          disabled={tab.disabled}
           onClick={() => onTabClick(index)}
           $showBadge={showBadge && tab.badge}
           data-ga-id={`tab-${tab.name.toLowerCase()}`}
@@ -44,9 +45,11 @@ const Tab = styled.div`
   background-color: ${props => props.theme.tab.background[props.active ? 'active' : 'default']};
   color: ${props => props.theme.text.color[props.active ? 'primary' : 'secondary']};
   font-weight: ${props => props.theme.text.weight.bold};
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.disabled ? 0.4 : 1};
+  pointer-events: ${props => props.disabled ? 'none' : 'auto'};
   &:hover {
-    color: ${props => props.theme.text.color.primary};
+    color: ${props => props.disabled ? undefined : props.theme.text.color.primary};
   }
   @media only screen and (max-width: 400px) {
     padding: 8px 10px;

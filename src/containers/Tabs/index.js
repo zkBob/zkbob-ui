@@ -6,8 +6,8 @@ import Tabs from 'components/Tabs';
 import { ZkAccountContext } from 'contexts';
 
 const tabs = [
-  { name: 'Deposit', path: '/deposit', i18nKey: 'deposit.title' },
-  { name: 'Transfer', path: '/transfer', i18nKey: 'transfer.title' },
+  { name: 'Deposit', path: '/deposit', i18nKey: 'deposit.title', disabled: true },
+  { name: 'Transfer', path: '/transfer', i18nKey: 'transfer.title', disabled: true },
   { name: 'Withdraw', path: '/withdraw', i18nKey: 'withdraw.title' },
   { name: 'History', path: '/history', i18nKey: 'history.title', badge: true },
 ]
@@ -19,6 +19,7 @@ export default () => {
   const [activeTab, setActiveTab] = useState(null);
 
   const handleTabClick = useCallback(index => {
+    if (tabs[index].disabled) return;
     history.push(tabs[index].path + location.search);
   }, [history, location]);
 

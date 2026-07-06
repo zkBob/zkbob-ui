@@ -19,7 +19,6 @@ import ConfirmTransactionModal from 'components/ConfirmTransactionModal';
 import LatestAction from 'components/LatestAction';
 import Limits from 'components/Limits';
 import DemoCard from 'components/DemoCard';
-import ConvertOptions from 'components/ConvertOptions';
 
 import { useFee, useParsedAmount, useLatestAction, useMaxTransferable } from 'hooks';
 
@@ -51,9 +50,8 @@ export default () => {
     setIsConfirmModalOpen(false);
     setDisplayAmount('');
     setReceiver('');
-    const _amountToConvert = currentPool.isNative ? amount : amountToConvert;
-    withdraw(receiver, amount, _amountToConvert, relayerFee);
-  }, [receiver, amount, amountToConvert, withdraw, relayerFee, currentPool]);
+    withdraw(receiver, amount, amountToConvert, relayerFee);
+  }, [receiver, amount, amountToConvert, withdraw, relayerFee]);
 
   const setMax = useCallback(async () => {
     const max = minBigNumber(maxWithdrawable, limits.dailyWithdrawalLimit.available);
@@ -116,7 +114,7 @@ export default () => {
           currentPool={currentPool}
           gaIdPostfix="withdraw"
         />
-        {convertionDetails.exist && (
+        {/* {convertionDetails.exist && (
           <ConvertOptions
             amountToConvert={amountToConvert}
             setAmountToConvert={setAmountToConvert}
@@ -125,7 +123,7 @@ export default () => {
             details={convertionDetails}
             currentPool={currentPool}
           />
-        )}
+        )} */}
         <MultilineInput
           placeholder={t('withdraw.addressInputPlaceholder', { network: NETWORKS[currentPool.chainId].name })}
           secondary

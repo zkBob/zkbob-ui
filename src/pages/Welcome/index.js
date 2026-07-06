@@ -33,8 +33,8 @@ export default () => {
                 <Text>{t('welcome.descriptionDemo')}</Text>
               </Row>
             </Description>
-            <Button onClick={() => history.push('/transfer' + location.search)}>
-              {t('buttonText.transfer')}
+            <Button onClick={() => history.push('/withdraw' + location.search)}>
+              {t('buttonText.withdraw')}
             </Button>
           </>
         ) : (
